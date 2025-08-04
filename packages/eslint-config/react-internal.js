@@ -11,29 +11,29 @@ import { config as baseConfig } from "./base.js";
  *
  * @type {import("eslint").Linter.Config[]} */
 export const config = [
-  ...baseConfig,
-  js.configs.recommended,
-  eslintConfigPrettier,
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  {
-    languageOptions: {
-      ...pluginReact.configs.flat.recommended.languageOptions,
-      globals: {
-        ...globals.serviceworker,
-        ...globals.browser,
-      },
-    },
-  },
-  {
-    plugins: {
-      "react-hooks": pluginReactHooks,
-    },
-    settings: { react: { version: "detect" } },
-    rules: {
-      ...pluginReactHooks.configs.recommended.rules,
-      // React scope no longer necessary with new JSX transform.
-      "react/react-in-jsx-scope": "off",
-    },
-  },
+	...baseConfig,
+	js.configs.recommended,
+	eslintConfigPrettier,
+	...tseslint.configs.recommended,
+	pluginReact.configs.flat.recommended,
+	{
+		languageOptions: {
+			...pluginReact.configs.flat.recommended.languageOptions,
+			globals: {
+				...globals.serviceworker,
+				...globals.browser,
+			},
+		},
+	},
+	{
+		plugins: {
+			"react-hooks": pluginReactHooks,
+		},
+		settings: { react: { version: "detect" } },
+		rules: {
+			...pluginReactHooks.configs.recommended.rules,
+			// React scope no longer necessary with new JSX transform.
+			"react/react-in-jsx-scope": "off",
+		},
+	},
 ];
