@@ -5,6 +5,7 @@
 		"build": "turbo run build",
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
+		"start": "turbo run start",
 		"format": "biome format --write",
 		"check-types": "turbo run check-types"
 	},
