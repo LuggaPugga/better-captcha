@@ -19,14 +19,12 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 		await loadScript(this.config.scriptUrl);
 	}
 
-	render(
-		element: HTMLElement,
-		options?: Omit<RenderParameters, "sitekey">,
-	) {
-		return window.turnstile.render(element, {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
+		const widgetId = window.turnstile.render(element, {
 			sitekey: this.sitekey,
 			...options,
 		});
+		return widgetId;
 	}
 
 	reset(widgetId: string) {
