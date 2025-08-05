@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@react-captcha/core": "workspace:*",
+		"@react-captcha/recaptcha": "workspace:*",
 		"@react-captcha/turnstile": "workspace:*",
 		"next": "15.4.5",
 		"react": "^19.1.1",
