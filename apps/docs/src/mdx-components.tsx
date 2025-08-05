@@ -1,10 +1,17 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 
-// use this function to get MDX components, you will need it for rendering MDX
+import { AutoTypeTable } from "fumadocs-typescript/ui";
+import { createGenerator } from 'fumadocs-typescript';
+
+const generator = createGenerator();
+
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
+    AutoTypeTable: (props) => (
+      <AutoTypeTable {...props} generator={generator} />
+    ),
     ...components,
   };
 }
