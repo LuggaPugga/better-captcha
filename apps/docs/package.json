@@ -13,6 +13,7 @@
 		"@react-captcha/recaptcha": "workspace:*",
 		"@react-captcha/turnstile": "workspace:*",
 		"@react-captcha/hcaptcha": "workspace:*",
+		"@react-captcha/friendly-captcha": "workspace:*",
 		"next": "15.4.5",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
