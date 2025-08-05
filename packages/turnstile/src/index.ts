@@ -3,7 +3,7 @@ import {
 	Provider,
 	type ProviderConfig,
 } from "@react-captcha/core/src/index";
-import type { Turnstile } from "./types";
+import type { RenderParameters } from "./types";
 
 export class TurnstileProvider extends Provider<ProviderConfig> {
 	constructor(sitekey: string) {
@@ -21,7 +21,7 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 
 	render(
 		element: HTMLElement,
-		options?: Omit<Turnstile.RenderParameters, "sitekey">,
+		options?: Omit<RenderParameters, "sitekey">,
 	) {
 		return window.turnstile.render(element, {
 			sitekey: this.sitekey,
