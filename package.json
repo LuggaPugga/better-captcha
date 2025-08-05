@@ -20,5 +20,8 @@
 	"workspaces": [
 		"apps/*",
 		"packages/*"
-	]
+	],
+	"dependencies": {
+		"fumadocs-typescript": "^4.0.6"
+	}
 }
