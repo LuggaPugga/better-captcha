@@ -30,4 +30,8 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 	reset(widgetId: string) {
 		window.turnstile.reset(widgetId);
 	}
+
+	async execute(widgetId: string) {
+		window.turnstile.execute(widgetId);
+	}
 }

@@ -43,4 +43,8 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	reset(widgetId: number) {
 		window.grecaptcha.reset(widgetId);
 	}
+
+	async execute(widgetId: number) {
+		window.grecaptcha.execute(widgetId);
+	}
 }

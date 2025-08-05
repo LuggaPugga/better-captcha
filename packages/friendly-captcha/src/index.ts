@@ -44,4 +44,8 @@ export class FriendlyCaptchaProvider extends Provider<ProviderConfig> {
 	reset(widgetId: string) {
 		window.frcaptcha.widgets.get(widgetId)?.reset();
 	}
+
+	async execute(widgetId: string) {
+		window.frcaptcha.widgets.get(widgetId)?.trigger("programmatic");
+	}
 }

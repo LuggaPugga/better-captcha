@@ -35,4 +35,8 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 	reset(widgetId: string) {
 		window.hcaptcha.reset(widgetId);
 	}
+
+	async execute(widgetId: string) {
+		window.hcaptcha.execute(widgetId);
+	}
 }

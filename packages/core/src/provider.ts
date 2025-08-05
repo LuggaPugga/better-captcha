@@ -19,4 +19,6 @@ export abstract class Provider<T extends ProviderConfig> {
 	): string | number | undefined | Promise<string | number>;
 
 	abstract reset(widgetId: string | number): void;
+
+	abstract execute(widgetId: string | number): Promise<void>;
 }

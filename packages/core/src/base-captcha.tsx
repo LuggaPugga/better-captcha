@@ -21,6 +21,7 @@ export function createCaptchaComponent<TOptions = unknown>(
 		options?: TOptions;
 		ref?: React.RefObject<{
 			reset: () => void;
+			execute: () => Promise<void>;
 		}>;
 	}) {
 		const elementRef = useRef<HTMLDivElement>(null);
@@ -33,6 +34,9 @@ export function createCaptchaComponent<TOptions = unknown>(
 		useImperativeHandle(ref, () => ({
 			reset: () => {
 				if (widgetId) providerInstance.reset(widgetId);
+			},
+			execute: async () => {
+				if (widgetId) await providerInstance.execute(widgetId);
 			},
 		}));
 
