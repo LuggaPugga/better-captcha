@@ -45,6 +45,10 @@ export class FriendlyCaptchaProvider extends Provider<ProviderConfig> {
 	async execute(widgetId: string) {
 		window.frcaptcha.widgets.get(widgetId)?.trigger("programmatic");
 	}
+
+	destroy(widgetId: string) {
+		window.frcaptcha.widgets.get(widgetId)?.destroy();
+	}
 }
 
 export * from "./friendly-captcha";

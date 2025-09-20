@@ -21,4 +21,6 @@ export abstract class Provider<T extends ProviderConfig> {
 	abstract reset(widgetId: string | number): void;
 
 	abstract execute(widgetId: string | number): Promise<void>;
+
+	abstract destroy(widgetId: string | number): void;
 }

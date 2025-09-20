@@ -31,6 +31,10 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 	async execute(widgetId: string) {
 		window.turnstile.execute(widgetId);
 	}
+
+	destroy(widgetId: string) {
+		window.turnstile.remove(widgetId);
+	}
 }
 
 export * from "./turnstile";

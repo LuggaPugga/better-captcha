@@ -36,6 +36,10 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 	async execute(widgetId: string) {
 		window.hcaptcha.execute(widgetId);
 	}
+
+	destroy(widgetId: string) {
+		window.hcaptcha.remove(widgetId);
+	}
 }
 
 export * from "./hcaptcha";
