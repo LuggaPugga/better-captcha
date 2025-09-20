@@ -47,6 +47,10 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 
 	destroy(widgetId: number) {
 		window.grecaptcha.reset(widgetId);
+		const element = document.getElementById(`react-captcha-${widgetId}`);
+		if (element) {
+			element.innerHTML = "";
+		}
 	}
 }
 

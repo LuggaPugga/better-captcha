@@ -55,8 +55,12 @@ export function createCaptchaComponent<TOptions = unknown>(
 			};
 
 			init();
+
+			return () => {
+				if (widgetId) providerInstance.destroy(widgetId);
+			};
 		}, [providerInstance, options, widgetId]);
 
-		return <div ref={elementRef} />;
+		return <div id={`react-captcha-${widgetId}`} ref={elementRef} />;
 	};
 }
