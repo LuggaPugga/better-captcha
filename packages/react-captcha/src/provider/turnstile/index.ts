@@ -1,5 +1,5 @@
-import { Provider, type ProviderConfig } from "@/provider";
-import { loadScript } from "@/utils/load-script";
+import { Provider, type ProviderConfig } from "../../provider";
+import { loadScript } from "../../utils/load-script";
 import type { RenderParameters } from "./types";
 
 export class TurnstileProvider extends Provider<ProviderConfig> {
@@ -32,3 +32,6 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 		window.turnstile.execute(widgetId);
 	}
 }
+
+export * from "./turnstile";
+export type { RenderParameters } from "./types";

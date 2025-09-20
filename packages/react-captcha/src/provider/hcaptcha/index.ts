@@ -1,5 +1,5 @@
-import { Provider, type ProviderConfig } from "@/provider";
-import { loadScript } from "@/utils/load-script";
+import { Provider, type ProviderConfig } from "../../provider";
+import { loadScript } from "../../utils/load-script";
 import type { HCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -37,3 +37,6 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 		window.hcaptcha.execute(widgetId);
 	}
 }
+
+export * from "./hcaptcha";
+export type { RenderParameters } from "./types";

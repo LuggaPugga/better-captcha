@@ -1,5 +1,5 @@
-import { Provider, type ProviderConfig } from "@/provider";
-import { loadScript } from "@/utils/load-script";
+import { Provider, type ProviderConfig } from "../../provider";
+import { loadScript } from "../../utils/load-script";
 import type { FrcaptchaGlobal, RenderParameters } from "./types";
 
 declare global {
@@ -46,3 +46,12 @@ export class FriendlyCaptchaProvider extends Provider<ProviderConfig> {
 		window.frcaptcha.widgets.get(widgetId)?.trigger("programmatic");
 	}
 }
+
+export * from "./friendly-captcha";
+export type {
+	FrcaptchaGlobal,
+	FriendlyCaptchaSDK,
+	RenderParameters,
+	WidgetEventDetail,
+	WidgetEventMap,
+} from "./types";

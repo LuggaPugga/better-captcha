@@ -1,4 +1,4 @@
-interface RenderParameters {
+export interface RenderParameters {
 	/**
 	 * Your sitekey.
 	 */

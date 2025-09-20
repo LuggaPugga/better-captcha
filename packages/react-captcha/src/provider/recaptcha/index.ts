@@ -1,5 +1,5 @@
-import { Provider, type ProviderConfig } from "@/provider";
-import { loadScript } from "@/utils/load-script";
+import { Provider, type ProviderConfig } from "../../provider";
+import { loadScript } from "../../utils/load-script";
 import type { ReCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -45,3 +45,6 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 		window.grecaptcha.execute(widgetId);
 	}
 }
+
+export * from "./recaptcha";
+export type { RenderParameters } from "./types";

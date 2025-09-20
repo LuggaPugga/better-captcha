@@ -1,8 +1,10 @@
 "use client";
 
-import { createCaptchaComponent } from "@/base-captcha";
+import { createCaptchaComponent } from "../../base-captcha";
 import { HCaptchaProvider } from "./";
 import type { RenderParameters } from "./types";
 
-export const HCaptcha =
+const createHCaptcha =
 	createCaptchaComponent<Omit<RenderParameters, "sitekey">>(HCaptchaProvider);
+
+export const HCaptcha = createHCaptcha;

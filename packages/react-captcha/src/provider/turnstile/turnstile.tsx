@@ -1,8 +1,10 @@
 "use client";
 
-import { createCaptchaComponent } from "@/base-captcha";
+import { createCaptchaComponent } from "../../base-captcha";
 import { TurnstileProvider } from "./index";
 import type { RenderParameters } from "./types";
 
-export const Turnstile =
+const createTurnstile =
 	createCaptchaComponent<Omit<RenderParameters, "sitekey">>(TurnstileProvider);
+
+export const Turnstile = createTurnstile;
