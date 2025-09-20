@@ -1,8 +1,5 @@
-import {
-	loadScript,
-	Provider,
-	type ProviderConfig,
-} from "@react-captcha/core/src/index";
+import { Provider, type ProviderConfig } from "@/provider";
+import { loadScript } from "@/utils/load-script";
 import type { RenderParameters } from "./types";
 
 export class TurnstileProvider extends Provider<ProviderConfig> {

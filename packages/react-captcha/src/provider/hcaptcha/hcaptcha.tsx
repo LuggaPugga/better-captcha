@@ -1,6 +1,6 @@
 "use client";
 
-import { createCaptchaComponent } from "@react-captcha/core/src/base-captcha";
+import { createCaptchaComponent } from "@/base-captcha";
 import { HCaptchaProvider } from "./";
 import type { RenderParameters } from "./types";
 
