@@ -26,6 +26,7 @@ export function createCaptchaComponent<TOptions = unknown>(
 	}) {
 		const elementRef = useRef<HTMLDivElement>(null);
 		const [widgetId, setWidgetId] = useState<string | number | null>(null);
+		const widgetIdRef = useRef<typeof widgetId>(widgetId);
 		const providerInstance = useMemo(
 			() => new ProviderClass(sitekey),
 			[ProviderClass, sitekey],
@@ -33,33 +34,58 @@ export function createCaptchaComponent<TOptions = unknown>(
 
 		useImperativeHandle(ref, () => ({
 			reset: () => {
-				if (widgetId) providerInstance.reset(widgetId);
+				const currentId = widgetIdRef.current;
+				if (currentId !== null) providerInstance.reset(currentId);
 			},
 			execute: async () => {
-				if (widgetId) await providerInstance.execute(widgetId);
+				const currentId = widgetIdRef.current;
+				if (currentId !== null) await providerInstance.execute(currentId);
 			},
 		}));
 
 		useEffect(() => {
-			if (!elementRef.current) return;
-			if (widgetId) return;
+			const element = elementRef.current;
+			if (!element) return;
 
-			const init = async () => {
-				await providerInstance.init();
-				if (elementRef.current) {
-					const widgetId = await providerInstance.render(elementRef.current, {
-						...options,
-					});
-					if (widgetId) setWidgetId(widgetId);
+			let cancelled = false;
+
+			const renderCaptcha = async () => {
+				try {
+					await providerInstance.init();
+					if (cancelled || !elementRef.current) return;
+
+					const renderedId = await providerInstance.render(element, options);
+					if (cancelled) {
+						if (renderedId !== null && renderedId !== undefined) {
+							providerInstance.destroy(renderedId);
+						}
+						return;
+					}
+
+					const resolvedId =
+						renderedId !== null && renderedId !== undefined ? renderedId : null;
+					widgetIdRef.current = resolvedId;
+					setWidgetId(resolvedId);
+				} catch {
+					if (!cancelled) {
+						widgetIdRef.current = null;
+						setWidgetId(null);
+					}
 				}
 			};
 
-			init();
+			void renderCaptcha();
 
 			return () => {
-				if (widgetId) providerInstance.destroy(widgetId);
+				cancelled = true;
+				const currentId = widgetIdRef.current;
+				if (currentId !== null) {
+					providerInstance.destroy(currentId);
+					widgetIdRef.current = null;
+					setWidgetId(null);
+				}
 			};
-		}, [providerInstance, options, widgetId]);
+		}, [providerInstance, options]);
 
 		return <div id={`react-captcha-${widgetId}`} ref={elementRef} />;
 	};

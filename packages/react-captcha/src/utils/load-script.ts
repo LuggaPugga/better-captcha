@@ -1,4 +1,5 @@
 const loadedScripts = new Set<string>();
+const loadingPromises = new Map<string, Promise<void>>();
 
 export function loadScript(
 	src: string,
@@ -13,7 +14,12 @@ export function loadScript(
 		return Promise.resolve();
 	}
 
-	return new Promise((resolve, reject) => {
+	const existingPromise = loadingPromises.get(src);
+	if (existingPromise) {
+		return existingPromise;
+	}
+
+	const promise = new Promise<void>((resolve, reject) => {
 		const script = document.createElement("script");
 		script.src = src;
 
@@ -24,9 +30,16 @@ export function loadScript(
 
 		script.onload = () => {
 			loadedScripts.add(src);
+			loadingPromises.delete(src);
 			resolve();
 		};
-		script.onerror = () => reject();
+		script.onerror = () => {
+			loadingPromises.delete(src);
+			reject();
+		};
 		document.head.appendChild(script);
 	});
+
+	loadingPromises.set(src, promise);
+	return promise;
 }
