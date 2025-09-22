@@ -5,7 +5,6 @@ import type { RenderParameters } from "./types";
 const TURNSTILE_ONLOAD_CALLBACK = generateCallbackName("turnstileOnload");
 
 export class TurnstileProvider extends Provider<ProviderConfig> {
-
 	constructor(sitekey: string) {
 		super(
 			{
@@ -32,14 +31,9 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 	}
 
 	private buildScriptUrl() {
-		try {
-			const url = new URL(this.config.scriptUrl);
-			url.searchParams.set("onload", TURNSTILE_ONLOAD_CALLBACK);
-			return url.toString();
-		} catch {
-			const separator = this.config.scriptUrl.includes("?") ? "&" : "?";
-			return `${this.config.scriptUrl}${separator}onload=${TURNSTILE_ONLOAD_CALLBACK}`;
-		}
+		const url = new URL(this.config.scriptUrl);
+		url.searchParams.set("onload", TURNSTILE_ONLOAD_CALLBACK);
+		return url.toString();
 	}
 
 	private isTurnstileReady() {

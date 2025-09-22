@@ -38,15 +38,10 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	private buildScriptUrl() {
-		try {
-			const url = new URL(this.config.scriptUrl);
-			url.searchParams.set("render", "explicit");
-			url.searchParams.set("onload", HCAPTCHA_ONLOAD_CALLBACK);
-			return url.toString();
-		} catch {
-			const separator = this.config.scriptUrl.includes("?") ? "&" : "?";
-			return `${this.config.scriptUrl}${separator}render=explicit&onload=${HCAPTCHA_ONLOAD_CALLBACK}`;
-		}
+		const url = new URL(this.config.scriptUrl);
+		url.searchParams.set("render", "explicit");
+		url.searchParams.set("onload", HCAPTCHA_ONLOAD_CALLBACK);
+		return url.toString();
 	}
 
 	private isHCaptchaReady() {

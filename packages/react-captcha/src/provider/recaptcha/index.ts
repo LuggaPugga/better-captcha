@@ -37,15 +37,10 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	private buildScriptUrl() {
-		try {
-			const url = new URL(this.config.scriptUrl);
-			url.searchParams.set("render", "explicit");
-			url.searchParams.set("onload", RECAPTCHA_ONLOAD_CALLBACK);
-			return url.toString();
-		} catch {
-			const separator = this.config.scriptUrl.includes("?") ? "&" : "?";
-			return `${this.config.scriptUrl}${separator}render=explicit&onload=${RECAPTCHA_ONLOAD_CALLBACK}`;
-		}
+		const url = new URL(this.config.scriptUrl);
+		url.searchParams.set("render", "explicit");
+		url.searchParams.set("onload", RECAPTCHA_ONLOAD_CALLBACK);
+		return url.toString();
 	}
 
 	private isGrecaptchaReady() {
