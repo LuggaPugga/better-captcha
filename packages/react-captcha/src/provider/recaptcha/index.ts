@@ -71,7 +71,7 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	async execute(widgetId: number) {
-		window.grecaptcha.execute(widgetId);
+		await window.grecaptcha.execute(widgetId);
 	}
 
 	destroy(widgetId: number) {
