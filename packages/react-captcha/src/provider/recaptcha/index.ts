@@ -1,5 +1,5 @@
 import { Provider, type ProviderConfig } from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { ReCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -7,6 +7,8 @@ declare global {
 		grecaptcha: ReCaptcha.ReCaptcha;
 	}
 }
+
+const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
 export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	constructor(sitekey: string) {
@@ -19,7 +21,39 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	async init() {
-		return await loadScript(this.config.scriptUrl);
+		if (this.isGrecaptchaReady()) {
+			return;
+		}
+
+		const scriptUrl = this.buildScriptUrl();
+
+		await loadScript(scriptUrl, {
+			async: true,
+			defer: true,
+			callbackName: RECAPTCHA_ONLOAD_CALLBACK,
+			keepCallback: true,
+			callbackResolveCondition: () => this.isGrecaptchaReady(),
+		});
+	}
+
+	private buildScriptUrl() {
+		try {
+			const url = new URL(this.config.scriptUrl);
+			url.searchParams.set("render", "explicit");
+			url.searchParams.set("onload", RECAPTCHA_ONLOAD_CALLBACK);
+			return url.toString();
+		} catch {
+			const separator = this.config.scriptUrl.includes("?") ? "&" : "?";
+			return `${this.config.scriptUrl}${separator}render=explicit&onload=${RECAPTCHA_ONLOAD_CALLBACK}`;
+		}
+	}
+
+	private isGrecaptchaReady() {
+		return (
+			typeof window !== "undefined" &&
+			typeof window.grecaptcha !== "undefined" &&
+			typeof window.grecaptcha.render === "function"
+		);
 	}
 
 	async render(
@@ -46,11 +80,11 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	destroy(widgetId: number) {
-		window.grecaptcha.reset(widgetId);
 		const element = document.getElementById(`react-captcha-${widgetId}`);
 		if (element) {
 			element.innerHTML = "";
 		}
+		window.grecaptcha.reset(widgetId);
 	}
 }
 

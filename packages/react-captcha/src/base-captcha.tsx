@@ -31,6 +31,7 @@ export function createCaptchaComponent<TOptions = unknown>(
 			() => new ProviderClass(sitekey),
 			[ProviderClass, sitekey],
 		);
+		const initPromiseRef = useRef<Promise<void> | null>(null);
 
 		useImperativeHandle(ref, () => ({
 			reset: () => {
@@ -49,9 +50,20 @@ export function createCaptchaComponent<TOptions = unknown>(
 
 			let cancelled = false;
 
+			const ensureProviderInit = async () => {
+				if (!initPromiseRef.current) {
+					initPromiseRef.current = providerInstance.init().catch((error) => {
+						initPromiseRef.current = null;
+						throw error;
+					});
+				}
+
+				return await initPromiseRef.current;
+			};
+
 			const renderCaptcha = async () => {
 				try {
-					await providerInstance.init();
+					await ensureProviderInit();
 					if (cancelled || !elementRef.current) return;
 
 					const renderedId = await providerInstance.render(element, options);
@@ -82,7 +94,7 @@ export function createCaptchaComponent<TOptions = unknown>(
 				if (currentId !== null) {
 					providerInstance.destroy(currentId);
 					widgetIdRef.current = null;
-					setWidgetId(null);
+					setWidgetId((previous) => (previous === currentId ? null : previous));
 				}
 			};
 		}, [providerInstance, options]);

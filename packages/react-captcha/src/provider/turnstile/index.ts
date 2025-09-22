@@ -1,8 +1,11 @@
 import { Provider, type ProviderConfig } from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { RenderParameters } from "./types";
 
+const TURNSTILE_ONLOAD_CALLBACK = generateCallbackName("turnstileOnload");
+
 export class TurnstileProvider extends Provider<ProviderConfig> {
+
 	constructor(sitekey: string) {
 		super(
 			{
@@ -13,7 +16,38 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 	}
 
 	async init() {
-		await loadScript(this.config.scriptUrl);
+		if (this.isTurnstileReady()) {
+			return;
+		}
+
+		const scriptUrl = this.buildScriptUrl();
+
+		await loadScript(scriptUrl, {
+			async: true,
+			defer: true,
+			callbackName: TURNSTILE_ONLOAD_CALLBACK,
+			keepCallback: true,
+			callbackResolveCondition: () => this.isTurnstileReady(),
+		});
+	}
+
+	private buildScriptUrl() {
+		try {
+			const url = new URL(this.config.scriptUrl);
+			url.searchParams.set("onload", TURNSTILE_ONLOAD_CALLBACK);
+			return url.toString();
+		} catch {
+			const separator = this.config.scriptUrl.includes("?") ? "&" : "?";
+			return `${this.config.scriptUrl}${separator}onload=${TURNSTILE_ONLOAD_CALLBACK}`;
+		}
+	}
+
+	private isTurnstileReady() {
+		return (
+			typeof window !== "undefined" &&
+			typeof window.turnstile !== "undefined" &&
+			typeof window.turnstile.render === "function"
+		);
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {

@@ -1,5 +1,5 @@
 import { Provider, type ProviderConfig } from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { HCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -8,7 +8,10 @@ declare global {
 	}
 }
 
+const HCAPTCHA_ONLOAD_CALLBACK = generateCallbackName("hcaptchaOnload");
+
 export class HCaptchaProvider extends Provider<ProviderConfig> {
+
 	constructor(sitekey: string) {
 		super(
 			{
@@ -19,7 +22,39 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	async init() {
-		await loadScript(this.config.scriptUrl);
+		if (this.isHCaptchaReady()) {
+			return;
+		}
+
+		const scriptUrl = this.buildScriptUrl();
+
+		await loadScript(scriptUrl, {
+			async: true,
+			defer: true,
+			callbackName: HCAPTCHA_ONLOAD_CALLBACK,
+			keepCallback: true,
+			callbackResolveCondition: () => this.isHCaptchaReady(),
+		});
+	}
+
+	private buildScriptUrl() {
+		try {
+			const url = new URL(this.config.scriptUrl);
+			url.searchParams.set("render", "explicit");
+			url.searchParams.set("onload", HCAPTCHA_ONLOAD_CALLBACK);
+			return url.toString();
+		} catch {
+			const separator = this.config.scriptUrl.includes("?") ? "&" : "?";
+			return `${this.config.scriptUrl}${separator}render=explicit&onload=${HCAPTCHA_ONLOAD_CALLBACK}`;
+		}
+	}
+
+	private isHCaptchaReady() {
+		return (
+			typeof window !== "undefined" &&
+			typeof window.hcaptcha !== "undefined" &&
+			typeof window.hcaptcha.render === "function"
+		);
 	}
 
 	render(element: HTMLElement, options?: RenderParameters) {
