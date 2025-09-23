@@ -21,10 +21,6 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	async init() {
-		if (this.isGrecaptchaReady()) {
-			return;
-		}
-
 		const scriptUrl = this.buildScriptUrl();
 
 		await loadScript(scriptUrl, {
@@ -32,7 +28,6 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 			defer: true,
 			callbackName: RECAPTCHA_ONLOAD_CALLBACK,
 			keepCallback: true,
-			callbackResolveCondition: () => this.isGrecaptchaReady(),
 		});
 	}
 
@@ -41,14 +36,6 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 		url.searchParams.set("render", "explicit");
 		url.searchParams.set("onload", RECAPTCHA_ONLOAD_CALLBACK);
 		return url.toString();
-	}
-
-	private isGrecaptchaReady() {
-		return (
-			typeof window !== "undefined" &&
-			typeof window.grecaptcha !== "undefined" &&
-			typeof window.grecaptcha.render === "function"
-		);
 	}
 
 	async render(

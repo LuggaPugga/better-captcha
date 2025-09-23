@@ -15,10 +15,6 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 	}
 
 	async init() {
-		if (this.isTurnstileReady()) {
-			return;
-		}
-
 		const scriptUrl = this.buildScriptUrl();
 
 		await loadScript(scriptUrl, {
@@ -26,7 +22,6 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 			defer: true,
 			callbackName: TURNSTILE_ONLOAD_CALLBACK,
 			keepCallback: true,
-			callbackResolveCondition: () => this.isTurnstileReady(),
 		});
 	}
 
@@ -34,14 +29,6 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 		const url = new URL(this.config.scriptUrl);
 		url.searchParams.set("onload", TURNSTILE_ONLOAD_CALLBACK);
 		return url.toString();
-	}
-
-	private isTurnstileReady() {
-		return (
-			typeof window !== "undefined" &&
-			typeof window.turnstile !== "undefined" &&
-			typeof window.turnstile.render === "function"
-		);
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {

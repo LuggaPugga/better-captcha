@@ -22,10 +22,6 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 	}
 
 	async init() {
-		if (this.isHCaptchaReady()) {
-			return;
-		}
-
 		const scriptUrl = this.buildScriptUrl();
 
 		await loadScript(scriptUrl, {
@@ -33,7 +29,6 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 			defer: true,
 			callbackName: HCAPTCHA_ONLOAD_CALLBACK,
 			keepCallback: true,
-			callbackResolveCondition: () => this.isHCaptchaReady(),
 		});
 	}
 
@@ -42,14 +37,6 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 		url.searchParams.set("render", "explicit");
 		url.searchParams.set("onload", HCAPTCHA_ONLOAD_CALLBACK);
 		return url.toString();
-	}
-
-	private isHCaptchaReady() {
-		return (
-			typeof window !== "undefined" &&
-			typeof window.hcaptcha !== "undefined" &&
-			typeof window.hcaptcha.render === "function"
-		);
 	}
 
 	render(element: HTMLElement, options?: RenderParameters) {
