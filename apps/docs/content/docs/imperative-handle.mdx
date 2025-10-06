@@ -1,0 +1,51 @@
+---
+title: Imperative Handle
+description: Imperative Handle
+---
+
+## Overview
+
+Each provider exposes an imperative handle through React refs so you can programmatically control the widget (e.g. reset, execute) and access provider-specific methods like reading the current response.
+
+The handle is fully typed per provider. Use the provider-specific `...Handle` type for ref typing.
+
+## Usage
+
+```tsx
+import { useRef } from "react";
+import { ReCaptcha, type ReCaptchaHandle } from "react-captcha/provider/recaptcha";
+
+export default function Example() {
+  const recaptchaRef = useRef<ReCaptchaHandle>(null!);
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" ref={recaptchaRef} />
+      <button onClick={() => recaptchaRef.current.execute()}>Execute</button>
+      <button onClick={() => recaptchaRef.current.reset()}>Reset</button>
+      <button onClick={() => console.log(recaptchaRef.current.getResponse())}>Log response</button>
+    </>
+  );
+}
+```
+
+The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to keep type-safety.
+
+## Common Methods
+
+All providers implement these methods on the handle:
+
+- **reset**: reset the widget state
+- **execute**: programmatically trigger the challenge (if supported by the provider)
+- **destroy**: destroy the widget
+
+## Provider-specific methods
+
+Provider-specific methods (e.g. `getResponse`, `getState`) are documented on each provider page:
+
+- [ReCaptcha](/docs/provider/recaptcha)
+- [HCaptcha](/docs/provider/hcaptcha)
+- [Turnstile](/docs/provider/turnstile)
+- [Friendly Captcha](/docs/provider/friendly-captcha)
+
+

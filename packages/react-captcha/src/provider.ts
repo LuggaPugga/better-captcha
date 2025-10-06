@@ -2,11 +2,23 @@ export interface ProviderConfig {
 	scriptUrl: string;
 }
 
-export abstract class Provider<T extends ProviderConfig> {
-	protected config: T;
+export type WidgetId = string | number;
+
+export interface CaptchaHandle {
+	reset: () => void;
+	execute: () => Promise<void>;
+	destroy: () => void;
+}
+
+export abstract class Provider<
+	TConfig extends ProviderConfig,
+	TOptions = unknown,
+	TExtraHandle extends object = Record<string, never>,
+> {
+	protected config: TConfig;
 	protected sitekey: string;
 
-	constructor(config: T, sitekey: string) {
+	constructor(config: TConfig, sitekey: string) {
 		this.config = config;
 		this.sitekey = sitekey;
 	}
@@ -15,12 +27,24 @@ export abstract class Provider<T extends ProviderConfig> {
 
 	abstract render(
 		element: HTMLElement,
-		options?: unknown,
-	): string | number | undefined | Promise<string | number>;
+		options?: TOptions,
+	): WidgetId | undefined | Promise<WidgetId>;
 
-	abstract reset(widgetId: string | number): void;
+	abstract reset(widgetId: WidgetId): void;
 
-	abstract execute(widgetId: string | number): Promise<void>;
+	abstract execute(widgetId: WidgetId): Promise<void>;
 
-	abstract destroy(widgetId: string | number): void;
+	abstract destroy(widgetId: WidgetId): void;
+
+	getHandle(widgetId: WidgetId): CaptchaHandle & TExtraHandle {
+		return this.getCommonHandle(widgetId) as CaptchaHandle & TExtraHandle;
+	}
+
+	protected getCommonHandle(widgetId: WidgetId): CaptchaHandle {
+		return {
+			reset: () => this.reset(widgetId),
+			execute: () => this.execute(widgetId),
+			destroy: () => this.destroy(widgetId),
+		};
+	}
 }

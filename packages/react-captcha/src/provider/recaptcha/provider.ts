@@ -1,4 +1,8 @@
-import { Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+} from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { ReCaptcha, RenderParameters } from "./types";
 
@@ -10,7 +14,15 @@ declare global {
 
 const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
-export class ReCaptchaProvider extends Provider<ProviderConfig> {
+export type ReCaptchaHandle = CaptchaHandle & {
+	getResponse: () => string;
+};
+
+export class ReCaptchaProvider extends Provider<
+	ProviderConfig,
+	Omit<RenderParameters, "sitekey">,
+	ReCaptchaHandle
+> {
 	constructor(sitekey: string) {
 		super(
 			{
@@ -67,5 +79,12 @@ export class ReCaptchaProvider extends Provider<ProviderConfig> {
 		if (element) {
 			element.innerHTML = "";
 		}
+	}
+
+	getHandle(widgetId: number): ReCaptchaHandle {
+		return {
+			...this.getCommonHandle(widgetId),
+			getResponse: () => window.grecaptcha.getResponse(widgetId),
+		};
 	}
 }

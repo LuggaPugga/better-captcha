@@ -1,6 +1,14 @@
-import { Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+} from "../../provider";
 import { loadScript } from "../../utils/load-script";
-import type { FrcaptchaGlobal, RenderParameters } from "./types";
+import type {
+	FrcaptchaGlobal,
+	FriendlyCaptchaSDK,
+	RenderParameters,
+} from "./types";
 
 declare global {
 	interface Window {
@@ -8,7 +16,16 @@ declare global {
 	}
 }
 
-export class FriendlyCaptchaProvider extends Provider<ProviderConfig> {
+export type FriendlyCaptchaHandle = CaptchaHandle & {
+	getResponse: () => string;
+	getState: () => FriendlyCaptchaSDK["state"];
+};
+
+export class FriendlyCaptchaProvider extends Provider<
+	ProviderConfig,
+	Omit<RenderParameters, "element" | "sitekey">,
+	FriendlyCaptchaHandle
+> {
 	constructor(sitekey: string) {
 		super(
 			{
@@ -48,5 +65,15 @@ export class FriendlyCaptchaProvider extends Provider<ProviderConfig> {
 
 	destroy(widgetId: string) {
 		window.frcaptcha.widgets.get(widgetId)?.destroy();
+	}
+
+	getHandle(widgetId: string): FriendlyCaptchaHandle {
+		return {
+			...this.getCommonHandle(widgetId),
+			getResponse: () =>
+				window.frcaptcha.widgets.get(widgetId)?.getResponse() ?? "",
+			getState: () =>
+				window.frcaptcha.widgets.get(widgetId)?.getState() ?? "destroyed",
+		};
 	}
 }

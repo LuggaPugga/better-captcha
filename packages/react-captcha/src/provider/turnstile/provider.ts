@@ -1,10 +1,22 @@
-import { Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+} from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { RenderParameters } from "./types";
 
 const TURNSTILE_ONLOAD_CALLBACK = generateCallbackName("turnstileOnload");
 
-export class TurnstileProvider extends Provider<ProviderConfig> {
+export type TurnstileHandle = CaptchaHandle & {
+	getResponse: () => string;
+};
+
+export class TurnstileProvider extends Provider<
+	ProviderConfig,
+	Omit<RenderParameters, "sitekey">,
+	TurnstileHandle
+> {
 	constructor(sitekey: string) {
 		super(
 			{
@@ -49,5 +61,12 @@ export class TurnstileProvider extends Provider<ProviderConfig> {
 
 	destroy(widgetId: string) {
 		window.turnstile.remove(widgetId);
+	}
+
+	getHandle(widgetId: string): TurnstileHandle {
+		return {
+			...this.getCommonHandle(widgetId),
+			getResponse: () => window.turnstile.getResponse(widgetId),
+		};
 	}
 }

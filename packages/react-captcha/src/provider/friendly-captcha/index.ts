@@ -1,5 +1,8 @@
 export * from "./friendly-captcha";
-export { FriendlyCaptchaProvider } from "./provider";
+export {
+	type FriendlyCaptchaHandle,
+	FriendlyCaptchaProvider,
+} from "./provider";
 export type {
 	FrcaptchaGlobal,
 	FriendlyCaptchaSDK,

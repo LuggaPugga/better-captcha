@@ -1,104 +1,111 @@
 "use client";
 
 import {
+	forwardRef,
 	useEffect,
 	useImperativeHandle,
 	useMemo,
 	useRef,
 	useState,
 } from "react";
-import type { Provider, ProviderConfig } from "./provider";
+import type {
+	CaptchaHandle,
+	Provider,
+	ProviderConfig,
+	WidgetId,
+} from "./provider";
 
-export function createCaptchaComponent<TOptions = unknown>(
-	ProviderClass: new (sitekey: string) => Provider<ProviderConfig>,
+export function createCaptchaComponent<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+>(
+	ProviderClass: new (
+		sitekey: string,
+	) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
-	return function CaptchaComponent({
-		sitekey,
-		options,
-		ref,
-	}: {
-		sitekey: string;
-		options?: TOptions;
-		ref?: React.RefObject<{
-			reset: () => void;
-			execute: () => Promise<void>;
-		}>;
-	}) {
-		const elementRef = useRef<HTMLDivElement>(null);
-		const [widgetId, setWidgetId] = useState<string | number | null>(null);
-		const widgetIdRef = useRef<typeof widgetId>(widgetId);
-		const providerInstance = useMemo(
-			() => new ProviderClass(sitekey),
-			[ProviderClass, sitekey],
-		);
-		const initPromiseRef = useRef<Promise<void> | null>(null);
+	return forwardRef<THandle, { sitekey: string; options?: TOptions }>(
+		function CaptchaComponent({ sitekey, options }, ref) {
+			const elementRef = useRef<HTMLDivElement>(null);
+			const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
+			const widgetIdRef = useRef<typeof widgetId>(widgetId);
+			const providerInstance = useMemo(
+				() => new ProviderClass(sitekey),
+				[ProviderClass, sitekey],
+			);
+			const initPromiseRef = useRef<Promise<void> | null>(null);
 
-		useImperativeHandle(ref, () => ({
-			reset: () => {
+			useImperativeHandle(ref, () => {
 				const currentId = widgetIdRef.current;
-				if (currentId !== null) providerInstance.reset(currentId);
-			},
-			execute: async () => {
-				const currentId = widgetIdRef.current;
-				if (currentId !== null) await providerInstance.execute(currentId);
-			},
-		}));
-
-		useEffect(() => {
-			const element = elementRef.current;
-			if (!element) return;
-
-			let cancelled = false;
-
-			const ensureProviderInit = async () => {
-				if (!initPromiseRef.current) {
-					initPromiseRef.current = providerInstance.init().catch((error) => {
-						initPromiseRef.current = null;
-						throw error;
-					});
+				if (currentId === null) {
+					const noop = async () => {};
+					return {
+						reset: () => {},
+						execute: noop,
+					} as unknown as THandle;
 				}
+				return providerInstance.getHandle(currentId) as THandle;
+			}, [providerInstance]);
 
-				return await initPromiseRef.current;
-			};
+			useEffect(() => {
+				const element = elementRef.current;
+				if (!element) return;
 
-			const renderCaptcha = async () => {
-				try {
-					await ensureProviderInit();
-					if (cancelled || !elementRef.current) return;
+				let cancelled = false;
 
-					const renderedId = await providerInstance.render(element, options);
-					if (cancelled) {
-						if (renderedId !== null && renderedId !== undefined) {
-							providerInstance.destroy(renderedId);
+				const ensureProviderInit = async () => {
+					if (!initPromiseRef.current) {
+						initPromiseRef.current = providerInstance.init().catch((error) => {
+							initPromiseRef.current = null;
+							throw error;
+						});
+					}
+
+					return await initPromiseRef.current;
+				};
+
+				const renderCaptcha = async () => {
+					try {
+						await ensureProviderInit();
+						if (cancelled || !elementRef.current) return;
+
+						const renderedId = await providerInstance.render(element, options);
+						if (cancelled) {
+							if (renderedId !== null && renderedId !== undefined) {
+								providerInstance.destroy(renderedId);
+							}
+							return;
 						}
-						return;
-					}
 
-					const resolvedId =
-						renderedId !== null && renderedId !== undefined ? renderedId : null;
-					widgetIdRef.current = resolvedId;
-					setWidgetId(resolvedId);
-				} catch {
-					if (!cancelled) {
+						const resolvedId =
+							renderedId !== null && renderedId !== undefined
+								? renderedId
+								: null;
+						widgetIdRef.current = resolvedId;
+						setWidgetId(resolvedId);
+					} catch {
+						if (!cancelled) {
+							widgetIdRef.current = null;
+							setWidgetId(null);
+						}
+					}
+				};
+
+				void renderCaptcha();
+
+				return () => {
+					cancelled = true;
+					const currentId = widgetIdRef.current;
+					if (currentId !== null) {
+						providerInstance.destroy(currentId);
 						widgetIdRef.current = null;
-						setWidgetId(null);
+						setWidgetId((previous) =>
+							previous === currentId ? null : previous,
+						);
 					}
-				}
-			};
+				};
+			}, [providerInstance, options]);
 
-			void renderCaptcha();
-
-			return () => {
-				cancelled = true;
-				const currentId = widgetIdRef.current;
-				if (currentId !== null) {
-					providerInstance.destroy(currentId);
-					widgetIdRef.current = null;
-					setWidgetId((previous) => (previous === currentId ? null : previous));
-				}
-			};
-		}, [providerInstance, options]);
-
-		return <div id={`react-captcha-${widgetId}`} ref={elementRef} />;
-	};
+			return <div id={`react-captcha-${widgetId}`} ref={elementRef} />;
+		},
+	);
 }
