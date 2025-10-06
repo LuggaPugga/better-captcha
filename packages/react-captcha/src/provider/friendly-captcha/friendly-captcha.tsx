@@ -1,7 +1,7 @@
 "use client";
 
 import { createCaptchaComponent } from "../../base-captcha";
-import { FriendlyCaptchaProvider } from "./index";
+import { FriendlyCaptchaProvider } from "./provider";
 import type { RenderParameters } from "./types";
 
 const createFriendlyCaptcha = createCaptchaComponent<

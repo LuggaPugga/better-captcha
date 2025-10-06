@@ -1,7 +1,7 @@
 "use client";
 
 import { createCaptchaComponent } from "../../base-captcha";
-import { TurnstileProvider } from "./index";
+import { TurnstileProvider } from "./provider";
 import type { RenderParameters } from "./types";
 
 const createTurnstile =

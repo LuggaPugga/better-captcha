@@ -9,42 +9,53 @@
 	],
 	"private": true,
 	"scripts": {
-		"build": "tsc --project tsconfig.json",
-		"dev": "tsc --project tsconfig.json --watch"
+		"build": "tsdown",
+		"dev": "tsdown --watch"
 	},
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
+			"default": "./dist/index.js"
 		},
 		"./base-captcha": {
 			"types": "./dist/base-captcha.d.ts",
-			"import": "./dist/base-captcha.js"
+			"default": "./dist/base-captcha.js"
 		},
 		"./provider": {
 			"types": "./dist/provider.d.ts",
-			"import": "./dist/provider.js"
+			"default": "./dist/provider.js"
 		},
 		"./provider/*": {
 			"types": "./dist/provider/*/index.d.ts",
-			"import": "./dist/provider/*/index.js"
+			"default": "./dist/provider/*/index.js"
 		},
 		"./utils/load-script": {
 			"types": "./dist/utils/load-script.d.ts",
-			"import": "./dist/utils/load-script.js"
+			"default": "./dist/utils/load-script.js"
 		},
 		"./package.json": "./package.json"
 	},
 	"typesVersions": {
 		"*": {
-			"base-captcha": ["dist/base-captcha.d.ts"],
-			"provider": ["dist/provider.d.ts"],
-			"provider/*": ["dist/provider/*/index.d.ts"],
-			"utils/load-script": ["dist/utils/load-script.d.ts"]
+			"base-captcha": [
+				"dist/base-captcha.d.ts"
+			],
+			"provider": [
+				"dist/provider.d.ts"
+			],
+			"provider/*": [
+				"dist/provider/*/index.d.ts"
+			],
+			"utils/load-script": [
+				"dist/utils/load-script.d.ts"
+			]
 		}
 	},
 	"peerDependencies": {
 		"typescript": "^5.9.2",
 		"react": "^19.0.0"
+	},
+	"devDependencies": {
+		"tsdown": "^0.15.6"
 	}
 }
