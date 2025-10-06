@@ -19,12 +19,6 @@ type CallbackLifecycle = "executed" | "cached";
 const isBrowserEnv = () =>
 	typeof window !== "undefined" && typeof document !== "undefined";
 
-const log =
-	console.info?.bind(console) ??
-	console.log?.bind(console) ??
-	console.debug?.bind(console) ??
-	(() => {});
-
 export class ScriptLoader {
 	private loadedScripts = new Set<string>();
 	private pendingScripts = new Map<string, Promise<void>>();
@@ -82,7 +76,7 @@ export class ScriptLoader {
 			}
 		}
 		if (callbackName) {
-			log(
+			console.info(
 				`[react-captcha] Callback "${callbackName}" ${
 					reason === "cached" ? "already executed (cached)" : "executed"
 				}.`,
