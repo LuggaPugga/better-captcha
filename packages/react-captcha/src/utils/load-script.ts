@@ -1,18 +1,5 @@
 const SCRIPT_MARK = "data-react-captcha-loader";
 
-const loadedScripts = new Set<string>();
-const pendingScripts = new Map<string, Promise<void>>();
-const callbackRegistry = new Map<string, CallbackHandle>();
-const scriptCallbackNames = new Map<string, string>();
-
-let callbackSequence = 0;
-
-const noop = () => {};
-
-interface ScriptWithReadyState extends HTMLScriptElement {
-	readyState?: string;
-}
-
 export interface LoadScriptOptions {
 	type?: "module" | "text/javascript";
 	async?: boolean;
@@ -21,360 +8,243 @@ export interface LoadScriptOptions {
 	callbackName?: string;
 	callbackNamespace?: Record<string, unknown>;
 	keepCallback?: boolean;
-	callbackResolveCondition?: () => boolean;
+	onCallback?: (...args: unknown[]) => void;
+	timeout?: number;
+	signal?: AbortSignal;
+	forceReload?: boolean;
 }
 
-interface CallbackHandle {
-	name: string;
-	promise: Promise<void>;
-	cleanup: () => void;
-}
+type CallbackLifecycle = "executed" | "cached";
 
-interface ScriptCallbackHandle {
-	promise: Promise<void>;
-	cleanup: () => void;
-}
+const isBrowserEnv = () =>
+	typeof window !== "undefined" && typeof document !== "undefined";
 
-const isBrowser = () => typeof window !== "undefined";
-const hasDocument = () => typeof document !== "undefined";
+const log =
+	console.info?.bind(console) ??
+	console.log?.bind(console) ??
+	console.debug?.bind(console) ??
+	(() => {});
 
-const isScriptMarkedLoaded = (script: HTMLScriptElement) =>
-	script.getAttribute(SCRIPT_MARK) === "loaded";
+export class ScriptLoader {
+	private loadedScripts = new Set<string>();
+	private pendingScripts = new Map<string, Promise<void>>();
+	private callbackSequence = 0;
 
-const isScriptReady = (script: HTMLScriptElement) => {
-	const state = (script as ScriptWithReadyState).readyState;
-	return state === "complete" || state === "loaded";
-};
-
-function markScriptLoaded(script: HTMLScriptElement, normalizedSrc: string) {
-	script.setAttribute(SCRIPT_MARK, "loaded");
-	loadedScripts.add(normalizedSrc);
-}
-
-export function generateCallbackName(prefix = "callback") {
-	callbackSequence += 1;
-	return `reactCaptcha_${prefix}_${callbackSequence}`;
-}
-
-function normalizeScriptSrc(src: string) {
-	if (!isBrowser()) {
-		return src;
+	generateCallbackName(prefix = "callback") {
+		this.callbackSequence += 1;
+		return `reactCaptcha_${prefix}_${this.callbackSequence}`;
 	}
 
-	try {
-		return new URL(src, window.location.href).href;
-	} catch {
-		return src;
-	}
-}
-
-function findScript(normalizedSrc: string) {
-	if (!hasDocument()) {
-		return null;
-	}
-
-	return (
-		Array.from(document.getElementsByTagName("script")).find((script) => {
-			try {
-				return new URL(script.src, window.location.href).href === normalizedSrc;
-			} catch {
-				return script.src === normalizedSrc;
-			}
-		}) ?? null
-	);
-}
-
-function resolvedCallbackHandle(name: string): CallbackHandle {
-	return {
-		name,
-		promise: Promise.resolve(),
-		cleanup: noop,
-	};
-}
-
-function registerCallback(options: {
-	name: string;
-	namespace?: Record<string, unknown>;
-	keepCallback?: boolean;
-	resolveCondition?: () => boolean;
-}): CallbackHandle {
-	const { name, namespace, keepCallback = false, resolveCondition } = options;
-
-	if (callbackRegistry.has(name)) {
-		return callbackRegistry.get(name)!;
-	}
-
-	if (resolveCondition?.()) {
-		return resolvedCallbackHandle(name);
-	}
-
-	if (!isBrowser()) {
-		return resolvedCallbackHandle(name);
-	}
-
-	const target = namespace ?? window;
-	if (!target) {
-		return resolvedCallbackHandle(name);
-	}
-
-	const container = target as Record<string, unknown>;
-	const previous = container[name];
-	let settled = false;
-
-	const restore = () => {
-		if (previous === undefined) {
-			delete container[name];
-		} else {
-			container[name] = previous;
+	private normalizeSrc(src: string): string {
+		if (!isBrowserEnv()) return src;
+		try {
+			return new URL(src, window.location.href).href;
+		} catch {
+			return src;
 		}
-	};
-
-	const promise = new Promise<void>((resolve) => {
-		const wrapped = (...args: unknown[]) => {
-			if (typeof previous === "function") {
-				(previous as (...callbackArgs: unknown[]) => void)(...args);
-			}
-
-			if (settled) return;
-
-			settled = true;
-			callbackRegistry.delete(name);
-			if (!keepCallback) {
-				restore();
-			}
-			resolve();
-		};
-
-		container[name] = wrapped as unknown;
-	});
-
-	const cleanup = () => {
-		if (settled) return;
-		settled = true;
-		callbackRegistry.delete(name);
-		if (!keepCallback) {
-			restore();
-		}
-	};
-
-	const handle: CallbackHandle = { name, promise, cleanup };
-	callbackRegistry.set(name, handle);
-	return handle;
-}
-
-function watchCondition(check?: () => boolean): ScriptCallbackHandle | null {
-	if (!check) {
-		return null;
 	}
 
-	if (!isBrowser()) {
-		return {
-			promise: Promise.resolve(),
-			cleanup: noop,
-		};
+	private isScriptReady(script: HTMLScriptElement) {
+		return script.getAttribute(SCRIPT_MARK) === "loaded";
 	}
 
-	if (check()) {
-		return {
-			promise: Promise.resolve(),
-			cleanup: noop,
-		};
-	}
-
-	let timer: number | null = null;
-
-	const promise = new Promise<void>((resolve) => {
-		const evaluate = () => {
-			if (check()) {
-				if (timer !== null) {
-					window.clearTimeout(timer);
-					timer = null;
+	private findScript(normalizedSrc: string) {
+		if (!isBrowserEnv()) return null;
+		return (
+			Array.from(document.getElementsByTagName("script")).find((script) => {
+				try {
+					return (
+						new URL(script.src, window.location.href).href === normalizedSrc
+					);
+				} catch {
+					return script.src === normalizedSrc;
 				}
-				resolve();
-				return;
-			}
-
-			timer = window.setTimeout(evaluate, 50);
-		};
-
-		timer = window.setTimeout(evaluate, 0);
-	});
-
-	return {
-		promise,
-		cleanup: () => {
-			if (timer !== null) {
-				window.clearTimeout(timer);
-				timer = null;
-			}
-		},
-	};
-}
-
-function attachScriptCallback(
-	normalizedSrc: string,
-	options: LoadScriptOptions,
-): ScriptCallbackHandle | null {
-	const existingName = scriptCallbackNames.get(normalizedSrc);
-	const effectiveName = existingName ?? options.callbackName;
-
-	if (!effectiveName) {
-		return watchCondition(options.callbackResolveCondition);
-	}
-
-	const handle = registerCallback({
-		name: effectiveName,
-		namespace: options.callbackNamespace,
-		keepCallback: options.keepCallback,
-		resolveCondition: options.callbackResolveCondition,
-	});
-
-	if (!existingName) {
-		scriptCallbackNames.set(normalizedSrc, effectiveName);
-	}
-
-	const cleanupMapping = () => {
-		if (scriptCallbackNames.get(normalizedSrc) === effectiveName) {
-			scriptCallbackNames.delete(normalizedSrc);
-		}
-	};
-
-	handle.promise.finally(cleanupMapping).catch(noop);
-
-	return {
-		promise: handle.promise,
-		cleanup: () => {
-			cleanupMapping();
-			handle.cleanup();
-		},
-	};
-}
-
-function combinePromises(
-	loadPromise?: Promise<void> | null,
-	callbackPromise?: Promise<void> | null,
-) {
-	if (loadPromise && callbackPromise) {
-		return Promise.all([loadPromise, callbackPromise]).then(() => {});
-	}
-
-	if (loadPromise) return loadPromise;
-	if (callbackPromise) return callbackPromise;
-
-	return Promise.resolve();
-}
-
-function listenToExistingScript(
-	script: HTMLScriptElement,
-	normalizedSrc: string,
-	onError?: () => void,
-) {
-	if (isScriptMarkedLoaded(script) || isScriptReady(script)) {
-		markScriptLoaded(script, normalizedSrc);
-		return Promise.resolve();
-	}
-
-	return new Promise<void>((resolve, reject) => {
-		const handleLoad = () => {
-			cleanup();
-			markScriptLoaded(script, normalizedSrc);
-			resolve();
-		};
-
-		const handleError = () => {
-			cleanup();
-			onError?.();
-			reject(new Error(`Failed to load script: ${script.src || normalizedSrc}`));
-		};
-
-		const cleanup = () => {
-			script.removeEventListener("load", handleLoad);
-			script.removeEventListener("error", handleError);
-		};
-
-		script.addEventListener("load", handleLoad, { once: true });
-		script.addEventListener("error", handleError, { once: true });
-
-		if (isScriptReady(script)) {
-			handleLoad();
-		}
-	});
-}
-
-function appendScript(
-	src: string,
-	normalizedSrc: string,
-	opts: LoadScriptOptions,
-	onError?: () => void,
-) {
-	if (!hasDocument()) {
-		onError?.();
-		return Promise.reject(
-			new Error("Cannot load script outside the browser environment."),
+			}) ?? null
 		);
 	}
 
-	const script = document.createElement("script");
-	script.setAttribute(SCRIPT_MARK, "pending");
-	script.src = src;
-
-	if (opts.type) script.type = opts.type;
-	if (typeof opts.async === "boolean") script.async = opts.async;
-	if (typeof opts.defer === "boolean") script.defer = opts.defer;
-	if (typeof opts.nomodule === "boolean") script.noModule = opts.nomodule;
-
-	const promise = new Promise<void>((resolve, reject) => {
-		const handleLoad = () => {
-			cleanup();
-			markScriptLoaded(script, normalizedSrc);
-			resolve();
-		};
-
-		const handleError = () => {
-			cleanup();
-			script.remove();
-			onError?.();
-			reject(new Error(`Failed to load script: ${src}`));
-		};
-
-		const cleanup = () => {
-			script.removeEventListener("load", handleLoad);
-			script.removeEventListener("error", handleError);
-		};
-
-		script.addEventListener("load", handleLoad, { once: true });
-		script.addEventListener("error", handleError, { once: true });
-
-		document.head.appendChild(script);
-	});
-
-	return promise;
-}
-
-export function loadScript(src: string, options: LoadScriptOptions = {}) {
-	const normalizedSrc = normalizeScriptSrc(src);
-	const callbackHandle = attachScriptCallback(normalizedSrc, options);
-	const callbackPromise = callbackHandle?.promise ?? null;
-
-	if (loadedScripts.has(normalizedSrc)) {
-		return combinePromises(null, callbackPromise);
+	private markScriptLoaded(script: HTMLScriptElement, src: string) {
+		script.setAttribute(SCRIPT_MARK, "loaded");
+		this.loadedScripts.add(src);
 	}
 
-	const existingPromise = pendingScripts.get(normalizedSrc);
-	if (existingPromise) {
-		return combinePromises(existingPromise, callbackPromise);
+	private emitCallbackSideEffects(
+		options: LoadScriptOptions,
+		args: unknown[],
+		reason: CallbackLifecycle,
+	) {
+		const { callbackName, onCallback } = options;
+		if (typeof onCallback === "function") {
+			try {
+				onCallback(...args);
+			} catch (err) {
+				console.error("[react-captcha] onCallback failed:", err);
+			}
+		}
+		if (callbackName) {
+			log(
+				`[react-captcha] Callback "${callbackName}" ${
+					reason === "cached" ? "already executed (cached)" : "executed"
+				}.`,
+			);
+		}
 	}
 
-	const existingScript = findScript(normalizedSrc);
-	const loadPromise = existingScript
-		? listenToExistingScript(existingScript, normalizedSrc, callbackHandle?.cleanup)
-		: appendScript(src, normalizedSrc, options, callbackHandle?.cleanup);
-
-	const finalPromise = combinePromises(loadPromise, callbackPromise)
-		.finally(() => {
-			pendingScripts.delete(normalizedSrc);
+	private createCallbackPromise(
+		options: LoadScriptOptions,
+	): Promise<void> | null {
+		const { callbackName, callbackNamespace, keepCallback } = options;
+		if (!callbackName || !isBrowserEnv()) return null;
+		const target = (callbackNamespace ?? window) as Record<string, unknown>;
+		const previous = target[callbackName];
+		if (previous && typeof previous !== "function") {
+			console.warn(
+				`[react-captcha] callbackNamespace already has a non-function property '${callbackName}'.`,
+			);
+			return Promise.resolve();
+		}
+		let settled = false;
+		return new Promise<void>((resolve) => {
+			const wrapped = (...args: unknown[]) => {
+				if (typeof previous === "function") previous(...args);
+				this.emitCallbackSideEffects(options, args, "executed");
+				if (settled) return;
+				settled = true;
+				if (!keepCallback) {
+					if (previous === undefined) delete target[callbackName];
+					else target[callbackName] = previous;
+				}
+				resolve();
+			};
+			target[callbackName] = wrapped as unknown;
 		});
+	}
 
-	pendingScripts.set(normalizedSrc, finalPromise);
-	return finalPromise;
+	private listenToExistingScript(
+		script: HTMLScriptElement,
+		normalizedSrc: string,
+	): Promise<void> {
+		if (
+			script.getAttribute(SCRIPT_MARK) === "loaded" ||
+			this.isScriptReady(script)
+		) {
+			this.markScriptLoaded(script, normalizedSrc);
+			return Promise.resolve();
+		}
+		return new Promise<void>((resolve, reject) => {
+			const cleanup = () => {
+				script.removeEventListener("load", onLoad);
+				script.removeEventListener("error", onError);
+			};
+			const onLoad = () => {
+				cleanup();
+				this.markScriptLoaded(script, normalizedSrc);
+				resolve();
+			};
+			const onError = () => {
+				cleanup();
+				reject(
+					new Error(`Failed to load script: ${script.src || normalizedSrc}`),
+				);
+			};
+			script.addEventListener("load", onLoad, { once: true });
+			script.addEventListener("error", onError, { once: true });
+			if (this.isScriptReady(script)) onLoad();
+		});
+	}
+
+	private appendScript(
+		src: string,
+		normalizedSrc: string,
+		opts: LoadScriptOptions,
+	): Promise<void> {
+		if (!isBrowserEnv()) {
+			return Promise.reject(
+				new Error("Cannot load script outside the browser environment."),
+			);
+		}
+		const script = document.createElement("script");
+		script.setAttribute(SCRIPT_MARK, "pending");
+		script.src = src;
+		if (opts.type) script.type = opts.type;
+		if (typeof opts.async === "boolean") script.async = opts.async;
+		if (typeof opts.defer === "boolean") script.defer = opts.defer;
+		if (typeof opts.nomodule === "boolean") script.noModule = opts.nomodule;
+		return new Promise<void>((resolve, reject) => {
+			let timeoutId: number | undefined;
+			const cleanup = () => {
+				clearTimeout(timeoutId);
+				script.removeEventListener("load", onLoad);
+				script.removeEventListener("error", onError);
+				opts.signal?.removeEventListener("abort", onAbort);
+			};
+			const onLoad = () => {
+				cleanup();
+				this.markScriptLoaded(script, normalizedSrc);
+				resolve();
+			};
+			const onError = () => {
+				cleanup();
+				script.remove();
+				reject(new Error(`Failed to load script: ${src}`));
+			};
+			const onAbort = () => {
+				cleanup();
+				script.remove();
+				reject(new Error("Script load aborted."));
+			};
+			opts.signal?.addEventListener("abort", onAbort, { once: true });
+			const timeout = opts.timeout ?? 15000;
+			if (timeout > 0) {
+				timeoutId = window.setTimeout(() => {
+					cleanup();
+					script.remove();
+					reject(new Error(`Script load timed out after ${timeout}ms: ${src}`));
+				}, timeout);
+			}
+			script.addEventListener("load", onLoad, { once: true });
+			script.addEventListener("error", onError, { once: true });
+			document.head.appendChild(script);
+		});
+	}
+
+	loadScript(src: string, options: LoadScriptOptions = {}): Promise<void> {
+		const normalizedSrc = this.normalizeSrc(src);
+		if (options.forceReload && isBrowserEnv()) {
+			const existing = this.findScript(normalizedSrc);
+			existing?.remove();
+			this.loadedScripts.delete(normalizedSrc);
+		}
+		if (this.loadedScripts.has(normalizedSrc)) {
+			this.emitCallbackSideEffects(options, [], "cached");
+			return Promise.resolve();
+		}
+		const callbackPromise = this.createCallbackPromise(options);
+		const existingPromise = this.pendingScripts.get(normalizedSrc);
+		if (existingPromise) {
+			return callbackPromise
+				? Promise.all([existingPromise, callbackPromise]).then(() => {})
+				: existingPromise;
+		}
+		const existingScript = this.findScript(normalizedSrc);
+		const loadPromise = existingScript
+			? this.listenToExistingScript(existingScript, normalizedSrc)
+			: this.appendScript(src, normalizedSrc, options);
+		const finalPromise = callbackPromise
+			? Promise.all([loadPromise, callbackPromise]).then(() => {})
+			: loadPromise;
+		this.pendingScripts.set(
+			normalizedSrc,
+			finalPromise.finally(() => {
+				this.pendingScripts.delete(normalizedSrc);
+			}),
+		);
+		return finalPromise;
+	}
 }
+
+export const defaultScriptLoader = new ScriptLoader();
+export const loadScript =
+	defaultScriptLoader.loadScript.bind(defaultScriptLoader);
+export const generateCallbackName =
+	defaultScriptLoader.generateCallbackName.bind(defaultScriptLoader);
