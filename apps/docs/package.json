@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"react-captcha": "workspace:*",
-		"next": "15.4.5",
+		"next": "15.5.4",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"fumadocs-ui": "15.6.9",
