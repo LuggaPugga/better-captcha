@@ -11,7 +11,6 @@ declare global {
 const HCAPTCHA_ONLOAD_CALLBACK = generateCallbackName("hcaptchaOnload");
 
 export class HCaptchaProvider extends Provider<ProviderConfig> {
-
 	constructor(sitekey: string) {
 		super(
 			{
@@ -35,6 +34,7 @@ export class HCaptchaProvider extends Provider<ProviderConfig> {
 	private buildScriptUrl() {
 		const url = new URL(this.config.scriptUrl);
 		url.searchParams.set("render", "explicit");
+		url.searchParams.set("recaptchacompat", "off");
 		url.searchParams.set("onload", HCAPTCHA_ONLOAD_CALLBACK);
 		return url.toString();
 	}
