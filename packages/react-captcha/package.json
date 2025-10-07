@@ -8,7 +8,6 @@
 	"files": [
 		"dist"
 	],
-	"private": true,
 	"scripts": {
 		"build": "tsdown",
 		"dev": "tsdown --watch"
