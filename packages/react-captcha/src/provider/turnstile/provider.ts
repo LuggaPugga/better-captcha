@@ -4,12 +4,19 @@ import {
 	type ProviderConfig,
 } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
-import type { RenderParameters } from "./types";
+import type { RenderParameters, Turnstile } from "./types";
+
+declare global {
+	interface Window {
+		turnstile: Turnstile.Turnstile;
+	}
+}
 
 const TURNSTILE_ONLOAD_CALLBACK = generateCallbackName("turnstileOnload");
 
 export type TurnstileHandle = CaptchaHandle & {
 	getResponse: () => string;
+	isExpired: () => boolean;
 };
 
 export class TurnstileProvider extends Provider<
@@ -48,7 +55,7 @@ export class TurnstileProvider extends Provider<
 			sitekey: this.sitekey,
 			...options,
 		});
-		return widgetId;
+		return widgetId ?? undefined;
 	}
 
 	reset(widgetId: string) {
@@ -66,7 +73,8 @@ export class TurnstileProvider extends Provider<
 	getHandle(widgetId: string): TurnstileHandle {
 		return {
 			...this.getCommonHandle(widgetId),
-			getResponse: () => window.turnstile.getResponse(widgetId),
+			getResponse: () => window.turnstile.getResponse(widgetId) ?? "",
+			isExpired: () => window.turnstile.isExpired(widgetId),
 		};
 	}
 }
