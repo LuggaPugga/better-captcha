@@ -13,7 +13,7 @@
 		"next": "15.5.4",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
-		"fumadocs-ui": "15.6.9",
+		"fumadocs-ui": "15.8.5",
 		"fumadocs-core": "15.6.9",
 		"fumadocs-mdx": "11.7.3"
 	},
