@@ -36,15 +36,15 @@ export function createCaptchaComponent<
 
 			useImperativeHandle(ref, () => {
 				const currentId = widgetIdRef.current;
-				if (currentId === null) {
-					return {
-						reset: () => {},
-						execute: async () => {},
-						destroy: () => {},
-						getResponse: () => "",
-					} as THandle;
-				}
-				return providerInstance.getHandle(currentId);
+				const handle = providerInstance.getHandle(currentId ?? "");
+				return {
+					...handle,
+					destroy: () => {
+						handle.destroy();
+						widgetIdRef.current = null;
+						setWidgetId(null);
+					},
+				};
 			}, [providerInstance, widgetId]);
 
 			useEffect(() => {
