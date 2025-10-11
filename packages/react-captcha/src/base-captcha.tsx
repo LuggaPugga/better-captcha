@@ -1,19 +1,14 @@
 "use client";
 
-import {
-	forwardRef,
-	useEffect,
-	useImperativeHandle,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import { forwardRef, useImperativeHandle, useMemo } from "react";
 import type {
 	CaptchaHandle,
+	CaptchaProps,
+	CaptchaState,
 	Provider,
 	ProviderConfig,
-	WidgetId,
 } from "./provider";
+import { useCaptchaLifecycle } from "./hooks/use-captcha-lifecycle";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
@@ -23,90 +18,58 @@ export function createCaptchaComponent<
 		sitekey: string,
 	) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
-	return forwardRef<THandle, { sitekey: string; options?: TOptions }>(
-		function CaptchaComponent({ sitekey, options }, ref) {
-			const elementRef = useRef<HTMLDivElement>(null);
-			const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
-			const widgetIdRef = useRef<typeof widgetId>(widgetId);
-			const providerInstance = useMemo(
-				() => new ProviderClass(sitekey),
-				[ProviderClass, sitekey],
-			);
-			const initPromiseRef = useRef<Promise<void> | null>(null);
+	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(
+		{ sitekey, options, className, style, "aria-label": ariaLabel },
+		ref,
+	) {
+		const provider = useMemo(
+			() => new ProviderClass(sitekey),
+			[ProviderClass, sitekey],
+		);
+		const { elementRef, state, widgetIdRef, handleError, setState } =
+			useCaptchaLifecycle(provider, options);
 
-			useImperativeHandle(ref, () => {
-				const currentId = widgetIdRef.current;
-				const handle = providerInstance.getHandle(currentId ?? "");
+		useImperativeHandle(ref, () => {
+			const id = widgetIdRef.current;
+			if (!id) {
 				return {
-					...handle,
-					destroy: () => {
-						handle.destroy();
-						widgetIdRef.current = null;
-						setWidgetId(null);
-					},
-				};
-			}, [providerInstance, widgetId]);
+					execute: async () => {},
+					reset: () => {},
+					destroy: () => {},
+					getResponse: () => "",
+					getState: () => state,
+				} as THandle & { getState: () => CaptchaState };
+			}
+			const handle = provider.getHandle(id);
+			return {
+				...handle,
+				getState: () => state,
+				destroy() {
+					handle.destroy();
+					widgetIdRef.current = null;
+					setState((prevState: CaptchaState) => ({
+						...prevState,
+						ready: false,
+						error: null,
+					}));
+				},
+			};
+		}, [provider, handleError, state]);
 
-			useEffect(() => {
-				const element = elementRef.current;
-				if (!element) return;
-
-				let cancelled = false;
-
-				const ensureProviderInit = async () => {
-					if (!initPromiseRef.current) {
-						initPromiseRef.current = providerInstance.init().catch((error) => {
-							initPromiseRef.current = null;
-							throw error;
-						});
-					}
-
-					return await initPromiseRef.current;
-				};
-
-				const renderCaptcha = async () => {
-					try {
-						await ensureProviderInit();
-						if (cancelled || !elementRef.current) return;
-
-						const renderedId = await providerInstance.render(element, options);
-						if (cancelled) {
-							if (renderedId !== null && renderedId !== undefined) {
-								providerInstance.destroy(renderedId);
-							}
-							return;
-						}
-
-						const resolvedId =
-							renderedId !== null && renderedId !== undefined
-								? renderedId
-								: null;
-						widgetIdRef.current = resolvedId;
-						setWidgetId(resolvedId);
-					} catch {
-						if (!cancelled) {
-							widgetIdRef.current = null;
-							setWidgetId(null);
-						}
-					}
-				};
-
-				void renderCaptcha();
-
-				return () => {
-					cancelled = true;
-					const currentId = widgetIdRef.current;
-					if (currentId !== null) {
-						providerInstance.destroy(currentId);
-						widgetIdRef.current = null;
-						setWidgetId((previous) =>
-							previous === currentId ? null : previous,
-						);
-					}
-				};
-			}, [providerInstance, options]);
-
-			return <div id={`react-captcha-${widgetId}`} ref={elementRef} />;
-		},
-	);
+		return (
+			<div
+				id={
+					widgetIdRef.current
+						? `react-captcha-${widgetIdRef.current}`
+						: "react-captcha-loading"
+				}
+				ref={elementRef}
+				className={className}
+				style={style}
+				aria-label={ariaLabel ?? "CAPTCHA verification"}
+				aria-live="polite"
+				aria-busy={state.loading}
+			/>
+		);
+	});
 }
