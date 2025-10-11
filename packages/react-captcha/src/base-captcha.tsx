@@ -45,7 +45,7 @@ export function createCaptchaComponent<
 					} as THandle;
 				}
 				return providerInstance.getHandle(currentId);
-			}, [providerInstance]);
+			}, [providerInstance, widgetId]);
 
 			useEffect(() => {
 				const element = elementRef.current;
