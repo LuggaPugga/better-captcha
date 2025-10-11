@@ -1,7 +1,7 @@
 "use client";
-import { HCaptcha } from "react-captcha/provider/hcaptcha";
 import { useState } from "react";
 import type { RenderParameters } from "react-captcha/provider/hcaptcha";
+import { HCaptcha } from "react-captcha/provider/hcaptcha";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function HCaptchaPlayground() {

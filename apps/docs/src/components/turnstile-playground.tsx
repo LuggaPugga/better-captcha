@@ -1,7 +1,7 @@
 "use client";
-import { Turnstile } from "react-captcha/provider/turnstile";
 import { useState } from "react";
 import type { RenderParameters } from "react-captcha/provider/turnstile";
+import { Turnstile } from "react-captcha/provider/turnstile";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function TurnstilePlayground() {

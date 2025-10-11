@@ -1,7 +1,7 @@
 "use client";
-import { FriendlyCaptcha } from "react-captcha/provider/friendly-captcha";
 import { useState } from "react";
 import type { RenderParameters } from "react-captcha/provider/friendly-captcha";
+import { FriendlyCaptcha } from "react-captcha/provider/friendly-captcha";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function FriendlyCaptchaPlayground() {

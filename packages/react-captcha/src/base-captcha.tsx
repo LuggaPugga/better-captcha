@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useImperativeHandle, useMemo } from "react";
+import { useCaptchaLifecycle } from "./hooks/use-captcha-lifecycle";
 import type {
 	CaptchaHandle,
 	CaptchaProps,
@@ -8,7 +9,6 @@ import type {
 	Provider,
 	ProviderConfig,
 } from "./provider";
-import { useCaptchaLifecycle } from "./hooks/use-captcha-lifecycle";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
@@ -54,7 +54,7 @@ export function createCaptchaComponent<
 					}));
 				},
 			};
-		}, [provider, handleError, state]);
+		}, [provider, state, setState, widgetIdRef]);
 
 		return (
 			<div
@@ -66,7 +66,6 @@ export function createCaptchaComponent<
 				ref={elementRef}
 				className={className}
 				style={style}
-				aria-label={ariaLabel ?? "CAPTCHA verification"}
 				aria-live="polite"
 				aria-busy={state.loading}
 			/>

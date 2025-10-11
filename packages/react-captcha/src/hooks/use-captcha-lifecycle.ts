@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
+	CaptchaHandle,
 	CaptchaState,
 	Provider,
 	ProviderConfig,
-	CaptchaHandle,
 	WidgetId,
 } from "../provider";
 
@@ -54,7 +54,7 @@ export function useCaptchaLifecycle<
 				if (cancelled || !elementRef.current) return;
 				// Ensure a fresh child container for every render so providers that
 				// cannot re-render into the same element (e.g. reCAPTCHA) work reliably.
-				if (containerRef.current && containerRef.current.parentNode) {
+				if (containerRef.current?.parentNode) {
 					containerRef.current.parentNode.removeChild(containerRef.current);
 					containerRef.current = null;
 				}
@@ -64,7 +64,7 @@ export function useCaptchaLifecycle<
 				const id = await provider.render(innerContainer, options ?? undefined);
 				if (cancelled) {
 					if (id) provider.destroy(id);
-					if (containerRef.current && containerRef.current.parentNode) {
+					if (containerRef.current?.parentNode) {
 						containerRef.current.parentNode.removeChild(containerRef.current);
 						containerRef.current = null;
 					}
@@ -94,7 +94,7 @@ export function useCaptchaLifecycle<
 			} catch (err) {
 				console.warn("[react-captcha] cleanup:", err);
 			}
-			if (containerRef.current && containerRef.current.parentNode) {
+			if (containerRef.current?.parentNode) {
 				containerRef.current.parentNode.removeChild(containerRef.current);
 				containerRef.current = null;
 			}

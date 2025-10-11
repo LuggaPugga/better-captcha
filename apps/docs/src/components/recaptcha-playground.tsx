@@ -1,7 +1,7 @@
 "use client";
-import { ReCaptcha } from "react-captcha/provider/recaptcha";
 import { useState } from "react";
 import type { RenderParameters } from "react-captcha/provider/recaptcha";
+import { ReCaptcha } from "react-captcha/provider/recaptcha";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function ReCaptchaPlayground() {
