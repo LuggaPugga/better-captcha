@@ -8,6 +8,7 @@ export interface CaptchaHandle {
 	reset: () => void;
 	execute: () => Promise<void>;
 	destroy: () => void;
+	getResponse: () => string;
 }
 
 export abstract class Provider<
@@ -36,6 +37,8 @@ export abstract class Provider<
 
 	abstract destroy(widgetId: WidgetId): void;
 
+	abstract getResponse(widgetId: WidgetId): string;
+
 	getHandle(widgetId: WidgetId): CaptchaHandle & TExtraHandle {
 		return this.getCommonHandle(widgetId) as CaptchaHandle & TExtraHandle;
 	}
@@ -45,6 +48,7 @@ export abstract class Provider<
 			reset: () => this.reset(widgetId),
 			execute: () => this.execute(widgetId),
 			destroy: () => this.destroy(widgetId),
+			getResponse: () => this.getResponse(widgetId),
 		};
 	}
 }

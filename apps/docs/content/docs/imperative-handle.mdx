@@ -38,10 +38,11 @@ All providers implement these methods on the handle:
 - **reset**: reset the widget state
 - **execute**: programmatically trigger the challenge (if supported by the provider)
 - **destroy**: destroy the widget
+- **getResponse**: get the response of the widget
 
 ## Provider-specific methods
 
-Provider-specific methods (e.g. `getResponse`, `getState`) are documented on each provider page:
+Provider-specific methods (e.g. `getState`) are documented on each provider page:
 
 - [ReCaptcha](/docs/provider/recaptcha)
 - [HCaptcha](/docs/provider/hcaptcha)

@@ -14,9 +14,7 @@ declare global {
 
 const HCAPTCHA_ONLOAD_CALLBACK = generateCallbackName("hcaptchaOnload");
 
-export type HCaptchaHandle = CaptchaHandle & {
-	getResponse: () => string;
-};
+export type HCaptchaHandle = CaptchaHandle;
 
 export class HCaptchaProvider extends Provider<
 	ProviderConfig,
@@ -70,10 +68,11 @@ export class HCaptchaProvider extends Provider<
 		window.hcaptcha.remove(widgetId);
 	}
 
+	getResponse(widgetId: string): string {
+		return window.hcaptcha.getResponse(widgetId);
+	}
+
 	getHandle(widgetId: string): HCaptchaHandle {
-		return {
-			...this.getCommonHandle(widgetId),
-			getResponse: () => window.hcaptcha.getResponse(widgetId),
-		};
+		return this.getCommonHandle(widgetId);
 	}
 }

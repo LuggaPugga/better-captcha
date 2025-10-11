@@ -15,7 +15,6 @@ declare global {
 const TURNSTILE_ONLOAD_CALLBACK = generateCallbackName("turnstileOnload");
 
 export type TurnstileHandle = CaptchaHandle & {
-	getResponse: () => string;
 	isExpired: () => boolean;
 };
 
@@ -70,10 +69,13 @@ export class TurnstileProvider extends Provider<
 		window.turnstile.remove(widgetId);
 	}
 
+	getResponse(widgetId: string): string {
+		return window.turnstile.getResponse(widgetId) ?? "";
+	}
+
 	getHandle(widgetId: string): TurnstileHandle {
 		return {
 			...this.getCommonHandle(widgetId),
-			getResponse: () => window.turnstile.getResponse(widgetId) ?? "",
 			isExpired: () => window.turnstile.isExpired(widgetId),
 		};
 	}

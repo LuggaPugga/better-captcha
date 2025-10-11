@@ -14,9 +14,7 @@ declare global {
 
 const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
-export type ReCaptchaHandle = CaptchaHandle & {
-	getResponse: () => string;
-};
+export type ReCaptchaHandle = CaptchaHandle;
 
 export class ReCaptchaProvider extends Provider<
 	ProviderConfig,
@@ -81,10 +79,11 @@ export class ReCaptchaProvider extends Provider<
 		}
 	}
 
+	getResponse(widgetId: number): string {
+		return window.grecaptcha.getResponse(widgetId);
+	}
+
 	getHandle(widgetId: number): ReCaptchaHandle {
-		return {
-			...this.getCommonHandle(widgetId),
-			getResponse: () => window.grecaptcha.getResponse(widgetId),
-		};
+		return this.getCommonHandle(widgetId);
 	}
 }

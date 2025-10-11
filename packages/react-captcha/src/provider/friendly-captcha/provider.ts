@@ -17,7 +17,6 @@ declare global {
 }
 
 export type FriendlyCaptchaHandle = CaptchaHandle & {
-	getResponse: () => string;
 	getState: () => FriendlyCaptchaSDK["state"];
 };
 
@@ -67,11 +66,13 @@ export class FriendlyCaptchaProvider extends Provider<
 		window.frcaptcha.widgets.get(widgetId)?.destroy();
 	}
 
+	getResponse(widgetId: string): string {
+		return window.frcaptcha.widgets.get(widgetId)?.getResponse() ?? "";
+	}
+
 	getHandle(widgetId: string): FriendlyCaptchaHandle {
 		return {
 			...this.getCommonHandle(widgetId),
-			getResponse: () =>
-				window.frcaptcha.widgets.get(widgetId)?.getResponse() ?? "",
 			getState: () =>
 				window.frcaptcha.widgets.get(widgetId)?.getState() ?? "destroyed",
 		};
