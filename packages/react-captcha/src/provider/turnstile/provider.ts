@@ -58,7 +58,7 @@ export class TurnstileProvider extends Provider<
 	}
 
 	reset(widgetId: string) {
-		window.turnstile.reset(`react-captcha-${widgetId}`);
+		window.turnstile.reset(widgetId);
 	}
 
 	async execute(widgetId: string) {
