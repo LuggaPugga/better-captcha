@@ -9,13 +9,14 @@
 		"postinstall": "fumadocs-mdx"
 	},
 	"dependencies": {
-		"react-captcha": "workspace:*",
+		"fumadocs-core": "^15.8.5",
+		"fumadocs-mdx": "^12.0.3",
+		"fumadocs-typescript": "^4.0.11",
+		"fumadocs-ui": "^15.8.5",
 		"next": "15.5.4",
 		"react": "^19.2.0",
-		"react-dom": "^19.2.0",
-		"fumadocs-ui": "15.8.5",
-		"fumadocs-core": "15.8.5",
-		"fumadocs-mdx": "12.0.3"
+		"react-captcha": "workspace:*",
+		"react-dom": "^19.2.0"
 	},
 	"devDependencies": {
 		"@types/node": "24.7.0",
