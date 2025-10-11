@@ -11,7 +11,10 @@ export function HCaptchaPlayground() {
 	});
 	return (
 		<div className="space-y-2">
-			<HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={options} />
+			<HCaptcha
+				sitekey="10000000-ffff-ffff-ffff-000000000001"
+				options={options}
+			/>
 
 			<div className="flex gap-2">
 				<Select

@@ -82,7 +82,7 @@
 	--background: hsl(0, 0%, 7.04%);
 	--foreground: hsl(0, 0%, 92%);
 	--muted: hsl(0, 0%, 12.9%);
-	--muted-foreground: hsla(0, 0%,q 70%, 0.8);
+	--muted-foreground: hsla(0, 0%, q 70%, 0.8);
 	--popover: hsl(0, 0%, 11.6%);
 	--popover-foreground: hsl(0, 0%, 86.9%);
 	--card: hsl(0, 0%, 9.8%);

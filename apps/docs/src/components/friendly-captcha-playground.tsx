@@ -5,7 +5,9 @@ import type { RenderParameters } from "react-captcha/provider/friendly-captcha";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function FriendlyCaptchaPlayground() {
-	const [options, setOptions] = useState<Omit<RenderParameters, "sitekey" | "element">>({
+	const [options, setOptions] = useState<
+		Omit<RenderParameters, "sitekey" | "element">
+	>({
 		theme: "auto",
 		startMode: "focus",
 		language: "en",
@@ -43,7 +45,9 @@ export function FriendlyCaptchaPlayground() {
 						})
 					}
 				>
-					<SelectTrigger className="capitalize">{options.startMode}</SelectTrigger>
+					<SelectTrigger className="capitalize">
+						{options.startMode}
+					</SelectTrigger>
 					<SelectContent>
 						{["focus", "auto", "programmatic"].map((mode) => (
 							<SelectItem key={mode} value={mode}>
@@ -62,13 +66,17 @@ export function FriendlyCaptchaPlayground() {
 						})
 					}
 				>
-					<SelectTrigger className="capitalize">{options.language}</SelectTrigger>
+					<SelectTrigger className="capitalize">
+						{options.language}
+					</SelectTrigger>
 					<SelectContent>
-						{["en", "es", "fr", "de", "it", "pt", "ru", "zh", "ja", "ko"].map((lang) => (
-							<SelectItem key={lang} value={lang}>
-								{lang}
-							</SelectItem>
-						))}
+						{["en", "es", "fr", "de", "it", "pt", "ru", "zh", "ja", "ko"].map(
+							(lang) => (
+								<SelectItem key={lang} value={lang}>
+									{lang}
+								</SelectItem>
+							),
+						)}
 					</SelectContent>
 				</Select>
 			</div>
