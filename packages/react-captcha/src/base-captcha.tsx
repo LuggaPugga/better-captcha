@@ -5,10 +5,16 @@ import { useCaptchaLifecycle } from "./hooks/use-captcha-lifecycle";
 import type {
 	CaptchaHandle,
 	CaptchaProps,
-	CaptchaState,
 	Provider,
 	ProviderConfig,
 } from "./provider";
+
+const defaultHandle: CaptchaHandle = {
+	execute: async () => {},
+	reset: () => {},
+	destroy: () => {},
+	getResponse: () => "",
+};
 
 export function createCaptchaComponent<
 	TOptions = unknown,
@@ -33,30 +39,20 @@ export function createCaptchaComponent<
 
 		useImperativeHandle(ref, () => {
 			const id = widgetIdRef.current;
-			if (!id) {
-				return {
-					execute: async () => {},
-					reset: () => {},
-					destroy: () => {},
-					getResponse: () => "",
-					getState: () => state,
-				} as THandle & { getState: () => CaptchaState };
-			}
-			const handle = provider.getHandle(id);
+			const handle = id ? provider.getHandle(id) : (defaultHandle as THandle);
+
 			return {
 				...handle,
 				getState: () => state,
-				destroy() {
-					handle.destroy();
-					widgetIdRef.current = null;
-					setState((prevState: CaptchaState) => ({
-						...prevState,
-						ready: false,
-						error: null,
-					}));
+				destroy: () => {
+					if (id) {
+						handle.destroy();
+						widgetIdRef.current = null;
+						setState((prev) => ({ ...prev, ready: false, error: null }));
+					}
 				},
 			};
-		}, [provider, state, setState, widgetIdRef]);
+		}, [provider, state, widgetIdRef, setState]);
 
 		return (
 			<div
