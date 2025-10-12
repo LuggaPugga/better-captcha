@@ -1,0 +1,25 @@
+---
+title: Private Captcha
+description: PrivateCaptcha provider
+---
+
+import { PrivateCaptchaPlayground } from "../../../src/components/private-captcha-playground";
+
+## Showcase
+<PrivateCaptchaPlayground />
+
+
+## Usage
+<Callout type="info">
+    Private Captcha only works inside a form.
+</Callout>
+
+```tsx
+<PrivateCaptcha siteKey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+```
+
+## Provider Options
+<AutoTypeTable path="../../packages/react-captcha/src/provider/private-captcha/index.ts" name="RenderParameters" />
+
+## Imperative Handle Functions
+<AutoTypeTable path="../../packages/react-captcha/src/provider/private-captcha/provider.ts" name="PrivateCaptchaHandle" />
