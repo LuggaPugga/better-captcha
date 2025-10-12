@@ -37,7 +37,6 @@ export class HCaptchaProvider extends Provider<
 			async: true,
 			defer: true,
 			callbackName: HCAPTCHA_ONLOAD_CALLBACK,
-			keepCallback: true,
 		});
 	}
 

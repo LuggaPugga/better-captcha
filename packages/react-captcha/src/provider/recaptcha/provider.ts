@@ -37,7 +37,6 @@ export class ReCaptchaProvider extends Provider<
 			async: true,
 			defer: true,
 			callbackName: RECAPTCHA_ONLOAD_CALLBACK,
-			keepCallback: true,
 		});
 	}
 

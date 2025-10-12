@@ -39,7 +39,6 @@ export class TurnstileProvider extends Provider<
 			async: true,
 			defer: true,
 			callbackName: TURNSTILE_ONLOAD_CALLBACK,
-			keepCallback: true,
 		});
 	}
 
