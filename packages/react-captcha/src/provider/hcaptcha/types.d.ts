@@ -15,10 +15,11 @@ export interface RenderParameters {
 
 	/**
 	 * Optional. Set the color theme of the widget.
-	 * Accepted values: "light", "dark"
+	 * Accepted values: "light", "dark", "auto"
+	 * auto is not natively supported by the hCaptcha API, but it is supported by the react-captcha library.
 	 * @default "light"
 	 */
-	theme?: "light" | "dark" | undefined;
+	theme?: "light" | "dark" | "auto" | undefined;
 
 	/**
 	 * Optional. Set the size of the widget.

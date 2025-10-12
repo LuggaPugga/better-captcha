@@ -1,5 +1,6 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { getSystemTheme } from "../../utils/theme";
 import type { ReCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -40,6 +41,9 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
+		if (options?.theme === "auto") {
+			options.theme = getSystemTheme();
+		}
 		return new Promise<number>((resolve) => {
 			window.grecaptcha.ready(() => {
 				const widgetId = window.grecaptcha.render(element, {

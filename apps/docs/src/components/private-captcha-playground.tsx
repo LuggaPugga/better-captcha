@@ -39,7 +39,7 @@ export function PrivateCaptchaPlayground() {
 				>
 					<SelectTrigger className="capitalize">{options.theme}</SelectTrigger>
 					<SelectContent>
-						{["light", "dark"].map((theme) => (
+						{["light", "dark", "auto"].map((theme) => (
 							<SelectItem key={theme} value={theme}>
 								{theme}
 							</SelectItem>

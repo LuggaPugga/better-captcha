@@ -39,7 +39,7 @@ export function ReCaptchaPlayground() {
 				>
 					<SelectTrigger className="capitalize">{options.theme}</SelectTrigger>
 					<SelectContent>
-						{["light", "dark"].map((theme) => (
+						{["light", "dark", "auto"].map((theme) => (
 							<SelectItem className="capitalize" key={theme} value={theme}>
 								{theme}
 							</SelectItem>

@@ -1,5 +1,6 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { getSystemTheme } from "../../utils/theme";
 import type { HCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -41,6 +42,9 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 	}
 
 	render(element: HTMLElement, options?: RenderParameters) {
+		if (options?.theme === "auto") {
+			options.theme = getSystemTheme();
+		}
 		return window.hcaptcha.render(element, {
 			sitekey: this.sitekey,
 			...options,

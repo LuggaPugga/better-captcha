@@ -1,5 +1,6 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
+import { getSystemTheme } from "../../utils/theme";
 import type { PrivateCaptcha, RenderParameters } from "./types";
 
 declare global {
@@ -92,7 +93,9 @@ export class PrivateCaptchaProvider extends Provider<
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
 		const { onInit, onError, onStart, onFinish, ...widgetOptions } = options || {};
-
+		if (options?.theme === "auto") {
+			widgetOptions.theme = getSystemTheme();
+		}
 		const widgetId = this.generateWidgetId(element);
 
 		if (!element.id) {

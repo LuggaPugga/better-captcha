@@ -81,9 +81,10 @@ export declare namespace PrivateCaptcha {
 
 		/**
 		 * Optional. The widget theme
+		 * auto is not natively supported by the Private Captcha API, but it is supported by the react-captcha library.
 		 * @default "light"
 		 */
-		theme?: "light" | "dark";
+		theme?: "light" | "dark" | "auto";
 
 		/**
 		 * Optional. When to start solving the captcha

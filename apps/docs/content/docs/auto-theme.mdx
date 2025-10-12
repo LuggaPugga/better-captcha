@@ -1,0 +1,28 @@
+---
+title: Auto Theme
+description: Automatic theme detection for CAPTCHA providers that don't natively support "auto" theme.
+---
+
+# Auto Theme
+
+The library automatically detects your users' system theme preference and applies it to CAPTCHA providers that don't natively support `"auto"` theme.
+
+## How It Works
+
+When you set `theme: "auto"`, the library detects the system theme using `prefers-color-scheme` and converts it to `"light"` or `"dark"` before passing it to the provider.
+
+```tsx
+<ReCaptcha 
+  sitekey="your-site-key"
+  options={{ theme: "auto" }} // Automatically detects system theme
+/>
+```
+
+## Provider Support
+| Provider | Native auto theme support | Enhanced with auto theme |
+|----------|--------------------------|--------------------------|
+| Turnstile | ✅ | ❌ |
+| FriendlyCaptcha | ✅ | ❌ |
+| reCAPTCHA | ❌ | ✅ |
+| hCaptcha | ❌ | ✅ |
+| PrivateCaptcha | ❌ | ✅ |
