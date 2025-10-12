@@ -1,14 +1,6 @@
-import {
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-} from "../../provider";
+import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
-import type {
-	FrcaptchaGlobal,
-	FriendlyCaptchaSDK,
-	RenderParameters,
-} from "./types";
+import type { FrcaptchaGlobal, FriendlyCaptchaSDK, RenderParameters } from "./types";
 
 declare global {
 	interface Window {
@@ -28,8 +20,7 @@ export class FriendlyCaptchaProvider extends Provider<
 	constructor(sitekey: string) {
 		super(
 			{
-				scriptUrl:
-					"https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.27/site.min.js",
+				scriptUrl: "https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.27/site.min.js",
 			},
 			sitekey,
 		);
@@ -43,10 +34,7 @@ export class FriendlyCaptchaProvider extends Provider<
 		});
 	}
 
-	render(
-		element: HTMLElement,
-		options?: Omit<RenderParameters, "element" | "sitekey">,
-	) {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">) {
 		return window.frcaptcha.createWidget({
 			element,
 			sitekey: this.sitekey,
@@ -73,8 +61,7 @@ export class FriendlyCaptchaProvider extends Provider<
 	getHandle(widgetId: string): FriendlyCaptchaHandle {
 		return {
 			...this.getCommonHandle(widgetId),
-			getState: () =>
-				window.frcaptcha.widgets.get(widgetId)?.getState() ?? "destroyed",
+			getState: () => window.frcaptcha.widgets.get(widgetId)?.getState() ?? "destroyed",
 		};
 	}
 }

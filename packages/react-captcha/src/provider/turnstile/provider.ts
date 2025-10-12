@@ -1,8 +1,4 @@
-import {
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-} from "../../provider";
+import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { RenderParameters, Turnstile } from "./types";
 
@@ -18,11 +14,7 @@ export type TurnstileHandle = CaptchaHandle & {
 	isExpired: () => boolean;
 };
 
-export class TurnstileProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "sitekey">,
-	TurnstileHandle
-> {
+export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, TurnstileHandle> {
 	constructor(sitekey: string) {
 		super(
 			{

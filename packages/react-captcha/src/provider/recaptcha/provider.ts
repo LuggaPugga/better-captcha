@@ -1,8 +1,4 @@
-import {
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-} from "../../provider";
+import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { ReCaptcha, RenderParameters } from "./types";
 
@@ -16,11 +12,7 @@ const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
 export type ReCaptchaHandle = CaptchaHandle;
 
-export class ReCaptchaProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "sitekey">,
-	ReCaptchaHandle
-> {
+export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, ReCaptchaHandle> {
 	constructor(sitekey: string) {
 		super(
 			{
@@ -47,10 +39,7 @@ export class ReCaptchaProvider extends Provider<
 		return url.toString();
 	}
 
-	async render(
-		element: HTMLElement,
-		options?: Omit<RenderParameters, "sitekey">,
-	) {
+	async render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
 		return new Promise<number>((resolve) => {
 			window.grecaptcha.ready(() => {
 				const widgetId = window.grecaptcha.render(element, {

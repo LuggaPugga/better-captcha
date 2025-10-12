@@ -79,11 +79,7 @@ export declare namespace ReCaptcha {
 		 * The values in parameters will take precedence over the attributes.
 		 * @return the ID of the newly created widget.
 		 */
-		render(
-			container: string | HTMLElement,
-			parameters?: RenderParameters,
-			inherit?: boolean,
-		): number;
+		render(container: string | HTMLElement, parameters?: RenderParameters, inherit?: boolean): number;
 		/**
 		 * Resets the reCAPTCHA widget.
 		 * @param opt_widget_id Optional widget ID, defaults to the first widget created if unspecified.

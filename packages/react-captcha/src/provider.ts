@@ -67,10 +67,7 @@ export abstract class Provider<
 	 * @param options - Provider-specific rendering options
 	 * @returns Widget ID or promise resolving to widget ID
 	 */
-	abstract render(
-		element: HTMLElement,
-		options?: TOptions,
-	): WidgetId | undefined | Promise<WidgetId>;
+	abstract render(element: HTMLElement, options?: TOptions): WidgetId | undefined | Promise<WidgetId>;
 
 	/**
 	 * Reset the CAPTCHA widget to its initial state

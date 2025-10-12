@@ -2,12 +2,7 @@
 
 import { forwardRef, useImperativeHandle, useMemo } from "react";
 import { useCaptchaLifecycle } from "./hooks/use-captcha-lifecycle";
-import type {
-	CaptchaHandle,
-	CaptchaProps,
-	Provider,
-	ProviderConfig,
-} from "./provider";
+import type { CaptchaHandle, CaptchaProps, Provider, ProviderConfig } from "./provider";
 
 const defaultHandle: CaptchaHandle = {
 	execute: async () => {},
@@ -16,26 +11,15 @@ const defaultHandle: CaptchaHandle = {
 	getResponse: () => "",
 };
 
-export function createCaptchaComponent<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
->(
-	ProviderClass: new (
-		sitekey: string,
-	) => Provider<ProviderConfig, TOptions, THandle>,
+export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+	ProviderClass: new (sitekey: string) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
 	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(
 		{ sitekey, options, className, style },
 		ref,
 	) {
-		const provider = useMemo(
-			() => new ProviderClass(sitekey),
-			[ProviderClass, sitekey],
-		);
-		const { elementRef, state, widgetIdRef, setState } = useCaptchaLifecycle(
-			provider,
-			options,
-		);
+		const provider = useMemo(() => new ProviderClass(sitekey), [ProviderClass, sitekey]);
+		const { elementRef, state, widgetIdRef, setState } = useCaptchaLifecycle(provider, options);
 
 		useImperativeHandle(ref, () => {
 			const id = widgetIdRef.current;
@@ -56,11 +40,7 @@ export function createCaptchaComponent<
 
 		return (
 			<div
-				id={
-					widgetIdRef.current
-						? `react-captcha-${widgetIdRef.current}`
-						: "react-captcha-loading"
-				}
+				id={widgetIdRef.current ? `react-captcha-${widgetIdRef.current}` : "react-captcha-loading"}
 				ref={elementRef}
 				className={className}
 				style={style}

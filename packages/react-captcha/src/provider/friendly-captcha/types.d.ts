@@ -6,16 +6,7 @@ export interface FriendlyCaptchaSDK {
 	/**
 	 * Represents the state of a Friendly Captcha widget.
 	 */
-	state:
-		| "init"
-		| "reset"
-		| "ready"
-		| "started"
-		| "validating"
-		| "completed"
-		| "expired"
-		| "error"
-		| "destroyed";
+	state: "init" | "reset" | "ready" | "started" | "validating" | "completed" | "expired" | "error" | "destroyed";
 
 	/**
 	 * Represents the structure of an error object returned by the widget.
@@ -69,10 +60,7 @@ export interface FriendlyCaptchaSDK {
 	 * @param trigger - The trigger type (e.g., "programmatic", "auto", "focus").
 	 * @param data - Additional data related to the trigger, e.g., event object.
 	 */
-	trigger(
-		trigger: "programmatic" | "auto" | "focus",
-		data?: { ev?: Event },
-	): void;
+	trigger(trigger: "programmatic" | "auto" | "focus", data?: { ev?: Event }): void;
 
 	/**
 	 * Starts the captcha challenge. Alias for `trigger('programmatic')`.
@@ -174,9 +162,7 @@ export interface FrcaptchaGlobal {
 	 * @param elements - A single HTMLElement or a NodeList/array of HTMLElements to attach widgets to.
 	 * @returns An array of newly created widget instances.
 	 */
-	attach(
-		elements?: HTMLElement | NodeListOf<HTMLElement> | HTMLElement[],
-	): FriendlyCaptchaSDK[];
+	attach(elements?: HTMLElement | NodeListOf<HTMLElement> | HTMLElement[]): FriendlyCaptchaSDK[];
 
 	/**
 	 * Creates and attaches a single Friendly Captcha widget instance.

@@ -1,0 +1,16 @@
+{
+	"root": false,
+	"extends": "//",
+	"linter": {
+		"rules": {
+			"recommended": true,
+			"suspicious": {
+				"noUnknownAtRules": "warn"
+			}
+		},
+		"domains": {
+			"next": "recommended",
+			"react": "recommended"
+		}
+	}
+}

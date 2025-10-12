@@ -7,8 +7,7 @@ export interface LoadScriptOptions {
 	type?: "module" | "text/javascript";
 }
 
-const isBrowser =
-	typeof window !== "undefined" && typeof document !== "undefined";
+const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
 
 export class ScriptLoader {
 	private loaded = new Set<string>();
@@ -87,9 +86,7 @@ export class ScriptLoader {
 
 		const existing = this.pending.get(src);
 		if (existing) {
-			return callbackPromise
-				? Promise.all([existing, callbackPromise]).then(() => {})
-				: existing;
+			return callbackPromise ? Promise.all([existing, callbackPromise]).then(() => {}) : existing;
 		}
 
 		const existingScript = this.findScript(src);
@@ -100,9 +97,7 @@ export class ScriptLoader {
 		}
 
 		const loadPromise = this.createScript(src, options);
-		const finalPromise = callbackPromise
-			? Promise.all([loadPromise, callbackPromise]).then(() => {})
-			: loadPromise;
+		const finalPromise = callbackPromise ? Promise.all([loadPromise, callbackPromise]).then(() => {}) : loadPromise;
 
 		this.pending.set(src, finalPromise);
 		finalPromise.finally(() => this.pending.delete(src));
@@ -112,7 +107,5 @@ export class ScriptLoader {
 }
 
 export const defaultScriptLoader = new ScriptLoader();
-export const loadScript =
-	defaultScriptLoader.loadScript.bind(defaultScriptLoader);
-export const generateCallbackName =
-	defaultScriptLoader.generateCallbackName.bind(defaultScriptLoader);
+export const loadScript = defaultScriptLoader.loadScript.bind(defaultScriptLoader);
+export const generateCallbackName = defaultScriptLoader.generateCallbackName.bind(defaultScriptLoader);

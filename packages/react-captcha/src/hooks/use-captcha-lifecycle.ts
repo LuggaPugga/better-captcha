@@ -1,16 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type {
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	WidgetId,
-} from "../provider";
+import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "../provider";
 
-export function useCaptchaLifecycle<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
->(
+export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	provider: Provider<ProviderConfig, TOptions, THandle>,
 	options: TOptions | undefined,
 ) {

@@ -16,9 +16,7 @@ export function TurnstilePlayground() {
 			<div className="flex gap-2">
 				<Select
 					value={options.size}
-					onValueChange={(value) =>
-						setOptions({ ...options, size: value as RenderParameters["size"] })
-					}
+					onValueChange={(value) => setOptions({ ...options, size: value as RenderParameters["size"] })}
 				>
 					<SelectTrigger className="capitalize">{options.size}</SelectTrigger>
 					<SelectContent>

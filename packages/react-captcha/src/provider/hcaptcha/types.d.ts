@@ -78,10 +78,7 @@ export declare namespace HCaptcha {
 		 * @param params An object containing render parameters as key=value pairs, for example, {"sitekey": "your_site_key", "theme": "auto"}.
 		 * @return the ID of the newly created widget, or undefined if invocation is unsuccessful.
 		 */
-		render(
-			container: string | HTMLElement,
-			params: RenderParameters,
-		): string | undefined;
+		render(container: string | HTMLElement, params: RenderParameters): string | undefined;
 
 		/**
 		 * Resets a Turnstile widget.
@@ -114,9 +111,6 @@ export declare namespace HCaptcha {
 		 * @param options Configuration object with async: true to get a Promise back.
 		 * @return Promise that resolves with an object containing the token and response key, or rejects with an error code.
 		 */
-		execute(
-			widgetId: string | undefined,
-			options: { async: true },
-		): Promise<{ response: string; key: string }>;
+		execute(widgetId: string | undefined, options: { async: true }): Promise<{ response: string; key: string }>;
 	}
 }

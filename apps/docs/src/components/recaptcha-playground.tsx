@@ -11,17 +11,12 @@ export function ReCaptchaPlayground() {
 	});
 	return (
 		<div className="space-y-2">
-			<ReCaptcha
-				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-				options={options}
-			/>
+			<ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} />
 
 			<div className="flex gap-2">
 				<Select
 					value={options.size}
-					onValueChange={(value) =>
-						setOptions({ ...options, size: value as RenderParameters["size"] })
-					}
+					onValueChange={(value) => setOptions({ ...options, size: value as RenderParameters["size"] })}
 				>
 					<SelectTrigger className="capitalize">{options.size}</SelectTrigger>
 					<SelectContent>
