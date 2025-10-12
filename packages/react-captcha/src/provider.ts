@@ -29,7 +29,6 @@ export type CaptchaProps<TOptions> = {
 	options?: TOptions;
 	className?: string;
 	style?: React.CSSProperties;
-	"aria-label"?: string;
 };
 
 /**

@@ -19,15 +19,17 @@ export function createCaptchaComponent<
 	) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
 	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(
-		{ sitekey, options, className, style, "aria-label": ariaLabel },
+		{ sitekey, options, className, style },
 		ref,
 	) {
 		const provider = useMemo(
 			() => new ProviderClass(sitekey),
 			[ProviderClass, sitekey],
 		);
-		const { elementRef, state, widgetIdRef, handleError, setState } =
-			useCaptchaLifecycle(provider, options);
+		const { elementRef, state, widgetIdRef, setState } = useCaptchaLifecycle(
+			provider,
+			options,
+		);
 
 		useImperativeHandle(ref, () => {
 			const id = widgetIdRef.current;
