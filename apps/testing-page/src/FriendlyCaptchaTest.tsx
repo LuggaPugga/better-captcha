@@ -1,12 +1,18 @@
 import { useRef, useState } from "react";
-import { FriendlyCaptcha, type FriendlyCaptchaHandle } from "react-captcha/provider/friendly-captcha";
+import {
+	FriendlyCaptcha,
+	type FriendlyCaptchaHandle,
+	type RenderParameters,
+} from "react-captcha/provider/friendly-captcha";
 
 export function FriendlyCaptchaTest() {
 	const turnstileRef = useRef<FriendlyCaptchaHandle>(null);
-	const [options, setOptions] = useState(() => ({
-		theme: "light" as const,
-		startMode: "focus" as const,
-	}));
+	const [options, setOptions] = useState(
+		(): Omit<RenderParameters, "sitekey" | "element"> => ({
+			theme: "light",
+			startMode: "focus",
+		}),
+	);
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {

@@ -1,12 +1,18 @@
 import { useRef, useState } from "react";
-import { PrivateCaptcha, type PrivateCaptchaHandle } from "react-captcha/provider/private-captcha";
+import {
+	PrivateCaptcha,
+	type PrivateCaptchaHandle,
+	type RenderParameters,
+} from "react-captcha/provider/private-captcha";
 
 export function PrivateCaptchaTest() {
 	const turnstileRef = useRef<PrivateCaptchaHandle>(null);
-	const [options, setOptions] = useState(() => ({
-		theme: "light" as const,
-		startMode: "auto" as const,
-	}));
+	const [options, setOptions] = useState(
+		(): Omit<RenderParameters, "sitekey"> => ({
+			theme: "light",
+			startMode: "auto",
+		}),
+	);
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {

@@ -3,10 +3,12 @@ import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "react-ca
 
 export function RecaptchaTest() {
 	const turnstileRef = useRef<ReCaptchaHandle>(null);
-	const [options, setOptions] = useState(() => ({
-		theme: "light",
-		size: "normal",
-	}));
+	const [options, setOptions] = useState(
+		(): Omit<RenderParameters, "sitekey"> => ({
+			theme: "light",
+			size: "normal",
+		}),
+	);
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {

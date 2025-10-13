@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
-import { HCaptcha, type HCaptchaHandle } from "react-captcha/provider/hcaptcha";
+import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "react-captcha/provider/hcaptcha";
 
 export function HCaptchaTest() {
 	const turnstileRef = useRef<HCaptchaHandle>(null);
-	const [options, setOptions] = useState(() => ({
-		theme: "light" as const,
-		size: "normal" as const,
-	}));
+	const [options, setOptions] = useState(
+		(): Omit<RenderParameters, "sitekey"> => ({
+			theme: "light",
+			size: "normal",
+		}),
+	);
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {
@@ -33,9 +35,9 @@ export function HCaptchaTest() {
 				type="button"
 				onClick={() => {
 					const themes = ["light", "dark", "auto"];
-					const currentIndex = themes.indexOf(options.theme);
+					const currentIndex = themes.indexOf(options.theme ?? "light");
 					const nextIndex = (currentIndex + 1) % themes.length;
-					setOptions({ ...options, theme: themes[nextIndex] as typeof options.theme });
+					setOptions({ ...options, theme: themes[nextIndex] as RenderParameters["theme"] });
 				}}
 			>
 				Change Theme
