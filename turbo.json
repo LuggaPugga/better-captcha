@@ -12,6 +12,11 @@
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
+		"build:better-auth-example": {
+			"dependsOn": ["react-captcha#build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+		},
 		"lint": {
 			"dependsOn": ["^lint"]
 		},
