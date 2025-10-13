@@ -4,43 +4,23 @@ import { Prosopo, type ProsopoHandle } from "react-captcha/provider/prosopo";
 export function ProsopoTest() {
 	const captchaRef = useRef<ProsopoHandle>(null);
 	const [response, setResponse] = useState<string>("");
-	const [theme, setTheme] = useState<"light" | "dark">("light");
-	const [captchaType, setCaptchaType] = useState<"frictionless" | "pow" | "image">("frictionless");
+	const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
 
 	const handleGetResponse = () => {
 		const captchaResponse = captchaRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
-	const handleReset = () => {
-		captchaRef.current?.reset();
-		setResponse("");
-	};
-
-	const handleExecute = async () => {
-		await captchaRef.current?.execute();
-	};
-
-	const handleChangeTheme = () => {
-		setTheme(theme === "light" ? "dark" : "light");
-	};
-
-	const handleDestroy = () => {
-		captchaRef.current?.destroy();
-		setResponse("");
-	};
-
 	return (
-		<div style={{ padding: "20px", border: "1px solid #ccc", margin: "10px" }}>
+		<div>
 			<h2>Prosopo Test</h2>
 
-			<div style={{ marginBottom: "20px" }}>
+			<div>
 				<Prosopo
 					ref={captchaRef}
 					sitekey="no_test_site_key"
 					options={{
 						theme,
-						captchaType,
 						callback: (response) => {
 							console.log("Prosopo CAPTCHA verified:", response);
 							setResponse(response);
@@ -52,20 +32,28 @@ export function ProsopoTest() {
 				/>
 			</div>
 
-			<div style={{ marginBottom: "20px" }}>
-				<button type="button" onClick={handleGetResponse} style={{ margin: "5px", padding: "10px" }}>
+			<div>
+				<button type="button" onClick={handleGetResponse}>
 					Get Response
 				</button>
-				<button type="button" onClick={handleReset} style={{ margin: "5px", padding: "10px" }}>
+				<button type="button" onClick={() => captchaRef.current?.reset()}>
 					Reset
 				</button>
-				<button type="button" onClick={handleExecute} style={{ margin: "5px", padding: "10px" }}>
+				<button type="button" onClick={() => captchaRef.current?.execute()}>
 					Execute
 				</button>
-				<button type="button" onClick={handleChangeTheme} style={{ margin: "5px", padding: "10px" }}>
+				<button
+					type="button"
+					onClick={() => {
+						const themes = ["light", "dark", "auto"];
+						const currentIndex = themes.indexOf(theme || "auto");
+						const nextIndex = (currentIndex + 1) % themes.length;
+						setTheme(themes[nextIndex] as typeof theme);
+					}}
+				>
 					Change Theme
 				</button>
-				<button type="button" onClick={handleDestroy} style={{ margin: "5px", padding: "10px" }}>
+				<button type="button" onClick={() => captchaRef.current?.destroy()}>
 					Destroy
 				</button>
 			</div>
