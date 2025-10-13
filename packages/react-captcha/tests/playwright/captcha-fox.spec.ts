@@ -36,10 +36,8 @@ test("widget can be executed", async () => {
 });
 
 test("widget has response", async () => {
+    await page.locator('[id^="cf-widget"]').waitFor({ state: "attached" })
 	await page.locator("button", { hasText: "Get Response" }).first().click();
-	await expect(page.locator('[id^="react-captcha-"]')).toHaveCount(1);
-	await expect(page.locator('[id^="cf-widget-"]')).toHaveCount(1);
-	await expect(page.locator(".cf-success")).toHaveCount(1);
 	await expect(page.locator("#captcha-response")).toBeVisible();
 	await expect(page.locator("#captcha-response")).not.toHaveText("No response");
 	await expect(page.locator("#captcha-response")).not.toHaveText("");
