@@ -54,18 +54,16 @@ test("widget can change theme", async () => {
 
 	for (let i = 0; i < themes.length; i++) {
 		const widgetBefore = page.locator('[id^="react-captcha-"]').first();
-		const widgetIdBefore = await widgetBefore.getAttribute("id");
 		await page.locator("button", { hasText: "Change Theme" }).first().click();
 
 		await page.waitForTimeout(100);
 
 		const widgetAfter = page.locator('[id^="react-captcha-"]').first();
-		const widgetIdAfter = await widgetAfter.getAttribute("id");
 
 		await expect(page.locator('[id^="react-captcha-"]')).toHaveCount(1);
 		await expect(widgetAfter).toBeVisible();
 
-		expect(widgetIdBefore).not.toBe(widgetIdAfter);
+		expect(widgetBefore).not.toBe(widgetAfter);
 	}
 });
 
