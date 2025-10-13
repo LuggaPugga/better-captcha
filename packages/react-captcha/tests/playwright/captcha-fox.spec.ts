@@ -57,14 +57,14 @@ test("widget can change theme", async () => {
 	const themes = ["light", "dark", "auto"];
 
 	for (let i = 0; i < themes.length; i++) {
-		const widgetBefore = page.locator('[id^="react-captcha-private-captcha"]').first();
+		const widgetBefore = page.locator('[id^="cf-widget"]').first();
 		await page.locator("button", { hasText: "Change Theme" }).first().click();
 
 		await page.waitForTimeout(100);
 
-		const widgetAfter = page.locator('[id^="react-captcha-private-captcha"]').first();
+		const widgetAfter = page.locator('[id^="cf-widget"]').first();
 
-		await expect(page.locator('[id^="react-captcha-private-captcha"]')).toHaveCount(1);
+		await expect(page.locator('[id^="cf-widget"]')).toHaveCount(1);
 		await expect(widgetAfter).toBeVisible();
 
 		expect(widgetBefore).not.toBe(widgetAfter);
@@ -74,5 +74,6 @@ test("widget can change theme", async () => {
 test("widget can be destroyed", async () => {
 	await expect(page.locator('[id^="react-captcha-loading"]')).toHaveCount(0);
 	await page.locator("button", { hasText: "Destroy" }).first().click();
+	await expect(page.locator('[id^="cf-widget"]')).toHaveCount(0);
 	await expect(page.locator('[id^="react-captcha-loading"]')).toHaveCount(1);
 });
