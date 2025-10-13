@@ -29,9 +29,7 @@ test("widget containers rendered", async () => {
 });
 
 test("widget has response", async () => {
-	await page
-		.locator('input[value="XXXX.DUMMY.TOKEN.XXXX"]')
-		.waitFor({ state: "attached" });
+	await page.locator('input[value="XXXX.DUMMY.TOKEN.XXXX"]').waitFor({ state: "attached" });
 	await page.locator("button", { hasText: "Get Response" }).first().click();
 	await expect(page.locator('[id^="react-captcha-cf-chl"]')).toHaveCount(1);
 	await expect(page.locator("#captcha-response")).toBeVisible();

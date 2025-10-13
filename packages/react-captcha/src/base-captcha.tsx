@@ -44,7 +44,8 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}, [provider, state, widgetIdRef, setState]);
 
 		const widgetId = widgetIdRef.current;
-		const elementId = widgetId !== null && widgetId !== undefined ? `react-captcha-${widgetId}` : "react-captcha-loading";
+		const elementId =
+			widgetId !== null && widgetId !== undefined ? `react-captcha-${widgetId}` : "react-captcha-loading";
 
 		return (
 			<div
