@@ -20,7 +20,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
 				<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
 				<ViewOptions
 					markdownUrl={`${page.url}.mdx`}
-					githubUrl={`https://github.com/react-captcha/react-captcha/blob/dev/apps/docs/content/docs/${page.path}`}
+					githubUrl={`https://github.com/LuggaPugga/react-captcha/blob/dev/apps/docs/content/docs/${page.path}`}
 				/>
 			</div>
 			<DocsBody>
