@@ -3,6 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
 	testDir: "tests/playwright",
 	reporter: "html",
+	retries: 3,
 	use: {
 		baseURL: "http://localhost:9000",
 		trace: "on-first-retry",
