@@ -32,7 +32,8 @@ test("widget containers rendered", async () => {
 
 test("widget can be executed", async () => {
 	await page.locator("button", { hasText: "Execute" }).first().click();
-	await page.waitForTimeout(500);
+	await page.waitForTimeout(200);
+	await expect(page.locator("input[name='private-captcha-solution']")).toHaveValue(/^AQI.*$/);
 	await expect(page.locator('[id^="react-captcha-private-captcha"]')).toHaveCount(1);
 });
 

@@ -33,7 +33,7 @@ test("widget containers rendered", async () => {
 test("widget has response", async () => {
 	await page.waitForTimeout(200);
 	await page.click("iframe[title*='reCAPTCHA']");
-	await page.waitForTimeout(1000);
+	await page.waitForTimeout(2000);
 
 	await page.locator("button", { hasText: "Get Response" }).first().click();
 	await expect(page.locator('[id^="react-captcha-"]')).toHaveCount(1);
