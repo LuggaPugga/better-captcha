@@ -1,10 +1,27 @@
 {
 	"name": "react-captcha",
+	"description": "React wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
+	"version": "0.0.1",
+	"author": "LuggaPugga",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LuggaPugga/react-captcha.git"
+	},
+	"homepage": "https://github.com/LuggaPugga/react-captcha",
+	"license": "MIT",
+	"keywords": [
+		"captcha",
+		"react",
+		"recaptcha",
+		"hcaptcha",
+		"turnstile",
+		"friendly-captcha"
+	],
+
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"type": "module",
 	"types": "./dist/index.d.ts",
-	"license": "MIT",
 	"files": [
 		"dist"
 	],
