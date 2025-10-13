@@ -20,7 +20,7 @@ export class FriendlyCaptchaProvider extends Provider<
 	constructor(sitekey: string) {
 		super(
 			{
-				scriptUrl: "https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.27/site.min.js",
+				scriptUrl: "https://cdn.jsdelivr.net/npm/@friendlycaptcha/sdk@0.1.32/site.min.js",
 			},
 			sitekey,
 		);
