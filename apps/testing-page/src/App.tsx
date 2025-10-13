@@ -3,6 +3,7 @@ import { CaptchaFoxTest } from "./CaptchaFoxTest";
 import { FriendlyCaptchaTest } from "./FriendlyCaptchaTest";
 import { HCaptchaTest } from "./HCaptchaTest";
 import { PrivateCaptchaTest } from "./PrivateCaptchaTest";
+import { ProsopoTest } from "./ProsopoTest";
 import { RecaptchaTest } from "./RecaptchaTest";
 import { TurnstileTest } from "./TurnstileTest";
 
@@ -16,6 +17,7 @@ export function App() {
 		{ key: "friendly-captcha", name: "Friendly Captcha", path: "/friendly-captcha" },
 		{ key: "private-captcha", name: "Private Captcha", path: "/private-captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
+		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 	];
 
 	return (
@@ -43,6 +45,7 @@ export function App() {
 				{currentProvider === "friendly-captcha" && <FriendlyCaptchaTest />}
 				{currentProvider === "private-captcha" && <PrivateCaptchaTest />}
 				{currentProvider === "captcha-fox" && <CaptchaFoxTest />}
+				{currentProvider === "prosopo" && <ProsopoTest />}
 			</div>
 		</div>
 	);
