@@ -11,4 +11,5 @@ export default defineConfig({
 	banner: '"use client";',
 	platform: "browser",
 	dts: true,
+	ignoreWatch: [".turbo"],
 });
