@@ -4,11 +4,43 @@ export interface ProviderConfig {
 
 export type WidgetId = string | number;
 
+/**
+ * Imperative handle interface for CAPTCHA components
+ *
+ * Provides methods to programmatically control the CAPTCHA widget
+ * and access its current state. All providers implement this interface
+ * with additional provider-specific methods.
+ */
 export interface CaptchaHandle {
+	/**
+	 * Reset the widget to its initial state
+	 * Clears any previous responses and restarts the challenge
+	 */
 	reset: () => void;
+
+	/**
+	 * Programmatically trigger the challenge
+	 * @returns Promise that resolves when execution is complete
+	 */
 	execute: () => Promise<void>;
+
+	/**
+	 * Destroy the widget and clean up resources
+	 * Removes the widget from the DOM and clears any event listeners
+	 */
 	destroy: () => void;
+
+	/**
+	 * Get the current response token from the widget
+	 * @returns The response string, empty if no challenge has been completed
+	 */
 	getResponse: () => string;
+
+	/**
+	 * Get the current component state
+	 * @returns Object containing loading, error, and ready states
+	 */
+	getComponentState: () => CaptchaState;
 }
 
 /**
@@ -115,6 +147,11 @@ export abstract class Provider<
 			execute: () => this.execute(widgetId),
 			destroy: () => this.destroy(widgetId),
 			getResponse: () => this.getResponse(widgetId),
+			getComponentState: () => ({
+				loading: false,
+				error: null,
+				ready: false,
+			}),
 		};
 	}
 }

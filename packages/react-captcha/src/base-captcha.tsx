@@ -9,6 +9,11 @@ const defaultHandle: CaptchaHandle = {
 	reset: () => {},
 	destroy: () => {},
 	getResponse: () => "",
+	getComponentState: () => ({
+		loading: false,
+		error: null,
+		ready: false,
+	}),
 };
 
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
@@ -27,7 +32,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 			return {
 				...handle,
-				getState: () => state,
+				getComponentState: () => state,
 				destroy: () => {
 					if (id) {
 						handle.destroy();
