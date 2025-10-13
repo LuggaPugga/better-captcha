@@ -8,12 +8,12 @@
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
 		"build:docs": {
-			"dependsOn": ["react-captcha#build"],
+			"dependsOn": ["@react-captcha/react#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
 		"build:better-auth-example": {
-			"dependsOn": ["react-captcha#build"],
+			"dependsOn": ["@react-captcha/react#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
