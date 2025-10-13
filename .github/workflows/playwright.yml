@@ -16,7 +16,7 @@ jobs:
     - name: Install Playwright Browsers
       run: bunx playwright install --with-deps
     - name: Run Playwright tests
-      run: cd packages/react-captcha && bunx playwright test
+      run: cd packages/react && bunx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
