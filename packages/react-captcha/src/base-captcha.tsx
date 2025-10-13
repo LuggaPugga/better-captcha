@@ -28,13 +28,13 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 		useImperativeHandle(ref, () => {
 			const id = widgetIdRef.current;
-			const handle = id ? provider.getHandle(id) : (defaultHandle as THandle);
+			const handle = id != null ? provider.getHandle(id) : (defaultHandle as THandle);
 
 			return {
 				...handle,
 				getComponentState: () => state,
 				destroy: () => {
-					if (id) {
+					if (id != null) {
 						handle.destroy();
 						widgetIdRef.current = null;
 						setState((prev) => ({ ...prev, ready: false, error: null }));
@@ -43,9 +43,12 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			};
 		}, [provider, state, widgetIdRef, setState]);
 
+		const widgetId = widgetIdRef.current;
+		const elementId = widgetId !== null && widgetId !== undefined ? `react-captcha-${widgetId}` : "react-captcha-loading";
+
 		return (
 			<div
-				id={widgetIdRef.current ? `react-captcha-${widgetIdRef.current}` : "react-captcha-loading"}
+				id={elementId}
 				ref={elementRef}
 				className={className}
 				style={style}

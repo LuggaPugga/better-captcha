@@ -34,7 +34,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 
 				const id = await provider.render(container, options);
 				if (cancelled) {
-					if (id) provider.destroy(id);
+					if (id != null) provider.destroy(id);
 					container.remove();
 					return;
 				}
@@ -52,7 +52,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 		return () => {
 			cancelled = true;
 			const id = widgetIdRef.current;
-			if (id) {
+			if (id != null) {
 				try {
 					provider.destroy(id);
 				} catch (error) {
