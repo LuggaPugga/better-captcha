@@ -1,0 +1,27 @@
+---
+title: Captcha Fox
+description: Privacy-focused CAPTCHA service with customizable themes and multiple challenge types
+---
+
+import { CaptchaFoxPlayground } from "../../../src/components/captcha-fox-playground";
+
+## About Captcha Fox
+
+Captcha Fox is a privacy-focused CAPTCHA service that provides comprehensive bot protection with customizable themes, multiple challenge types, and extensive internationalization support.
+
+For more information, visit the [official Captcha Fox documentation](https://docs.captchafox.com/).
+
+## Showcase
+<CaptchaFoxPlayground />
+
+## Usage
+
+```tsx
+<CaptchaFox sitekey="your-sitekey" options={{}} />
+```
+
+## Provider Options
+<AutoTypeTable path="../../packages/react-captcha/src/provider/captcha-fox/types.d.ts" name="RenderParameters" />
+
+## Imperative Handle Functions
+<AutoTypeTable path="../../packages/react-captcha/src/provider/captcha-fox/provider.ts" name="CaptchaFoxHandle" />
