@@ -33,6 +33,7 @@ test("widget can be executed", async () => {
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 	await expect(page.locator('[id^="cf-widget-"]')).toHaveCount(1);
 	await page.locator('div[class*="cf-success"]').waitFor({ state: "attached" });
+	await expect(page.locator('div[class*="cf-success"]')).toHaveCount(1);
 });
 
 test("widget has response", async () => {
