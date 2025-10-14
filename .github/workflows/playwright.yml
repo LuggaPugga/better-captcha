@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Build Core
+        run: cd packages/core && bun run build
+
       - name: Build package
         run: cd packages/${{ matrix.project }} && bun run build
 
