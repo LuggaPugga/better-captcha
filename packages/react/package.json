@@ -26,9 +26,7 @@
 	],
 	"scripts": {
 		"generate": "bun run scripts/generate-components.ts",
-		"build": "tsdown",
-		"build:prepare": "bun run generate",
-		"build:done": "rm -r src/provider",
+		"build": "bun run generate && tsdown && rm -r src/provider",
 		"dev": "bun run scripts/dev.ts"
 	},
 	"exports": {
