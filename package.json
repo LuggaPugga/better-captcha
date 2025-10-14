@@ -3,7 +3,11 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
+		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/react --filter=@better-captcha/solid",
+		"build:apps": "turbo run build --filter=apps/*",
 		"dev": "turbo run dev",
+		"dev:react": "turbo run dev --filter=@better-captcha/react",
+		"dev:solid": "turbo run dev --filter=@better-captcha/solid",
 		"lint": "turbo run lint",
 		"start": "turbo run start",
 		"format": "biome format --write",

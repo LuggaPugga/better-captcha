@@ -7,6 +7,16 @@
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", ".output/**", ".vinxi/**"]
 		},
+		"build:react": {
+			"dependsOn": ["@better-captcha/core#build", "@better-captcha/react#build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+		},
+		"build:solidjs": {
+			"dependsOn": ["@better-captcha/core#build", "@better-captcha/solid#build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".output/**", ".vinxi/**"]
+		},
 		"lint": {
 			"dependsOn": ["^lint"]
 		},
