@@ -9,8 +9,20 @@ Framework-agnostic wrappers for CAPTCHA providers that share the same lifecycle,
 
 Install the package and peer dependencies that match your project setup:
 
+### React
 ```sh
-coming soon
+bun install @better-captcha/react
+```
+```sh
+npm install @better-captcha/react
+```
+
+### SolidJS
+```sh
+bun install @better-captcha/solidjs
+```
+```sh
+npm install @better-captcha/solidjs
 ```
 
 ## Basic usage
