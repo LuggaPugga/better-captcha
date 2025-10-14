@@ -1,5 +1,5 @@
-import { createCaptchaController } from "@better-captcha/solid";
-import { Prosopo, type ProsopoHandle } from "@better-captcha/solid/provider/prosopo";
+import { createCaptchaController } from "@better-captcha/solidjs";
+import { Prosopo, type ProsopoHandle } from "@better-captcha/solidjs/provider/prosopo";
 import { createSignal } from "solid-js";
 
 export function ProsopoTest() {

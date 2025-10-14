@@ -13,7 +13,7 @@
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
 		"build:solidjs": {
-			"dependsOn": ["@better-captcha/core#build", "@better-captcha/solid#build"],
+			"dependsOn": ["@better-captcha/core#build", "@better-captcha/solidjs#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".output/**", ".vinxi/**"]
 		},

@@ -5,13 +5,13 @@ SolidJS wrappers for CAPTCHA providers that share the same lifecycle, render flo
 ## Installation
 
 ```bash
-npm install @better-captcha/solid
+npm install @better-captcha/solidjs
 ```
 
 ## Usage
 
 ```tsx
-import { Recaptcha } from "@better-captcha/solid";
+import { Recaptcha } from "@better-captcha/solidjs";
 
 function App() {
   return (

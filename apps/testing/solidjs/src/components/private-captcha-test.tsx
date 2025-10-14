@@ -1,9 +1,9 @@
-import { createCaptchaController } from "@better-captcha/solid";
+import { createCaptchaController } from "@better-captcha/solidjs";
 import {
 	PrivateCaptcha,
 	type PrivateCaptchaHandle,
 	type RenderParameters,
-} from "@better-captcha/solid/provider/private-captcha";
+} from "@better-captcha/solidjs/provider/private-captcha";
 import { createSignal } from "solid-js";
 
 export function PrivateCaptchaTest() {

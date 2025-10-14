@@ -85,7 +85,7 @@
     "apps/testing/solidjs": {
       "name": "testing-solid",
       "dependencies": {
-        "@better-captcha/solid": "workspace:*",
+        "@better-captcha/solidjs": "workspace:*",
         "@solidjs/meta": "^0.29.4",
         "@solidjs/router": "^0.15.0",
         "@solidjs/start": "^1.1.0",
@@ -124,7 +124,7 @@
       },
     },
     "packages/solidjs": {
-      "name": "@better-captcha/solid",
+      "name": "@better-captcha/solidjs",
       "version": "0.0.1",
       "devDependencies": {
         "@better-captcha/core": "workspace:*",
@@ -223,7 +223,7 @@
 
     "@better-captcha/react": ["@better-captcha/react@workspace:packages/react"],
 
-    "@better-captcha/solid": ["@better-captcha/solid@workspace:packages/solidjs"],
+    "@better-captcha/solidjs": ["@better-captcha/solidjs@workspace:packages/solidjs"],
 
     "@better-captcha/tests": ["@better-captcha/tests@workspace:packages/tests"],
 

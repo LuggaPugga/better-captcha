@@ -1,9 +1,9 @@
-import { createCaptchaController } from "@better-captcha/solid";
+import { createCaptchaController } from "@better-captcha/solidjs";
 import {
 	FriendlyCaptcha,
 	type FriendlyCaptchaHandle,
 	type RenderParameters,
-} from "@better-captcha/solid/provider/friendly-captcha";
+} from "@better-captcha/solidjs/provider/friendly-captcha";
 import { createSignal } from "solid-js";
 
 export function FriendlyCaptchaTest() {

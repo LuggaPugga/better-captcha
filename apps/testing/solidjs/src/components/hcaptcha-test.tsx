@@ -1,5 +1,5 @@
-import { createCaptchaController } from "@better-captcha/solid";
-import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/solid/provider/hcaptcha";
+import { createCaptchaController } from "@better-captcha/solidjs";
+import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/solidjs/provider/hcaptcha";
 import { createSignal } from "solid-js";
 
 export function HCaptchaTest() {

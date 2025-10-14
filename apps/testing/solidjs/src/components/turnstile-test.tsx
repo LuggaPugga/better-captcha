@@ -1,5 +1,5 @@
-import { createCaptchaController } from "@better-captcha/solid";
-import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/solid/provider/turnstile";
+import { createCaptchaController } from "@better-captcha/solidjs";
+import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/solidjs/provider/turnstile";
 import { createSignal } from "solid-js";
 
 export function TurnstileTest() {

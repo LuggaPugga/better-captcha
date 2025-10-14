@@ -1,5 +1,5 @@
-import { createCaptchaController } from "@better-captcha/solid";
-import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/solid/provider/recaptcha";
+import { createCaptchaController } from "@better-captcha/solidjs";
+import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/solidjs/provider/recaptcha";
 import { createSignal } from "solid-js";
 
 export function RecaptchaTest() {

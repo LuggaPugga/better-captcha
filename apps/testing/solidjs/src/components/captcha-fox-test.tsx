@@ -1,5 +1,5 @@
-import { createCaptchaController } from "@better-captcha/solid";
-import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/solid/provider/captcha-fox";
+import { createCaptchaController } from "@better-captcha/solidjs";
+import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/solidjs/provider/captcha-fox";
 import { createSignal } from "solid-js";
 
 export function CaptchaFoxTest() {
