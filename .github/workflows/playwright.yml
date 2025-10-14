@@ -22,7 +22,7 @@ jobs:
         run: cd packages/${{ matrix.project }} && bun run build
 
       - name: Install package dependencies
-        run: cd apps/testing/${{ matrix.project }} && bun install
+        run: bun install
 
       - name: Install Playwright Browsers
         run: cd packages/${{ matrix.project }} && bunx playwright install --with-deps
