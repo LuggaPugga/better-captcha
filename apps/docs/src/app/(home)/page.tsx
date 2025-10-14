@@ -47,7 +47,7 @@ export default function HomePage() {
 						<div className="text-muted-foreground">GitHub stars</div>
 					</li>
 					<li className="justify-self-center">
-						<div className="text-xl font-semibold">5</div>
+						<div className="text-xl font-semibold">7</div>
 						<div className="text-muted-foreground">Providers</div>
 					</li>
 					<li className="justify-self-center">
