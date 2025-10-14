@@ -3,7 +3,7 @@ title: Prosopo
 description: Privacy-focused CAPTCHA service with Web3 integration and customizable themes
 ---
 
-import { Prosopo } from "react-captcha/provider/prosopo";
+import { Prosopo } from "@better-captcha/react/provider/prosopo";
 
 ## About Prosopo
 
@@ -17,9 +17,23 @@ For more information, visit the [official Prosopo documentation](https://docs.pr
 
 ## Usage
 
-```tsx
-<Prosopo sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { Prosopo } from "@better-captcha/react/provider/prosopo";
+
+  <Prosopo sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { Prosopo } from "@better-captcha/solidjs/provider/prosopo";
+
+  <Prosopo sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+</Tabs>
 
 ## Provider Options
 <AutoTypeTable path="../../packages/core/src/providers/prosopo/types.d.ts" name="RenderParameters" />

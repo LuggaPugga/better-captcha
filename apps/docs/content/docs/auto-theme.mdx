@@ -11,12 +11,29 @@ The library automatically detects your users' system theme preference and applie
 
 When you set `theme: "auto"`, the library detects the system theme using `prefers-color-scheme` and converts it to `"light"` or `"dark"` before passing it to the provider.
 
-```tsx
-<ReCaptcha 
-  sitekey="your-site-key"
-  options={{ theme: "auto" }} // Automatically detects system theme
-/>
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+  <ReCaptcha 
+    sitekey="your-site-key"
+    options={{ theme: "auto" }} // Automatically detects system theme
+  />
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+  <ReCaptcha 
+    sitekey="your-site-key"
+    options={{ theme: "auto" }} // Automatically detects system theme
+  />
+  ```
+  </Tab>
+</Tabs>
 
 ## Provider Support
 | Provider | Native auto theme support | Enhanced with auto theme |

@@ -1,13 +1,23 @@
 ---
 title: Getting Started
-description: Install, configure, and extend react-captcha for production-ready CAPTCHA integrations.
+description: Install, configure, and extend better-captcha for production-ready CAPTCHA integrations.
 ---
 
-`react-captcha` provides a shared React interface for popular CAPTCHA providers.   
+`better-captcha` provides a shared framework-agnostic interface for popular CAPTCHA providers.   
 Each widget ships as a client component that loads provider scripts safely, exposes a predictable ref handle, and keeps tokens easy to retrieve during form submissions.
 
 ## Installation
 
-```npm
-npm i react-captcha
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```npm
+  npm i @better-captcha/react
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```npm
+  npm i @better-captcha/solidjs
+  ```
+  </Tab>
+</Tabs>
