@@ -21,8 +21,11 @@ jobs:
       - name: Build package
         run: cd packages/${{ matrix.project }} && bun run build
 
+      - name: Install package dependencies
+        run: cd apps/testing/${{ matrix.project }} && bun install
+
       - name: Install Playwright Browsers
-        run: bunx playwright install --with-deps
+        run: cd packages/${{ matrix.project }} && bunx playwright install --with-deps
 
       - name: Run Playwright tests
         run: cd packages/${{ matrix.project }} && bunx playwright test
