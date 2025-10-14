@@ -32,11 +32,10 @@ test("widget can be executed", async () => {
 	await page.locator("button", { hasText: "Execute" }).first().click();
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 	await expect(page.locator('[id^="cf-widget-"]')).toHaveCount(1);
-	await page.waitForTimeout(1000);
+	await page.locator('div[class*="cf-success"]').waitFor({ state: "attached" });
 });
 
 test("widget has response", async () => {
-	await page.locator('[id^="cf-widget"]').waitFor({ state: "attached" });
 	await page.locator("button", { hasText: "Get Response" }).first().click();
 	await expect(page.locator("#captcha-response")).toBeVisible();
 	await expect(page.locator("#captcha-response")).not.toHaveText("No response");
