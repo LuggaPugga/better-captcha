@@ -27,13 +27,18 @@ test("script injected", async () => {
 
 test("widget containers rendered", async () => {
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
-	await expect(page.locator("iframe[title*='reCAPTCHA']")).toBeVisible();
+	await page.locator("iframe[title*='reCAPTCHA']").waitFor({ state: "attached" });
+	await expect(page.locator("iframe[title*='reCAPTCHA']")).toHaveCount(1);
 });
 
 test("widget has response", async () => {
-	await page.waitForTimeout(200);
-	await page.click("iframe[title*='reCAPTCHA']");
-	await page.waitForTimeout(2000);
+	const recaptchaFrame = page.frameLocator("iframe[title*='reCAPTCHA']");
+	await recaptchaFrame.locator(".recaptcha-checkbox-border").click();
+
+	await recaptchaFrame.locator(".recaptcha-checkbox-checkmark").waitFor({ state: "visible" });
+	await expect(recaptchaFrame.locator(".recaptcha-checkbox-checkmark")).toBeVisible();
+
+	await page.waitForTimeout(1000);
 
 	await page.locator("button", { hasText: "Get Response" }).first().click();
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
