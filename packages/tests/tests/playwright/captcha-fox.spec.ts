@@ -26,6 +26,7 @@ test("script injected", async () => {
 test("widget containers rendered", async () => {
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 	await page.locator('[id^="cf-widget-"]').waitFor({ state: "attached" });
+	await page.waitForTimeout(1000);
 });
 
 test("widget can be executed", async () => {
