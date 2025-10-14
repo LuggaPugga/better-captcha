@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { getGithubStars, getNpmDownloads } from "@/lib/api";
 
-export default function HomePage() {
+export default async function HomePage() {
+	const [githubStars, npmDownloads] = await Promise.all([getGithubStars(), getNpmDownloads()]);
+
 	return (
 		<main className="flex flex-1 flex-col max-w-6xl mx-auto">
 			<section className="pt-16 md:pt-24 pb-10">
@@ -39,11 +42,11 @@ export default function HomePage() {
 			<section className="py-6 border-t border-b border-border">
 				<ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 items-center gap-4 text-sm">
 					<li className="justify-self-center">
-						<div className="text-xl font-semibold">12,340</div>
-						<div className="text-muted-foreground">npm downloads</div>
+						<div className="text-xl font-semibold">{npmDownloads}</div>
+						<div className="text-muted-foreground">npm downloads this week</div>
 					</li>
 					<li className="justify-self-center">
-						<div className="text-xl font-semibold">1,247</div>
+						<div className="text-xl font-semibold">{githubStars}</div>
 						<div className="text-muted-foreground">GitHub stars</div>
 					</li>
 					<li className="justify-self-center">
