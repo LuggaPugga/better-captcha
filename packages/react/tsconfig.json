@@ -20,6 +20,6 @@
 		"declarationDir": "./dist",
 		"jsx": "react-jsx"
 	},
-	"include": ["src", "scripts"],
+	"include": ["src", "scripts", "build-plugin.ts"],
 	"exclude": ["dist", "node_modules"]
 }

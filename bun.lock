@@ -116,6 +116,7 @@
         "chokidar": "^4.0.1",
         "playwright": "^1.56.0",
         "tsdown": "^0.15.6",
+        "unplugin": "^2.3.10",
       },
       "peerDependencies": {
         "react": "^19.0.0",
@@ -135,6 +136,7 @@
         "playwright": "^1.56.0",
         "solid-js": "^1.9.0",
         "tsdown": "^0.15.6",
+        "unplugin": "^2.3.10",
       },
       "peerDependencies": {
         "solid-js": "^1.9.0",

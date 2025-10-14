@@ -25,11 +25,8 @@
 		"dist"
 	],
 	"scripts": {
-		"generate": "bun run scripts/generate-components.ts",
-		"clean:generated": "rm -rf src/provider",
-		"build": "bun run generate && tsdown && bun run clean:generated",
-		"build:watch": "tsdown --watch",
-		"dev": "bun run scripts/dev.ts"
+		"build": "tsdown",
+		"dev": "tsdown --watch"
 	},
 	"exports": {
 		".": {
@@ -45,8 +42,8 @@
 			"default": "./dist/provider/index.js"
 		},
 		"./provider/*": {
-			"types": "./dist/provider/*/*.d.ts",
-			"default": "./dist/provider/*/*.js"
+			"types": "./dist/provider/*/index.d.ts",
+			"default": "./dist/provider/*/index.js"
 		},
 		"./package.json": "./package.json"
 	},
@@ -57,6 +54,9 @@
 			],
 			"provider": [
 				"dist/provider/index.d.ts"
+			],
+			"provider/*": [
+				"dist/provider/*/index.d.ts"
 			]
 		}
 	},
@@ -65,14 +65,15 @@
 		"react": "^19.0.0"
 	},
 	"devDependencies": {
+		"@better-captcha/core": "workspace:*",
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.56.0",
-		"@better-captcha/core": "workspace:*",
-		"@types/react": "^19.0.0",
-		"playwright": "^1.56.0",
-		"tsdown": "^0.15.6",
 		"@types/bun": "1.3.0",
 		"@types/node": "24.7.2",
-		"chokidar": "^4.0.1"
+		"@types/react": "^19.0.0",
+		"chokidar": "^4.0.1",
+		"playwright": "^1.56.0",
+		"tsdown": "^0.15.6",
+		"unplugin": "^2.3.10"
 	}
 }
