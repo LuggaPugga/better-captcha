@@ -47,22 +47,21 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 	}
 
 	reset(_widgetId: string): void {
-		if (window.procaptcha) {
+		if (window.procaptcha?.ready) {
 			window.procaptcha.reset();
 		}
 	}
 
 	async execute(_widgetId: string): Promise<void> {
-		if (window.procaptcha) {
+		if (window.procaptcha?.ready) {
 			window.procaptcha.execute();
 		}
 	}
 
 	destroy(_widgetId: string): void {
 		if (this.widgetId) {
-			const callbackName = `prosopoCallback_${this.widgetId}`;
-			if ((window as Record<string, unknown>)[callbackName]) {
-				delete (window as Record<string, unknown>)[callbackName];
+			if (window.procaptcha?.ready) {
+				window.procaptcha.reset();
 			}
 		}
 
