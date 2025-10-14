@@ -10,5 +10,6 @@ export default defineConfig({
 	],
 	platform: "browser",
 	dts: true,
+	outDir: "./dist",
 	ignoreWatch: [".turbo"],
 });
