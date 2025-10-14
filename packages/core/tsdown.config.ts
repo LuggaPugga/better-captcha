@@ -9,6 +9,7 @@ export default defineConfig({
 		"src/providers/*/index.ts",
 	],
 	platform: "browser",
+	format: "esm",
 	dts: true,
 	outDir: "./dist",
 	ignoreWatch: [".turbo"],
