@@ -27,14 +27,16 @@ test("script injected", async () => {
 
 test("widget containers rendered", async () => {
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
+	await page.locator("iframe[data-hcaptcha-widget-id]").waitFor({ state: "attached" });
 	await expect(page.locator("iframe[data-hcaptcha-widget-id]")).toHaveCount(1);
 });
 
 test("widget can be executed", async () => {
 	await page.locator("button", { hasText: "Execute" }).first().click();
+	await page
+		.locator("iframe[data-hcaptcha-response='10000000-aaaa-bbbb-cccc-000000000001']")
+		.waitFor({ state: "attached" });
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
-	await expect(page.locator("iframe[data-hcaptcha-response='10000000-aaaa-bbbb-cccc-000000000001']")).toHaveCount(1);
-	await page.waitForTimeout(1000);
 });
 
 test("widget has response", async () => {
