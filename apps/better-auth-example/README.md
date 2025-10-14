@@ -1,11 +1,11 @@
 # Better Auth + React Captcha Example
 
-This example demonstrates how to integrate [Better Auth](https://www.better-auth.com/) with the [react-captcha](https://github.com/LuggaPugga/react-captcha) library using Cloudflare Turnstile for bot protection.
+This example demonstrates how to integrate [Better Auth](https://www.better-auth.com/) with the [better-captcha](https://github.com/LuggaPugga/better-captcha) library using Cloudflare Turnstile for bot protection.
 
 ## Features
 
 - ✅ **Better Auth Integration** - Full-featured authentication with email/password support
-- ✅ **Cloudflare Turnstile** - Bot protection using the react-captcha library
+- ✅ **Cloudflare Turnstile** - Bot protection using the better-captcha library
 - ✅ **Auto Theme Detection** - Captcha automatically adapts to light/dark mode
 - ✅ **Test Mode** - Uses always-pass keys for easy local development
 - ✅ **Modern UI** - Beautiful, responsive design with Tailwind CSS
@@ -71,10 +71,10 @@ export const auth = betterAuth({
 
 ### 2. React Captcha Integration
 
-The authentication form uses the `Turnstile` component from react-captcha:
+The authentication form uses the `Turnstile` component from better-captcha:
 
 ```typescript
-import { Turnstile } from "react-captcha/provider/turnstile";
+import { Turnstile } from "better-captcha/provider/turnstile";
 
 <Turnstile
   ref={turnstileRef}
@@ -109,5 +109,5 @@ await authClient.signIn.email(
 
 - [Better Auth Documentation](https://www.better-auth.com/docs)
 - [Better Auth Captcha Plugin](https://www.better-auth.com/docs/plugins/captcha)
-- [React Captcha Library](https://github.com/LuggaPugga/react-captcha)
+- [React Captcha Library](https://github.com/LuggaPugga/better-captcha)
 - [Cloudflare Turnstile Documentation](https://developers.cloudflare.com/turnstile/)

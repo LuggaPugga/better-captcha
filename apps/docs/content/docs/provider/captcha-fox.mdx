@@ -16,12 +16,26 @@ For more information, visit the [official Captcha Fox documentation](https://doc
 
 ## Usage
 
-```tsx
-<CaptchaFox sitekey="your-sitekey" options={{}} />
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { CaptchaFox } from "@better-captcha/react/provider/captcha-fox";
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { CaptchaFox } from "@better-captcha/solidjs/provider/captcha-fox";
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ```
+  </Tab>
+</Tabs>
 
 ## Provider Options
-<AutoTypeTable path="../../packages/react-captcha/src/provider/captcha-fox/types.d.ts" name="RenderParameters" />
+<AutoTypeTable path="../../packages/core/src/providers/captcha-fox/types.d.ts" name="RenderParameters" />
 
 ## Imperative Handle Functions
-<AutoTypeTable path="../../packages/react-captcha/src/provider/captcha-fox/provider.ts" name="CaptchaFoxHandle" />
+<AutoTypeTable path="../../packages/core/src/providers/captcha-fox/provider.ts" name="CaptchaFoxHandle" />

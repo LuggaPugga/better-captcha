@@ -1,0 +1,14 @@
+import { defineConfig } from "tsdown";
+
+export default defineConfig({
+	entry: [
+		"src/index.ts",
+		"src/provider.ts",
+		"src/utils/load-script.ts",
+		"src/utils/theme.ts",
+		"src/providers/*/index.ts",
+	],
+	platform: "browser",
+	dts: true,
+	ignoreWatch: [".turbo"],
+});

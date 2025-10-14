@@ -1,0 +1,79 @@
+{
+	"name": "@better-captcha/core",
+	"description": "Framework-agnostic CAPTCHA provider implementations",
+	"version": "0.0.1",
+	"author": "LuggaPugga",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LuggaPugga/better-captcha.git"
+	},
+	"homepage": "https://github.com/LuggaPugga/better-captcha",
+	"license": "MIT",
+	"keywords": [
+		"captcha",
+		"recaptcha",
+		"hcaptcha",
+		"turnstile",
+		"friendly-captcha"
+	],
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./provider": {
+			"types": "./dist/provider.d.ts",
+			"default": "./dist/provider.js"
+		},
+		"./providers/*": {
+			"types": "./dist/providers/*/index.d.ts",
+			"default": "./dist/providers/*/index.js"
+		},
+		"./utils/load-script": {
+			"types": "./dist/utils/load-script.d.ts",
+			"default": "./dist/utils/load-script.js"
+		},
+		"./utils/theme": {
+			"types": "./dist/utils/theme.d.ts",
+			"default": "./dist/utils/theme.js"
+		},
+		"./src/registry": {
+			"types": "./src/registry.ts",
+			"default": "./src/registry.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"typesVersions": {
+		"*": {
+			"provider": [
+				"dist/provider.d.ts"
+			],
+			"providers/*": [
+				"dist/providers/*/index.d.ts"
+			],
+			"utils/load-script": [
+				"dist/utils/load-script.d.ts"
+			],
+			"utils/theme": [
+				"dist/utils/theme.d.ts"
+			]
+		}
+	},
+	"peerDependencies": {
+		"typescript": "^5.9.2"
+	},
+	"devDependencies": {
+		"tsdown": "^0.15.6"
+	}
+}

@@ -5,17 +5,17 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**", ".output/**", ".vinxi/**"]
 		},
-		"build:docs": {
-			"dependsOn": ["react-captcha#build"],
+		"build:react": {
+			"dependsOn": ["@better-captcha/core#build", "@better-captcha/react#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
-		"build:better-auth-example": {
-			"dependsOn": ["react-captcha#build"],
+		"build:solidjs": {
+			"dependsOn": ["@better-captcha/core#build", "@better-captcha/solid#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+			"outputs": [".output/**", ".vinxi/**"]
 		},
 		"lint": {
 			"dependsOn": ["^lint"]

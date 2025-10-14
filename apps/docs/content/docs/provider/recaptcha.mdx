@@ -16,12 +16,26 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
 
 ## Usage
 
-```tsx
-<ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework" groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+  <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+  <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+</Tabs>
 
 ## Provider Options
-<AutoTypeTable path="../../packages/react-captcha/src/provider/recaptcha/types.d.ts" name="RenderParameters" />
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha/types.d.ts" name="RenderParameters" />
 
 ## Imperative Handle Functions
-<AutoTypeTable path="../../packages/react-captcha/src/provider/recaptcha/provider.ts" name="ReCaptchaHandle" />
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha/provider.ts" name="ReCaptchaHandle" />

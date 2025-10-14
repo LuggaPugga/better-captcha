@@ -54,14 +54,14 @@ export default function Home() {
 
 					<div className="flex flex-wrap items-center justify-center gap-6 text-sm">
 						<Button asChild variant="outline" className="group">
-							<Link href="https://github.com/LuggaPugga/react-captcha" target="_blank" rel="noopener noreferrer">
+							<Link href="https://github.com/LuggaPugga/better-captcha" target="_blank" rel="noopener noreferrer">
 								<span className="text-lg">📦</span>
 								<span className="font-medium">React Captcha Library</span>
 							</Link>
 						</Button>
 						<Button asChild variant="outline" className="group">
 							<Link
-								href="https://github.com/LuggaPugga/react-captcha/tree/main/apps/better-auth-example"
+								href="https://github.com/LuggaPugga/better-captcha/tree/main/apps/better-auth-example"
 								target="_blank"
 								rel="noopener noreferrer"
 							>

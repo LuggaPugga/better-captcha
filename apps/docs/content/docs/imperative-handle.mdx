@@ -5,37 +5,64 @@ description: Imperative Handle
 
 ## Overview
 
-Each provider exposes an imperative handle through React refs so you can programmatically control the widget (e.g. reset, execute) and access provider-specific methods like reading the current response.
+Each provider exposes an imperative handle so you can programmatically control the widget (e.g. reset, execute) and access provider-specific methods like reading the current response.
 
-The handle is fully typed per provider. Use the provider-specific `...Handle` type for ref typing.
+The handle is fully typed per provider and the implementation differs between React and SolidJS:
+- **React**: Uses refs with `useRef` and `forwardRef`
+- **SolidJS**: Uses a controller pattern with `createCaptchaController`
 
 ## Usage
 
-```tsx
-import { useRef } from "react";
-import { ReCaptcha, type ReCaptchaHandle } from "react-captcha/provider/recaptcha";
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { useRef } from "react";
+  import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/react/provider/recaptcha";
 
-export default function Example() {
-  const recaptchaRef = useRef<ReCaptchaHandle>(null!);
+  export default function Example() {
+    const recaptchaRef = useRef<ReCaptchaHandle>(null!);
 
-  return (
-    <>
-      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" ref={recaptchaRef} />
-      <button onClick={() => recaptchaRef.current.execute()}>Execute</button>
-      <button onClick={() => recaptchaRef.current.reset()}>Reset</button>
-      <button onClick={() => console.log(recaptchaRef.current.getResponse())}>Log response</button>
-    </>
-  );
-}
-```
+    return (
+      <>
+        <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" ref={recaptchaRef} />
+        <button onClick={() => recaptchaRef.current.execute()}>Execute</button>
+        <button onClick={() => recaptchaRef.current.reset()}>Reset</button>
+        <button onClick={() => console.log(recaptchaRef.current.getResponse())}>Log response</button>
+      </>
+    );
+  }
+  ```
+  
+  The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to keep type-safety.
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
 
-The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to keep type-safety.
+  export default function Example() {
+    const controller = createCaptchaController<ReCaptchaHandle>();
+
+    return (
+      <>
+        <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} />
+        <button onClick={() => controller.handle()?.execute()}>Execute</button>
+        <button onClick={() => controller.handle()?.reset()}>Reset</button>
+        <button onClick={() => console.log(controller.handle()?.getResponse())}>Log response</button>
+      </>
+    );
+  }
+  ```
+  
+  The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining when calling methods.
+  </Tab>
+</Tabs>
 
 ## Common Methods
 
 All providers implement these methods on the handle:
 
-<AutoTypeTable path="../../packages/react-captcha/src/provider.ts" name="CaptchaHandle" />
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
 
 ## Provider-specific methods
 

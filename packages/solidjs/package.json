@@ -1,0 +1,79 @@
+{
+	"name": "@better-captcha/solid",
+	"description": "SolidJS wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
+	"version": "0.0.1",
+	"author": "LuggaPugga",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LuggaPugga/better-captcha.git"
+	},
+	"homepage": "https://github.com/LuggaPugga/better-captcha",
+	"license": "MIT",
+	"keywords": [
+		"captcha",
+		"solidjs",
+		"recaptcha",
+		"hcaptcha",
+		"turnstile",
+		"friendly-captcha"
+	],
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./base-captcha": {
+			"types": "./dist/base-captcha.d.ts",
+			"default": "./dist/base-captcha.js"
+		},
+		"./provider": {
+			"types": "./dist/provider/index.d.ts",
+			"default": "./dist/provider/index.js"
+		},
+		"./provider/*": {
+			"types": "./dist/provider/*/index.d.ts",
+			"default": "./dist/provider/*/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"typesVersions": {
+		"*": {
+			"base-captcha": [
+				"dist/base-captcha.d.ts"
+			],
+			"provider": [
+				"dist/provider/index.d.ts"
+			],
+			"provider/*": [
+				"dist/provider/*/index.d.ts"
+			]
+		}
+	},
+	"peerDependencies": {
+		"typescript": "^5.9.2",
+		"solid-js": "^1.9.0"
+	},
+	"devDependencies": {
+		"@better-captcha/core": "workspace:*",
+		"@better-captcha/tests": "workspace:*",
+		"@playwright/test": "^1.56.0",
+		"@types/bun": "1.3.0",
+		"@types/node": "24.7.2",
+		"chokidar": "^4.0.1",
+		"playwright": "^1.56.0",
+		"solid-js": "^1.9.0",
+		"tsdown": "^0.15.6",
+		"unplugin": "^2.3.10"
+	}
+}

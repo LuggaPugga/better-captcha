@@ -16,12 +16,26 @@ For more information, visit the [official Friendly Captcha documentation](https:
 
 ## Usage
 
-```tsx
-<FriendlyCaptcha sitekey="" options={{}} />
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { FriendlyCaptcha } from "@better-captcha/react/provider/friendly-captcha";
+
+  <FriendlyCaptcha sitekey="" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { FriendlyCaptcha } from "@better-captcha/solidjs/provider/friendly-captcha";
+
+  <FriendlyCaptcha sitekey="" options={{}} />
+  ```
+  </Tab>
+</Tabs>
 
 ## Provider Options
-<AutoTypeTable path="../../packages/react-captcha/src/provider/friendly-captcha/types.d.ts" name="RenderParameters" />
+<AutoTypeTable path="../../packages/core/src/providers/friendly-captcha/types.d.ts" name="RenderParameters" />
 
 ## Imperative Handle Functions
-<AutoTypeTable path="../../packages/react-captcha/src/provider/friendly-captcha/provider.ts" name="FriendlyCaptchaHandle" />
+<AutoTypeTable path="../../packages/core/src/providers/friendly-captcha/provider.ts" name="FriendlyCaptchaHandle" />

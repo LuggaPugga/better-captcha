@@ -16,12 +16,26 @@ For more information, visit the [official hCaptcha documentation](https://docs.h
 
 ## Usage
 
-```tsx
-<HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
-```
+<Tabs items={['React', 'SolidJS']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/react/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/solidjs/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+</Tabs>
 
 ## Provider Options
-<AutoTypeTable path="../../packages/react-captcha/src/provider/hcaptcha/types.d.ts" name="RenderParameters" />
+<AutoTypeTable path="../../packages/core/src/providers/hcaptcha/types.d.ts" name="RenderParameters" />
 
 ## Imperative Handle Functions
-<AutoTypeTable path="../../packages/react-captcha/src/provider/hcaptcha/provider.ts" name="HCaptchaHandle" />
+<AutoTypeTable path="../../packages/core/src/providers/hcaptcha/provider.ts" name="HCaptchaHandle" />
