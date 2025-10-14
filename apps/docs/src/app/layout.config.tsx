@@ -8,6 +8,7 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
  * Docs Layout: app/docs/layout.tsx
  */
 export const baseOptions: BaseLayoutProps = {
+	githubUrl: "https://github.com/LuggaPugga/better-captcha",
 	nav: {
 		title: (
 			<>
@@ -15,10 +16,8 @@ export const baseOptions: BaseLayoutProps = {
 					<title>Logo</title>
 					<circle cx={12} cy={12} r={12} fill="currentColor" />
 				</svg>
-				My App
+				Better Captcha
 			</>
 		),
 	},
-	// see https://fumadocs.dev/docs/ui/navigation/links
-	links: [],
 };
