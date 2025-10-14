@@ -15,7 +15,7 @@ export class ScriptLoader {
 	private callbackId = 0;
 
 	generateCallbackName(prefix = "callback") {
-		return `reactCaptcha_${prefix}_${++this.callbackId}`;
+		return `betterCaptcha_${prefix}_${++this.callbackId}`;
 	}
 
 	private findScript(src: string): HTMLScriptElement | null {
