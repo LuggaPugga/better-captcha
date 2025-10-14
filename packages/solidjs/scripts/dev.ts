@@ -55,7 +55,7 @@ const scheduleGeneration = (reason: string) => {
 };
 
 const spawnBuildProcess = () => {
-    const build = spawn("bun", ["run", "build:watch"], {
+	const build = spawn("bun", ["run", "build:watch"], {
 		cwd: packageRoot,
 		stdio: "inherit",
 	});
