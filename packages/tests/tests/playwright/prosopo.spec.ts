@@ -24,6 +24,6 @@ test("script injected", async () => {
 });
 
 test("widget containers rendered", async () => {
-	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
-	await expect(page.locator('[id^="prosopo-widget-"]')).toHaveCount(1);
+	await page.locator("prosopo-procaptcha").waitFor({ state: "visible" });
+	await expect(page.locator("prosopo-procaptcha")).toHaveCount(1);
 });
