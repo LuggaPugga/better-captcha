@@ -28,11 +28,12 @@ test("script injected", async () => {
 test("widget containers rendered", async () => {
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 	await expect(page.locator('[id^="better-captcha-private-captcha"]')).toBeVisible();
+	await page.locator("private-captcha").waitFor({ state: "attached" });
 });
 
 test("widget can be executed", async () => {
 	await page.locator("button", { hasText: "Execute" }).first().click();
-	await page.waitForTimeout(200);
+	await page.locator("input[name='private-captcha-solution']").waitFor({ state: "attached" });
 	await expect(page.locator("input[name='private-captcha-solution']")).toHaveValue(/^AQI.*$/);
 	await expect(page.locator('[id^="better-captcha-private-captcha"]')).toHaveCount(1);
 });
