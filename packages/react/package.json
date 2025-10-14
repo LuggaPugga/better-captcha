@@ -29,7 +29,7 @@
 		"build": "tsdown",
 		"build:prepare": "bun run generate",
 		"build:done": "rm -r src/provider",
-		"dev": "bun run generate && bun run build --watch && rm -r src/provider"
+		"dev": "bun run scripts/dev.ts"
 	},
 	"exports": {
 		".": {
