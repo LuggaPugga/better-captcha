@@ -1,5 +1,5 @@
-import { defineConfig, devices } from "@playwright/test";
 import { fileURLToPath } from "node:url";
+import { defineConfig, devices } from "@playwright/test";
 
 const sharedTestDir = fileURLToPath(new URL("./tests/playwright", import.meta.url));
 
