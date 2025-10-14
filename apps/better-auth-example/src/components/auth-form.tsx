@@ -1,8 +1,8 @@
 "use client";
 
+import type { TurnstileHandle } from "@better-captcha/react/provider/turnstile";
+import { Turnstile } from "@better-captcha/react/provider/turnstile";
 import { useCallback, useId, useMemo, useRef, useState } from "react";
-import type { TurnstileHandle } from "react-captcha/provider/turnstile";
-import { Turnstile } from "react-captcha/provider/turnstile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

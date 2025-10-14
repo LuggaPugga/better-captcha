@@ -8,14 +8,19 @@
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
 		"build:docs": {
-			"dependsOn": ["@react-captcha/react#build"],
+			"dependsOn": ["@better-captcha/react#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
 		"build:better-auth-example": {
-			"dependsOn": ["@react-captcha/react#build"],
+			"dependsOn": ["@better-captcha/react#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+		},
+		"build:testing-solid": {
+			"dependsOn": ["@better-captcha/solid#build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".output/**", ".vinxi/**"]
 		},
 		"lint": {
 			"dependsOn": ["^lint"]

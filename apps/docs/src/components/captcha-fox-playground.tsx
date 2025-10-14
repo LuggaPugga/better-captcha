@@ -1,7 +1,7 @@
 "use client";
+import type { RenderParameters } from "@better-captcha/react/provider/captcha-fox";
+import { CaptchaFox } from "@better-captcha/react/provider/captcha-fox";
 import { useState } from "react";
-import type { RenderParameters } from "react-captcha/provider/captcha-fox";
-import { CaptchaFox } from "react-captcha/provider/captcha-fox";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function CaptchaFoxPlayground() {

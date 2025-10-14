@@ -4,7 +4,7 @@ export type {
 	Provider,
 	ProviderConfig,
 	WidgetId,
-} from "@react-captcha/core";
+} from "@better-captcha/core";
 
 /**
  * Props for CAPTCHA components

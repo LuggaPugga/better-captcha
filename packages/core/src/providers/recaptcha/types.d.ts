@@ -111,7 +111,7 @@ export declare namespace ReCaptcha {
 		ready(callback: () => void): void;
 	}
 
-	// auto is not natively supported by the reCAPTCHA API, but it is supported by the react-captcha library.
+	// auto is not natively supported by the reCAPTCHA API, but it is supported by the better-captcha library.
 	type Theme = "light" | "dark" | "auto";
 	type Type = "image" | "audio";
 	type Size = "normal" | "compact" | "invisible";

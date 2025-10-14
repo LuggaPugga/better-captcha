@@ -1,5 +1,5 @@
 {
-	"name": "@react-captcha/docs",
+	"name": "@better-captcha/docs",
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
@@ -19,7 +19,7 @@
 		"lucide-react": "^0.545.0",
 		"next": "16.0.0-canary.3",
 		"react": "19.2.0",
-		"react-captcha": "workspace:*",
+		"@better-captcha/react": "workspace:*",
 		"react-dom": "19.2.0",
 		"shiki": "^3.13.0",
 		"tailwind-merge": "^3.3.1",

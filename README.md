@@ -1,6 +1,6 @@
-# react-captcha
+# better-captcha
 
-React-friendly wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors without touching your UI.
+Framework-agnostic wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors without touching your UI.
 
 > [!WARNING]
 > This library is in early development and is not production ready yet. Expect breaking API changes while the provider surface stabilises.
@@ -16,7 +16,7 @@ coming soon
 ## Basic usage
 
 ```tsx
-import { ReCaptcha } from "react-captcha/provider/recaptcha";
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
 
 export function ContactCaptcha() {
 	return <ReCaptcha sitekey="your-site-key" />;

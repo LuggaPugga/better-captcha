@@ -1,6 +1,6 @@
 "use client";
 
-import type { CaptchaHandle, Provider, ProviderConfig } from "@react-captcha/core";
+import type { CaptchaHandle, Provider, ProviderConfig } from "@better-captcha/core";
 import { forwardRef, useImperativeHandle, useMemo } from "react";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
@@ -46,7 +46,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 		const widgetId = widgetIdRef.current;
 		const elementId =
-			widgetId !== null && widgetId !== undefined ? `react-captcha-${widgetId}` : "react-captcha-loading";
+			widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading";
 
 		return (
 			<div

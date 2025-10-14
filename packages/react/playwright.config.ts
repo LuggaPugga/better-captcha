@@ -29,7 +29,7 @@ export default defineConfig({
 		},
 	],
 	webServer: {
-		command: "cd ../../apps/testing-page && bun run dev",
+		command: "cd ../../apps/testing/react && bun run dev",
 		url: "http://localhost:9000",
 		reuseExistingServer: true,
 	},

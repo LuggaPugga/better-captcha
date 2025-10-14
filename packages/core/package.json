@@ -1,13 +1,13 @@
 {
-	"name": "@react-captcha/core",
+	"name": "@better-captcha/core",
 	"description": "Framework-agnostic CAPTCHA provider implementations",
 	"version": "0.0.1",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/LuggaPugga/react-captcha.git"
+		"url": "https://github.com/LuggaPugga/better-captcha.git"
 	},
-	"homepage": "https://github.com/LuggaPugga/react-captcha",
+	"homepage": "https://github.com/LuggaPugga/better-captcha",
 	"license": "MIT",
 	"keywords": [
 		"captcha",

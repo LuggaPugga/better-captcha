@@ -1,6 +1,6 @@
 "use client";
+import { PrivateCaptcha, type RenderParameters } from "@better-captcha/react/provider/private-captcha";
 import { useState } from "react";
-import { PrivateCaptcha, type RenderParameters } from "react-captcha/provider/private-captcha";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function PrivateCaptchaPlayground() {

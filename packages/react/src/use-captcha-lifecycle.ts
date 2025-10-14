@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@react-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { useEffect, useRef, useState } from "react";
 
 export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
@@ -43,7 +43,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 				setState({ loading: false, error: null, ready: true });
 			} catch (error) {
 				if (!cancelled) {
-					console.error("[react-captcha] render:", error);
+					console.error("[better-captcha] render:", error);
 					setState({ loading: false, error: error as Error, ready: false });
 				}
 			}
@@ -56,7 +56,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 				try {
 					provider.destroy(id);
 				} catch (error) {
-					console.warn("[react-captcha] cleanup:", error);
+					console.warn("[better-captcha] cleanup:", error);
 				}
 			}
 			containerRef.current?.remove();

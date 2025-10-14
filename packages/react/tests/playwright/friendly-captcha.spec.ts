@@ -26,6 +26,6 @@ test("script injected", async () => {
 });
 
 test("widget containers rendered", async () => {
-	await expect(page.locator('[id^="react-captcha-w"]')).toHaveCount(1);
+	await expect(page.locator('[id^="better-captcha-w"]')).toHaveCount(1);
 	await expect(page.locator("input[name='frc-captcha-response']")).toHaveCount(1);
 });

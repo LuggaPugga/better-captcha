@@ -64,7 +64,7 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	destroy(widgetId: number) {
-		const element = document.getElementById(`react-captcha-${widgetId}`);
+		const element = document.getElementById(`better-captcha-${widgetId}`);
 		if (element) {
 			window.grecaptcha.reset(widgetId);
 			element.innerHTML = "";

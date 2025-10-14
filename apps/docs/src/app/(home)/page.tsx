@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
+import { FriendlyCaptcha } from "@better-captcha/react/provider/friendly-captcha";
+import { HCaptcha } from "@better-captcha/react/provider/hcaptcha";
+import { PrivateCaptcha } from "@better-captcha/react/provider/private-captcha";
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+import { Turnstile } from "@better-captcha/react/provider/turnstile";
 import Link from "next/link";
-import { FriendlyCaptcha } from "react-captcha/provider/friendly-captcha";
-import { HCaptcha } from "react-captcha/provider/hcaptcha";
-import { PrivateCaptcha } from "react-captcha/provider/private-captcha";
-import { ReCaptcha } from "react-captcha/provider/recaptcha";
-import { Turnstile } from "react-captcha/provider/turnstile";
 
 const captchas = [
 	<FriendlyCaptcha sitekey="da" key={randomUUID()} options={{ theme: "dark" }} />,
@@ -26,14 +26,14 @@ export default function HomePage() {
 						<div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-2.5 py-1 text-xs text-muted-foreground">
 							<span className="inline-block h-2 w-2 rounded-full bg-foreground" />
 							<span>New</span>
-							<span className="opacity-60">Introducing React Captcha</span>
+							<span className="opacity-60">Introducing Better Captcha</span>
 						</div>
 						<h1 className="mt-4 text-4xl md:text-6xl font-semibold tracking-tight">
-							<span>React Captcha</span>
+							<span>Better Captcha</span>
 						</h1>
 						<p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
-							Create powerful captcha integrations with a single React API. Type‑safe, minimal, and designed for modern
-							app workflows.
+							Create powerful captcha integrations with a single framework-agnostic API. Type‑safe, minimal, and
+							designed for modern app workflows.
 						</p>
 						<div className="mt-8 flex items-center gap-3">
 							<Link

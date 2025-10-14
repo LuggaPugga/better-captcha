@@ -139,9 +139,7 @@ export class PrivateCaptchaProvider extends Provider<
 		const widget = this.widgetMap.get(widgetId);
 		if (widget) {
 			const element = this.elementMap.get(widgetId);
-			if (element) {
-				element.innerHTML = "";
-			}
+			element?.remove();
 		}
 
 		const callbackNames = this.callbackMap.get(widgetId);

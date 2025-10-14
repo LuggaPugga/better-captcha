@@ -15,7 +15,7 @@ export type RenderWidgetFunction = (element: HTMLElement, options: RenderParamet
 
 export type CaptchaType = "frictionless" | "pow" | "image";
 
-// auto is not natively supported by the Prosopo API, but it is supported by the react-captcha library.
+// auto is not natively supported by the Prosopo API, but it is supported by the better-captcha library.
 export type Theme = "light" | "dark" | "auto";
 
 export type CallbackFunction = (output: string) => void;

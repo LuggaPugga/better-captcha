@@ -21,7 +21,7 @@ export type RenderWidgetFunction = (element: HTMLElement | string, options: Rend
 
 export type WidgetDisplayMode = "inline" | "popup" | "hidden";
 
-// auto is not natively supported by the Captcha Fox API, but it is supported by the react-captcha library.
+// auto is not natively supported by the Captcha Fox API, but it is supported by the better-captcha library.
 export type Theme = "light" | "dark" | "auto" | ThemeDefinition;
 
 export type ThemeDefinition = {

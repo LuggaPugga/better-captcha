@@ -1,13 +1,13 @@
 {
-	"name": "react-captcha",
+	"name": "@better-captcha/react",
 	"description": "React wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
 	"version": "0.0.1",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/LuggaPugga/react-captcha.git"
+		"url": "https://github.com/LuggaPugga/better-captcha.git"
 	},
-	"homepage": "https://github.com/LuggaPugga/react-captcha",
+	"homepage": "https://github.com/LuggaPugga/better-captcha",
 	"license": "MIT",
 	"keywords": [
 		"captcha",
@@ -26,10 +26,10 @@
 	],
 	"scripts": {
 		"generate": "bun run scripts/generate-components.ts",
-		"prebuild": "bun run generate",
-		"postbuild": "rm -r src/provider",
 		"build": "tsdown",
-		"dev": "tsdown --watch"
+		"build:prepare": "bun run generate",
+		"build:done": "rm -r src/provider",
+		"dev": "bun run build --watch"
 	},
 	"exports": {
 		".": {
@@ -66,7 +66,7 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.56.0",
-		"@react-captcha/core": "workspace:*",
+		"@better-captcha/core": "workspace:*",
 		"@types/react": "^19.0.0",
 		"playwright": "^1.56.0",
 		"tsdown": "^0.15.6",
