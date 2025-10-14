@@ -1,5 +1,5 @@
+import { Prosopo, type ProsopoHandle } from "@better-captcha/react/provider/prosopo";
 import { useRef, useState } from "react";
-import { Prosopo, type ProsopoHandle } from "react-captcha/provider/prosopo";
 
 export function ProsopoTest() {
 	const captchaRef = useRef<ProsopoHandle>(null);

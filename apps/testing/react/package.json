@@ -1,5 +1,5 @@
 {
-	"name": "bun-react-template",
+	"name": "testing-react",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
@@ -11,7 +11,7 @@
 	"dependencies": {
 		"react": "^19",
 		"react-dom": "^19",
-		"react-captcha": "workspace:*"
+		"@better-captcha/react": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/react": "^19",

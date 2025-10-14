@@ -1,16 +1,12 @@
+import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/react/provider/recaptcha";
 import { useRef, useState } from "react";
-import {
-	PrivateCaptcha,
-	type PrivateCaptchaHandle,
-	type RenderParameters,
-} from "react-captcha/provider/private-captcha";
 
-export function PrivateCaptchaTest() {
-	const turnstileRef = useRef<PrivateCaptchaHandle>(null);
+export function RecaptchaTest() {
+	const turnstileRef = useRef<ReCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
 			theme: "light",
-			startMode: "auto",
+			size: "normal",
 		}),
 	);
 	const [response, setResponse] = useState<string | null>(null);
@@ -22,9 +18,7 @@ export function PrivateCaptchaTest() {
 
 	return (
 		<div>
-			<form>
-				<PrivateCaptcha ref={turnstileRef} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options} />
-			</form>
+			<ReCaptcha ref={turnstileRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} />
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy
 			</button>
@@ -43,7 +37,7 @@ export function PrivateCaptchaTest() {
 					const themes = ["light", "dark", "auto"];
 					const currentIndex = themes.indexOf(options.theme || "auto");
 					const nextIndex = (currentIndex + 1) % themes.length;
-					setOptions({ ...options, theme: themes[nextIndex] as typeof options.theme });
+					setOptions({ ...options, theme: themes[nextIndex] as RenderParameters["theme"] });
 				}}
 			>
 				Change Theme

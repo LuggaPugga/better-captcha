@@ -1,12 +1,16 @@
+import {
+	FriendlyCaptcha,
+	type FriendlyCaptchaHandle,
+	type RenderParameters,
+} from "@better-captcha/react/provider/friendly-captcha";
 import { useRef, useState } from "react";
-import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "react-captcha/provider/recaptcha";
 
-export function RecaptchaTest() {
-	const turnstileRef = useRef<ReCaptchaHandle>(null);
+export function FriendlyCaptchaTest() {
+	const turnstileRef = useRef<FriendlyCaptchaHandle>(null);
 	const [options, setOptions] = useState(
-		(): Omit<RenderParameters, "sitekey"> => ({
+		(): Omit<RenderParameters, "sitekey" | "element"> => ({
 			theme: "light",
-			size: "normal",
+			startMode: "focus",
 		}),
 	);
 	const [response, setResponse] = useState<string | null>(null);
@@ -18,7 +22,7 @@ export function RecaptchaTest() {
 
 	return (
 		<div>
-			<ReCaptcha ref={turnstileRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} />
+			<FriendlyCaptcha ref={turnstileRef} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} />
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy
 			</button>
@@ -37,7 +41,7 @@ export function RecaptchaTest() {
 					const themes = ["light", "dark", "auto"];
 					const currentIndex = themes.indexOf(options.theme || "auto");
 					const nextIndex = (currentIndex + 1) % themes.length;
-					setOptions({ ...options, theme: themes[nextIndex] as RenderParameters["theme"] });
+					setOptions({ ...options, theme: themes[nextIndex] as typeof options.theme });
 				}}
 			>
 				Change Theme

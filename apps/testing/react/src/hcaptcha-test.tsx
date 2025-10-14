@@ -1,14 +1,14 @@
+import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/react/provider/hcaptcha";
 import { useRef, useState } from "react";
-import { type RenderParameters, Turnstile, type TurnstileHandle } from "react-captcha/provider/turnstile";
 
-export function TurnstileTest() {
-	const turnstileRef = useRef<TurnstileHandle>(null);
-	const [options, setOptions] = useState((): Omit<RenderParameters, "sitekey"> => {
-		return {
+export function HCaptchaTest() {
+	const turnstileRef = useRef<HCaptchaHandle>(null);
+	const [options, setOptions] = useState(
+		(): Omit<RenderParameters, "sitekey"> => ({
 			theme: "light",
 			size: "normal",
-		};
-	});
+		}),
+	);
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {
@@ -18,7 +18,7 @@ export function TurnstileTest() {
 
 	return (
 		<div>
-			<Turnstile ref={turnstileRef} options={options} sitekey="1x00000000000000000000AA" />
+			<HCaptcha ref={turnstileRef} sitekey="10000000-ffff-ffff-ffff-000000000001" options={options} />
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy
 			</button>
@@ -35,7 +35,7 @@ export function TurnstileTest() {
 				type="button"
 				onClick={() => {
 					const themes = ["light", "dark", "auto"];
-					const currentIndex = themes.indexOf(options.theme || "auto");
+					const currentIndex = themes.indexOf(options.theme ?? "light");
 					const nextIndex = (currentIndex + 1) % themes.length;
 					setOptions({ ...options, theme: themes[nextIndex] as RenderParameters["theme"] });
 				}}

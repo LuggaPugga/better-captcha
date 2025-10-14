@@ -1,31 +1,31 @@
+import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/react/provider/captcha-fox";
 import { useRef, useState } from "react";
-import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "react-captcha/provider/hcaptcha";
 
-export function HCaptchaTest() {
-	const turnstileRef = useRef<HCaptchaHandle>(null);
+export function CaptchaFoxTest() {
+	const captchaFoxRef = useRef<CaptchaFoxHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
 			theme: "light",
-			size: "normal",
+			mode: "inline",
 		}),
 	);
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {
-		const captchaResponse = turnstileRef.current?.getResponse() || "No response";
+		const captchaResponse = captchaFoxRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
 	return (
 		<div>
-			<HCaptcha ref={turnstileRef} sitekey="10000000-ffff-ffff-ffff-000000000001" options={options} />
-			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
+			<CaptchaFox ref={captchaFoxRef} sitekey="sk_11111111000000001111111100000000" options={options} />
+			<button type="button" onClick={() => captchaFoxRef.current?.destroy()}>
 				Destroy
 			</button>
-			<button type="button" onClick={() => turnstileRef.current?.reset()}>
+			<button type="button" onClick={() => captchaFoxRef.current?.reset()}>
 				Reset
 			</button>
-			<button type="button" onClick={() => turnstileRef.current?.execute()}>
+			<button type="button" onClick={() => captchaFoxRef.current?.execute()}>
 				Execute
 			</button>
 			<button type="button" onClick={handleGetResponse}>
@@ -35,7 +35,7 @@ export function HCaptchaTest() {
 				type="button"
 				onClick={() => {
 					const themes = ["light", "dark", "auto"];
-					const currentIndex = themes.indexOf(options.theme ?? "light");
+					const currentIndex = themes.indexOf(options.theme as string);
 					const nextIndex = (currentIndex + 1) % themes.length;
 					setOptions({ ...options, theme: themes[nextIndex] as RenderParameters["theme"] });
 				}}

@@ -1,16 +1,16 @@
-import { useRef, useState } from "react";
 import {
-	FriendlyCaptcha,
-	type FriendlyCaptchaHandle,
+	PrivateCaptcha,
+	type PrivateCaptchaHandle,
 	type RenderParameters,
-} from "react-captcha/provider/friendly-captcha";
+} from "@better-captcha/react/provider/private-captcha";
+import { useRef, useState } from "react";
 
-export function FriendlyCaptchaTest() {
-	const turnstileRef = useRef<FriendlyCaptchaHandle>(null);
+export function PrivateCaptchaTest() {
+	const turnstileRef = useRef<PrivateCaptchaHandle>(null);
 	const [options, setOptions] = useState(
-		(): Omit<RenderParameters, "sitekey" | "element"> => ({
+		(): Omit<RenderParameters, "sitekey"> => ({
 			theme: "light",
-			startMode: "focus",
+			startMode: "auto",
 		}),
 	);
 	const [response, setResponse] = useState<string | null>(null);
@@ -22,7 +22,9 @@ export function FriendlyCaptchaTest() {
 
 	return (
 		<div>
-			<FriendlyCaptcha ref={turnstileRef} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} />
+			<form>
+				<PrivateCaptcha ref={turnstileRef} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options} />
+			</form>
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy
 			</button>

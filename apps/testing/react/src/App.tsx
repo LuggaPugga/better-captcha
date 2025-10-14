@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { CaptchaFoxTest } from "./CaptchaFoxTest";
-import { FriendlyCaptchaTest } from "./FriendlyCaptchaTest";
-import { HCaptchaTest } from "./HCaptchaTest";
-import { PrivateCaptchaTest } from "./PrivateCaptchaTest";
-import { ProsopoTest } from "./ProsopoTest";
-import { RecaptchaTest } from "./RecaptchaTest";
-import { TurnstileTest } from "./TurnstileTest";
+import { CaptchaFoxTest } from "./captcha-fox-test";
+import { FriendlyCaptchaTest } from "./friendly-captcha-test";
+import { HCaptchaTest } from "./hcaptcha-test";
+import { PrivateCaptchaTest } from "./private-captcha-test";
+import { ProsopoTest } from "./prosopo-test";
+import { RecaptchaTest } from "./recaptcha-test";
+import { TurnstileTest } from "./turnstile-test";
 
 export function App() {
 	const [currentProvider, setCurrentProvider] = useState("turnstile");
