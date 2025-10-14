@@ -1,0 +1,29 @@
+{
+	"name": "@better-captcha/tests",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"main": "./playwright-config.ts",
+	"types": "./playwright-config.ts",
+	"files": [
+		"playwright-config.ts",
+		"tests"
+	],
+	"exports": {
+		".": {
+			"types": "./playwright-config.ts",
+			"default": "./playwright-config.ts"
+		},
+		"./playwright-config": {
+			"types": "./playwright-config.ts",
+			"default": "./playwright-config.ts"
+		},
+		"./tests/*": "./tests/*"
+	},
+	"peerDependencies": {
+		"@playwright/test": "^1.56.0"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.56.0"
+	}
+}

@@ -29,7 +29,7 @@
 		"build": "tsdown",
 		"build:prepare": "bun run generate",
 		"build:done": "rm -r src/provider",
-		"dev": "bun run build --watch"
+		"dev": "bun run generate && bun run build --watch && rm -r src/provider"
 	},
 	"exports": {
 		".": {
@@ -65,6 +65,7 @@
 		"react": "^19.0.0"
 	},
 	"devDependencies": {
+		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.56.0",
 		"@better-captcha/core": "workspace:*",
 		"@types/react": "^19.0.0",
