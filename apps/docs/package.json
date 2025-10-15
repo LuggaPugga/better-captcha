@@ -17,7 +17,7 @@
 		"fumadocs-typescript": "^4.0.11",
 		"fumadocs-ui": "^15.8.5",
 		"lucide-react": "^0.545.0",
-		"next": "16.0.0-canary.4",
+		"next": "16.0.0-canary.5",
 		"react": "19.2.0",
 		"@better-captcha/react": "workspace:*",
 		"react-dom": "19.2.0",
