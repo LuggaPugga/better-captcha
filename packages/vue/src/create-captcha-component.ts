@@ -46,6 +46,7 @@ export function createCaptchaComponent<
 		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
 			const state = ref<CaptchaState>({ loading: true, error: null, ready: false });
+			const widgetId = ref<WidgetId | null>(null);
 			const buildFallbackHandle = (): THandle & CaptchaHandle =>
 				({
 					execute: async () => {},
@@ -58,7 +59,6 @@ export function createCaptchaComponent<
 
 			let container: HTMLDivElement | null = null;
 			let provider: TProvider | null = null;
-			let widgetId: WidgetId | null = null;
 			let renderToken = 0;
 
 			const cleanup = (cancelRender = false): void => {
@@ -66,9 +66,9 @@ export function createCaptchaComponent<
 					renderToken += 1;
 				}
 
-				if (provider && widgetId != null) {
+				if (provider && widgetId.value != null) {
 					try {
-						provider.destroy(widgetId);
+						provider.destroy(widgetId.value);
 					} catch (error) {
 						console.warn("[better-captcha] cleanup:", error);
 					}
@@ -77,16 +77,16 @@ export function createCaptchaComponent<
 				container?.remove();
 				container = null;
 				provider = null;
-				widgetId = null;
+				widgetId.value = null;
 				handle.value = buildFallbackHandle();
 			};
 
 			const buildActiveHandle = (): THandle & CaptchaHandle => {
-				if (!provider || widgetId == null) {
+				if (!provider || widgetId.value == null) {
 					return buildFallbackHandle();
 				}
 
-				const baseHandle = provider.getHandle(widgetId);
+				const baseHandle = provider.getHandle(widgetId.value);
 				return {
 					...baseHandle,
 					getComponentState: () => state.value,
@@ -128,7 +128,7 @@ export function createCaptchaComponent<
 
 					provider = activeProvider;
 					container = mountTarget;
-					widgetId = id ?? null;
+					widgetId.value = id ?? null;
 					handle.value = buildActiveHandle();
 					state.value = { loading: false, error: null, ready: true };
 					emit("ready", handle.value);
@@ -169,10 +169,9 @@ export function createCaptchaComponent<
 			});
 
 			return () => {
-				const currentWidgetId = widgetId;
 				const elementId =
-					currentWidgetId !== null && currentWidgetId !== undefined
-						? `better-captcha-${currentWidgetId}`
+					widgetId.value !== null && widgetId.value !== undefined
+						? `better-captcha-${widgetId.value}`
 						: "better-captcha-loading";
 
 				return h("div", {
