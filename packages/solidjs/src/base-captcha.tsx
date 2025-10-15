@@ -2,9 +2,11 @@ import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } 
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, splitProps } from "solid-js";
 import type { CaptchaProps } from "./index";
 
-export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (sitekey: string) => Provider<ProviderConfig, TOptions, THandle>,
-) {
+export function createCaptchaComponent<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(ProviderClass: new (sitekey: string) => TProvider) {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [
 			"sitekey",
@@ -41,7 +43,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				setState({ loading: true, error: null, ready: false });
 			});
 
-			(async () => {
+			const renderCaptcha = async () => {
 				try {
 					await currentProvider.init();
 					if (cancelled) return;
@@ -52,7 +54,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 					const id = await currentProvider.render(container, options);
 					if (cancelled) {
-						if (id != null) currentProvider.destroy(id);
+						id != null && currentProvider.destroy(id);
 						container.remove();
 						return;
 					}
@@ -63,15 +65,17 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 					});
 				} catch (error) {
 					if (!cancelled) {
-						console.error("[better-captcha] render:", error);
-						const err = error as Error;
+						const err = error instanceof Error ? error : new Error(String(error));
+						console.error("[better-captcha] render:", err);
 						batch(() => {
 							setState({ loading: false, error: err, ready: false });
 						});
 						props.onError?.(err);
 					}
 				}
-			})();
+			};
+
+			renderCaptcha();
 
 			onCleanup(() => {
 				cancelled = true;
@@ -87,7 +91,6 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				containerRef = null;
 			});
 		});
-
 		const handle = createMemo(() => {
 			const id = widgetId();
 			const currentState = state();
