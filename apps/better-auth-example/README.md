@@ -1,5 +1,7 @@
 # Better Auth + React Captcha Example
 
+🔗 **[Live Demo](https://example.better-captcha.dev)**
+
 This example demonstrates how to integrate [Better Auth](https://www.better-auth.com/) with the [better-captcha](https://github.com/LuggaPugga/better-captcha) library using Cloudflare Turnstile for bot protection.
 
 ## Features
