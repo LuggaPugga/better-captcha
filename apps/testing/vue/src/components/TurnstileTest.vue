@@ -21,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/vue/provider/turnstile";
 import { ref } from "vue";
-import { Turnstile, type TurnstileHandle, type RenderParameters } from "@better-captcha/vue/provider/turnstile";
 
 const captchaRef = ref<TurnstileHandle | null>(null);
 const response = ref<string | null>(null);
