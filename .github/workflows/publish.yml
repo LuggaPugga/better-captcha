@@ -37,8 +37,8 @@ jobs:
         id: package_info
         run: |
           PACKAGE_PATH="packages/${{ github.event.inputs.package }}"
-          PACKAGE_NAME=$(cat ${PACKAGE_PATH}/package.json | grep '"name"' | head -1 | sed 's/.*"name": "\(.*\)".*/\1/')
-          VERSION=$(cat ${PACKAGE_PATH}/package.json | grep '"version"' | head -1 | sed 's/.*"version": "\(.*\)".*/\1/')
+          PACKAGE_NAME=$(jq -r '.name' ${PACKAGE_PATH}/package.json)
+          VERSION=$(jq -r '.version' ${PACKAGE_PATH}/package.json)
           echo "package_path=${PACKAGE_PATH}" >> $GITHUB_OUTPUT
           echo "package_name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
@@ -53,6 +53,21 @@ jobs:
         run: |
           cd ${{ steps.package_info.outputs.package_path }}
           bun run build
+
+      - name: Check if version already exists
+        id: version_check
+        run: |
+          PACKAGE_NAME="${{ steps.package_info.outputs.package_name }}"
+          VERSION="${{ steps.package_info.outputs.version }}"
+          
+          if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null; then
+            echo "Version ${VERSION} already exists on npm"
+            echo "exists=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "Version ${VERSION} does not exist, proceeding with publish"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Publish to npm
         run: |
@@ -69,10 +84,10 @@ jobs:
           
           if [ -z "$PREV_TAG" ]; then
             # If no previous tag, get all commits for this package
-            COMMITS=$(git log --pretty=format:"- %s (%h)" -- ${{ steps.package_info.outputs.package_path }} | grep -v -i "renovate")
+            COMMITS=$(git log --pretty=format:"- %s (%h)" -- ${{ steps.package_info.outputs.package_path }} | grep -v -i "renovate" || echo "")
           else
             # Get commits since last tag for this package
-            COMMITS=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" -- ${{ steps.package_info.outputs.package_path }} | grep -v -i "renovate")
+            COMMITS=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" -- ${{ steps.package_info.outputs.package_path }} | grep -v -i "renovate" || echo "")
           fi
           
           # If no commits found, use a default message
@@ -98,16 +113,22 @@ jobs:
 
       - name: Create Git tag
         run: |
-          git tag ${{ steps.package_info.outputs.tag }}
-          git push origin ${{ steps.package_info.outputs.tag }}
+          TAG="${{ steps.package_info.outputs.tag }}"
+          
+          # Check if tag already exists
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists"
+            exit 1
+          fi
+          
+          git tag "$TAG"
+          git push origin "$TAG"
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.package_info.outputs.tag }}
-          release_name: ${{ steps.package_info.outputs.package_name }} v${{ steps.package_info.outputs.version }}
+          name: ${{ steps.package_info.outputs.package_name }} v${{ steps.package_info.outputs.version }}
           body_path: /tmp/changelog.md
           draft: false
           prerelease: false
