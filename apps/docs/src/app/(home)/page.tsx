@@ -40,7 +40,7 @@ export default async function HomePage() {
 			</section>
 
 			<section className="py-6 sm:py-8 border-t border-b border-border">
-				<ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 items-center gap-4 sm:gap-6 text-center">
+				<ul className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 items-center gap-4 sm:gap-6 text-center">
 					<li className="flex flex-col items-center space-y-1">
 						<div className="text-lg sm:text-xl font-semibold">{npmDownloads}</div>
 						<div className="text-xs sm:text-sm text-muted-foreground leading-tight">
@@ -60,22 +60,6 @@ export default async function HomePage() {
 					<li className="flex flex-col items-center space-y-1">
 						<div className="text-lg sm:text-xl font-semibold">2</div>
 						<div className="text-xs sm:text-sm text-muted-foreground">Frameworks</div>
-					</li>
-					<li className="flex flex-col items-center space-y-1">
-						<div className="text-lg sm:text-xl font-semibold">~2.3kB</div>
-						<div className="text-xs sm:text-sm text-muted-foreground leading-tight">
-							Runtime
-							<br className="sm:hidden" />
-							footprint
-						</div>
-					</li>
-					<li className="flex flex-col items-center space-y-1">
-						<div className="text-lg sm:text-xl font-semibold">100%</div>
-						<div className="text-xs sm:text-sm text-muted-foreground leading-tight">
-							Type
-							<br className="sm:hidden" />
-							coverage
-						</div>
 					</li>
 				</ul>
 			</section>
