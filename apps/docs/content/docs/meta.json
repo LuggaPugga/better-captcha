@@ -2,7 +2,9 @@
 	"pages": [
 		"---Links---",
 		"[Github][GitHub Repository](https://github.com/LuggaPugga/better-captcha)",
-		"[Download][NPM Package](https://www.npmjs.com/package/@better-captcha/react)",
+		"[Download][Download React](https://www.npmjs.com/package/@better-captcha/react)",
+		"[Download][Download SolidJS](https://www.npmjs.com/package/@better-captcha/solidjs)",
+		"[Download][Download Vue](https://www.npmjs.com/package/@better-captcha/vue)",
 		"---Docs---",
 		"..."
 	]

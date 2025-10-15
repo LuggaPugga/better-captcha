@@ -7,13 +7,14 @@ description: Imperative Handle
 
 Each provider exposes an imperative handle so you can programmatically control the widget (e.g. reset, execute) and access provider-specific methods like reading the current response.
 
-The handle is fully typed per provider and the implementation differs between React and SolidJS:
+The handle is fully typed per provider and the implementation differs between frameworks:
 - **React**: Uses refs with `useRef` and `forwardRef`
 - **SolidJS**: Uses a controller pattern with `createCaptchaController`
+- **Vue**: Uses template refs or the `useCaptcha` composable for reactive access
 
 ## Usage
 
-<Tabs items={['React', 'SolidJS']} groupId="framework">
+<Tabs items={['React', 'SolidJS', 'Vue']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { useRef } from "react";
@@ -56,6 +57,40 @@ The handle is fully typed per provider and the implementation differs between Re
   
   The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining when calling methods.
   </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptcha
+      ref="recaptchaRef"
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      @ready="onReady"
+    />
+    <button @click="execute">Execute</button>
+    <button @click="reset">Reset</button>
+    <button @click="logResponse">Log response</button>
+  </template>
+
+  <script setup lang="ts">
+  import { useCaptcha } from "@better-captcha/vue";
+  import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/vue/provider/recaptcha";
+
+  const { captchaRef, handle, execute, reset } = useCaptcha<ReCaptchaHandle>();
+
+  const recaptchaRef = captchaRef;
+
+  const onReady = (readyHandle: ReCaptchaHandle) => {
+    console.log("Captcha ready", readyHandle);
+  };
+
+  const logResponse = () => {
+    console.log(handle.value?.getResponse());
+  };
+  </script>
+  ```
+  
+  `useCaptcha()` keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via `ref="recaptchaRef"`.
+  </Tab>
 </Tabs>
 
 ## Common Methods
@@ -72,5 +107,3 @@ Provider-specific methods (e.g. `getState`) are documented on each provider page
 - [HCaptcha](/docs/provider/hcaptcha)
 - [Turnstile](/docs/provider/turnstile)
 - [Friendly Captcha](/docs/provider/friendly-captcha)
-
-
