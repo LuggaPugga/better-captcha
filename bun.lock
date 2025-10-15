@@ -106,7 +106,7 @@
     },
     "packages/react": {
       "name": "@better-captcha/react",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "devDependencies": {
         "@better-captcha/core": "workspace:*",
         "@better-captcha/tests": "workspace:*",
@@ -126,7 +126,7 @@
     },
     "packages/solidjs": {
       "name": "@better-captcha/solidjs",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "devDependencies": {
         "@better-captcha/core": "workspace:*",
         "@better-captcha/tests": "workspace:*",
