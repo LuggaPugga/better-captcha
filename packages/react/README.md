@@ -1,6 +1,6 @@
-# @better-captcha/solidjs
+# @better-captcha/react
 
-SolidJS wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors without touching your UI.
+React wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors without touching your UI.
 
 > [!WARNING]
 > This library is in early development and is not production ready yet. Expect breaking API changes while the provider surface stabilises.
@@ -8,16 +8,16 @@ SolidJS wrappers for CAPTCHA providers that share the same lifecycle, render flo
 ## Installation
 
 ```sh
-bun install @better-captcha/solidjs
+bun install @better-captcha/react
 ```
 ```sh
-npm install @better-captcha/solidjs
+npm install @better-captcha/react
 ```
 
 ## Basic usage
 
 ```tsx
-import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
 
 export function ContactCaptcha() {
 	return <ReCaptcha sitekey="your-site-key" />;
@@ -31,4 +31,3 @@ Keep the component inside a client-only boundary, access the ref to call `execut
 - Unified hook-driven lifecycle that loads provider scripts on demand.
 - Shared handle API (`execute`, `reset`, `destroy`, `getResponse`) across providers.
 - Provider-specific bundles such as reCAPTCHA, hCaptcha, Turnstile, and Friendly Captcha.
-
