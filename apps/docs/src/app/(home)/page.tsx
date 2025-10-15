@@ -40,28 +40,24 @@ export default async function HomePage() {
 			</section>
 
 			<section className="py-6 sm:py-8 border-t border-b border-border">
-				<ul className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 items-center gap-4 sm:gap-6 text-center">
-					<li className="flex flex-col items-center space-y-1">
-						<div className="text-lg sm:text-xl font-semibold">{npmDownloads}</div>
-						<div className="text-xs sm:text-sm text-muted-foreground leading-tight">
-							npm downloads
-							<br className="sm:hidden" />
-							this week
-						</div>
-					</li>
-					<li className="flex flex-col items-center space-y-1">
-						<div className="text-lg sm:text-xl font-semibold">{githubStars}</div>
+				<div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 items-center gap-4 sm:gap-6 text-center">
+					<div className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-muted/50 transition-colors">
+						<div className="text-2xl sm:text-3xl font-bold text-primary">{npmDownloads}</div>
+						<div className="text-xs sm:text-sm text-muted-foreground leading-tight">npm downloads this week</div>
+					</div>
+					<div className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-muted/50 transition-colors">
+						<div className="text-2xl sm:text-3xl font-bold text-primary">{githubStars}</div>
 						<div className="text-xs sm:text-sm text-muted-foreground">GitHub stars</div>
-					</li>
-					<li className="flex flex-col items-center space-y-1">
-						<div className="text-lg sm:text-xl font-semibold">7</div>
+					</div>
+					<div className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-muted/50 transition-colors">
+						<div className="text-2xl sm:text-3xl font-bold text-primary">7</div>
 						<div className="text-xs sm:text-sm text-muted-foreground">Providers</div>
-					</li>
-					<li className="flex flex-col items-center space-y-1">
-						<div className="text-lg sm:text-xl font-semibold">2</div>
+					</div>
+					<div className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-muted/50 transition-colors">
+						<div className="text-2xl sm:text-3xl font-bold text-primary">2</div>
 						<div className="text-xs sm:text-sm text-muted-foreground">Frameworks</div>
-					</li>
-				</ul>
+					</div>
+				</div>
 			</section>
 
 			<section className="py-6 sm:py-8">
