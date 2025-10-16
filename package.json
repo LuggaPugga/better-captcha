@@ -3,11 +3,12 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/react --filter=@better-captcha/solidjs",
+		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/react --filter=@better-captcha/solidjs --filter=@better-captcha/vue",
 		"build:apps": "turbo run build --filter=apps/*",
 		"dev": "turbo run dev",
 		"dev:react": "turbo run dev --filter=@better-captcha/react",
 		"dev:solid": "turbo run dev --filter=@better-captcha/solidjs",
+		"dev:vue": "turbo run dev --filter=@better-captcha/vue",
 		"lint": "turbo run lint",
 		"start": "turbo run start",
 		"format": "biome format --write",

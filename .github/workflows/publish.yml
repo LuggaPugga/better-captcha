@@ -10,6 +10,7 @@ on:
         options:
           - react
           - solidjs
+          - vue
 
 jobs:
   publish:

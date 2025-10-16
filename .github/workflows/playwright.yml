@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [react, solidjs] 
+        project: [react, solidjs, vue] 
     steps:
       - uses: actions/checkout@v5
 
