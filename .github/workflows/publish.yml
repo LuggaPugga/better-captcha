@@ -97,6 +97,7 @@ jobs:
             const { data } = await github.rest.repos.generateReleaseNotes({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              branch: context.repo.branch,
               tag_name: "${{ steps.package_info.outputs.tag }}",
               previous_tag_name: require('child_process').execSync(
                 'git tag -l "${{ steps.package_info.outputs.package_name }}@*" | sort -V | tail -n 2 | head -n 1',
