@@ -67,13 +67,18 @@ jobs:
           PACKAGE_NAME="${{ steps.package_info.outputs.package_name }}"
           VERSION="${{ steps.package_info.outputs.version }}"
           
-          if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null; then
-            echo "Version ${VERSION} already exists on npm"
-            echo "exists=true" >> $GITHUB_OUTPUT
-            exit 1
-          else
-            echo "Version ${VERSION} does not exist, proceeding with publish"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN: Would check if version ${VERSION} already exists on npm"
             echo "exists=false" >> $GITHUB_OUTPUT
+          else
+            if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null; then
+              echo "Version ${VERSION} already exists on npm"
+              echo "exists=true" >> $GITHUB_OUTPUT
+              exit 1
+            else
+              echo "Version ${VERSION} does not exist, proceeding with publish"
+              echo "exists=false" >> $GITHUB_OUTPUT
+            fi
           fi
 
       - name: Publish to npm
