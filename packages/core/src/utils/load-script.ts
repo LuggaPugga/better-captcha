@@ -1,6 +1,5 @@
 export interface LoadScriptOptions {
 	callbackName?: string;
-	onCallback?: (...args: unknown[]) => void;
 	timeout?: number;
 	async?: boolean;
 	defer?: boolean;
@@ -14,29 +13,45 @@ export class ScriptLoader {
 	private pending = new Map<string, Promise<void>>();
 	private callbackId = 0;
 
-	generateCallbackName(prefix = "callback") {
+	generateCallbackName(prefix = "callback"): string {
 		return `betterCaptcha_${prefix}_${++this.callbackId}`;
 	}
 
-	private findScript(src: string): HTMLScriptElement | null {
-		if (!isBrowser) return null;
-		return document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
+	async loadScript(src: string, options: LoadScriptOptions = {}): Promise<void> {
+		if (this.loaded.has(src)) return;
+
+		const pending = this.pending.get(src);
+		if (pending) return pending;
+
+		const existingScript = isBrowser && document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
+		if (existingScript) {
+			this.loaded.add(src);
+			return;
+		}
+
+		const promise = this.loadScriptInternal(src, options);
+		this.pending.set(src, promise);
+
+		try {
+			await promise;
+			this.loaded.add(src);
+		} finally {
+			this.pending.delete(src);
+		}
 	}
 
-	private setupCallback(options: LoadScriptOptions): Promise<void> | null {
-		const { callbackName, onCallback } = options;
+	private async loadScriptInternal(src: string, options: LoadScriptOptions): Promise<void> {
+		const callbackPromise = this.setupCallback(options.callbackName);
+		const scriptPromise = this.createScript(src, options);
+
+		await Promise.all([scriptPromise, callbackPromise].filter(Boolean));
+	}
+
+	private setupCallback(callbackName?: string): Promise<void> | null {
 		if (!callbackName || !isBrowser) return null;
 
-		const win = window as unknown as Record<string, unknown>;
-		const prev = win[callbackName];
-
 		return new Promise<void>((resolve) => {
-			win[callbackName] = (...args: unknown[]) => {
-				if (typeof prev === "function") prev(...args);
-				onCallback?.(...args);
-				win[callbackName] = prev;
-				resolve();
-			};
+			(window as Record<string, unknown>)[callbackName] = () => resolve();
 		});
 	}
 
@@ -48,7 +63,7 @@ export class ScriptLoader {
 		const script = document.createElement("script");
 		script.src = src;
 		script.async = options.async ?? true;
-		script.defer = options.defer ?? false;
+		script.defer = options.defer ?? true;
 		script.type = options.type ?? "text/javascript";
 
 		return new Promise<void>((resolve, reject) => {
@@ -62,7 +77,6 @@ export class ScriptLoader {
 
 			script.onload = () => {
 				cleanup();
-				this.loaded.add(src);
 				resolve();
 			};
 
@@ -74,35 +88,6 @@ export class ScriptLoader {
 
 			document.head.appendChild(script);
 		});
-	}
-
-	loadScript(src: string, options: LoadScriptOptions = {}): Promise<void> {
-		if (this.loaded.has(src)) {
-			options.onCallback?.();
-			return Promise.resolve();
-		}
-
-		const callbackPromise = this.setupCallback(options);
-
-		const existing = this.pending.get(src);
-		if (existing) {
-			return callbackPromise ? Promise.all([existing, callbackPromise]).then(() => {}) : existing;
-		}
-
-		const existingScript = this.findScript(src);
-		if (existingScript) {
-			this.loaded.add(src);
-			options.onCallback?.();
-			return Promise.resolve();
-		}
-
-		const loadPromise = this.createScript(src, options);
-		const finalPromise = callbackPromise ? Promise.all([loadPromise, callbackPromise]).then(() => {}) : loadPromise;
-
-		this.pending.set(src, finalPromise);
-		finalPromise.finally(() => this.pending.delete(src));
-
-		return finalPromise;
 	}
 }
 
