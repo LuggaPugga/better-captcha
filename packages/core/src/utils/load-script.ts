@@ -52,7 +52,7 @@ export class ScriptLoader {
 
 			return new Promise<void>((resolve, reject) => {
 				const timeout = setTimeout(() => {
-					delete (window as Record<string, unknown>)[callbackName];
+					(window as Record<string, unknown>)[callbackName] = prev;
 					reject(new Error(`Callback timeout: ${callbackName}`));
 				}, 15000);
 				const prev = (window as Record<string, unknown>)[callbackName];
