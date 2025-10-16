@@ -112,12 +112,7 @@ export function createCaptchaComponent<
 
 				try {
 					await activeProvider.init();
-					if (token !== renderToken) {
-						if (typeof activeProvider.dispose === "function") {
-							activeProvider.dispose();
-						}
-						return;
-					}
+					if (token !== renderToken) return;
 
 					mountTarget = document.createElement("div");
 					host.appendChild(mountTarget);
