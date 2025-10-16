@@ -151,6 +151,9 @@ jobs:
             echo "- 🏷️ Create git tag (skipped in dry run)" >> $GITHUB_STEP_SUMMARY
             echo "- 🚀 Create GitHub release (skipped in dry run)" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Changelog" >> $GITHUB_STEP_SUMMARY
+            echo "${{ steps.changelog.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
             echo "### To publish, run without the dry_run flag"
           else
             echo "## 🚀 Published ${{ steps.package_info.outputs.package_name }}@${{ steps.package_info.outputs.version }}" >> $GITHUB_STEP_SUMMARY
@@ -160,4 +163,7 @@ jobs:
             echo "- **Version**: \`${{ steps.package_info.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
             echo "- **NPM**: https://www.npmjs.com/package/${{ steps.package_info.outputs.package_name }}" >> $GITHUB_STEP_SUMMARY
             echo "- **Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.package_info.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Changelog" >> $GITHUB_STEP_SUMMARY
+            echo "${{ steps.changelog.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
           fi
