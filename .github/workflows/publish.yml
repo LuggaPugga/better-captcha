@@ -11,6 +11,11 @@ on:
           - react
           - solidjs
           - vue
+      dry_run:
+        description: 'Dry run - show what would be published without making changes'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   publish:
@@ -62,13 +67,18 @@ jobs:
           PACKAGE_NAME="${{ steps.package_info.outputs.package_name }}"
           VERSION="${{ steps.package_info.outputs.version }}"
           
-          if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null; then
-            echo "Version ${VERSION} already exists on npm"
-            echo "exists=true" >> $GITHUB_OUTPUT
-            exit 1
-          else
-            echo "Version ${VERSION} does not exist, proceeding with publish"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN: Would check if version ${VERSION} already exists on npm"
             echo "exists=false" >> $GITHUB_OUTPUT
+          else
+            if npm view "${PACKAGE_NAME}@${VERSION}" version 2>/dev/null; then
+              echo "Version ${VERSION} already exists on npm"
+              echo "exists=true" >> $GITHUB_OUTPUT
+              exit 1
+            else
+              echo "Version ${VERSION} does not exist, proceeding with publish"
+              echo "exists=false" >> $GITHUB_OUTPUT
+            fi
           fi
 
       - name: Publish to npm
@@ -77,41 +87,26 @@ jobs:
           bun publish --access public
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: ${{ !github.event.inputs.dry_run }}
 
       - name: Generate changelog
         id: changelog
-        run: |
-          # Get the previous tag for this package
-          PREV_TAG=$(git tag -l "${{ steps.package_info.outputs.package_name }}@*" | sort -V | tail -n 1)
-          
-          if [ -z "$PREV_TAG" ]; then
-            # If no previous tag, get all commits for this package
-            COMMITS=$(git log --pretty=format:"- %s (%h)" -- ${{ steps.package_info.outputs.package_path }} | grep -v -i "renovate" || echo "")
-          else
-            # Get commits since last tag for this package
-            COMMITS=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" -- ${{ steps.package_info.outputs.package_path }} | grep -v -i "renovate" || echo "")
-          fi
-          
-          # If no commits found, use a default message
-          if [ -z "$COMMITS" ]; then
-            COMMITS="- Release ${{ steps.package_info.outputs.version }}"
-          fi
-          
-          # Create changelog
-          if [ -z "$PREV_TAG" ]; then
-            CHANGELOG="## What's Changed
-
-          ${COMMITS}"
-          else
-            CHANGELOG="## What's Changed
-
-          ${COMMITS}
-
-          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${{ steps.package_info.outputs.tag }}"
-          fi
-          
-          # Save to file for multiline handling
-          echo "$CHANGELOG" > /tmp/changelog.md
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: context.repo.branch,
+              tag_name: "${{ steps.package_info.outputs.tag }}",
+              previous_tag_name: require('child_process').execSync(
+                'git tag -l "${{ steps.package_info.outputs.package_name }}@*" | sort -V | tail -n 2 | head -n 1',
+                { encoding: 'utf-8' }
+              ).trim() || undefined,
+              configuration_file_path: ".github/release-notes-config.json"
+            });
+            
+            core.setOutput('changelog', data.body);
 
       - name: Create Git tag
         run: |
@@ -125,22 +120,44 @@ jobs:
           
           git tag "$TAG"
           git push origin "$TAG"
+        if: ${{ !github.event.inputs.dry_run }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.package_info.outputs.tag }}
           name: ${{ steps.package_info.outputs.package_name }} v${{ steps.package_info.outputs.version }}
-          body_path: /tmp/changelog.md
+          body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
+        if: ${{ !github.event.inputs.dry_run }}
 
       - name: Summary
         run: |
-          echo "## 🚀 Published ${{ steps.package_info.outputs.package_name }}@${{ steps.package_info.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Package Details" >> $GITHUB_STEP_SUMMARY
-          echo "- **Package**: \`${{ steps.package_info.outputs.package_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: \`${{ steps.package_info.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **NPM**: https://www.npmjs.com/package/${{ steps.package_info.outputs.package_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.package_info.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "## 🔍 Dry Run: Preview of Publication" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### What would be published:" >> $GITHUB_STEP_SUMMARY
+            echo "- **Package**: \`${{ steps.package_info.outputs.package_name }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- **Version**: \`${{ steps.package_info.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- **Tag**: \`${{ steps.package_info.outputs.tag }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Actions that would be performed:" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Build core package" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Build selected package" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Verify version doesn't exist on npm" >> $GITHUB_STEP_SUMMARY
+            echo "- 📦 Publish to npm (skipped in dry run)" >> $GITHUB_STEP_SUMMARY
+            echo "- 📝 Generate changelog (would include release notes)" >> $GITHUB_STEP_SUMMARY
+            echo "- 🏷️ Create git tag (skipped in dry run)" >> $GITHUB_STEP_SUMMARY
+            echo "- 🚀 Create GitHub release (skipped in dry run)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### To publish, run without the dry_run flag"
+          else
+            echo "## 🚀 Published ${{ steps.package_info.outputs.package_name }}@${{ steps.package_info.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Package Details" >> $GITHUB_STEP_SUMMARY
+            echo "- **Package**: \`${{ steps.package_info.outputs.package_name }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- **Version**: \`${{ steps.package_info.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+            echo "- **NPM**: https://www.npmjs.com/package/${{ steps.package_info.outputs.package_name }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.package_info.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          fi
