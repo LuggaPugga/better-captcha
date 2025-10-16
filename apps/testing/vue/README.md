@@ -12,7 +12,7 @@ bun install
 bun run dev
 ```
 
-The app will be available at `http://localhost:9001`
+The app will be available at `http://localhost:9002`
 
 ## Testing Providers
 
