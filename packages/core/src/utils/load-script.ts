@@ -1,5 +1,4 @@
 export interface LoadScriptOptions {
-	callbackName?: string;
 	timeout?: number;
 	async?: boolean;
 	defer?: boolean;
@@ -11,11 +10,6 @@ const isBrowser = typeof window !== "undefined" && typeof document !== "undefine
 export class ScriptLoader {
 	private loaded = new Set<string>();
 	private pending = new Map<string, Promise<void>>();
-	private callbackId = 0;
-
-	generateCallbackName(prefix = "callback"): string {
-		return `betterCaptcha_${prefix}_${++this.callbackId}`;
-	}
 
 	async loadScript(src: string, options: LoadScriptOptions = {}): Promise<void> {
 		if (this.loaded.has(src)) return;
@@ -41,18 +35,27 @@ export class ScriptLoader {
 	}
 
 	private async loadScriptInternal(src: string, options: LoadScriptOptions): Promise<void> {
-		const callbackPromise = this.setupCallback(options.callbackName);
+		const callbackPromise = this.detectAndSetupCallback(src);
 		const scriptPromise = this.createScript(src, options);
 
 		await Promise.all([scriptPromise, callbackPromise].filter(Boolean));
 	}
 
-	private setupCallback(callbackName?: string): Promise<void> | null {
-		if (!callbackName || !isBrowser) return null;
+	private detectAndSetupCallback(src: string): Promise<void> | null {
+		if (!isBrowser) return null;
 
-		return new Promise<void>((resolve) => {
-			(window as Record<string, unknown>)[callbackName] = () => resolve();
-		});
+		try {
+			const url = new URL(src, window.location.href);
+			const callbackName = url.searchParams.get("onload") || url.searchParams.get("callback");
+
+			if (!callbackName) return null;
+
+			return new Promise<void>((resolve) => {
+				(window as Record<string, unknown>)[callbackName] = () => resolve();
+			});
+		} catch {
+			return null;
+		}
 	}
 
 	private createScript(src: string, options: LoadScriptOptions): Promise<void> {
@@ -93,4 +96,3 @@ export class ScriptLoader {
 
 export const defaultScriptLoader = new ScriptLoader();
 export const loadScript = defaultScriptLoader.loadScript.bind(defaultScriptLoader);
-export const generateCallbackName = defaultScriptLoader.generateCallbackName.bind(defaultScriptLoader);

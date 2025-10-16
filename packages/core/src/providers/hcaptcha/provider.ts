@@ -1,5 +1,5 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
-import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { HCaptcha, RenderParameters } from "./types";
 
@@ -8,8 +8,6 @@ declare global {
 		hcaptcha: HCaptcha.HCaptcha;
 	}
 }
-
-const HCAPTCHA_ONLOAD_CALLBACK = generateCallbackName("hcaptchaOnload");
 
 export type HCaptchaHandle = CaptchaHandle;
 
@@ -24,21 +22,11 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 	}
 
 	async init() {
-		const scriptUrl = this.buildScriptUrl();
-
-		await loadScript(scriptUrl, {
-			async: true,
-			defer: true,
-			callbackName: HCAPTCHA_ONLOAD_CALLBACK,
-		});
-	}
-
-	private buildScriptUrl() {
 		const url = new URL(this.config.scriptUrl);
 		url.searchParams.set("render", "explicit");
 		url.searchParams.set("recaptchacompat", "off");
-		url.searchParams.set("onload", HCAPTCHA_ONLOAD_CALLBACK);
-		return url.toString();
+		url.searchParams.set("onload", "betterCaptchaHcaptchaOnload");
+		await loadScript(url.toString());
 	}
 
 	render(element: HTMLElement, options?: RenderParameters) {

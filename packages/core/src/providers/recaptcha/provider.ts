@@ -1,5 +1,5 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
-import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { ReCaptcha, RenderParameters } from "./types";
 
@@ -8,8 +8,6 @@ declare global {
 		grecaptcha: ReCaptcha.ReCaptcha;
 	}
 }
-
-const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
 export type ReCaptchaHandle = CaptchaHandle;
 
@@ -24,20 +22,10 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
-		const scriptUrl = this.buildScriptUrl();
-
-		await loadScript(scriptUrl, {
-			async: true,
-			defer: true,
-			callbackName: RECAPTCHA_ONLOAD_CALLBACK,
-		});
-	}
-
-	private buildScriptUrl() {
 		const url = new URL(this.config.scriptUrl);
 		url.searchParams.set("render", "explicit");
-		url.searchParams.set("onload", RECAPTCHA_ONLOAD_CALLBACK);
-		return url.toString();
+		url.searchParams.set("onload", "betterCaptchaRecaptchaOnload");
+		await loadScript(url.toString());
 	}
 
 	async render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {

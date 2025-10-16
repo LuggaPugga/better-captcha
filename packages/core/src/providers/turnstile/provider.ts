@@ -1,5 +1,5 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
-import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { loadScript } from "../../utils/load-script";
 import type { RenderParameters, Turnstile } from "./types";
 
 declare global {
@@ -7,8 +7,6 @@ declare global {
 		turnstile: Turnstile.Turnstile;
 	}
 }
-
-const TURNSTILE_ONLOAD_CALLBACK = generateCallbackName("turnstileOnload");
 
 export type TurnstileHandle = CaptchaHandle & {
 	isExpired: () => boolean;
@@ -25,19 +23,9 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
-		const scriptUrl = this.buildScriptUrl();
-
-		await loadScript(scriptUrl, {
-			async: true,
-			defer: true,
-			callbackName: TURNSTILE_ONLOAD_CALLBACK,
-		});
-	}
-
-	private buildScriptUrl() {
 		const url = new URL(this.config.scriptUrl);
-		url.searchParams.set("onload", TURNSTILE_ONLOAD_CALLBACK);
-		return url.toString();
+		url.searchParams.set("onload", "betterCaptchaTurnstileOnload");
+		await loadScript(url.toString());
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
