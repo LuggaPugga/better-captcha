@@ -22,9 +22,12 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
+		const callbackName = `betterCaptchaRecaptcha_${Math.random().toString(36).slice(2, 11)}`;
+
 		const url = new URL(this.config.scriptUrl);
 		url.searchParams.set("render", "explicit");
-		url.searchParams.set("onload", "betterCaptchaRecaptchaOnload");
+		url.searchParams.set("onload", callbackName);
+
 		await loadScript(url.toString());
 	}
 

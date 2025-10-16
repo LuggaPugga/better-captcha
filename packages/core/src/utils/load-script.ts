@@ -50,8 +50,21 @@ export class ScriptLoader {
 
 			if (!callbackName) return null;
 
-			return new Promise<void>((resolve) => {
-				(window as Record<string, unknown>)[callbackName] = () => resolve();
+			return new Promise<void>((resolve, reject) => {
+				const timeout = setTimeout(() => {
+					delete (window as Record<string, unknown>)[callbackName];
+					reject(new Error(`Callback timeout: ${callbackName}`));
+				}, 15000);
+				const prev = (window as Record<string, unknown>)[callbackName];
+				(window as Record<string, unknown>)[callbackName] = () => {
+					try {
+						if (typeof prev === "function") (prev as () => void)();
+					} finally {
+						clearTimeout(timeout);
+						delete (window as Record<string, unknown>)[callbackName];
+						resolve();
+					}
+				};
 			});
 		} catch {
 			return null;

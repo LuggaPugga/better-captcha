@@ -22,10 +22,13 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 	}
 
 	async init() {
+		const callbackName = `betterCaptchaHcaptcha_${Math.random().toString(36).slice(2, 11)}`;
+
 		const url = new URL(this.config.scriptUrl);
 		url.searchParams.set("render", "explicit");
 		url.searchParams.set("recaptchacompat", "off");
-		url.searchParams.set("onload", "betterCaptchaHcaptchaOnload");
+		url.searchParams.set("onload", callbackName);
+
 		await loadScript(url.toString());
 	}
 

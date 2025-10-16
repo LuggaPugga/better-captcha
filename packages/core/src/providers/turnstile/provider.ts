@@ -23,8 +23,11 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
+		const callbackName = `betterCaptchaTurnstile_${Math.random().toString(36).slice(2, 11)}`;
+
 		const url = new URL(this.config.scriptUrl);
-		url.searchParams.set("onload", "betterCaptchaTurnstileOnload");
+		url.searchParams.set("onload", callbackName);
+
 		await loadScript(url.toString());
 	}
 
