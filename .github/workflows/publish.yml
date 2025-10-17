@@ -184,3 +184,4 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Changelog" >> $GITHUB_STEP_SUMMARY
             echo "${{ steps.changelog.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
+          fi
