@@ -1,6 +1,6 @@
 export async function getGithubStars() {
 	const response = await fetch("https://api.github.com/repos/LuggaPugga/better-captcha", {
-		next: { revalidate: 60 * 60 },
+		next: { revalidate: 60 * 10 },
 		headers: {
 			Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
 		},
@@ -12,16 +12,11 @@ export async function getGithubStars() {
 }
 
 export async function getNpmDownloads() {
-	const packages = ["react", "solid"];
+	const response = await fetch(`https://api.npmjs.org/downloads/point/last-week/@better-captcha/core`, {
+		next: { revalidate: 60 * 10 },
+	})
+		.then((res) => (res.ok ? (res.json() as Promise<{ downloads: number }>) : { downloads: 0 }))
+		.catch(() => ({ downloads: 0 }));
 
-	const promises = packages.map((pkg) =>
-		fetch(`https://api.npmjs.org/downloads/point/last-week/@better-captcha/${pkg}`, {
-			next: { revalidate: 60 * 60 },
-		})
-			.then((res) => (res.ok ? (res.json() as Promise<{ downloads: number }>) : { downloads: 0 }))
-			.catch(() => ({ downloads: 0 })),
-	);
-
-	const results = await Promise.all(promises);
-	return results.reduce((total, result) => total + (result.downloads || 0), 0);
+	return response.downloads;
 }
