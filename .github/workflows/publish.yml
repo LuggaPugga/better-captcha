@@ -24,8 +24,8 @@ jobs:
     permissions:
       contents: write
       id-token: write
-      actions:  write
-      
+      actions: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -56,7 +56,7 @@ jobs:
         if: ${{ github.event.inputs.package != 'core' }}
         run: |
           CORE_VERSION=$(jq -r '.version' packages/core/package.json)
-          
+
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN: Would check if @better-captcha/core@${CORE_VERSION} exists on npm"
           else
@@ -85,7 +85,7 @@ jobs:
         run: |
           PACKAGE_NAME="${{ steps.package_info.outputs.package_name }}"
           VERSION="${{ steps.package_info.outputs.version }}"
-          
+
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN: Would check if version ${VERSION} already exists on npm"
             echo "exists=false" >> $GITHUB_OUTPUT
@@ -101,12 +101,12 @@ jobs:
           fi
 
       - name: Publish to npm
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
           cd ${{ steps.package_info.outputs.package_path }}
           bun publish --access public
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: ${{ !github.event.inputs.dry_run }}
 
       - name: Generate changelog
         id: changelog
@@ -116,7 +116,6 @@ jobs:
             const { data } = await github.rest.repos.generateReleaseNotes({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              branch: context.repo.branch,
               tag_name: "${{ steps.package_info.outputs.tag }}",
               previous_tag_name: require('child_process').execSync(
                 'git tag -l "${{ steps.package_info.outputs.package_name }}@*" | sort -V | tail -n 2 | head -n 1',
@@ -124,24 +123,25 @@ jobs:
               ).trim() || undefined,
               configuration_file_path: ".github/release-notes-config.json"
             });
-            
+
             core.setOutput('changelog', data.body);
 
       - name: Create Git tag
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
           TAG="${{ steps.package_info.outputs.tag }}"
-          
+
           # Check if tag already exists
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG already exists"
             exit 1
           fi
-          
+
           git tag "$TAG"
           git push origin "$TAG"
-        if: ${{ !github.event.inputs.dry_run }}
 
       - name: Create GitHub Release
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.package_info.outputs.tag }}
@@ -149,7 +149,6 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
-        if: ${{ !github.event.inputs.dry_run }}
 
       - name: Summary
         run: |
@@ -185,4 +184,3 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Changelog" >> $GITHUB_STEP_SUMMARY
             echo "${{ steps.changelog.outputs.changelog }}" >> $GITHUB_STEP_SUMMARY
-          fi
