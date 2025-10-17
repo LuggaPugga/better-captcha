@@ -6,7 +6,5 @@ export default defineConfig({
 	platform: "browser",
 	dts: true,
 	ignoreWatch: [".turbo"],
-	external: [],
-	noExternal: ["@better-captcha/core"],
 	plugins: [rollupPlugin()],
 });

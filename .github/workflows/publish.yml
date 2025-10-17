@@ -8,6 +8,7 @@ on:
         required: true
         type: choice
         options:
+          - core
           - react
           - solidjs
           - vue
@@ -51,7 +52,25 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "tag=${PACKAGE_NAME}@${VERSION}" >> $GITHUB_OUTPUT
 
+      - name: Check core dependency
+        if: ${{ github.event.inputs.package != 'core' }}
+        run: |
+          CORE_VERSION=$(jq -r '.version' packages/core/package.json)
+          
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN: Would check if @better-captcha/core@${CORE_VERSION} exists on npm"
+          else
+            if ! npm view "@better-captcha/core@${CORE_VERSION}" version 2>/dev/null; then
+              echo "ERROR: @better-captcha/core@${CORE_VERSION} is not published to npm yet"
+              echo "Please publish core first before publishing framework packages"
+              exit 1
+            else
+              echo "✓ @better-captcha/core@${CORE_VERSION} exists on npm"
+            fi
+          fi
+
       - name: Build core package
+        if: ${{ github.event.inputs.package != 'core' }}
         run: |
           cd packages/core
           bun run build

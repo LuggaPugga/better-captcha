@@ -16,6 +16,5 @@ export default defineConfig({
 	minify: false,
 	treeshake: true,
 	ignoreWatch: [".turbo"],
-	noExternal: ["@better-captcha/core"],
 	plugins: [rollupPlugin()],
 });
