@@ -65,8 +65,10 @@
 		"typescript": "^5.9.2",
 		"vue": "^3.3.0"
 	},
+	"dependencies": {
+		"@better-captcha/core": "workspace:*"
+	},
 	"devDependencies": {
-		"@better-captcha/core": "workspace:*",
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.56.0",
 		"@types/bun": "1.3.0",
