@@ -38,6 +38,9 @@ export const CaptchaFoxTest = component$(() => {
 			>
 				Get Response
 			</button>
+			<button type="button" onClick$={() => controller.value?.execute()}>
+				Execute
+			</button>
 			<button
 				type="button"
 				onClick$={() => {
