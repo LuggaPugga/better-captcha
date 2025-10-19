@@ -170,54 +170,46 @@ export const dtsEmitterPlugin = createUnplugin(() => {
 		name: "better-captcha-dts-emitter",
 		vite: {
 			enforce: "post",
+		},
 
-			generateBundle() {
-				// Emit provider modules
-				for (const provider of PROVIDER_REGISTRY) {
-					// .mjs file
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.qwik.mjs`,
-						source: genProviderModuleJs(provider),
-					});
-
-					// .cjs file
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.qwik.cjs`,
-						source: genProviderModuleCjs(provider),
-					});
-
-					// .d.ts file
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.d.ts`,
-						source: genProviderModuleDts(provider),
-					});
-				}
-
-				// Emit aggregate modules
-				// .mjs file
+		generateBundle() {
+			for (const provider of PROVIDER_REGISTRY) {
 				this.emitFile({
 					type: "asset",
-					fileName: "provider/index.qwik.mjs",
-					source: genProviderAggregateModuleJs(),
+					fileName: `provider/${provider.name}/index.qwik.mjs`,
+					source: genProviderModuleJs(provider),
 				});
 
-				// .cjs file
 				this.emitFile({
 					type: "asset",
-					fileName: "provider/index.qwik.cjs",
-					source: genProviderAggregateModuleCjs(),
+					fileName: `provider/${provider.name}/index.qwik.cjs`,
+					source: genProviderModuleCjs(provider),
 				});
 
-				// .d.ts file
 				this.emitFile({
 					type: "asset",
-					fileName: "provider/index.d.ts",
-					source: genProviderAggregateModuleDts(),
+					fileName: `provider/${provider.name}/index.d.ts`,
+					source: genProviderModuleDts(provider),
 				});
-			},
+			}
+
+			this.emitFile({
+				type: "asset",
+				fileName: "provider/index.qwik.mjs",
+				source: genProviderAggregateModuleJs(),
+			});
+
+			this.emitFile({
+				type: "asset",
+				fileName: "provider/index.qwik.cjs",
+				source: genProviderAggregateModuleCjs(),
+			});
+
+			this.emitFile({
+				type: "asset",
+				fileName: "provider/index.d.ts",
+				source: genProviderAggregateModuleDts(),
+			});
 		},
 	};
 });
