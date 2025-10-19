@@ -93,11 +93,12 @@ export function createCaptchaComponent<
 			let localProvider: TProvider | null = null;
 			try {
 				localProvider = await providerFactory$(props.sitekey);
+				if (cancelled) return;
 				provider.value = localProvider;
 			} catch (err) {
 				const e = err instanceof Error ? err : new Error(String(err));
 				state.value = { loading: false, error: e, ready: false };
-				if (props.onError) await props.onError(e);
+				if (props.onError$) await props.onError$(e);
 				return;
 			}
 
