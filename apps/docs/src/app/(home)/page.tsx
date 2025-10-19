@@ -54,7 +54,7 @@ export default async function HomePage() {
 						<div className="text-xs sm:text-sm text-muted-foreground">Providers</div>
 					</div>
 					<div className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-muted/50 transition-colors">
-						<div className="text-2xl sm:text-3xl font-bold text-primary">2</div>
+						<div className="text-2xl sm:text-3xl font-bold text-primary">3</div>
 						<div className="text-xs sm:text-sm text-muted-foreground">Frameworks</div>
 					</div>
 				</div>
