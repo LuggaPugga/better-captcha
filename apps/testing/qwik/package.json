@@ -1,10 +1,9 @@
 {
-	"name": "my-qwik-empty-starter",
-	"description": "Blank project with routing included",
+	"name": "testing-qwik",
+	"description": "Testing Qwik",
 	"engines": {
 		"node": "^18.17.0 || ^20.3.0 || >=21.0.0"
 	},
-	"engines-annotation": "Mostly required by sharp which needs a Node-API v9 compatible runtime",
 	"private": true,
 	"type": "module",
 	"scripts": {
