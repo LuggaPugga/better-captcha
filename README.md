@@ -17,6 +17,14 @@ bun install @better-captcha/react
 npm install @better-captcha/react
 ```
 
+### Qwik
+```sh
+bun install @better-captcha/qwik
+```
+```sh
+npm install @better-captcha/qwik
+```
+
 ### SolidJS
 ```sh
 bun install @better-captcha/solidjs
@@ -41,6 +49,15 @@ import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
 export function ContactCaptcha() {
 	return <ReCaptcha sitekey="your-site-key" />;
 }
+```
+
+```tsx
+import { component$ } from "@builder.io/qwik";
+import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+export const ContactCaptcha = component$(() => {
+	return <ReCaptcha sitekey="your-site-key" />;
+});
 ```
 
 ```vue

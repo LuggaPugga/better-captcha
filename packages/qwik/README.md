@@ -1,55 +1,34 @@
-# Qwik Library ⚡️
+# @better-captcha/qwik
 
-- [Qwik Docs](https://qwik.dev/)
-- [Discord](https://qwik.dev/chat)
-- [Qwik on GitHub](https://github.com/QwikDev/qwik)
-- [@QwikDev](https://twitter.com/QwikDev)
-- [Vite](https://vitejs.dev/)
-- [Partytown](https://partytown.qwik.dev/)
-- [Mitosis](https://github.com/BuilderIO/mitosis)
-- [Builder.io](https://www.builder.io/)
+Qwik wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors without touching your UI.
 
----
+> [!WARNING]
+> This library is in early development and is not production ready yet. Expect breaking API changes while the provider surface stabilises.
 
-## Project Structure
+## Installation
 
-Inside your project, you'll see the following directories and files:
-
+```sh
+bun install @better-captcha/qwik
 ```
-├── public/
-│   └── ...
-└── src/
-    ├── components/
-    │   └── ...
-    └── index.ts
+```sh
+npm install @better-captcha/qwik
 ```
 
-- `src/components`: Recommended directory for components.
+## Basic usage
 
-- `index.ts`: The entry point of your component library, make sure all the public components are exported from this file.
+```tsx
+import { component$ } from "@builder.io/qwik";
+import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
 
-## Development
-
-Development mode uses [Vite's development server](https://vitejs.dev/). For Qwik during development, the `dev` command will also server-side render (SSR) the output. The client-side development modules are loaded by the browser.
-
-```
-bun dev
-```
-
-> Note: during dev mode, Vite will request many JS files, which does not represent a Qwik production build.
-
-## Production
-
-The production build outputs the library and type declarations to `./dist`.
-
-```
-bun build
+export const ContactCaptcha = component$(() => {
+	return <ReCaptcha sitekey="your-site-key" />;
+});
 ```
 
-## sideEffects: false
+Keep the component inside a client-only boundary, access the handle via events when needed, and forward the response token to your backend alongside the form submission.
 
-This package is configured with "sideEffects": false in its package.json.<br/>
-This tells bundlers that the module [has no side effects](https://webpack.js.org/guides/tree-shaking/#mark-the-file-as-side-effect-free) when imported.<br/>
-Consequently, to maintain the integrity of tree-shaking optimizations, please ensure your code truly contains no side effects (such as modifying global variables or the DOM upon import).<br/>
-If your module does introduce side effects, remove "sideEffects": false or specify the specific files with side effects.<br/>
-Be sure to only remove it from the specific file where the global is being set. Finally, verify that your build continues to function as expected after making any adjustments to the sideEffects setting.
+## Key ideas
+
+- Unified lifecycle that loads provider scripts on demand.
+- Shared handle API (`execute`, `reset`, `destroy`, `getResponse`) across providers.
+- Provider-specific bundles such as reCAPTCHA, hCaptcha, Turnstile, and Friendly Captcha.
