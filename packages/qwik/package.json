@@ -33,7 +33,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "vite build --mode lib",
-		"dev": "vite --mode ssr",
+		"dev": "vite build --mode lib --watch",
 		"lint": "biome lint .",
 		"start": "vite --open --mode ssr",
 		"qwik": "qwik"
