@@ -63,11 +63,7 @@ export function createCaptchaComponent<
 			const p = provider.value;
 			const id = widgetId.value;
 			if (p && id != null) {
-				try {
-					p.destroy(id);
-				} catch {
-					/* ignore */
-				}
+				p.destroy(id);
 			}
 			widgetId.value = null;
 			containerEl.value?.remove();
