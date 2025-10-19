@@ -1,0 +1,63 @@
+import { useCaptchaController } from "@better-captcha/qwik";
+import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/qwik/provider/hcaptcha";
+import { component$, useSignal } from "@builder.io/qwik";
+
+export const HCaptchaTest = component$(() => {
+	const controller = useCaptchaController<HCaptchaHandle>();
+	const options = useSignal<Omit<RenderParameters, "sitekey">>({
+		theme: "light",
+		size: "normal",
+	});
+	const response = useSignal<string | null>(null);
+
+	return (
+		<div>
+			<HCaptcha controller={controller} options={options.value} sitekey="10000000-ffff-ffff-ffff-000000000001" />
+			<button
+				type="button"
+				onClick$={() => {
+					controller.value?.destroy();
+				}}
+			>
+				Destroy
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					controller.value?.reset();
+				}}
+			>
+				Reset
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					controller.value?.execute();
+				}}
+			>
+				Execute
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					const captchaResponse = controller.value?.getResponse() || "No response";
+					response.value = captchaResponse;
+				}}
+			>
+				Get Response
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					const themes = ["light", "dark"];
+					const currentIndex = themes.indexOf(options.value.theme || "light");
+					const nextIndex = (currentIndex + 1) % themes.length;
+					options.value = { ...options.value, theme: themes[nextIndex] as RenderParameters["theme"] };
+				}}
+			>
+				Change Theme
+			</button>
+			{response.value && <p id="captcha-response">{response.value}</p>}
+		</div>
+	);
+});
