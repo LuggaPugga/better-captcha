@@ -16,12 +16,23 @@ For more information, visit the [official hCaptcha documentation](https://docs.h
 
 ## Usage
 
-<Tabs items={['React', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { HCaptcha } from "@better-captcha/react/provider/hcaptcha";
 
   <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { HCaptcha } from "@better-captcha/qwik/provider/hcaptcha";
+
+  export default component$(() => (
+    <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ));
   ```
   </Tab>
   

@@ -16,12 +16,23 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
 
 ## Usage
 
-<Tabs items={['React', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
 
   <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+  export default component$(() => (
+    <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ));
   ```
   </Tab>
   

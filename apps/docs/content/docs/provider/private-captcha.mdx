@@ -19,12 +19,25 @@ For more information, visit the [official Private Captcha documentation](https:/
     Private Captcha only works inside a form.
 </Callout>
 
-<Tabs items={['React', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { PrivateCaptcha } from "@better-captcha/react/provider/private-captcha";
 
   <PrivateCaptcha siteKey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { PrivateCaptcha } from "@better-captcha/qwik/provider/private-captcha";
+
+  export default component$(() => (
+    <form>
+      <PrivateCaptcha siteKey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+    </form>
+  ));
   ```
   </Tab>
   
