@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [react, solidjs, vue] 
+        project: [react, solidjs, vue, qwik] 
     steps:
       - uses: actions/checkout@v5
 
