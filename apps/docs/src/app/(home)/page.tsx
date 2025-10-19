@@ -28,12 +28,6 @@ export default async function HomePage() {
 							>
 								Get Started
 							</Link>
-							<Link
-								href="/docs/overview"
-								className="inline-flex items-center justify-center rounded-md px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors w-full sm:w-auto"
-							>
-								Learn more
-							</Link>
 						</div>
 					</div>
 				</div>
