@@ -62,7 +62,7 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5.9.3",
-		"solid-js": "^1.9.0"
+		"solid-js": "^1.5.0"
 	},
 	"dependencies": {
 		"@better-captcha/core": "workspace:*"
