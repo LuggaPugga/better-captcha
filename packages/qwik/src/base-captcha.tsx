@@ -1,15 +1,15 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
-import type { NoSerialize, QRL } from "@builder.io/qwik";
+import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle> = {
 	sitekey: string;
 	options?: TOptions;
 	class?: string;
-	style?: string | Record<string, string>;
-	controller?: { value: NoSerialize<THandle> | null } | null;
-	onReady$?: QRL<(handle: NoSerialize<THandle>) => unknown>;
-	onError$?: QRL<(error: Error) => unknown>;
+	style?: string | Record<string, string | number>;
+	controller?: Signal<NoSerialize<THandle> | null>;
+	onReady?: QRL<(handle: NoSerialize<THandle>) => unknown>;
+	onError?: QRL<(error: Error) => unknown>;
 };
 
 export function createCaptchaComponent<
@@ -30,7 +30,7 @@ export function createCaptchaComponent<
 			try {
 				return JSON.stringify(props.options ?? null);
 			} catch {
-				return `${Math.random()}`;
+				return "__non_serializable__";
 			}
 		});
 
@@ -97,7 +97,7 @@ export function createCaptchaComponent<
 			} catch (err) {
 				const e = err instanceof Error ? err : new Error(String(err));
 				state.value = { loading: false, error: e, ready: false };
-				if (props.onError$) await props.onError$(e);
+				if (props.onError) await props.onError(e);
 				return;
 			}
 
@@ -112,7 +112,11 @@ export function createCaptchaComponent<
 				const id = await localProvider.render(container, props.options);
 				if (cancelled) {
 					if (id != null) {
-						localProvider.destroy(id);
+						try {
+							localProvider.destroy(id);
+						} catch {
+							/* ignore */
+						}
 					}
 					container.remove();
 					if (containerEl.value === container) containerEl.value = null;
@@ -123,24 +127,25 @@ export function createCaptchaComponent<
 				if (widgetId.value == null) {
 					const e = new Error("Captcha render returned null widget id");
 					state.value = { loading: false, error: e, ready: false };
-					if (props.onError$) await props.onError$(e);
+					if (props.onError) await props.onError(e);
 					return;
 				}
 
 				state.value = { loading: false, error: null, ready: true };
-				if (props.onReady$) {
+				if (props.onReady) {
 					const handle = await buildHandle$();
-					if (handle) await props.onReady$(handle);
+					if (handle) await props.onReady(handle);
 				}
 			} catch (err) {
 				if (cancelled) return;
 				const e = err instanceof Error ? err : new Error(String(err));
 				state.value = { loading: false, error: e, ready: false };
-				if (props.onError$) await props.onError$(e);
+				if (props.onError) await props.onError(e);
 			}
 
 			cleanup(() => {
 				cancelled = true;
+				void tearDown$();
 			});
 		});
 
