@@ -8,8 +8,8 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle> = {
 	class?: string;
 	style?: string | Record<string, string | number>;
 	controller?: Signal<NoSerialize<THandle> | null>;
-	onReady?: QRL<(handle: NoSerialize<THandle>) => unknown>;
-	onError?: QRL<(error: Error) => unknown>;
+	onReady?: QRL<(handle: NoSerialize<THandle>) => void>;
+	onError?: QRL<(error: Error) => void>;
 };
 
 export function createCaptchaComponent<
