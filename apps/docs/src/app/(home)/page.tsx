@@ -71,8 +71,8 @@ export default async function HomePage() {
 						<div className="text-xs sm:text-sm text-muted-foreground">Available</div>
 						<div className="mt-1 font-medium text-sm sm:text-base">Solid</div>
 					</div>
-					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg opacity-70">
-						<div className="text-xs sm:text-sm text-muted-foreground">Coming soon</div>
+					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg">
+						<div className="text-xs sm:text-sm text-muted-foreground">Available</div>
 						<div className="mt-1 font-medium text-sm sm:text-base">Vue</div>
 					</div>
 					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg opacity-70">
