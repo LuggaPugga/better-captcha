@@ -32,7 +32,7 @@
 	"sideEffects": false,
 	"type": "module",
 	"scripts": {
-		"build": "vite build --mode lib",
+		"build": "tsc --project tsconfig.json --emitDeclarationOnly && vite build --mode lib",
 		"dev": "vite --mode ssr",
 		"lint": "biome lint .",
 		"start": "vite --open --mode ssr",
