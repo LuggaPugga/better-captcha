@@ -16,7 +16,7 @@ export const PrivateCaptchaTest = component$(() => {
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha controller={controller} options={options.value} sitekey="test_sitekey" />
+				<PrivateCaptcha controller={controller} options={options.value} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" />
 			</form>
 			<button
 				type="button"
