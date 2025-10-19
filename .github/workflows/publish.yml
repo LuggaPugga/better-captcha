@@ -12,6 +12,7 @@ on:
           - react
           - solidjs
           - vue
+          - qwik
       dry_run:
         description: 'Dry run - show what would be published without making changes'
         required: false
