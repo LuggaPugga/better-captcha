@@ -19,6 +19,11 @@ export const docs = defineDocs({
 
 export default defineConfig({
 	mdxOptions: {
+		remarkNpmOptions: {
+			persist: {
+				id: "npm-install",
+			},
+		},
 		remarkPlugins: [[remarkAutoTypeTable, { generator }]],
 	},
 });
