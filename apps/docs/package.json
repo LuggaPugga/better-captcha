@@ -10,6 +10,7 @@
 	},
 	"dependencies": {
 		"@better-captcha/react": "workspace:*",
+		"@icons-pack/react-simple-icons": "^13.8.0",
 		"@radix-ui/react-select": "^2.2.6",
 		"@vercel/analytics": "^1.5.0",
 		"class-variance-authority": "^0.7.1",

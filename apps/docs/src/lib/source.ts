@@ -1,5 +1,7 @@
+import { SiNpm } from "@icons-pack/react-simple-icons";
 import { loader } from "fumadocs-core/source";
-import { lucideIconsPlugin } from "fumadocs-core/source/lucide-icons";
+import { icons } from "lucide-react";
+import { createElement } from "react";
 import { docs } from "@/.source";
 
 // See https://fumadocs.vercel.app/docs/headless/source-api for more info
@@ -7,5 +9,11 @@ export const source = loader({
 	// it assigns a URL to your pages
 	baseUrl: "/docs",
 	source: docs.toFumadocsSource(),
-	plugins: [lucideIconsPlugin()],
+	icon(icon) {
+		if (icon === "npm") return createElement(SiNpm);
+		if (!icon) {
+			return;
+		}
+		if (icon in icons) return createElement(icons[icon as keyof typeof icons]);
+	},
 });
