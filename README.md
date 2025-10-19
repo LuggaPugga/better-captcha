@@ -49,7 +49,7 @@ export function ContactCaptcha() {
 </template>
 
 <script setup lang="ts">
-import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+	import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
 </script>
 ```
 
