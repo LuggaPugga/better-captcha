@@ -9,12 +9,13 @@ Each provider exposes an imperative handle so you can programmatically control t
 
 The handle is fully typed per provider and the implementation differs between frameworks:
 - **React**: Uses refs with `useRef` and `forwardRef`
+- **Qwik**: Uses signals with `useSignal` and the `onReady$` event
 - **SolidJS**: Uses a controller pattern with `createCaptchaController`
 - **Vue**: Uses template refs or the `useCaptcha` composable for reactive access
 
 ## Usage
 
-<Tabs items={['React', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { useRef } from "react";
@@ -35,6 +36,32 @@ The handle is fully typed per provider and the implementation differs between fr
   ```
   
   The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to keep type-safety.
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$, useSignal } from "@builder.io/qwik";
+  import { useCaptchaController } from "@better-captcha/qwik";
+  import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/qwik/provider/recaptcha";
+
+  export default component$(() => {
+    const controller = useCaptchaController<ReCaptchaHandle>();
+
+    return (
+      <>
+        <ReCaptcha 
+          sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+          controller={controller}
+        />
+        <button onClick$={() => controller.value?.execute()}>Execute</button>
+        <button onClick$={() => controller.value?.reset()}>Reset</button>
+        <button onClick$={() => console.log(controller.value?.getResponse())}>Log response</button>
+      </>
+    );
+  });
+  ```
+  
+  The handle is passed via the `onReady$` event. Store it in a signal and use optional chaining when calling methods.
   </Tab>
   
   <Tab value="SolidJS">

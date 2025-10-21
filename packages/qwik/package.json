@@ -1,0 +1,58 @@
+{
+	"name": "@better-captcha/qwik",
+	"version": "0.1.0",
+	"description": "Better Captcha for Qwik - Universal CAPTCHA component library",
+	"main": "./dist/index.qwik.mjs",
+	"qwik": "./dist/index.qwik.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.qwik.mjs",
+			"require": "./dist/index.qwik.cjs"
+		},
+		"./provider": {
+			"types": "./dist/provider/index.d.ts",
+			"import": "./dist/provider/index.qwik.mjs",
+			"require": "./dist/provider/index.qwik.cjs"
+		},
+		"./provider/*": {
+			"types": "./dist/provider/*/index.d.ts",
+			"import": "./dist/provider/*/index.qwik.mjs",
+			"require": "./dist/provider/*/index.qwik.cjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"engines": {
+		"node": "^18.17.0 || ^20.3.0 || >=21.0.0"
+	},
+	"private": false,
+	"sideEffects": false,
+	"type": "module",
+	"scripts": {
+		"build": "vite build --mode lib",
+		"dev": "vite build --mode lib --watch",
+		"lint": "biome lint .",
+		"start": "vite --open --mode ssr",
+		"qwik": "qwik"
+	},
+	"dependencies": {
+		"@better-captcha/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@builder.io/qwik": "1.17.0",
+		"@types/node": "20.19.0",
+		"typescript": "5.4.5",
+		"unplugin": "^2.3.10",
+		"vite": "7.1.7",
+		"vite-tsconfig-paths": "^4.2.1",
+		"@better-captcha/tests": "workspace:*",
+		"@playwright/test": "^1.56.1",
+		"@biomejs/biome": "^1.9.4"
+	},
+	"peerDependencies": {
+		"@builder.io/qwik": "^1.0.0"
+	}
+}

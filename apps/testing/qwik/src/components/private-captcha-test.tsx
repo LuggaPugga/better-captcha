@@ -1,0 +1,68 @@
+import { useCaptchaController } from "@better-captcha/qwik";
+import {
+	PrivateCaptcha,
+	type PrivateCaptchaHandle,
+	type RenderParameters,
+} from "@better-captcha/qwik/provider/private-captcha";
+import { component$, useSignal } from "@builder.io/qwik";
+
+export const PrivateCaptchaTest = component$(() => {
+	const controller = useCaptchaController<PrivateCaptchaHandle>();
+	const options = useSignal<Omit<RenderParameters, "sitekey">>({
+		theme: "light",
+	});
+	const response = useSignal<string | null>(null);
+
+	return (
+		<div>
+			<form>
+				<PrivateCaptcha controller={controller} options={options.value} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" />
+			</form>
+			<button
+				type="button"
+				onClick$={() => {
+					controller.value?.destroy();
+				}}
+			>
+				Destroy
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					controller.value?.reset();
+				}}
+			>
+				Reset
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					controller.value?.execute();
+				}}
+			>
+				Execute
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					const captchaResponse = controller.value?.getResponse() || "No response";
+					response.value = captchaResponse;
+				}}
+			>
+				Get Response
+			</button>
+			<button
+				type="button"
+				onClick$={() => {
+					const themes = ["light", "dark"];
+					const currentIndex = themes.indexOf(options.value.theme || "light");
+					const nextIndex = (currentIndex + 1) % themes.length;
+					options.value = { ...options.value, theme: themes[nextIndex] as RenderParameters["theme"] };
+				}}
+			>
+				Change Theme
+			</button>
+			{response.value && <p id="captcha-response">{response.value}</p>}
+		</div>
+	);
+});
