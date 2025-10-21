@@ -98,7 +98,7 @@ export function createCaptchaComponent<
 			} catch (err) {
 				const e = err instanceof Error ? err : new Error(String(err));
 				state.value = { loading: false, error: e, ready: false };
-				if (props.onError$) await props.onError$(e);
+				if (props.onError) await props.onError(e);
 				return;
 			}
 
