@@ -4,9 +4,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { dtsEmitterPlugin, unplugin } from "./build-plugin";
 import pkg from "./package.json";
 
-const { dependencies = {}, peerDependencies = {} } = pkg as any;
-const makeRegex = (dep) => new RegExp(`^${dep}(/.*)?$`);
-const excludeAll = (obj) => Object.keys(obj).map(makeRegex);
+const { dependencies = {}, peerDependencies = {} } = pkg;
+const makeRegex = (dep: string) => new RegExp(`^${dep}(/.*)?$`);
+const excludeAll = (obj: Record<string, string>) => Object.keys(obj).map(makeRegex);
 
 export default defineConfig(() => {
 	return {
