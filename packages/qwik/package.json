@@ -44,7 +44,7 @@
 	"devDependencies": {
 		"@builder.io/qwik": "1.17.0",
 		"@types/node": "24.9.1",
-		"typescript": "5.4.5",
+		"typescript": "5.9.3",
 		"unplugin": "^2.3.10",
 		"vite": "7.1.11",
 		"vite-tsconfig-paths": "^4.2.1",
