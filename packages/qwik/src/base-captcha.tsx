@@ -128,6 +128,10 @@ export function createCaptchaComponent<
 				if (widgetId.value == null) {
 					const e = new Error("Captcha render returned null widget id");
 					state.value = { loading: false, error: e, ready: false };
+					// cleanup container/provider on invalid id
+					container.remove();
+					if (containerEl.value === container) containerEl.value = null;
+					provider.value = null;
 					if (props.onError) await props.onError(e);
 					return;
 				}
