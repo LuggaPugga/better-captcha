@@ -1,3 +1,4 @@
+import { SiQwik, SiSvelte, SiVuedotjs, SiSolid, SiReact } from "@icons-pack/react-simple-icons";
 import Link from "next/link";
 import { getGithubStars, getNpmDownloads } from "@/lib/api";
 
@@ -48,7 +49,7 @@ export default async function HomePage() {
 						<div className="text-xs sm:text-sm text-muted-foreground">Providers</div>
 					</div>
 					<div className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-muted/50 transition-colors">
-						<div className="text-2xl sm:text-3xl font-bold text-primary">3</div>
+						<div className="text-2xl sm:text-3xl font-bold text-primary">5</div>
 						<div className="text-xs sm:text-sm text-muted-foreground">Frameworks</div>
 					</div>
 				</div>
@@ -56,22 +57,26 @@ export default async function HomePage() {
 
 			<section className="py-6 sm:py-8">
 				<h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Use it in your framework</h2>
-				<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+				<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
 					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg">
-						<div className="text-xs sm:text-sm text-muted-foreground">Available</div>
+						<SiReact className="w-4 h-4 inline-block mr-2" />
 						<div className="mt-1 font-medium text-sm sm:text-base">React</div>
 					</div>
 					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg">
-						<div className="text-xs sm:text-sm text-muted-foreground">Available</div>
+						<SiSolid className="w-4 h-4 inline-block mr-2" />
 						<div className="mt-1 font-medium text-sm sm:text-base">Solid</div>
 					</div>
 					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg">
-						<div className="text-xs sm:text-sm text-muted-foreground">Available</div>
+						<SiVuedotjs className="w-4 h-4 inline-block mr-2" />
 						<div className="mt-1 font-medium text-sm sm:text-base">Vue</div>
 					</div>
-					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg opacity-70">
-						<div className="text-xs sm:text-sm text-muted-foreground">Coming soon</div>
+					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg">
+						<SiSvelte className="w-4 h-4 inline-block mr-2" />
 						<div className="mt-1 font-medium text-sm sm:text-base">Svelte</div>
+					</div>
+					<div className="p-3 sm:p-4 bg-card border border-border rounded-lg">
+						<SiQwik className="w-4 h-4 inline-block mr-2" />
+						<div className="mt-1 font-medium text-sm sm:text-base">Qwik</div>
 					</div>
 				</div>
 			</section>
