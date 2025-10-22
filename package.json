@@ -11,11 +11,14 @@
 		"dev:vue": "turbo run dev --filter=@better-captcha/vue",
 		"lint": "turbo run lint",
 		"start": "turbo run start",
-		"format": "biome format --write",
+		"format": "biome format --write && prettier --write \"**/*.svelte\"",
+		"format:check": "biome format && prettier --check \"**/*.svelte\"",
 		"check-types": "turbo run check-types"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.6",
+		"prettier": "^3.4.2",
+		"prettier-plugin-svelte": "^3.3.2",
 		"turbo": "^2.5.5",
 		"typescript": "5.9.3"
 	},
