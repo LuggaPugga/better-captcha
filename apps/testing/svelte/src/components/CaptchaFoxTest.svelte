@@ -53,7 +53,7 @@
 
 <div>
 	<h3>Captcha Fox Test</h3>
-	<CaptchaFox bind:this={captchaRef} sitekey="1234567890abcdefghijklmn" {options} onready={onReady} onerror={onError} />
+	<CaptchaFox bind:this={captchaRef} sitekey="sk_11111111000000001111111100000000" {options} onready={onReady} onerror={onError} />
 	<div style="margin-top: 10px">
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>
