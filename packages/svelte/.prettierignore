@@ -1,0 +1,7 @@
+node_modules
+dist
+.turbo
+playwright-report
+test-results
+*.log
+
