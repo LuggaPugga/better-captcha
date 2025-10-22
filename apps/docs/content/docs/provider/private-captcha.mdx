@@ -19,12 +19,12 @@ For more information, visit the [official Private Captcha documentation](https:/
     Private Captcha only works inside a form.
 </Callout>
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { PrivateCaptcha } from "@better-captcha/react/provider/private-captcha";
 
-  <PrivateCaptcha siteKey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
   ```
   </Tab>
   
@@ -35,7 +35,7 @@ For more information, visit the [official Private Captcha documentation](https:/
 
   export default component$(() => (
     <form>
-      <PrivateCaptcha siteKey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+      <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
     </form>
   ));
   ```
@@ -45,7 +45,7 @@ For more information, visit the [official Private Captcha documentation](https:/
   ```tsx
   import { PrivateCaptcha } from "@better-captcha/solidjs/provider/private-captcha";
 
-  <PrivateCaptcha siteKey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
   ```
   </Tab>
 
@@ -63,6 +63,18 @@ For more information, visit the [official Private Captcha documentation](https:/
   <script setup lang="ts">
   import { PrivateCaptcha } from "@better-captcha/vue/provider/private-captcha";
   </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
+  </script>
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
   ```
   </Tab>
 </Tabs>

@@ -16,7 +16,7 @@ For more information, visit the [official Cloudflare Turnstile documentation](ht
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { Turnstile } from "@better-captcha/react/provider/turnstile";
@@ -56,6 +56,16 @@ For more information, visit the [official Cloudflare Turnstile documentation](ht
   <script setup lang="ts">
   import { Turnstile } from "@better-captcha/vue/provider/turnstile";
   </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import Turnstile from "@better-captcha/svelte/provider/turnstile";
+  </script>
+
+  <Turnstile sitekey="1x00000000000000000000AA" options={{}} />
   ```
   </Tab>
 </Tabs>

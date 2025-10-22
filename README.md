@@ -41,6 +41,15 @@ bun install @better-captcha/vue
 npm install @better-captcha/vue
 ```
 
+### Svelte
+```sh
+bun install @better-captcha/svelte
+```
+```sh
+npm install @better-captcha/svelte
+```
+
+
 ## Basic usage
 
 ```tsx
@@ -68,6 +77,14 @@ export const ContactCaptcha = component$(() => {
 <script setup lang="ts">
 	import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
 </script>
+```
+
+```svelte
+<script lang="ts">
+	import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+</script>
+
+<ReCaptcha sitekey="your-site-key" />
 ```
 
 Keep the component inside a client-only boundary, access the ref to call `execute`, and forward the response token to your backend alongside the form submission.

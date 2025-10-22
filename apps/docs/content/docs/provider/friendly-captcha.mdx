@@ -16,7 +16,7 @@ For more information, visit the [official Friendly Captcha documentation](https:
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { FriendlyCaptcha } from "@better-captcha/react/provider/friendly-captcha";
@@ -56,6 +56,16 @@ For more information, visit the [official Friendly Captcha documentation](https:
   <script setup lang="ts">
   import { FriendlyCaptcha } from "@better-captcha/vue/provider/friendly-captcha";
   </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import FriendlyCaptcha from "@better-captcha/svelte/provider/friendly-captcha";
+  </script>
+
+  <FriendlyCaptcha sitekey="FCMTL-000000000000000000000" options={{}} />
   ```
   </Tab>
 </Tabs>
