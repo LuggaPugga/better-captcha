@@ -1,4 +1,4 @@
-import { SiQwik, SiSvelte, SiVuedotjs, SiSolid, SiReact } from "@icons-pack/react-simple-icons";
+import { SiQwik, SiReact, SiSolid, SiSvelte, SiVuedotjs } from "@icons-pack/react-simple-icons";
 import Link from "next/link";
 import { getGithubStars, getNpmDownloads } from "@/lib/api";
 
