@@ -12,10 +12,11 @@ The handle is fully typed per provider and the implementation differs between fr
 - **Qwik**: Uses signals with `useSignal` and the `onReady$` event
 - **SolidJS**: Uses a controller pattern with `createCaptchaController`
 - **Vue**: Uses template refs or the `useCaptcha` composable for reactive access
+- **Svelte**: Uses `bind:this` to access component methods directly
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { useRef } from "react";
@@ -117,6 +118,44 @@ The handle is fully typed per provider and the implementation differs between fr
   ```
   
   `useCaptcha()` keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via `ref="recaptchaRef"`.
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+  import type { ReCaptchaHandle } from "@better-captcha/svelte/provider/recaptcha";
+
+  let captchaRef: ReCaptcha | undefined;
+
+  function onReady(handle: ReCaptchaHandle) {
+    console.log("Captcha ready", handle);
+  }
+
+  function execute() {
+    captchaRef?.execute();
+  }
+
+  function reset() {
+    captchaRef?.reset();
+  }
+
+  function logResponse() {
+    console.log(captchaRef?.getResponse());
+  }
+  </script>
+
+  <ReCaptcha
+    bind:this={captchaRef}
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+    onready={onReady}
+  />
+  <button onclick={execute}>Execute</button>
+  <button onclick={reset}>Reset</button>
+  <button onclick={logResponse}>Log response</button>
+  ```
+  
+  Use `bind:this` to get a reference to the component instance, then call methods directly on it. Always use optional chaining since the reference may be undefined.
   </Tab>
 </Tabs>
 

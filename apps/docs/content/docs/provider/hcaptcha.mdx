@@ -16,7 +16,7 @@ For more information, visit the [official hCaptcha documentation](https://docs.h
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { HCaptcha } from "@better-captcha/react/provider/hcaptcha";
@@ -56,6 +56,16 @@ For more information, visit the [official hCaptcha documentation](https://docs.h
   <script setup lang="ts">
   import { HCaptcha } from "@better-captcha/vue/provider/hcaptcha";
   </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import HCaptcha from "@better-captcha/svelte/provider/hcaptcha";
+  </script>
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
   ```
   </Tab>
 </Tabs>

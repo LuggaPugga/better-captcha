@@ -11,7 +11,7 @@ The library automatically detects your users' system theme preference and applie
 
 When you set `theme: "auto"`, the library detects the system theme using `prefers-color-scheme` and converts it to `"light"` or `"dark"` before passing it to the provider.
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
@@ -60,6 +60,19 @@ When you set `theme: "auto"`, the library detects the system theme using `prefer
   <script setup lang="ts">
   import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
   </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+  </script>
+
+  <ReCaptcha 
+    sitekey="your-site-key"
+    options={{ theme: "auto" }} <!-- Automatically detects system theme -->
+  />
   ```
   </Tab>
 </Tabs>

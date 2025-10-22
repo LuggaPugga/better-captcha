@@ -16,7 +16,7 @@ For more information, visit the [official Captcha Fox documentation](https://doc
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { CaptchaFox } from "@better-captcha/react/provider/captcha-fox";
@@ -56,6 +56,16 @@ For more information, visit the [official Captcha Fox documentation](https://doc
   <script setup lang="ts">
   import { CaptchaFox } from "@better-captcha/vue/provider/captcha-fox";
   </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import CaptchaFox from "@better-captcha/svelte/provider/captcha-fox";
+  </script>
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
   ```
   </Tab>
 </Tabs>
