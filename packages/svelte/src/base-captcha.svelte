@@ -155,8 +155,10 @@
 	}
 
 	$effect(() => {
+		elementRef;
 		sitekey;
 		options;
+		ProviderClass;
 		renderCaptcha();
 	});
 
