@@ -50,7 +50,7 @@
 		"vite-tsconfig-paths": "^4.2.1",
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.56.1",
-		"@biomejs/biome": "^1.9.4"
+		"@biomejs/biome": "^2.0.0"
 	},
 	"peerDependencies": {
 		"@builder.io/qwik": "^1.0.0"
