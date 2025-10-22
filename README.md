@@ -79,6 +79,14 @@ export const ContactCaptcha = component$(() => {
 </script>
 ```
 
+```svelte
+<script lang="ts">
+	import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+</script>
+
+<ReCaptcha sitekey="your-site-key" />
+```
+
 Keep the component inside a client-only boundary, access the ref to call `execute`, and forward the response token to your backend alongside the form submission.
 
 ## Key ideas
