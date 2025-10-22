@@ -41,6 +41,15 @@ bun install @better-captcha/vue
 npm install @better-captcha/vue
 ```
 
+### Svelte
+```sh
+bun install @better-captcha/svelte
+```
+```sh
+npm install @better-captcha/svelte
+```
+
+
 ## Basic usage
 
 ```tsx
