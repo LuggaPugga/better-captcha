@@ -1,12 +1,7 @@
 import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
+import { generateAggregateIndexFile } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
-import {
-	generateProviderModule,
-	generateProviderModuleDts,
-	generateAggregateIndexFile,
-	type FrameworkConfig,
-} from "@better-captcha/core/utils/build-plugin-utils";
 
 function generateComponentFile(metadata: ProviderMetadata): string {
 	const { name, componentName, providerClassName } = metadata;

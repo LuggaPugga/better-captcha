@@ -1,13 +1,12 @@
 import path from "node:path";
 import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
-import { createUnplugin } from "unplugin";
 import {
-	generateProviderModule,
-	generateProviderModuleDts,
+	type FrameworkConfig,
 	generateProviderAggregateModule,
 	generateProviderAggregateModuleDts,
-	type FrameworkConfig,
+	generateProviderModuleDts,
 } from "@better-captcha/core/utils/build-plugin-utils";
+import { createUnplugin } from "unplugin";
 
 const BASE_SPEC = "@better-captcha/qwik/base";
 
