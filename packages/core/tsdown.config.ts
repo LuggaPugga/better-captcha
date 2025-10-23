@@ -6,6 +6,7 @@ export default defineConfig({
 		"src/provider.ts",
 		"src/utils/load-script.ts",
 		"src/utils/theme.ts",
+		"src/utils/build-plugin-utils.ts",
 		"src/providers/*/index.ts",
 	],
 	platform: "browser",
