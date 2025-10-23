@@ -52,7 +52,7 @@ function genProviderAggregateModule(): string {
 }
 
 function genProviderAggregateModuleDts(): string {
-	return generateProviderAggregateModuleDts(PROVIDER_REGISTRY, ".js");
+	return generateProviderAggregateModuleDts(PROVIDER_REGISTRY, ".qwik.mjs");
 }
 
 export const unplugin = createUnplugin(() => {
