@@ -48,6 +48,10 @@
 			"types": "./dist/utils/theme.d.ts",
 			"default": "./dist/utils/theme.js"
 		},
+		"./utils/build-plugin-utils": {
+			"types": "./dist/utils/build-plugin-utils.d.ts",
+			"default": "./dist/utils/build-plugin-utils.js"
+		},
 		"./src/registry": {
 			"types": "./src/registry.ts",
 			"default": "./src/registry.ts"
@@ -67,6 +71,9 @@
 			],
 			"utils/theme": [
 				"dist/utils/theme.d.ts"
+			],
+			"utils/build-plugin-utils": [
+				"dist/utils/build-plugin-utils.d.ts"
 			]
 		}
 	},
