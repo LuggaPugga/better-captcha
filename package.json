@@ -5,6 +5,7 @@
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/react --filter=@better-captcha/solidjs --filter=@better-captcha/vue",
 		"build:apps": "turbo run build --filter=apps/*",
+		"build:examples": "turbo run build --filter=apps/examples/*",
 		"dev": "turbo run dev",
 		"dev:react": "turbo run dev --filter=@better-captcha/react",
 		"dev:solid": "turbo run dev --filter=@better-captcha/solidjs",
@@ -29,6 +30,7 @@
 	"workspaces": [
 		"apps/*",
 		"apps/testing/*",
+		"apps/examples/*",
 		"packages/*"
 	]
 }
