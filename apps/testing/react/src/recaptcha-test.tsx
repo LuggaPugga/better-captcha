@@ -2,7 +2,7 @@ import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-
 import { useRef, useState } from "react";
 
 export function RecaptchaTest() {
-	const turnstileRef = useRef<ReCaptchaHandle>(null);
+	const recaptchaRef = useRef<ReCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
 			theme: "light",
@@ -12,23 +12,23 @@ export function RecaptchaTest() {
 	const [response, setResponse] = useState<string | null>(null);
 
 	const handleGetResponse = () => {
-		const captchaResponse = turnstileRef.current?.getResponse() || "No response";
+		const captchaResponse = recaptchaRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
 	return (
 		<div>
-			<ReCaptcha ref={turnstileRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} />
-			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
+			<ReCaptcha ref={recaptchaRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} />
+			<button type="button" onClick={() => recaptchaRef.current?.destroy()}>
 				Destroy
 			</button>
-			<button type="button" onClick={() => turnstileRef.current?.reset()}>
+			<button type="button" onClick={() => recaptchaRef.current?.reset()}>
 				Reset
 			</button>
-			<button type="button" onClick={() => turnstileRef.current?.execute()}>
+			<button type="button" onClick={() => recaptchaRef.current?.execute()}>
 				Execute
 			</button>
-			<button type="button" onClick={() => turnstileRef.current?.render()}>
+			<button type="button" onClick={() => recaptchaRef.current?.render()}>
 				Render
 			</button>
 			<button type="button" onClick={handleGetResponse}>
