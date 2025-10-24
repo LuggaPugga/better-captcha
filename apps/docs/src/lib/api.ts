@@ -1,6 +1,5 @@
 export async function getGithubStars() {
 	const response = await fetch("https://api.github.com/repos/LuggaPugga/better-captcha", {
-		next: { revalidate: 60 * 60 },
 		headers: {
 			Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
 		},
@@ -25,7 +24,6 @@ export async function getNpmDownloads() {
 	const responses = await Promise.all(
 		packages.map((pkg) =>
 			fetch(`https://api.npmjs.org/downloads/point/last-week/${pkg}`, {
-				next: { revalidate: 60 * 60  },
 	})
 		.then((res) => (res.ok ? (res.json() as Promise<{ downloads: number }>) : { downloads: 0 }))
 				.catch(() => ({ downloads: 0 }))

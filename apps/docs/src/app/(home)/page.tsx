@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getGithubStars, getNpmDownloads } from "@/lib/api";
 import { Code2, Shield, Zap, Palette, RotateCcw, Terminal } from "lucide-react";
 
+export const revalidate = 3600;
+
 export default async function HomePage() {
 	const [githubStars, npmDownloads] = await Promise.all([getGithubStars(), getNpmDownloads()]);
 
