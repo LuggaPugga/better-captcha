@@ -145,12 +145,12 @@ export function createCaptchaComponent<
 				...base,
 				destroy: () => {
 					base.destroy();
-						containerRef?.remove();
-						containerRef = null;
-						batch(() => {
-							setWidgetId(null);
-							setState({ loading: true, error: null, ready: false });
-						});
+					containerRef?.remove();
+					containerRef = null;
+					batch(() => {
+						setWidgetId(null);
+						setState({ loading: true, error: null, ready: false });
+					});
 				},
 				render: async () => {
 					await renderCaptcha();
