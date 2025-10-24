@@ -1,0 +1,61 @@
+---
+title: SolidJS
+description: Using better-captcha with SolidJS
+icon: solidjs
+---
+
+## Installation
+
+```npm
+npm i @better-captcha/solidjs
+```
+
+## Basic Usage
+
+```tsx
+import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  return <ReCaptcha sitekey="your-site-key" />;
+}
+```
+
+## Imperative Handle
+
+SolidJS uses a controller pattern with `createCaptchaController` to access the imperative handle.
+
+```tsx
+import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  const controller = createCaptchaController<ReCaptchaHandle>();
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} />
+      <button onClick={() => controller.handle()?.execute()}>Execute</button>
+      <button onClick={() => controller.handle()?.reset()}>Reset</button>
+      <button onClick={() => console.log(controller.handle()?.getResponse())}>Log response</button>
+    </>
+  );
+}
+```
+
+The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining when calling methods.
+
+## Common Methods
+
+All providers implement these methods on the handle:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## Available Providers
+
+- [ReCaptcha](/docs/provider/recaptcha)
+- [HCaptcha](/docs/provider/hcaptcha)
+- [Turnstile](/docs/provider/turnstile)
+- [Friendly Captcha](/docs/provider/friendly-captcha)
+- [Private Captcha](/docs/provider/private-captcha)
+- [Captcha Fox](/docs/provider/captcha-fox)
+- [Prosopo](/docs/provider/prosopo)
+

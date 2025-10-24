@@ -16,7 +16,7 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
@@ -66,6 +66,16 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
   </script>
 
   <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+  ```
+
+  ```html
+  <recaptcha-captcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></recaptcha-captcha>
   ```
   </Tab>
 </Tabs>
