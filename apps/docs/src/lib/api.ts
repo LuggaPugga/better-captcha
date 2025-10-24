@@ -5,7 +5,7 @@ export async function getGithubStars() {
 			Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
 		},
 	})
-		.then((res) => (res.ok ? (res.json() as Promise<{ stargazers_count: number }>) : { stargazers_count: 0 }))
+		.then((res) => res.ok ? res.json() as Promise<{ stargazers_count: number }> : Promise.resolve({ stargazers_count: 0 }))
 		.catch(() => ({ stargazers_count: 0 }));
 
 	return response.stargazers_count;
