@@ -1,6 +1,0 @@
-# Ignore everything by default
-**/*
-
-# Only format .svelte files
-!**/*.svelte
-

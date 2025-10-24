@@ -15,6 +15,7 @@ const reactConfig: FrameworkConfig = {
 	componentTypeImports: '{ ForwardRefExoticComponent, RefAttributes } from "react"',
 	fileExtension: ".js",
 	useClientDirective: true,
+	propsStructure: "single-with-ref",
 };
 
 export const unpluginFactory: UnpluginFactory<undefined> = () => {

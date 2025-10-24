@@ -23,6 +23,7 @@ const solidjsConfig: FrameworkConfig = {
 	componentType: "Component",
 	componentTypeImports: '{ Component } from "solid-js"',
 	fileExtension: ".js",
+	propsStructure: "two-params",
 };
 
 export const unplugin = createUnplugin(() => {
