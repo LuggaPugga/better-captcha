@@ -19,7 +19,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	});
 
 	const cleanup = useCallback(() => {
-		if (widgetIdRef.current) {
+		if (widgetIdRef.current != null) {
 			try {
 				provider.destroy(widgetIdRef.current);
 			} catch (err) {
