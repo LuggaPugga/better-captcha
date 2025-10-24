@@ -72,7 +72,7 @@ export default async function HomePage() {
 						<span className="text-sm font-medium">React</span>
 					</Link>
 					<Link
-						href="/docs/frameworks/solid"
+						href="/docs/frameworks/solidjs"
 						className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
 					>
 						<SiSolid className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
