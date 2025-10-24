@@ -129,11 +129,7 @@ export function createCaptchaComponent<
 
 			if (!props.controller) return;
 
-			if (state.value.ready) {
-				props.controller.value = await buildHandle$();
-			} else {
-				props.controller.value = await buildHandle$();
-			}
+			props.controller.value = await buildHandle$();
 		});
 
 		useTask$(async ({ track }) => {
