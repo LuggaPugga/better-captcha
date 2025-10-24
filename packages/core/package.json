@@ -1,7 +1,7 @@
 {
 	"name": "@better-captcha/core",
 	"description": "Framework-agnostic CAPTCHA provider implementations",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",
