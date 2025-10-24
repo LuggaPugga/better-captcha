@@ -7,47 +7,16 @@ Framework-agnostic wrappers for CAPTCHA providers that share the same lifecycle,
 
 ## Installation
 
-Install the package and peer dependencies that match your project setup:
+Install the package for your framework:
 
-### React
-```sh
-bun install @better-captcha/react
-```
-```sh
-npm install @better-captcha/react
-```
-
-### Qwik
-```sh
-bun install @better-captcha/qwik
-```
-```sh
-npm install @better-captcha/qwik
-```
-
-### SolidJS
-```sh
-bun install @better-captcha/solidjs
-```
-```sh
-npm install @better-captcha/solidjs
-```
-
-### Vue
-```sh
-bun install @better-captcha/vue
-```
-```sh
-npm install @better-captcha/vue
-```
-
-### Svelte
-```sh
-bun install @better-captcha/svelte
-```
-```sh
-npm install @better-captcha/svelte
-```
+| Framework | bun | npm |
+|-----------|-----|-----|
+| React | `bun install @better-captcha/react` | `npm install @better-captcha/react` |
+| Qwik | `bun install @better-captcha/qwik` | `npm install @better-captcha/qwik` |
+| SolidJS | `bun install @better-captcha/solidjs` | `npm install @better-captcha/solidjs` |
+| Vue | `bun install @better-captcha/vue` | `npm install @better-captcha/vue` |
+| Svelte | `bun install @better-captcha/svelte` | `npm install @better-captcha/svelte` |
+| Lit | `bun install @better-captcha/lit` | `npm install @better-captcha/lit` |
 
 
 ## Basic usage
