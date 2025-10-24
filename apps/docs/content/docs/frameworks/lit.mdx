@@ -1,0 +1,88 @@
+---
+title: Lit
+description: Using better-captcha with Lit
+icon: lit
+---
+
+## Installation
+
+```npm
+npm i @better-captcha/lit
+```
+
+## Basic Usage
+
+```ts
+import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+
+// The component is automatically registered as a custom element
+```
+
+```html
+<recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
+```
+
+## Element Names
+
+Each provider has its own custom element name:
+
+- **Turnstile**: `<turnstile-captcha>`
+- **hCaptcha**: `<hcaptcha-captcha>`
+- **reCAPTCHA**: `<recaptcha-captcha>`
+- **Friendly Captcha**: `<friendly-captcha>`
+- **Private Captcha**: `<private-captcha-widget>`
+- **Captcha Fox**: `<captcha-fox-captcha>`
+- **Prosopo**: `<prosopo-captcha>`
+
+## Imperative Handle
+
+Lit web components expose a `getHandle()` method to access the imperative handle.
+
+```ts
+import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+
+const captcha = document.querySelector('recaptcha-captcha');
+const handle = captcha.getHandle();
+
+// Execute the captcha
+handle.execute();
+
+// Reset the captcha
+handle.reset();
+
+// Get the response token
+const response = handle.getResponse();
+console.log(response);
+```
+
+## Setting Options
+
+You can set options via attributes or properties:
+
+```html
+<!-- Via attributes (for simple values) -->
+<recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
+```
+
+```ts
+// Via properties (for complex objects)
+const captcha = document.querySelector('recaptcha-captcha');
+captcha.options = { theme: 'dark', size: 'compact' };
+```
+
+## Common Methods
+
+All providers implement these methods on the handle:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## Available Providers
+
+- [ReCaptcha](/docs/provider/recaptcha)
+- [HCaptcha](/docs/provider/hcaptcha)
+- [Turnstile](/docs/provider/turnstile)
+- [Friendly Captcha](/docs/provider/friendly-captcha)
+- [Private Captcha](/docs/provider/private-captcha)
+- [Captcha Fox](/docs/provider/captcha-fox)
+- [Prosopo](/docs/provider/prosopo)
+

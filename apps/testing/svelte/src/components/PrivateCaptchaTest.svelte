@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
 	import type { PrivateCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/private-captcha";
+	import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
 	import { writable } from "svelte/store";
 
 	let captchaRef: PrivateCaptcha | undefined;

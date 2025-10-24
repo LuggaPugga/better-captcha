@@ -1,0 +1,67 @@
+---
+title: Qwik
+description: Using better-captcha with Qwik
+icon: qwik
+---
+
+## Installation
+
+```npm
+npm i @better-captcha/qwik
+```
+
+## Basic Usage
+
+```tsx
+import { component$ } from "@builder.io/qwik";
+import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+export default component$(() => {
+  return <ReCaptcha sitekey="your-site-key" />;
+});
+```
+
+## Imperative Handle
+
+Qwik uses the `useCaptchaController` hook to access the imperative handle via a controller pattern.
+
+```tsx
+import { component$ } from "@builder.io/qwik";
+import { useCaptchaController } from "@better-captcha/qwik";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/qwik/provider/recaptcha";
+
+export default component$(() => {
+  const controller = useCaptchaController<ReCaptchaHandle>();
+
+  return (
+    <>
+      <ReCaptcha 
+        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+        controller={controller}
+      />
+      <button onClick$={() => controller.value?.execute()}>Execute</button>
+      <button onClick$={() => controller.value?.reset()}>Reset</button>
+      <button onClick$={() => console.log(controller.value?.getResponse())}>Log response</button>
+    </>
+  );
+});
+```
+
+The handle is available once the widget is ready. Use optional chaining when calling methods.
+
+## Common Methods
+
+All providers implement these methods on the handle:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## Available Providers
+
+- [ReCaptcha](/docs/provider/recaptcha)
+- [HCaptcha](/docs/provider/hcaptcha)
+- [Turnstile](/docs/provider/turnstile)
+- [Friendly Captcha](/docs/provider/friendly-captcha)
+- [Private Captcha](/docs/provider/private-captcha)
+- [Captcha Fox](/docs/provider/captcha-fox)
+- [Prosopo](/docs/provider/prosopo)
+

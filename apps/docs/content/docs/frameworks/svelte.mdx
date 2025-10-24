@@ -1,0 +1,78 @@
+---
+title: Svelte
+description: Using better-captcha with Svelte
+icon: svelte
+---
+
+## Installation
+
+```npm
+npm i @better-captcha/svelte
+```
+
+## Basic Usage
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+</script>
+
+<ReCaptcha sitekey="your-site-key" />
+```
+
+## Imperative Handle
+
+Svelte uses `bind:this` to access component methods directly.
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+import type { ReCaptchaHandle } from "@better-captcha/svelte/provider/recaptcha";
+
+let captchaRef: ReCaptcha | undefined;
+
+function onReady(handle: ReCaptchaHandle) {
+  console.log("Captcha ready", handle);
+}
+
+function execute() {
+  captchaRef?.execute();
+}
+
+function reset() {
+  captchaRef?.reset();
+}
+
+function logResponse() {
+  console.log(captchaRef?.getResponse());
+}
+</script>
+
+<ReCaptcha
+  bind:this={captchaRef}
+  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+  onready={onReady}
+/>
+<button onclick={execute}>Execute</button>
+<button onclick={reset}>Reset</button>
+<button onclick={logResponse}>Log response</button>
+```
+
+Use `bind:this` to get a reference to the component instance, then call methods directly on it. Always use optional chaining since the reference may be undefined.
+
+## Common Methods
+
+All providers implement these methods on the handle:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## Available Providers
+
+- [ReCaptcha](/docs/provider/recaptcha)
+- [HCaptcha](/docs/provider/hcaptcha)
+- [Turnstile](/docs/provider/turnstile)
+- [Friendly Captcha](/docs/provider/friendly-captcha)
+- [Private Captcha](/docs/provider/private-captcha)
+- [Captcha Fox](/docs/provider/captcha-fox)
+- [Prosopo](/docs/provider/prosopo)
+

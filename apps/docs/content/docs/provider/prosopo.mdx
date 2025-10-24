@@ -17,7 +17,7 @@ For more information, visit the [official Prosopo documentation](https://docs.pr
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte']} groupId="framework">
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { Prosopo } from "@better-captcha/react/provider/prosopo";
@@ -67,6 +67,16 @@ For more information, visit the [official Prosopo documentation](https://docs.pr
   </script>
 
   <Prosopo sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { Prosopo } from "@better-captcha/lit/provider/prosopo";
+  ```
+
+  ```html
+  <prosopo-captcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></prosopo-captcha>
   ```
   </Tab>
 </Tabs>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
 	import type { ReCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/recaptcha";
+	import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
 	import { writable } from "svelte/store";
 
 	let captchaRef: ReCaptcha | undefined;

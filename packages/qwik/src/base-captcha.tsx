@@ -76,7 +76,7 @@ export function createCaptchaComponent<
 			optionsKey.value = await computeOptionsKey$();
 		});
 
-		// eslint-disable-next-line qwik/no-use-visible-task
+		// biome-ignore lint/correctness/noQwikUseVisibleTask: <explanation>
 		useVisibleTask$(async ({ track, cleanup }) => {
 			const el = track(() => hostEl.value);
 			const sitekey = track(() => props.sitekey);

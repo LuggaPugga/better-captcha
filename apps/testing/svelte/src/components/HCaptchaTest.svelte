@@ -1,6 +1,6 @@
 <script lang="ts">
-	import HCaptcha from "@better-captcha/svelte/provider/hcaptcha";
 	import type { HCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/hcaptcha";
+	import HCaptcha from "@better-captcha/svelte/provider/hcaptcha";
 	import { writable } from "svelte/store";
 
 	let captchaRef: HCaptcha | undefined;

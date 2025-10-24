@@ -21,50 +21,50 @@
 </template>
 
 <script setup lang="ts">
-import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/vue/provider/turnstile";
-import { ref } from "vue";
+	import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/vue/provider/turnstile";
+	import { ref } from "vue";
 
-const captchaRef = ref<TurnstileHandle | null>(null);
-const response = ref<string | null>(null);
-const error = ref<Error | null>(null);
+	const captchaRef = ref<TurnstileHandle | null>(null);
+	const response = ref<string | null>(null);
+	const error = ref<Error | null>(null);
 
-const options = ref<Omit<RenderParameters, "sitekey">>({
-	theme: "light",
-	size: "normal",
-});
+	const options = ref<Omit<RenderParameters, "sitekey">>({
+		theme: "light",
+		size: "normal",
+	});
 
-const onReady = (handle: TurnstileHandle) => {
-	console.log("Captcha ready!", handle);
-};
+	const onReady = (handle: TurnstileHandle) => {
+		console.log("Captcha ready!", handle);
+	};
 
-const onError = (err: Error) => {
-	error.value = err;
-	console.error("Captcha error:", err);
-};
+	const onError = (err: Error) => {
+		error.value = err;
+		console.error("Captcha error:", err);
+	};
 
-const handleDestroy = () => {
-	captchaRef.value?.destroy();
-};
+	const handleDestroy = () => {
+		captchaRef.value?.destroy();
+	};
 
-const handleReset = () => {
-	captchaRef.value?.reset();
-	response.value = null;
-};
+	const handleReset = () => {
+		captchaRef.value?.reset();
+		response.value = null;
+	};
 
-const handleExecute = async () => {
-	await captchaRef.value?.execute();
-};
+	const handleExecute = async () => {
+		await captchaRef.value?.execute();
+	};
 
-const handleGetResponse = () => {
-	const captchaResponse = captchaRef.value?.getResponse() || "No response";
-	response.value = captchaResponse;
-};
+	const handleGetResponse = () => {
+		const captchaResponse = captchaRef.value?.getResponse() || "No response";
+		response.value = captchaResponse;
+	};
 
-const handleChangeTheme = () => {
-	const themes = ["light", "dark", "auto"] as const;
-	const currentIndex = themes.indexOf(options.value.theme || "auto");
-	const nextIndex = (currentIndex + 1) % themes.length;
-	options.value = { ...options.value, theme: themes[nextIndex] };
-};
+	const handleChangeTheme = () => {
+		const themes = ["light", "dark", "auto"] as const;
+		const currentIndex = themes.indexOf(options.value.theme || "auto");
+		const nextIndex = (currentIndex + 1) % themes.length;
+		options.value = { ...options.value, theme: themes[nextIndex] };
+	};
 </script>
 

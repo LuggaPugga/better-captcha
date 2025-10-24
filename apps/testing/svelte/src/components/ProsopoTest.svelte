@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Prosopo from "@better-captcha/svelte/provider/prosopo";
 	import type { ProsopoHandle, RenderParameters } from "@better-captcha/svelte/provider/prosopo";
+	import Prosopo from "@better-captcha/svelte/provider/prosopo";
 	import { writable } from "svelte/store";
 
 	let captchaRef: Prosopo | undefined;

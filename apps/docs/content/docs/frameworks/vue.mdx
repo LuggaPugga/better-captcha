@@ -1,0 +1,76 @@
+---
+title: Vue
+description: Using better-captcha with Vue
+icon: vue
+---
+
+## Installation
+
+```npm
+npm i @better-captcha/vue
+```
+
+## Basic Usage
+
+```vue
+<template>
+  <ReCaptcha sitekey="your-site-key" />
+</template>
+
+<script setup lang="ts">
+import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+</script>
+```
+
+## Imperative Handle
+
+Vue uses template refs or the `useCaptcha` composable for reactive access to the imperative handle.
+
+```vue
+<template>
+  <ReCaptcha
+    ref="recaptchaRef"
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+    @ready="onReady"
+  />
+  <button @click="execute">Execute</button>
+  <button @click="reset">Reset</button>
+  <button @click="logResponse">Log response</button>
+</template>
+
+<script setup lang="ts">
+import { useCaptcha } from "@better-captcha/vue";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/vue/provider/recaptcha";
+
+const { captchaRef, handle, execute, reset } = useCaptcha<ReCaptchaHandle>();
+
+const recaptchaRef = captchaRef;
+
+const onReady = (readyHandle: ReCaptchaHandle) => {
+  console.log("Captcha ready", readyHandle);
+};
+
+const logResponse = () => {
+  console.log(handle.value?.getResponse());
+};
+</script>
+```
+
+`useCaptcha()` keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via `ref="recaptchaRef"`.
+
+## Common Methods
+
+All providers implement these methods on the handle:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## Available Providers
+
+- [ReCaptcha](/docs/provider/recaptcha)
+- [HCaptcha](/docs/provider/hcaptcha)
+- [Turnstile](/docs/provider/turnstile)
+- [Friendly Captcha](/docs/provider/friendly-captcha)
+- [Private Captcha](/docs/provider/private-captcha)
+- [Captcha Fox](/docs/provider/captcha-fox)
+- [Prosopo](/docs/provider/prosopo)
+
