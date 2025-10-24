@@ -32,8 +32,8 @@ Each provider has its own element name:
 - Turnstile: `<turnstile-captcha>`
 - hCaptcha: `<hcaptcha-captcha>`
 - reCAPTCHA: `<recaptcha-captcha>`
-- Friendly Captcha: `<friendly-captcha-captcha>`
-- Private Captcha: `<private-captcha-captcha>`
+- Friendly Captcha: `<friendly-captcha>`
+- Private Captcha: `<private-captcha>`
 - Captcha Fox: `<captcha-fox-captcha>`
 - Prosopo: `<prosopo-captcha>`
 
