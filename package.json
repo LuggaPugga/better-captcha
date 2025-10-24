@@ -3,18 +3,17 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/react --filter=@better-captcha/solidjs --filter=@better-captcha/vue",
-		"build:apps": "turbo run build --filter=apps/*",
+		"build:packages": "turbo run build --filter=packages/*",
+		"build:testing": "turbo run build --filter=testing/*",
 		"build:examples": "turbo run build --filter=apps/examples/*",
-		"dev": "turbo run dev",
-		"dev:react": "turbo run dev --filter=@better-captcha/react",
-		"dev:solid": "turbo run dev --filter=@better-captcha/solidjs",
-		"dev:vue": "turbo run dev --filter=@better-captcha/vue",
+		"dev:react": "turbo run dev --filter=@better-captcha/react --filter=apps/testing/react",
+		"dev:solid": "turbo run dev --filter=@better-captcha/solidjs --filter=apps/testing/solidjs",
+		"dev:vue": "turbo run dev --filter=@better-captcha/vue --filter=apps/testing/vue",
+		"dev:qwik": "turbo run dev --filter=@better-captcha/qwik --filter=apps/testing/qwik",
+		"dev:lit": "turbo run dev --filter=@better-captcha/lit --filter=apps/testing/lit",
+		"dev:docs": "turbo run dev --filter=apps/docs",
 		"lint": "turbo run lint",
-		"start": "turbo run start",
-		"format": "biome format --write && prettier --write \"**/*.svelte\"",
-		"format:check": "biome format && prettier --check \"**/*.svelte\"",
-		"check-types": "turbo run check-types"
+		"start": "turbo run start"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.7",
