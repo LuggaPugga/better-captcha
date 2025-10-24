@@ -60,8 +60,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 
 	useEffect(() => {
 		if (!autoRender) return;
-		const key = JSON.stringify({ providerId: provider, options });
-
+		const key = `${provider?.constructor?.name ?? "Provider"}::${JSON.stringify(options ?? null)}`;
 		if (lastKeyRef.current !== key) {
 			lastKeyRef.current = key;
 			void renderCaptcha();
