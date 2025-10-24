@@ -1,5 +1,5 @@
 import type { CaptchaHandle } from "@better-captcha/core";
-import type { Component, StyleValue } from "vue";
+import type { DefineComponent, StyleValue } from "vue";
 
 export type {
 	CaptchaHandle,
@@ -21,7 +21,7 @@ export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {
 	error: (error: Error) => void;
 }
 
-export type CaptchaComponent<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Component<
+export type CaptchaComponent<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = DefineComponent<
 	CaptchaProps<TOptions>,
 	CaptchaEmits<THandle>
 >;
