@@ -4,6 +4,7 @@ export default defineConfig({
 	entry: [
 		"src/index.ts",
 		"src/provider.ts",
+		"src/registry.ts",
 		"src/utils/load-script.ts",
 		"src/utils/theme.ts",
 		"src/utils/build-plugin-utils.ts",
@@ -14,4 +15,5 @@ export default defineConfig({
 	dts: true,
 	outDir: "./dist",
 	ignoreWatch: [".turbo"],
+	external: ["ts-morph"],
 });
