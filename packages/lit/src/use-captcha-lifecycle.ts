@@ -33,8 +33,18 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 
 			const id = await this.provider.render(container, this.options);
 			if (this.cancelled) {
-				if (id != null) this.provider.destroy(id);
+				if (id != null) {
+					try {
+						this.provider.destroy(id);
+					} catch (err) {
+						console.warn("[better-captcha] cleanup (cancel):", err);
+					}
+				}
 				container.remove();
+				if (this.containerRef === container) this.containerRef = null;
+				this.widgetIdRef = null;
+				this.elementRef = null;
+				this.updateState({ loading: false, error: null, ready: false });
 				return;
 			}
 
