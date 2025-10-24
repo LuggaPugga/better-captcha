@@ -7,20 +7,20 @@
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", ".output/**", ".vinxi/**"]
 		},
-		"build:react": {
+		"react#build": {
 			"dependsOn": ["@better-captcha/core#build", "@better-captcha/react#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
 		},
-		"build:solidjs": {
+		"solidjs#build": {
 			"dependsOn": ["@better-captcha/core#build", "@better-captcha/solidjs#build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".output/**", ".vinxi/**"]
 		},
-		"build:docs": {
+		"docs#build": {
 			"env": ["GITHUB_TOKEN"]
 		},
-		"dev:docs": {
+		"docs#dev": {
 			"env": ["GITHUB_TOKEN"]
 		},
 		"lint": {
