@@ -182,7 +182,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
-        "lit": "^3.3.1",
+        "lit": "^3.0.0",
       },
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",

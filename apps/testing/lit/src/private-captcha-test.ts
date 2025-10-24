@@ -53,11 +53,11 @@ export class PrivateCaptchaTest extends LitElement {
 		return html`
 			<div>
 				<form>
-					<private-captcha
+					<private-captcha-widget
 						${ref(this.captchaRef)}
 						sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
 						.options=${this.options}
-					></private-captcha>
+					></private-captcha-widget>
 				</form>
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

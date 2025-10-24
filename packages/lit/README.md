@@ -33,7 +33,7 @@ Each provider has its own element name:
 - hCaptcha: `<hcaptcha-captcha>`
 - reCAPTCHA: `<recaptcha-captcha>`
 - Friendly Captcha: `<friendly-captcha>`
-- Private Captcha: `<private-captcha>`
+- Private Captcha: `<private-captcha-widget>`
 - Captcha Fox: `<captcha-fox-captcha>`
 - Prosopo: `<prosopo-captcha>`
 
