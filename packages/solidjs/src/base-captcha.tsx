@@ -92,6 +92,8 @@ export function createCaptchaComponent<
 		createEffect(() => {
 			const element = elementRef();
 			const shouldAutoRender = autoRender();
+			void props.sitekey;
+			void props.options;
 
 			if (!element || !hasRendered) return;
 
