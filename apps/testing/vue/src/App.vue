@@ -28,25 +28,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import CaptchaFoxTest from "./components/CaptchaFoxTest.vue";
-import FriendlyCaptchaTest from "./components/FriendlyCaptchaTest.vue";
-import HCaptchaTest from "./components/HCaptchaTest.vue";
-import PrivateCaptchaTest from "./components/PrivateCaptchaTest.vue";
-import ProsopoTest from "./components/ProsopoTest.vue";
-import RecaptchaTest from "./components/RecaptchaTest.vue";
-import TurnstileTest from "./components/TurnstileTest.vue";
+	import { ref } from "vue";
+	import CaptchaFoxTest from "./components/CaptchaFoxTest.vue";
+	import FriendlyCaptchaTest from "./components/FriendlyCaptchaTest.vue";
+	import HCaptchaTest from "./components/HCaptchaTest.vue";
+	import PrivateCaptchaTest from "./components/PrivateCaptchaTest.vue";
+	import ProsopoTest from "./components/ProsopoTest.vue";
+	import RecaptchaTest from "./components/RecaptchaTest.vue";
+	import TurnstileTest from "./components/TurnstileTest.vue";
 
-const currentProvider = ref("turnstile");
+	const currentProvider = ref("turnstile");
 
-const providers = [
-	{ key: "turnstile", name: "Turnstile" },
-	{ key: "hcaptcha", name: "hCaptcha" },
-	{ key: "recaptcha", name: "reCAPTCHA" },
-	{ key: "friendly-captcha", name: "Friendly Captcha" },
-	{ key: "private-captcha", name: "Private Captcha" },
-	{ key: "captcha-fox", name: "Captcha Fox" },
-	{ key: "prosopo", name: "Prosopo" },
-];
+	const providers = [
+		{ key: "turnstile", name: "Turnstile" },
+		{ key: "hcaptcha", name: "hCaptcha" },
+		{ key: "recaptcha", name: "reCAPTCHA" },
+		{ key: "friendly-captcha", name: "Friendly Captcha" },
+		{ key: "private-captcha", name: "Private Captcha" },
+		{ key: "captcha-fox", name: "Captcha Fox" },
+		{ key: "prosopo", name: "Prosopo" },
+	];
 </script>
 

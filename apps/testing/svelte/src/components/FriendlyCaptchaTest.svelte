@@ -1,13 +1,13 @@
 <script lang="ts">
-	import FriendlyCaptcha from "@better-captcha/svelte/provider/friendly-captcha";
 	import type { FriendlyCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/friendly-captcha";
+	import FriendlyCaptcha from "@better-captcha/svelte/provider/friendly-captcha";
 	import { writable } from "svelte/store";
 
 	let captchaRef: FriendlyCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 
-	let options = $state<Omit<RenderParameters, "sitekey" | "element">>({
+	const options = $state<Omit<RenderParameters, "sitekey" | "element">>({
 		language: "en",
 	});
 

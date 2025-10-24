@@ -3,10 +3,7 @@
 	"extends": "//",
 	"linter": {
 		"rules": {
-			"recommended": true,
-			"suspicious": {
-				"noUnknownAtRules": "warn"
-			}
+			"recommended": true
 		},
 		"domains": {
 			"next": "recommended",

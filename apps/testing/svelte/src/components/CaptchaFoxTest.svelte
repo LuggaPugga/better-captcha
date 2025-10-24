@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CaptchaFox from "@better-captcha/svelte/provider/captcha-fox";
 	import type { CaptchaFoxHandle, RenderParameters } from "@better-captcha/svelte/provider/captcha-fox";
+	import CaptchaFox from "@better-captcha/svelte/provider/captcha-fox";
 	import { writable } from "svelte/store";
 
 	let captchaRef: CaptchaFox | undefined;
@@ -42,9 +42,8 @@
 	function handleChangeTheme() {
 		const themes = ["light", "dark"] as const;
 		const currentTheme = options.theme;
-		const normalizedTheme = !currentTheme || typeof currentTheme !== "string" || currentTheme === "auto" 
-			? "light" 
-			: currentTheme;
+		const normalizedTheme =
+			!currentTheme || typeof currentTheme !== "string" || currentTheme === "auto" ? "light" : currentTheme;
 		const currentIndex = themes.indexOf(normalizedTheme as "light" | "dark");
 		const nextIndex = (currentIndex + 1) % themes.length;
 		options = { ...options, theme: themes[nextIndex] };

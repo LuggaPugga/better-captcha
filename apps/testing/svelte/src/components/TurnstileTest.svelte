@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Turnstile from "@better-captcha/svelte/provider/turnstile";
 	import type { RenderParameters, TurnstileHandle } from "@better-captcha/svelte/provider/turnstile";
+	import Turnstile from "@better-captcha/svelte/provider/turnstile";
 	import { writable } from "svelte/store";
 
 	let captchaRef: Turnstile | undefined;
