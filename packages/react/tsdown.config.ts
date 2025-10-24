@@ -11,5 +11,6 @@ export default defineConfig({
 	minify: false,
 	treeshake: true,
 	ignoreWatch: [".turbo"],
+	external: ["ts-morph"],
 	plugins: [rollupPlugin()],
 });

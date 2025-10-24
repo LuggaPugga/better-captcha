@@ -1,18 +1,15 @@
 import path from "node:path";
-import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
+import { PROVIDER_REGISTRY } from "@better-captcha/core";
 import {
 	type FrameworkConfig,
 	generateProviderAggregateModule,
-	generateProviderAggregateModuleDts,
 	generateProviderModule,
 	generateProviderModuleDts,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import { createUnplugin } from "unplugin";
 
 const BASE_SPEC = "@better-captcha/solidjs/base";
-
 const PROVIDER_AGG_SPEC = "@better-captcha/solidjs/provider";
-
 const PROVIDER_SPEC_PREFIX = "@better-captcha/solidjs/provider/";
 
 function toPosix(p: string): string {
@@ -26,22 +23,6 @@ const solidjsConfig: FrameworkConfig = {
 	componentTypeImports: '{ Component } from "solid-js"',
 	fileExtension: ".js",
 };
-
-function genProviderModule(meta: ProviderMetadata): string {
-	return generateProviderModule(meta, solidjsConfig);
-}
-
-function genProviderModuleDts(meta: ProviderMetadata): string {
-	return generateProviderModuleDts(meta, solidjsConfig);
-}
-
-function genProviderAggregateModule(): string {
-	return generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX);
-}
-
-function genProviderAggregateModuleDts(): string {
-	return generateProviderAggregateModuleDts(PROVIDER_REGISTRY, ".js");
-}
 
 export const unplugin = createUnplugin(() => {
 	const baseAbs = toPosix(path.resolve(process.cwd(), "src/base-captcha.tsx"));
@@ -65,8 +46,9 @@ export const unplugin = createUnplugin(() => {
 				};
 			}
 			if (id === PROVIDER_AGG_SPEC) {
+				const files = generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX);
 				return {
-					code: genProviderAggregateModule(),
+					code: files.js,
 					map: null,
 				};
 			}
@@ -74,8 +56,9 @@ export const unplugin = createUnplugin(() => {
 				const name = id.slice(PROVIDER_SPEC_PREFIX.length);
 				const meta = PROVIDER_REGISTRY.find((p) => p.name === name);
 				if (!meta) return { code: "export {}", map: null };
+				const files = generateProviderModule(meta, solidjsConfig);
 				return {
-					code: genProviderModule(meta),
+					code: files.js,
 					map: null,
 				};
 			}
@@ -92,17 +75,19 @@ export const dtsEmitterPlugin = createUnplugin(() => {
 
 			generateBundle() {
 				for (const provider of PROVIDER_REGISTRY) {
+					const dtsFiles = generateProviderModuleDts(provider, solidjsConfig);
 					this.emitFile({
 						type: "asset",
 						fileName: `provider/${provider.name}/index.d.ts`,
-						source: genProviderModuleDts(provider),
+						source: dtsFiles.dts,
 					});
 				}
 
+				const aggregateFiles = generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX);
 				this.emitFile({
 					type: "asset",
 					fileName: "provider/index.d.ts",
-					source: genProviderAggregateModuleDts(),
+					source: aggregateFiles.dts,
 				});
 			},
 		},

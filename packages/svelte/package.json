@@ -74,6 +74,7 @@
 		"@types/node": "24.9.1",
 		"playwright": "^1.56.0",
 		"svelte": "^5.0.0",
+		"ts-morph": "^27.0.2",
 		"tsdown": "^0.15.6",
 		"unplugin": "^2.3.10"
 	}
