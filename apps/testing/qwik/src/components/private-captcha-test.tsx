@@ -44,6 +44,14 @@ export const PrivateCaptchaTest = component$(() => {
 			</button>
 			<button
 				type="button"
+				onClick$={async () => {
+					await controller.value?.render();
+				}}
+			>
+				Render
+			</button>
+			<button
+				type="button"
 				onClick$={() => {
 					const captchaResponse = controller.value?.getResponse() || "No response";
 					response.value = captchaResponse;

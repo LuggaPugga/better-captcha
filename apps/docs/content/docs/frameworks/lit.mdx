@@ -70,6 +70,24 @@ const captcha = document.querySelector('recaptcha-captcha');
 captcha.options = { theme: 'dark', size: 'compact' };
 ```
 
+## Manual Rendering
+
+By default, captchas automatically render on mount. Disable this with `autoRender="false"` and render manually using `render()`:
+
+```html
+<recaptcha-captcha sitekey="your-site-key" autoRender="false"></recaptcha-captcha>
+<button onclick="showCaptcha()">Show Captcha</button>
+```
+
+```ts
+const captcha = document.querySelector('recaptcha-captcha');
+const handle = captcha.getHandle();
+
+function showCaptcha() {
+  handle.render();
+}
+```
+
 ## Common Methods
 
 All providers implement these methods on the handle:

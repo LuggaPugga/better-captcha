@@ -33,6 +33,10 @@
 		await captchaRef?.execute();
 	}
 
+	async function handleRender() {
+		await captchaRef?.render();
+	}
+
 	function handleGetResponse() {
 		const captchaResponse = captchaRef?.getResponse() || "No response";
 		response.set(captchaResponse);
@@ -54,6 +58,7 @@
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>
 		<button type="button" onclick={handleExecute}>Execute</button>
+		<button type="button" onclick={handleRender}>Render</button>
 		<button type="button" onclick={handleGetResponse}>Get Response</button>
 		<button type="button" onclick={handleChangeTheme}>Change Theme</button>
 	</div>

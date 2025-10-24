@@ -43,6 +43,25 @@ export default function Example() {
 
 The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining when calling methods.
 
+## Manual Rendering
+
+By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+
+```tsx
+import { ReCaptcha, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  const controller = createCaptchaController();
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} autoRender={false} />
+      <button onClick={async () => await controller.handle()?.render()}>Show Captcha</button>
+    </>
+  );
+}
+```
+
 ## Common Methods
 
 All providers implement these methods on the handle:

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       package:
-        description: 'Package to publish'
+        description: "Package to publish"
         required: true
         type: choice
         options:
@@ -16,7 +16,7 @@ on:
           - svelte
           - lit
       dry_run:
-        description: 'Dry run - show what would be published without making changes'
+        description: "Dry run - show what would be published without making changes"
         required: false
         type: boolean
         default: false
@@ -27,7 +27,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
-      actions: write
+      pull-requests: read
 
     steps:
       - name: Checkout code
@@ -116,18 +116,129 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const { data } = await github.rest.repos.generateReleaseNotes({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: "${{ steps.package_info.outputs.tag }}",
-              previous_tag_name: require('child_process').execSync(
-                'git tag -l "${{ steps.package_info.outputs.package_name }}@*" | sort -V | tail -n 2 | head -n 1',
-                { encoding: 'utf-8' }
-              ).trim() || undefined,
-              configuration_file_path: ".github/release-notes-config.json"
-            });
+            const pkg = "${{ github.event.inputs.package }}";
+            const packageName = "${{ steps.package_info.outputs.package_name }}";
+            const currentTag = "${{ steps.package_info.outputs.tag }}";
+            
+            // Determine relevant labels for this package
+            const relevantLabels = ["core"];
+            if (pkg !== "core") {
+              relevantLabels.push(pkg);
+            }
+            
+            core.info(`Generating changelog for ${pkg} with labels: ${relevantLabels.join(", ")}`);
+            
+            // Get previous tag
+            const { execSync } = require("child_process");
+            const previousTag = execSync(
+              `git tag -l "${packageName}@*" | sort -V | tail -n 2 | head -n 1`,
+              { encoding: "utf-8" }
+            ).trim();
+            
+            core.info(`Previous tag: ${previousTag || "none"}`);
+            
+            // Get commit range
+            const commitRange = previousTag 
+              ? `${previousTag}..HEAD` 
+              : "HEAD";
+            
+            // Get all merged PRs in the range
+            const commits = execSync(
+              `git log ${commitRange} --oneline --merges --grep="Merge pull request"`,
+              { encoding: "utf-8" }
+            ).trim().split("\n").filter(Boolean);
 
-            core.setOutput('changelog', data.body);
+            // Extract PR numbers
+            const prNumbers = commits
+              .map(commit => {
+                const match = commit.match(/#(\d+)/);
+                return match ? parseInt(match[1]) : null;
+              })
+              .filter(Boolean);
+            
+            core.info(`Found ${prNumbers.length} PRs in commit range`);
+            
+            // Fetch PR details with labels
+            const prDetails = await Promise.all(
+              prNumbers.map(async (prNumber) => {
+              try {
+                  const { data: pr } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                    pull_number: prNumber,
+                });
+                  return pr;
+                } catch (error) {
+                  core.warning(`Failed to fetch PR #${prNumber}: ${error.message}`);
+                  return null;
+                }
+              })
+            );
+            
+            // Filter PRs by relevant labels
+            const relevantPRs = prDetails.filter(pr => {
+              if (!pr) return false;
+              const prLabels = pr.labels.map(label => label.name);
+              return prLabels.some(label => relevantLabels.includes(label));
+            });
+            
+            core.info(`${relevantPRs.length} PRs match the relevant labels`);
+
+            // Group PRs by category
+            const categories = {
+              core: { title: "🧱 Core", prs: [] },
+              react: { title: "⚛️ React", prs: [] },
+              vue: { title: "🧩 Vue", prs: [] },
+              svelte: { title: "🔥 Svelte", prs: [] },
+              solidjs: { title: "⚡ SolidJS", prs: [] },
+              qwik: { title: "🌙 Qwik", prs: [] },
+              lit: { title: "💡 Lit", prs: [] },
+              other: { title: "📦 Other changes", prs: [] },
+            };
+            
+            relevantPRs.forEach(pr => {
+              const prLabels = pr.labels.map(label => label.name);
+              let categorized = false;
+              
+              for (const label of prLabels) {
+                if (categories[label]) {
+                  categories[label].prs.push(pr);
+                  categorized = true;
+                  break;
+                }
+              }
+              
+              if (!categorized) {
+                categories.other.prs.push(pr);
+              }
+            });
+            
+            // Build changelog
+            let changelog = "";
+            for (const [key, category] of Object.entries(categories)) {
+              if (category.prs.length > 0) {
+                changelog += `## ${category.title}\n\n`;
+                category.prs.forEach(pr => {
+                  changelog += `* ${pr.title} by @${pr.user.login} in #${pr.number}\n`;
+                });
+                changelog += "\n";
+              }
+            }
+            
+            // Add contributors section
+            const contributors = [...new Set(relevantPRs.map(pr => pr.user.login))];
+            if (contributors.length > 0) {
+              changelog += `## 👥 Contributors\n\n`;
+              contributors.forEach(username => {
+                changelog += `* @${username}\n`;
+              });
+            }
+            
+            if (changelog === "") {
+              changelog = "No changes for this release.";
+            }
+
+            core.setOutput("changelog", changelog);
 
       - name: Create Git tag
         if: ${{ github.event.inputs.dry_run != 'true' }}

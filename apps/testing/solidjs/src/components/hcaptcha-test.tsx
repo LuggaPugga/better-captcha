@@ -27,6 +27,9 @@ export function HCaptchaTest() {
 			<button type="button" onClick={() => controller.handle()?.execute()}>
 				Execute
 			</button>
+			<button type="button" onClick={async () => await controller.handle()?.render()}>
+				Render
+			</button>
 			<button type="button" onClick={handleGetResponse}>
 				Get Response
 			</button>

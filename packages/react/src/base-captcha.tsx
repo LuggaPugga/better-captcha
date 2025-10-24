@@ -9,6 +9,7 @@ const defaultHandle: CaptchaHandle = {
 	execute: async () => {},
 	reset: () => {},
 	destroy: () => {},
+	render: async () => {},
 	getResponse: () => "",
 	getComponentState: () => ({
 		loading: false,
@@ -21,11 +22,15 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 	ProviderClass: new (sitekey: string) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
 	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(
-		{ sitekey, options, className, style },
+		{ sitekey, options, className, style, autoRender = true },
 		ref,
 	) {
 		const provider = useMemo(() => new ProviderClass(sitekey), [ProviderClass, sitekey]);
-		const { elementRef, state, widgetIdRef, setState } = useCaptchaLifecycle(provider, options);
+		const { elementRef, state, widgetIdRef, setState, renderCaptcha } = useCaptchaLifecycle(
+			provider,
+			options,
+			autoRender,
+		);
 
 		useImperativeHandle(ref, () => {
 			const id = widgetIdRef.current;
@@ -41,8 +46,11 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 						setState((prev) => ({ ...prev, ready: false, error: null }));
 					}
 				},
+				render: async () => {
+					await renderCaptcha();
+				},
 			};
-		}, [provider, state, widgetIdRef, setState]);
+		}, [provider, state, widgetIdRef, setState, renderCaptcha]);
 
 		const widgetId = widgetIdRef.current;
 		const elementId =

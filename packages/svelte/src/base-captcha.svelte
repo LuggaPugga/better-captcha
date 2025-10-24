@@ -11,6 +11,7 @@
 		options?: TOptions;
 		class?: string;
 		style?: string;
+		autoRender?: boolean;
 		onready?: (handle: THandle) => void;
 		onerror?: (error: Error) => void;
 	};
@@ -18,7 +19,7 @@
 
 <script lang="ts" generics="TOptions, THandle extends CaptchaHandle, TProvider extends Provider<ProviderConfig, TOptions, THandle>">
 	import type { CaptchaState, WidgetId } from "@better-captcha/core";
-	import { onDestroy } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 
 	type Props = BaseCaptchaProps<TOptions, THandle, TProvider>;
 
@@ -28,34 +29,20 @@
 		options = undefined,
 		class: className = undefined,
 		style = undefined,
+		autoRender = true,
 		onready = undefined,
 		onerror = undefined
 	}: Props = $props();
 
-	let elementRef = $state<HTMLDivElement | undefined>(undefined);
-	let captchaState = $state<CaptchaState>({ loading: true, error: null, ready: false });
-	let widgetId = $state<WidgetId | null>(null);
-	let handle = $state<(THandle & CaptchaHandle) | null>(null);
+	let elementRef: HTMLDivElement | undefined = $state();
+	let captchaState = $state<CaptchaState>({ loading: autoRender, error: null, ready: false });
+	let widgetId: WidgetId | null = $state(null);
 
 	let container: HTMLDivElement | null = null;
 	let provider: TProvider | null = null;
-	let renderToken = 0;
+	let isRendering = false;
 
-	function buildFallbackHandle(): THandle & CaptchaHandle {
-		return {
-			execute: async () => {},
-			reset: () => {},
-			destroy: () => {},
-			getResponse: () => "",
-			getComponentState: () => captchaState,
-		} as THandle & CaptchaHandle;
-	}
-
-	function cleanup(cancelRender = false): void {
-		if (cancelRender) {
-			renderToken += 1;
-		}
-
+	function cleanup(): void {
 		if (provider && widgetId != null) {
 			try {
 				provider.destroy(widgetId);
@@ -63,111 +50,109 @@
 				console.warn("[better-captcha] cleanup:", error);
 			}
 		}
-
 		container?.remove();
 		container = null;
 		provider = null;
 		widgetId = null;
-		handle = buildFallbackHandle();
-	}
-
-	function buildActiveHandle(): THandle & CaptchaHandle {
-		if (!provider || widgetId == null) {
-			return buildFallbackHandle();
-		}
-
-		const baseHandle = provider.getHandle(widgetId);
-		return {
-			...baseHandle,
-			getComponentState: () => captchaState,
-			destroy: () => {
-				baseHandle.destroy();
-				cleanup(true);
-			},
-		} as THandle & CaptchaHandle;
 	}
 
 	async function renderCaptcha(): Promise<void> {
 		const host = elementRef;
-		if (!host) return;
+		if (!host || isRendering) return;
 
+		isRendering = true;
 		cleanup();
-
-		const token = ++renderToken;
-		const activeProvider = new ProviderClass(sitekey);
-
 		captchaState = { loading: true, error: null, ready: false };
 
-		let mountTarget: HTMLDivElement | null = null;
-
 		try {
-			await activeProvider.init();
-			if (token !== renderToken) return;
+			const newProvider = new ProviderClass(sitekey);
+			await newProvider.init();
 
-			mountTarget = document.createElement("div");
-			host.appendChild(mountTarget);
+			const newContainer = document.createElement("div");
+			host.appendChild(newContainer);
 
-			const id =
-				options !== undefined
-					? await activeProvider.render(mountTarget, options)
-					: await activeProvider.render(mountTarget);
-			if (token !== renderToken) {
-				mountTarget.remove();
-				return;
-			}
+			const id = options !== undefined
+				? await newProvider.render(newContainer, options)
+				: await newProvider.render(newContainer);
 
-			provider = activeProvider;
-			container = mountTarget;
-			widgetId = id ?? null;
-			handle = buildActiveHandle();
+			if (id == null) throw new Error("Captcha render returned null widget id");
+
+			provider = newProvider;
+			container = newContainer;
+			widgetId = id;
 			captchaState = { loading: false, error: null, ready: true };
-			onready?.(handle);
+			hasRendered = true;
+			if (onready && provider) {
+				const handle = provider.getHandle(id);
+				onready(handle);
+			}
 		} catch (error) {
-			mountTarget?.remove();
-			if (token !== renderToken) return;
-
 			const err = error instanceof Error ? error : new Error(String(error));
 			console.error("[better-captcha] render:", err);
-			handle = buildFallbackHandle();
 			captchaState = { loading: false, error: err, ready: false };
 			onerror?.(err);
+		} finally {
+			isRendering = false;
 		}
 	}
 
-	export function execute(): Promise<void> {
-		return handle?.execute() ?? Promise.resolve();
+	export async function execute(): Promise<void> {
+		if (provider && widgetId != null) {
+			await provider.getHandle(widgetId).execute();
+		}
 	}
 
 	export function reset(): void {
-		handle?.reset();
+		if (provider && widgetId != null) {
+			provider.getHandle(widgetId).reset();
+		}
 	}
 
 	export function destroy(): void {
-		handle?.destroy();
+		if (provider && widgetId != null) {
+			provider.getHandle(widgetId).destroy();
+		}
+		cleanup();
+		captchaState = { loading: false, error: null, ready: false };
 	}
 
 	export function getResponse(): string {
-		return handle?.getResponse() ?? "";
+		if (provider && widgetId != null) {
+			return provider.getHandle(widgetId).getResponse();
+		}
+		return "";
 	}
 
 	export function getComponentState(): CaptchaState {
 		return captchaState;
 	}
 
+	export async function render(): Promise<void> {
+		await renderCaptcha();
+	}
+
+	let hasRendered = false;
+
+	onMount(() => {
+		if (autoRender) {
+			renderCaptcha();
+	}
+	});
+
 	$effect(() => {
-		elementRef;
 		sitekey;
 		options;
-		ProviderClass;
+		if (autoRender && hasRendered) {
 		renderCaptcha();
+		}
 	});
 
 	onDestroy(() => {
-		cleanup(true);
+		cleanup();
 	});
 
 	const elementId = $derived(
-		widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading",
+		widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading"
 	);
 </script>
 
@@ -179,4 +164,3 @@
 	aria-live="polite"
 	aria-busy={captchaState.loading}
 ></div>
-

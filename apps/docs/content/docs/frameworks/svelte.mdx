@@ -60,6 +60,25 @@ function logResponse() {
 
 Use `bind:this` to get a reference to the component instance, then call methods directly on it. Always use optional chaining since the reference may be undefined.
 
+## Manual Rendering
+
+By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+
+let captchaRef: ReCaptcha | undefined;
+
+function render() {
+  captchaRef?.render();
+}
+</script>
+
+<ReCaptcha bind:this={captchaRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" autoRender={false} />
+<button onclick={render}>Show Captcha</button>
+```
+
 ## Common Methods
 
 All providers implement these methods on the handle:

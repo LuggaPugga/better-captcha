@@ -76,3 +76,10 @@ test("widget can be destroyed", async () => {
 	await expect(page.locator('[id^="cf-widget"]')).toHaveCount(0);
 	await expect(page.locator('[id^="better-captcha-loading"]')).toHaveCount(1);
 });
+
+test("widget can be rendered after destroy", async () => {
+	await page.locator("button", { hasText: "Render" }).first().click();
+	await page.locator('[id^="cf-widget"]').waitFor({ state: "visible", timeout: 5000 });
+	await expect(page.locator('[id^="cf-widget"]')).toHaveCount(1);
+	await expect(page.locator('[id^="cf-widget"]').first()).toBeVisible();
+});

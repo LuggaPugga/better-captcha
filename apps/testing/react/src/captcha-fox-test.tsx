@@ -28,6 +28,9 @@ export function CaptchaFoxTest() {
 			<button type="button" onClick={() => captchaFoxRef.current?.execute()}>
 				Execute
 			</button>
+			<button type="button" onClick={() => captchaFoxRef.current?.render()}>
+				Render
+			</button>
 			<button type="button" onClick={handleGetResponse}>
 				Get Response
 			</button>

@@ -21,6 +21,7 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	options?: TOptions;
 	class?: string;
 	style?: JSX.CSSProperties;
+	autoRender?: boolean;
 	onReady?: (handle: THandle) => void;
 	onError?: (error: Error) => void;
 	controller?: CaptchaController<THandle>;

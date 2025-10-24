@@ -58,6 +58,27 @@ const logResponse = () => {
 
 `useCaptcha()` keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via `ref="recaptchaRef"`.
 
+## Manual Rendering
+
+By default, captchas automatically render on mount. Disable this with `:autoRender="false"` and render manually using `render()`:
+
+```vue
+<template>
+  <ReCaptcha ref="recaptchaRef" sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" :autoRender="false" />
+  <button @click="showCaptcha">Show Captcha</button>
+</template>
+
+<script setup lang="ts">
+import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+
+const recaptchaRef = ref(null);
+
+const showCaptcha = () => {
+  recaptchaRef.value?.render();
+};
+</script>
+```
+
 ## Common Methods
 
 All providers implement these methods on the handle:

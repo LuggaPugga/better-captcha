@@ -49,6 +49,27 @@ export default component$(() => {
 
 The handle is available once the widget is ready. Use optional chaining when calling methods.
 
+## Manual Rendering
+
+By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+
+```tsx
+import { component$ } from "@builder.io/qwik";
+import { useCaptchaController } from "@better-captcha/qwik";
+import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+export default component$(() => {
+  const controller = useCaptchaController();
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} autoRender={false} />
+      <button onClick$={async () => await controller.value?.render()}>Show Captcha</button>
+    </>
+  );
+});
+```
+
 ## Common Methods
 
 All providers implement these methods on the handle:
