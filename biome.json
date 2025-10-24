@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!*.mdx", "!**/*.svelte"]
+		"includes": ["apps/**", "packages/**", "!*.mdx"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -23,6 +23,16 @@
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double"
+		}
+	},
+	"html": {
+		"formatter": {
+			"indentScriptAndStyle": true
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
 		}
 	},
 	"assist": {
