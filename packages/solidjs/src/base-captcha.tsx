@@ -151,7 +151,7 @@ export function createCaptchaComponent<
 					containerRef = null;
 					batch(() => {
 						setWidgetId(null);
-						setState({ loading: true, error: null, ready: false });
+						setState({ loading: false, error: null, ready: false });
 					});
 				},
 				render: async () => {
