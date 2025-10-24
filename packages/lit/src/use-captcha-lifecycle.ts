@@ -51,10 +51,20 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 			this.widgetIdRef = id ?? null;
 			this.updateState({ loading: false, error: null, ready: true });
 		} catch (error) {
-			if (!this.cancelled) {
-				console.error("[better-captcha] render:", error);
-				this.updateState({ loading: false, error: error as Error, ready: false });
+			// ensure no orphan container/refs on failure
+			this.containerRef?.remove();
+			this.containerRef = null;
+			this.widgetIdRef = null;
+			if (this.cancelled) {
+				this.updateState({ loading: false, error: null, ready: false });
+				return;
 			}
+			console.error("[better-captcha] init/render:", error);
+			this.updateState({
+				loading: false,
+				error: error instanceof Error ? error : new Error(String(error)),
+				ready: false,
+			});
 		}
 	}
 
