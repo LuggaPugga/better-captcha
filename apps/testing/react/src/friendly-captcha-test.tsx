@@ -32,6 +32,9 @@ export function FriendlyCaptchaTest() {
 			<button type="button" onClick={() => turnstileRef.current?.execute()}>
 				Execute
 			</button>
+			<button type="button" onClick={() => turnstileRef.current?.render()}>
+				Render
+			</button>
 			<button type="button" onClick={handleGetResponse}>
 				Get Response
 			</button>

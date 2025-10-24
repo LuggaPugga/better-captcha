@@ -51,7 +51,6 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 			this.widgetIdRef = id ?? null;
 			this.updateState({ loading: false, error: null, ready: true });
 		} catch (error) {
-			// ensure no orphan container/refs on failure
 			this.containerRef?.remove();
 			this.containerRef = null;
 			this.widgetIdRef = null;

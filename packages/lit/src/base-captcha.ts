@@ -8,6 +8,7 @@ const defaultHandle: CaptchaHandle = {
 	execute: async () => {},
 	reset: () => {},
 	destroy: () => {},
+	render: async () => {},
 	getResponse: () => "",
 	getComponentState: () => ({
 		loading: false,
@@ -23,6 +24,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 	class CaptchaComponent extends LitElement {
 		@property() sitekey: string = "";
 		@property({ type: Object }) options: TOptions | undefined;
+		@property({ type: Boolean }) autoRender: boolean = true;
 
 		@state() private captchaState: CaptchaState = {
 			loading: true,
@@ -43,7 +45,9 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			super.connectedCallback();
 			await this.updateComplete;
 			if (!this.initialized && this.elementRef.value && this.sitekey) {
-				this.initializeCaptcha();
+				if (this.autoRender) {
+					this.initializeCaptcha();
+				}
 				this.initialized = true;
 			}
 		}
@@ -74,14 +78,15 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		updated(changedProperties: Map<string, unknown>) {
-			if (this.initialized && changedProperties.has("sitekey") && this.sitekey) {
+			if (this.initialized && changedProperties.has("sitekey") && this.sitekey && this.autoRender) {
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;
 			} else if (
 				this.initialized &&
 				changedProperties.has("options") &&
-				changedProperties.get("options") !== undefined
+				changedProperties.get("options") !== undefined &&
+				this.autoRender
 			) {
 				this.cleanup();
 				this.initializeCaptcha();
@@ -103,6 +108,11 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 							this.lifecycle.widgetIdRef = null;
 						}
 						this.captchaState = { ...this.captchaState, ready: false, error: null };
+					}
+				},
+				render: async () => {
+					if (this.elementRef.value) {
+						this.initializeCaptcha();
 					}
 				},
 			} as THandle;

@@ -42,6 +42,9 @@ export function ProsopoTest() {
 				<button type="button" onClick={() => captchaRef.current?.execute()}>
 					Execute
 				</button>
+				<button type="button" onClick={() => captchaRef.current?.render()}>
+					Render
+				</button>
 				<button
 					type="button"
 					onClick={() => {

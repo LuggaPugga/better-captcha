@@ -43,6 +43,14 @@ export const CaptchaFoxTest = component$(() => {
 			</button>
 			<button
 				type="button"
+				onClick$={async () => {
+					await controller.value?.render();
+				}}
+			>
+				Render
+			</button>
+			<button
+				type="button"
 				onClick$={() => {
 					const themes = ["light", "dark", "auto"];
 					const currentTheme = options.value.theme;

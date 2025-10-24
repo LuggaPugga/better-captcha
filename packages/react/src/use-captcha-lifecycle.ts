@@ -1,68 +1,76 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	provider: Provider<ProviderConfig, TOptions, THandle>,
 	options: TOptions | undefined,
+	autoRender = true,
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
 	const widgetIdRef = useRef<WidgetId | null>(null);
 	const containerRef = useRef<HTMLDivElement | null>(null);
+	const lastKeyRef = useRef<string>("");
+	const isRenderingRef = useRef(false);
 
 	const [state, setState] = useState<CaptchaState>({
-		loading: true,
+		loading: autoRender,
 		error: null,
 		ready: false,
 	});
 
-	useEffect(() => {
-		const element = elementRef.current;
-		if (!element) return;
+	const cleanup = useCallback(() => {
+		if (widgetIdRef.current) {
+			try {
+				provider.destroy(widgetIdRef.current);
+			} catch (err) {
+				console.warn("[better-captcha] cleanup:", err);
+			}
+			widgetIdRef.current = null;
+		}
+		containerRef.current?.remove();
+		containerRef.current = null;
+	}, [provider]);
 
-		let cancelled = false;
+	const renderCaptcha = useCallback(async () => {
+		const el = elementRef.current;
+		if (!el || isRenderingRef.current) return;
+
+		isRenderingRef.current = true;
+		cleanup();
 		setState({ loading: true, error: null, ready: false });
 
-		(async () => {
-			try {
-				await provider.init();
-				if (cancelled) return;
+		try {
+			await provider.init();
 
-				// Create fresh container for each render
-				const container = document.createElement("div");
-				containerRef.current = container;
-				element.appendChild(container);
+			const container = document.createElement("div");
+			el.appendChild(container);
+			containerRef.current = container;
 
-				const id = await provider.render(container, options);
-				if (cancelled) {
-					if (id != null) provider.destroy(id);
-					container.remove();
-					return;
-				}
+			const id = await provider.render(container, options);
+			widgetIdRef.current = id ?? null;
 
-				widgetIdRef.current = id ?? null;
-				setState({ loading: false, error: null, ready: true });
-			} catch (error) {
-				if (!cancelled) {
-					console.error("[better-captcha] render:", error);
-					setState({ loading: false, error: error as Error, ready: false });
-				}
-			}
-		})();
+			setState({ loading: false, error: null, ready: true });
+		} catch (err) {
+			console.error("[better-captcha] render:", err);
+			setState({ loading: false, error: err as Error, ready: false });
+		} finally {
+			isRenderingRef.current = false;
+		}
+	}, [cleanup, provider, options]);
+
+	useEffect(() => {
+		if (!autoRender) return;
+		const key = JSON.stringify({ providerId: provider, options });
+
+		if (lastKeyRef.current !== key) {
+			lastKeyRef.current = key;
+			void renderCaptcha();
+		}
 
 		return () => {
-			cancelled = true;
-			const id = widgetIdRef.current;
-			if (id != null) {
-				try {
-					provider.destroy(id);
-				} catch (error) {
-					console.warn("[better-captcha] cleanup:", error);
-				}
-			}
-			containerRef.current?.remove();
-			widgetIdRef.current = null;
+			if (elementRef.current == null) cleanup();
 		};
-	}, [provider, options]);
+	}, [autoRender, provider, options, renderCaptcha, cleanup]);
 
-	return { elementRef, state, widgetIdRef, setState };
+	return { elementRef, state, widgetIdRef, renderCaptcha, setState };
 }

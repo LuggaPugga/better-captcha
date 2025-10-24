@@ -15,6 +15,7 @@ export type CaptchaProps<TOptions> = {
 	options?: TOptions;
 	className?: string;
 	style?: React.CSSProperties;
+	autoRender?: boolean;
 };
 
 export { createCaptchaComponent } from "./base-captcha";

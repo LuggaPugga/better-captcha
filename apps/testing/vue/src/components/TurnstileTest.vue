@@ -12,6 +12,7 @@
 			<button type="button" @click="handleDestroy">Destroy</button>
 			<button type="button" @click="handleReset">Reset</button>
 			<button type="button" @click="handleExecute">Execute</button>
+			<button type="button" @click="handleRender">Render</button>
 			<button type="button" @click="handleGetResponse">Get Response</button>
 			<button type="button" @click="handleChangeTheme">Change Theme</button>
 		</div>
@@ -22,7 +23,7 @@
 
 <script setup lang="ts">
 	import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/vue/provider/turnstile";
-	import { ref } from "vue";
+import { ref } from "vue";
 
 	const captchaRef = ref<TurnstileHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -53,6 +54,10 @@
 
 	const handleExecute = async () => {
 		await captchaRef.value?.execute();
+	};
+
+	const handleRender = async () => {
+		await captchaRef.value?.render();
 	};
 
 	const handleGetResponse = () => {

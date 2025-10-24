@@ -7,6 +7,8 @@
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 
+	let theme = $state<"light" | "dark">("light");
+
 	const options = $state<Omit<RenderParameters, "sitekey" | "element">>({
 		language: "en",
 	});
@@ -33,9 +35,18 @@
 		await captchaRef?.execute();
 	}
 
+	async function handleRender() {
+		await captchaRef?.showCaptcha();
+	}
+
 	function handleGetResponse() {
 		const captchaResponse = captchaRef?.getResponse() || "No response";
 		response.set(captchaResponse);
+	}
+
+	function handleChangeTheme() {
+		theme = theme === "light" ? "dark" : "light";
+		options.theme = theme;
 	}
 </script>
 
@@ -46,7 +57,9 @@
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>
 		<button type="button" onclick={handleExecute}>Execute</button>
+		<button type="button" onclick={handleRender}>Render</button>
 		<button type="button" onclick={handleGetResponse}>Get Response</button>
+		<button type="button" onclick={handleChangeTheme}>Change Theme</button>
 	</div>
 	{#if $response}
 		<p id="captcha-response">{$response}</p>

@@ -36,6 +36,10 @@ export function createCaptchaComponent<
 				type: [String, Object, Array] as PropType<StyleValue>,
 				default: undefined,
 			},
+			autoRender: {
+				type: Boolean,
+				default: true,
+			},
 		},
 
 		emits: {
@@ -45,13 +49,14 @@ export function createCaptchaComponent<
 
 		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
-			const state = ref<CaptchaState>({ loading: true, error: null, ready: false });
+			const state = ref<CaptchaState>({ loading: props.autoRender, error: null, ready: false });
 			const widgetId = ref<WidgetId | null>(null);
 			const buildFallbackHandle = (): THandle & CaptchaHandle =>
 				({
 					execute: async () => {},
 					reset: () => {},
 					destroy: () => {},
+				render: () => renderCaptcha(),
 					getResponse: () => "",
 					getComponentState: () => state.value,
 				}) as THandle & CaptchaHandle;
@@ -60,6 +65,8 @@ export function createCaptchaComponent<
 			let container: HTMLDivElement | null = null;
 			let provider: TProvider | null = null;
 			let renderToken = 0;
+		let isRendering = false;
+		let hasRendered = false;
 
 			const cleanup = (cancelRender = false): void => {
 				if (cancelRender) {
@@ -94,13 +101,15 @@ export function createCaptchaComponent<
 						baseHandle.destroy();
 						cleanup(true);
 					},
+					render: () => renderCaptcha(),
 				} as THandle & CaptchaHandle;
 			};
 
 			const renderCaptcha = async (): Promise<void> => {
 				const host = elementRef.value;
-				if (!host) return;
+				if (!host || isRendering) return;
 
+				isRendering = true;
 				cleanup();
 
 				const token = ++renderToken;
@@ -112,7 +121,10 @@ export function createCaptchaComponent<
 
 				try {
 					await activeProvider.init();
-					if (token !== renderToken) return;
+					if (token !== renderToken) {
+						isRendering = false;
+						return;
+					}
 
 					mountTarget = document.createElement("div");
 					host.appendChild(mountTarget);
@@ -123,6 +135,7 @@ export function createCaptchaComponent<
 							: await activeProvider.render(mountTarget);
 					if (token !== renderToken) {
 						mountTarget.remove();
+						isRendering = false;
 						return;
 					}
 
@@ -134,13 +147,18 @@ export function createCaptchaComponent<
 					emit("ready", handle.value);
 				} catch (error) {
 					mountTarget?.remove();
-					if (token !== renderToken) return;
+					if (token !== renderToken) {
+						isRendering = false;
+						return;
+					}
 
 					const err = error instanceof Error ? error : new Error(String(error));
 					console.error("[better-captcha] render:", err);
 					handle.value = buildFallbackHandle();
 					state.value = { loading: false, error: err, ready: false };
 					emit("error", err);
+				} finally {
+					isRendering = false;
 				}
 			};
 
@@ -148,18 +166,32 @@ export function createCaptchaComponent<
 				execute: () => handle.value.execute(),
 				reset: () => handle.value.reset(),
 				destroy: () => handle.value.destroy(),
+				render: () => renderCaptcha(),
 				getResponse: () => handle.value.getResponse(),
 				getComponentState: () => state.value,
 			});
 
 			onMounted(() => {
+				if (props.autoRender) {
 				void renderCaptcha();
+				}
 			});
+
+		watch(
+			() => state.value.ready,
+			(ready) => {
+				if (ready) {
+					hasRendered = true;
+				}
+			},
+		);
 
 			watch(
 				[() => props.sitekey, () => props.options],
 				() => {
+				if (props.autoRender && hasRendered) {
 					void renderCaptcha();
+					}
 				},
 				{ deep: true },
 			);

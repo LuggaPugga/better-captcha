@@ -31,6 +31,13 @@ export interface CaptchaHandle {
 	destroy: () => void;
 
 	/**
+	 * Render the captcha widget
+	 * Useful when autoRender is disabled or after destroying the widget
+	 * @returns Promise that resolves when rendering is complete
+	 */
+	render: () => Promise<void>;
+
+	/**
 	 * Get the current response token from the widget
 	 * @returns The response string, empty if no challenge has been completed
 	 */
@@ -135,6 +142,9 @@ export abstract class Provider<
 			reset: () => this.reset(widgetId),
 			execute: () => this.execute(widgetId),
 			destroy: () => this.destroy(widgetId),
+			render: async () => {
+				console.warn("[better-captcha] render() called on base handle - this should be overridden by the component");
+			},
 			getResponse: () => this.getResponse(widgetId),
 			getComponentState: () => ({
 				loading: false,
