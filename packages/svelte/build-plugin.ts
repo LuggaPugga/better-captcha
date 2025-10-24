@@ -72,8 +72,8 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		return baseCaptchaRef?.getComponentState() ?? { loading: false, error: null, ready: false };
 	}
 
-	export function showCaptcha(): Promise<void> {
-		return baseCaptchaRef?.showCaptcha() ?? Promise.resolve();
+	export function render(): Promise<void> {
+		return baseCaptchaRef?.render() ?? Promise.resolve();
 	}
 </script>
 
@@ -149,7 +149,7 @@ export default class ${componentName} extends SvelteComponent<${componentName}Pr
 	destroy(): void;
 	getResponse(): string;
 	getComponentState(): CaptchaState;
-	showCaptcha(): Promise<void>;
+	render(): Promise<void>;
 }
 
 export type { ${handleType}, ${renderParamsType}${extraTypeExports} };

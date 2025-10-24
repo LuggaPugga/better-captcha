@@ -24,7 +24,7 @@ export interface CaptchaComponentMethods {
 	destroy(): void;
 	getResponse(): string;
 	getComponentState(): import("@better-captcha/core").CaptchaState;
-	showCaptcha(): Promise<void>;
+	render(): Promise<void>;
 }
 
 export type CaptchaComponent<TOptions = unknown> = typeof SvelteComponent<CaptchaProps<TOptions>> &

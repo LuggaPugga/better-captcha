@@ -62,7 +62,7 @@ Use `bind:this` to get a reference to the component instance, then call methods 
 
 ## Manual Rendering
 
-By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `showCaptcha()`:
+By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
 
 ```svelte
 <script lang="ts">
@@ -70,13 +70,13 @@ import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
 
 let captchaRef: ReCaptcha | undefined;
 
-function showCaptcha() {
-  captchaRef?.showCaptcha();
+function render() {
+  captchaRef?.render();
 }
 </script>
 
 <ReCaptcha bind:this={captchaRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" autoRender={false} />
-<button onclick={showCaptcha}>Show Captcha</button>
+<button onclick={render}>Show Captcha</button>
 ```
 
 ## Common Methods

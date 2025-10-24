@@ -36,7 +36,7 @@
 	}
 
 	async function handleRender() {
-		await captchaRef?.showCaptcha();
+		await captchaRef?.render();
 	}
 
 	function handleGetResponse() {

@@ -127,7 +127,7 @@
 		return captchaState;
 	}
 
-	export async function showCaptcha(): Promise<void> {
+	export async function render(): Promise<void> {
 		await renderCaptcha();
 	}
 
