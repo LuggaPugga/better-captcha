@@ -5,6 +5,7 @@ import {
 	generateProviderAggregateModule,
 	generateProviderModuleDts,
 	type GeneratedFiles,
+	generateAggregateIndexFile,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import { Project, ScriptTarget, ModuleKind, VariableDeclarationKind } from "ts-morph";
 import { createUnplugin } from "unplugin";
@@ -95,7 +96,7 @@ function genProviderAggregateModule(): string {
 }
 
 function genProviderAggregateModuleDts(): string {
-	const files = generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX);
+	const files = generateAggregateIndexFile(PROVIDER_REGISTRY, ".qwik.mjs");
 	return files.dts;
 }
 

@@ -2,6 +2,7 @@ import path from "node:path";
 import { PROVIDER_REGISTRY } from "@better-captcha/core";
 import {
 	type FrameworkConfig,
+	generateAggregateIndexFile,
 	generateProviderAggregateModule,
 	generateProviderModule,
 	generateProviderModuleDts,
@@ -83,7 +84,7 @@ export const dtsEmitterPlugin = createUnplugin(() => {
 					});
 				}
 
-				const aggregateFiles = generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX);
+				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY, solidjsConfig.fileExtension);
 				this.emitFile({
 					type: "asset",
 					fileName: "provider/index.d.ts",
