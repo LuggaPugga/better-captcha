@@ -170,7 +170,7 @@
     },
     "packages/core": {
       "name": "@better-captcha/core",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "devDependencies": {
         "ts-morph": "^27.0.2",
         "tsdown": "^0.15.6",
@@ -181,7 +181,7 @@
     },
     "packages/lit": {
       "name": "@better-captcha/lit",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
         "lit": "^3.0.0",
@@ -203,7 +203,7 @@
     },
     "packages/qwik": {
       "name": "@better-captcha/qwik",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
       },
@@ -225,7 +225,7 @@
     },
     "packages/react": {
       "name": "@better-captcha/react",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
       },
@@ -247,7 +247,7 @@
     },
     "packages/solidjs": {
       "name": "@better-captcha/solidjs",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
       },
@@ -271,7 +271,7 @@
     },
     "packages/svelte": {
       "name": "@better-captcha/svelte",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
       },
@@ -303,7 +303,7 @@
     },
     "packages/vue": {
       "name": "@better-captcha/vue",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "dependencies": {
         "@better-captcha/core": "workspace:*",
       },
