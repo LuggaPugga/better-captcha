@@ -52,6 +52,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 			setState({ loading: false, error: null, ready: true });
 		} catch (err) {
 			console.error("[better-captcha] render:", err);
+			cleanup(); // remove container and reset refs
 			setState({ loading: false, error: err as Error, ready: false });
 		} finally {
 			isRenderingRef.current = false;
