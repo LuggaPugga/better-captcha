@@ -68,7 +68,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 		}
 
 		return () => {
-			if (elementRef.current == null) cleanup();
+			cleanup();
 		};
 	}, [autoRender, provider, options, renderCaptcha, cleanup]);
 
