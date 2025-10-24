@@ -34,7 +34,7 @@ For more information, visit the [official Private Captcha documentation](https:/
   import { PrivateCaptcha } from "@better-captcha/qwik/provider/private-captcha";
 
   export default component$(() => (
-    <form>
+	  <form>
       <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
     </form>
   ));
@@ -51,8 +51,8 @@ For more information, visit the [official Private Captcha documentation](https:/
 
   <Tab value="Vue">
   ```vue
-  <template>
-    <form>
+	<template>
+	  <form>
       <PrivateCaptcha
         sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
         :options="{ theme: 'light' }"
@@ -68,6 +68,7 @@ For more information, visit the [official Private Captcha documentation](https:/
 
   <Tab value="Svelte">
   ```svelte
+  <script lang="ts">
   <script lang="ts">
   import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
   </script>

@@ -44,6 +44,26 @@ export default function Example() {
 
 The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to keep type-safety.
 
+## Manual Rendering
+
+By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+
+```tsx
+import { useRef } from "react";
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+export default function Example() {
+  const recaptchaRef = useRef(null);
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" ref={recaptchaRef} autoRender={false} />
+      <button onClick={() => recaptchaRef.current.render()}>Show Captcha</button>
+    </>
+  );
+}
+```
+
 ## Common Methods
 
 All providers implement these methods on the handle:

@@ -46,7 +46,7 @@ For more information, visit the [official Cloudflare Turnstile documentation](ht
 
   <Tab value="Vue">
   ```vue
-  <template>
+	<template>
     <Turnstile
       sitekey="1x00000000000000000000AA"
       :options="{ theme: 'dark' }"
@@ -61,6 +61,7 @@ For more information, visit the [official Cloudflare Turnstile documentation](ht
 
   <Tab value="Svelte">
   ```svelte
+  <script lang="ts">
   <script lang="ts">
   import Turnstile from "@better-captcha/svelte/provider/turnstile";
   </script>
