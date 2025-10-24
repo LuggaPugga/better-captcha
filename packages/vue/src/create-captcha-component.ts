@@ -8,14 +8,15 @@ import {
 	type PropType,
 	ref,
 	type StyleValue,
-	watch,
+	watch
 } from "vue";
+import { CaptchaEmits, CaptchaProps } from ".";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekey: string) => TProvider): Component {
+>(ProviderClass: new (sitekey: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
 	return defineComponent({
 		name: "BetterCaptcha",
 
@@ -49,7 +50,7 @@ export function createCaptchaComponent<
 
 		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
-			const state = ref<CaptchaState>({ loading: props.autoRender, error: null, ready: false });
+			const state = ref<CaptchaState>({ loading: props.autoRender ?? true, error: null, ready: false });
 			const widgetId = ref<WidgetId | null>(null);
 			const buildFallbackHandle = (): THandle & CaptchaHandle =>
 				({

@@ -14,6 +14,7 @@ export interface CaptchaProps<TOptions> {
 	options?: TOptions;
 	class?: string;
 	style?: StyleValue;
+	autoRender?: boolean;
 }
 
 export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {

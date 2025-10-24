@@ -9,6 +9,12 @@ export interface FrameworkConfig {
 	fileExtension: string;
 	useClientDirective?: boolean;
 	propsType?: string;
+	/**
+	 * How to structure the component type parameters:
+	 * - "single-with-ref" (React): CaptchaProps<Options> & RefAttributes<Handle>
+	 * - "two-params" (SolidJS/Qwik): CaptchaProps<Options, Handle>
+	 */
+	propsStructure?: "single-with-ref" | "two-params";
 }
 
 function createProject(): Project {
@@ -101,6 +107,16 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		isTypeOnly: true,
 	});
 
+	// Generate the component type based on the framework's props structure
+	let componentTypeString: string;
+	if (config.propsStructure === "single-with-ref") {
+		// React style: CaptchaProps<Options> & RefAttributes<Handle>
+		componentTypeString = `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>> & RefAttributes<${handleType}>>`;
+	} else {
+		// Default (SolidJS/Qwik style): CaptchaProps<Options, Handle>
+		componentTypeString = `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>, ${handleType}>>`;
+	}
+
 	sourceFile.addVariableStatement({
 		declarationKind: VariableDeclarationKind.Const,
 		isExported: true,
@@ -108,7 +124,7 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		declarations: [
 			{
 				name: componentName,
-				type: `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>, ${handleType}>>`,
+				type: componentTypeString,
 			},
 		],
 	});

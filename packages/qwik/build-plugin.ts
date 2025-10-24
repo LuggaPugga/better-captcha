@@ -39,6 +39,7 @@ const qwikConfig: FrameworkConfig = {
 	componentType: "Component",
 	componentTypeImports: '{ Component } from "@builder.io/qwik"',
 	fileExtension: ".js",
+	propsStructure: "two-params",
 };
 
 function genProviderModule(meta: ProviderMetadata): string {
