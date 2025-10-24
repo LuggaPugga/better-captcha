@@ -49,12 +49,12 @@
 			"default": "./dist/utils/theme.js"
 		},
 		"./utils/build-plugin-utils": {
-			"types": "./src/utils/build-plugin-utils.ts",
-			"default": "./src/utils/build-plugin-utils.ts"
+			"types": "./dist/utils/build-plugin-utils.d.ts",
+			"default": "./dist/utils/build-plugin-utils.js"
 		},
 		"./src/registry": {
-			"types": "./src/registry.ts",
-			"default": "./src/registry.ts"
+			"types": "./dist/registry.d.ts",
+			"default": "./dist/registry.js"
 		},
 		"./package.json": "./package.json"
 	},
@@ -73,7 +73,7 @@
 				"dist/utils/theme.d.ts"
 			],
 			"utils/build-plugin-utils": [
-				"src/utils/build-plugin-utils.ts"
+				"dist/utils/build-plugin-utils.d.ts"
 			]
 		}
 	},
@@ -81,6 +81,7 @@
 		"typescript": "^5.9.2"
 	},
 	"devDependencies": {
+		"ts-morph": "^27.0.2",
 		"tsdown": "^0.15.6"
 	}
 }

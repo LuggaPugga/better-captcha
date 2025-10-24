@@ -172,6 +172,7 @@
       "name": "@better-captcha/core",
       "version": "0.1.0",
       "devDependencies": {
+        "ts-morph": "^27.0.2",
         "tsdown": "^0.15.6",
       },
       "peerDependencies": {
