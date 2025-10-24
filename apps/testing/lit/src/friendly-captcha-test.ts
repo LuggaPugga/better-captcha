@@ -20,7 +20,6 @@ export class FriendlyCaptchaTest extends LitElement {
 	@state()
 	private response: string | null = null;
 
-	// Disable shadow DOM for compatibility with captcha providers
 	protected createRenderRoot() {
 		return this;
 	}
@@ -52,11 +51,11 @@ export class FriendlyCaptchaTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<friendly-captcha-captcha
+				<friendly-captcha
 					${ref(this.captchaRef)}
 					sitekey="FC-00000000-0000-0000-0000-000000000000"
 					.options=${this.options}
-				></friendly-captcha-captcha>
+				></friendly-captcha>
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>
 				<button type="button" @click=${this.handleExecute}>Execute</button>

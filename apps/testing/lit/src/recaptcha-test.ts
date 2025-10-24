@@ -20,7 +20,6 @@ export class RecaptchaTest extends LitElement {
 	@state()
 	private response: string | null = null;
 
-	// Disable shadow DOM for compatibility with captcha providers
 	protected createRenderRoot() {
 		return this;
 	}
