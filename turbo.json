@@ -1,27 +1,12 @@
 {
 	"$schema": "https://turborepo.com/schema.json",
 	"ui": "tui",
+	"globalPassThroughEnv": ["GITHUB_TOKEN"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", ".output/**", ".vinxi/**"]
-		},
-		"react#build": {
-			"dependsOn": ["@better-captcha/core#build", "@better-captcha/react#build"],
-			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
-		},
-		"solidjs#build": {
-			"dependsOn": ["@better-captcha/core#build", "@better-captcha/solidjs#build"],
-			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": [".output/**", ".vinxi/**"]
-		},
-		"docs#build": {
-			"env": ["GITHUB_TOKEN"]
-		},
-		"docs#dev": {
-			"env": ["GITHUB_TOKEN"]
 		},
 		"lint": {
 			"dependsOn": ["^lint"]
