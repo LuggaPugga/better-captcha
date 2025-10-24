@@ -12,6 +12,7 @@
 		"dev:qwik": "turbo run dev --filter=@better-captcha/qwik --filter=apps/testing/qwik",
 		"dev:lit": "turbo run dev --filter=@better-captcha/lit --filter=apps/testing/lit",
 		"dev:docs": "turbo run dev --filter=apps/docs",
+		"format": "biome format --write && prettier --write \"**/*.svelte\"",
 		"lint": "turbo run lint",
 		"start": "turbo run start"
 	},
