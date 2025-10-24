@@ -78,7 +78,7 @@ test("widget can be destroyed", async () => {
 
 test("widget can be rendered after destroy", async () => {
 	await page.locator("button", { hasText: "Render" }).first().click();
-	await page.waitForTimeout(500);
+	await page.locator('[id^="better-captcha-private-captcha"]').waitFor({ state: "visible", timeout: 5000 });
 	await expect(page.locator('[id^="better-captcha-private-captcha"]')).toHaveCount(1);
 	await expect(page.locator('[id^="better-captcha-private-captcha"]').first()).toBeVisible();
 });
