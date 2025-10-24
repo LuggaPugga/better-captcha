@@ -1,8 +1,42 @@
 {
 	"changelog": {
-		"exclude": {
-			"labels": ["ignore-for-release"],
-			"authors": ["renovate[bot]"]
+	  "exclude": {
+		"labels": ["ignore-for-release"],
+		"authors": ["renovate[bot]"]
+	  },
+	  "categories": [
+		{
+		  "title": "🧱 Core",
+		  "labels": ["core"]
+		},
+		{
+		  "title": "⚛️ React",
+		  "labels": ["react"]
+		},
+		{
+		  "title": "🧩 Vue",
+		  "labels": ["vue"]
+		},
+		{
+		  "title": "🔥 Svelte",
+		  "labels": ["svelte"]
+		},
+		{
+		  "title": "⚡ SolidJS",
+		  "labels": ["solidjs"]
+		},
+		{
+		  "title": "🌙 Qwik",
+		  "labels": ["qwik"]
+		},
+		{
+		  "title": "💡 Lit",
+		  "labels": ["lit"]
+		},
+		{
+		  "title": "📦 Other changes",
+		  "labels": ["*"]
 		}
+	  ]
 	}
-}
+  }
