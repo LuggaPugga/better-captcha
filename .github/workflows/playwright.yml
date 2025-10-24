@@ -32,7 +32,7 @@ jobs:
       - name: Run Playwright tests
         run: cd packages/${{ matrix.project }} && bunx playwright test
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.project }}
