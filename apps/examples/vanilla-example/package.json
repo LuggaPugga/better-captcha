@@ -1,0 +1,19 @@
+{
+	"name": "vanilla-example",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@better-captcha/lit": "workspace:*",
+		"lit": "^3.3.1"
+	},
+	"devDependencies": {
+		"typescript": "~5.9.3",
+		"vite": "^7.1.7"
+	}
+}
