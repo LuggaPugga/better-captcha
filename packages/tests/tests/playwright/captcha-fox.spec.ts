@@ -25,8 +25,8 @@ test("script injected", async () => {
 
 test("widget containers rendered", async () => {
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
-	await page.locator('[id^="cf-widget-"]').waitFor({ state: "attached" });
-	await page.waitForTimeout(1000);
+	await page.locator('[id^="cf-widget-"]').waitFor({ state: "attached", timeout: 10000 });
+	await page.waitForLoadState("networkidle");
 });
 
 test("widget can be executed", async () => {
@@ -39,7 +39,7 @@ test("widget can be executed", async () => {
 
 test("widget has response", async () => {
 	await page.locator("button", { hasText: "Get Response" }).first().click();
-	await expect(page.locator("#captcha-response")).toBeVisible();
+	await page.locator("#captcha-response").waitFor({ state: "visible" });
 	await expect(page.locator("#captcha-response")).not.toHaveText("No response");
 	await expect(page.locator("#captcha-response")).not.toHaveText("");
 });
@@ -48,7 +48,7 @@ test("widget can be reset", async () => {
 	await expect(page.locator("[id^='cf-widget-']")).toHaveCount(1);
 	const before = await page.locator('[id^="better-captcha-"]');
 	await page.locator("button", { hasText: "Reset" }).first().click();
-	await expect(before !== page.locator('[id^="better-captcha-"]')).toBe(true);
+	await expect(before).not.toBe(page.locator('[id^="better-captcha-"]'));
 	await expect(page.locator("[id^='cf-widget-']")).toHaveCount(1);
 });
 
@@ -64,7 +64,7 @@ test("widget can change theme", async () => {
 		const widgetAfter = page.locator('[id^="cf-widget"]').first();
 
 		await expect(page.locator('[id^="cf-widget"]')).toHaveCount(1);
-		await expect(widgetAfter).toBeVisible();
+		await widgetAfter.waitFor({ state: "visible" });
 
 		expect(widgetBefore).not.toBe(widgetAfter);
 	}
