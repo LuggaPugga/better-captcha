@@ -41,14 +41,15 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
-		if (options?.theme === "auto") {
-			options.theme = getSystemTheme();
+		const resolvedOptions = options ? { ...options } : undefined;
+		if (resolvedOptions?.theme === "auto") {
+			resolvedOptions.theme = getSystemTheme();
 		}
 		return new Promise<number>((resolve) => {
 			window.grecaptcha.ready(() => {
 				const widgetId = window.grecaptcha.render(element, {
 					sitekey: this.sitekey,
-					...options,
+					...resolvedOptions,
 				});
 				resolve(widgetId);
 			});
