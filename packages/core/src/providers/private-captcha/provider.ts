@@ -92,8 +92,9 @@ export class PrivateCaptchaProvider extends Provider<
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
-		const { onInit, onError, onStart, onFinish, ...widgetOptions } = options || {};
-		if (options?.theme === "auto") {
+		const { onInit, onError, onStart, onFinish, ...restOptions } = options || {};
+		const widgetOptions = { ...restOptions };
+		if (widgetOptions.theme === "auto") {
 			widgetOptions.theme = getSystemTheme();
 		}
 		const widgetId = this.generateWidgetId(element);

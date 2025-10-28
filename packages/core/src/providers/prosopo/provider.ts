@@ -34,13 +34,14 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 	render(element: HTMLElement, options?: Omit<RenderParameters, "siteKey">): string {
 		this.widgetId = `prosopo-widget-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-		if (options?.theme === "auto") {
-			options.theme = getSystemTheme();
+		const resolvedOptions = options ? { ...options } : undefined;
+		if (resolvedOptions?.theme === "auto") {
+			resolvedOptions.theme = getSystemTheme();
 		}
 
 		window.procaptcha?.render(element, {
 			siteKey: this.sitekey,
-			...options,
+			...resolvedOptions,
 		});
 
 		return this.widgetId;

@@ -42,12 +42,13 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 	}
 
 	render(element: HTMLElement, options?: RenderParameters) {
-		if (options?.theme === "auto") {
-			options.theme = getSystemTheme();
+		const resolvedOptions = options ? { ...options } : undefined;
+		if (resolvedOptions?.theme === "auto") {
+			resolvedOptions.theme = getSystemTheme();
 		}
 		return window.hcaptcha.render(element, {
 			sitekey: this.sitekey,
-			...options,
+			...resolvedOptions,
 		});
 	}
 

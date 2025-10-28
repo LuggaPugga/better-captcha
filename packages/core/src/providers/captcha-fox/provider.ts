@@ -34,12 +34,13 @@ export class CaptchaFoxProvider extends Provider<
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">) {
-		if (options?.theme === "auto") {
-			options.theme = getSystemTheme();
+		const resolvedOptions = options ? { ...options } : undefined;
+		if (resolvedOptions?.theme === "auto") {
+			resolvedOptions.theme = getSystemTheme();
 		}
 		return window.captchafox?.render(element, {
 			sitekey: this.sitekey,
-			...options,
+			...resolvedOptions,
 		});
 	}
 
