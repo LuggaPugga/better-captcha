@@ -1,8 +1,3 @@
-/*
-
-// TODO: This test is failing constantly in CI but not locally need to investigate why.
-
-
 import { type BrowserContext, expect, type Page, test } from "@playwright/test";
 
 let context: BrowserContext;
@@ -67,7 +62,6 @@ test("widget can be reset", async () => {
 	await expect(widgetLocator).toHaveCount(1);
 });
 
-
 test("widget can change theme", async () => {
 	const themes = ["light", "dark", "auto"];
 
@@ -82,9 +76,7 @@ test("widget can change theme", async () => {
 		expect(widgetCountAfter).toBeGreaterThanOrEqual(1);
 	}
 });
-*/
 
-/*
 test("widget can be destroyed", async () => {
 	const loadingLocator = page.locator('[id^="better-captcha-loading"]');
 	const widgetLocator = page.locator('[id^="cf-widget"]');
@@ -102,4 +94,3 @@ test("widget can be rendered after destroy", async () => {
 	await expect(widgetLocator).toHaveCount(1);
 	await expect(widgetLocator.first()).toBeVisible();
 });
-*/
