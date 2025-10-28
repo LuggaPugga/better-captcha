@@ -40,17 +40,9 @@
 			"types": "./dist/providers/*/index.d.ts",
 			"default": "./dist/providers/*/index.js"
 		},
-		"./utils/load-script": {
-			"types": "./dist/utils/load-script.d.ts",
-			"default": "./dist/utils/load-script.js"
-		},
-		"./utils/theme": {
-			"types": "./dist/utils/theme.d.ts",
-			"default": "./dist/utils/theme.js"
-		},
-		"./utils/build-plugin-utils": {
-			"types": "./dist/utils/build-plugin-utils.d.ts",
-			"default": "./dist/utils/build-plugin-utils.js"
+		"./utils/*": {
+			"types": "./dist/utils/*.d.ts",
+			"default": "./dist/utils/*.js"
 		},
 		"./src/registry": {
 			"types": "./dist/registry.d.ts",
@@ -66,14 +58,8 @@
 			"providers/*": [
 				"dist/providers/*/index.d.ts"
 			],
-			"utils/load-script": [
-				"dist/utils/load-script.d.ts"
-			],
-			"utils/theme": [
-				"dist/utils/theme.d.ts"
-			],
-			"utils/build-plugin-utils": [
-				"dist/utils/build-plugin-utils.d.ts"
+			"utils/*": [
+				"dist/utils/*.d.ts"
 			]
 		}
 	},
