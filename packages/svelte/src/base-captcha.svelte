@@ -42,6 +42,7 @@
 	let container: HTMLDivElement | null = null;
 	let provider: TProvider | null = null;
 	let isRendering = false;
+let pendingRender = false;
 
 	function cleanup(): void {
 		cleanupWidget(provider, widgetId, container);
@@ -52,9 +53,15 @@
 
 	async function renderCaptcha(): Promise<void> {
 		const host = elementRef;
-		if (!host || isRendering) return;
+	if (!host) return;
+
+	if (isRendering) {
+		pendingRender = true;
+		return;
+	}
 
 		isRendering = true;
+	pendingRender = false;
 		cleanup();
 		captchaState = { loading: true, error: null, ready: false };
 
@@ -87,6 +94,12 @@
 			onerror?.(err);
 		} finally {
 			isRendering = false;
+		if (pendingRender) {
+			pendingRender = false;
+			queueMicrotask(() => {
+				void renderCaptcha();
+			});
+		}
 		}
 	}
 

@@ -33,6 +33,7 @@ export function createCaptchaComponent<
 		let containerRef: HTMLDivElement | null = null;
 		let isRendering = false;
 		let hasRendered = false;
+		let pendingRender = false;
 
 		const performCleanup = () => {
 			cleanup(provider(), widgetId(), containerRef);
@@ -47,9 +48,15 @@ export function createCaptchaComponent<
 			const currentProvider = provider();
 			const options = props.options;
 
-			if (!element || isRendering) return;
+			if (!element) return;
+
+			if (isRendering) {
+				pendingRender = true;
+				return;
+			}
 
 			isRendering = true;
+			pendingRender = false;
 
 			performCleanup();
 
@@ -80,6 +87,12 @@ export function createCaptchaComponent<
 				props.onError?.(err);
 			} finally {
 				isRendering = false;
+				if (pendingRender) {
+					pendingRender = false;
+					queueMicrotask(() => {
+						void renderCaptcha();
+					});
+				}
 			}
 		};
 

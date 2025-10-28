@@ -12,6 +12,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const lastKeyRef = useRef<string>("");
 	const isRenderingRef = useRef(false);
+	const pendingRenderRef = useRef(false);
 
 	const [state, setState] = useState<CaptchaState>({
 		loading: autoRender,
@@ -27,9 +28,15 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 
 	const renderCaptcha = useCallback(async () => {
 		const el = elementRef.current;
-		if (!el || isRenderingRef.current) return;
+		if (!el) return;
+
+		if (isRenderingRef.current) {
+			pendingRenderRef.current = true;
+			return;
+		}
 
 		isRenderingRef.current = true;
+		pendingRenderRef.current = false;
 		cleanup();
 		setState({ loading: true, error: null, ready: false });
 
@@ -50,6 +57,12 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 			setState({ loading: false, error: err as Error, ready: false });
 		} finally {
 			isRenderingRef.current = false;
+			if (pendingRenderRef.current) {
+				pendingRenderRef.current = false;
+				queueMicrotask(() => {
+					void renderCaptcha();
+				});
+			}
 		}
 	}, [cleanup, provider, options]);
 

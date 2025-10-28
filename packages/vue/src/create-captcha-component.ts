@@ -69,6 +69,7 @@ export function createCaptchaComponent<
 			let renderToken = 0;
 			let isRendering = false;
 			let hasRendered = false;
+			let pendingRender = false;
 
 			const cleanup = (cancelRender = false): void => {
 				if (cancelRender) {
@@ -102,9 +103,15 @@ export function createCaptchaComponent<
 
 			const renderCaptcha = async (): Promise<void> => {
 				const host = elementRef.value;
-				if (!host || isRendering) return;
+				if (!host) return;
+
+				if (isRendering) {
+					pendingRender = true;
+					return;
+				}
 
 				isRendering = true;
+				pendingRender = false;
 				cleanup();
 
 				const token = ++renderToken;
@@ -154,6 +161,12 @@ export function createCaptchaComponent<
 					emit("error", err);
 				} finally {
 					isRendering = false;
+					if (pendingRender) {
+						pendingRender = false;
+						queueMicrotask(() => {
+							void renderCaptcha();
+						});
+					}
 				}
 			};
 
