@@ -1,4 +1,5 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import type { CaptchaProps } from "./index";
 
@@ -33,6 +34,14 @@ export function createCaptchaComponent<
 		let isRendering = false;
 		let hasRendered = false;
 
+		const performCleanup = () => {
+			cleanup(provider(), widgetId(), containerRef);
+			containerRef = null;
+			batch(() => {
+				setWidgetId(null);
+			});
+		};
+
 		const renderCaptcha = async () => {
 			const element = elementRef();
 			const currentProvider = provider();
@@ -42,16 +51,7 @@ export function createCaptchaComponent<
 
 			isRendering = true;
 
-			const currentId = widgetId();
-			if (currentId != null) {
-				try {
-					currentProvider.destroy(currentId);
-				} catch (error) {
-					console.warn("[better-captcha] cleanup before render:", error);
-				}
-			}
-			containerRef?.remove();
-			containerRef = null;
+			performCleanup();
 
 			batch(() => {
 				setWidgetId(null);
@@ -102,16 +102,7 @@ export function createCaptchaComponent<
 			}
 
 			onCleanup(() => {
-				const id = widgetId();
-				if (id != null) {
-					try {
-						provider().destroy(id);
-					} catch (error) {
-						console.warn("[better-captcha] cleanup:", error);
-					}
-				}
-				containerRef?.remove();
-				containerRef = null;
+				performCleanup();
 			});
 		});
 
@@ -147,10 +138,8 @@ export function createCaptchaComponent<
 				...base,
 				destroy: () => {
 					base.destroy();
-					containerRef?.remove();
-					containerRef = null;
+					performCleanup();
 					batch(() => {
-						setWidgetId(null);
 						setState({ loading: false, error: null, ready: false });
 					});
 				},

@@ -1,4 +1,5 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
@@ -19,15 +20,8 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	});
 
 	const cleanup = useCallback(() => {
-		if (widgetIdRef.current != null) {
-			try {
-				provider.destroy(widgetIdRef.current);
-			} catch (err) {
-				console.warn("[better-captcha] cleanup:", err);
-			}
-			widgetIdRef.current = null;
-		}
-		containerRef.current?.remove();
+		cleanupWidget(provider, widgetIdRef.current, containerRef.current);
+		widgetIdRef.current = null;
 		containerRef.current = null;
 	}, [provider]);
 

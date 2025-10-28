@@ -19,6 +19,7 @@
 
 <script lang="ts" generics="TOptions, THandle extends CaptchaHandle, TProvider extends Provider<ProviderConfig, TOptions, THandle>">
 	import type { CaptchaState, WidgetId } from "@better-captcha/core";
+	import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 	import { onMount, onDestroy } from "svelte";
 
 	type Props = BaseCaptchaProps<TOptions, THandle, TProvider>;
@@ -43,14 +44,7 @@
 	let isRendering = false;
 
 	function cleanup(): void {
-		if (provider && widgetId != null) {
-			try {
-				provider.destroy(widgetId);
-			} catch (error) {
-				console.warn("[better-captcha] cleanup:", error);
-			}
-		}
-		container?.remove();
+		cleanupWidget(provider, widgetId, container);
 		container = null;
 		provider = null;
 		widgetId = null;
@@ -136,14 +130,14 @@
 	onMount(() => {
 		if (autoRender) {
 			renderCaptcha();
-	}
+		}
 	});
 
 	$effect(() => {
 		sitekey;
 		options;
 		if (autoRender && hasRendered) {
-		renderCaptcha();
+			renderCaptcha();
 		}
 	});
 

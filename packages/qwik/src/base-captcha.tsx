@@ -1,4 +1,5 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 
@@ -27,14 +28,7 @@ export function createCaptchaComponent<
 		const isRendering = useSignal(false);
 
 		const cleanup$ = $(() => {
-			if (provider.value && widgetId.value != null) {
-				try {
-					provider.value.destroy(widgetId.value);
-				} catch (error) {
-					console.warn("[better-captcha] cleanup:", error);
-				}
-			}
-			containerEl.value?.remove();
+			cleanup(provider.value, widgetId.value, containerEl.value);
 			containerEl.value = null;
 			widgetId.value = null;
 			provider.value = null;
@@ -93,10 +87,11 @@ export function createCaptchaComponent<
 			return noSerialize({
 				...base,
 				destroy: () => {
-							base.destroy();
-						containerEl.value?.remove();
-						containerEl.value = null;
-						widgetId.value = null;
+					base.destroy();
+					cleanup(provider.value, widgetId.value, containerEl.value);
+					containerEl.value = null;
+					widgetId.value = null;
+					provider.value = null;
 					state.value = { loading: false, error: null, ready: false };
 				},
 				render: async () => {

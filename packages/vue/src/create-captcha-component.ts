@@ -1,4 +1,5 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import {
 	type Component,
 	defineComponent,
@@ -57,7 +58,7 @@ export function createCaptchaComponent<
 					execute: async () => {},
 					reset: () => {},
 					destroy: () => {},
-				render: () => renderCaptcha(),
+					render: () => renderCaptcha(),
 					getResponse: () => "",
 					getComponentState: () => state.value,
 				}) as THandle & CaptchaHandle;
@@ -66,23 +67,16 @@ export function createCaptchaComponent<
 			let container: HTMLDivElement | null = null;
 			let provider: TProvider | null = null;
 			let renderToken = 0;
-		let isRendering = false;
-		let hasRendered = false;
+			let isRendering = false;
+			let hasRendered = false;
 
 			const cleanup = (cancelRender = false): void => {
 				if (cancelRender) {
 					renderToken += 1;
 				}
 
-				if (provider && widgetId.value != null) {
-					try {
-						provider.destroy(widgetId.value);
-					} catch (error) {
-						console.warn("[better-captcha] cleanup:", error);
-					}
-				}
+				cleanupWidget(provider, widgetId.value, container);
 
-				container?.remove();
 				container = null;
 				provider = null;
 				widgetId.value = null;

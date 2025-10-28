@@ -1,4 +1,5 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import { cleanup } from "@better-captcha/core/utils/lifecycle";
 
 export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle> {
 	elementRef: HTMLDivElement | null = null;
@@ -33,14 +34,7 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 
 			const id = await this.provider.render(container, this.options);
 			if (this.cancelled) {
-				if (id != null) {
-					try {
-						this.provider.destroy(id);
-					} catch (err) {
-						console.warn("[better-captcha] cleanup (cancel):", err);
-					}
-				}
-				container.remove();
+				cleanup(this.provider, id ?? null, container);
 				if (this.containerRef === container) this.containerRef = null;
 				this.widgetIdRef = null;
 				this.elementRef = null;
@@ -69,15 +63,7 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 
 	cleanup() {
 		this.cancelled = true;
-		const id = this.widgetIdRef;
-		if (id != null) {
-			try {
-				this.provider.destroy(id);
-			} catch (error) {
-				console.warn("[better-captcha] cleanup:", error);
-			}
-		}
-		this.containerRef?.remove();
+		cleanup(this.provider, this.widgetIdRef, this.containerRef);
 		this.widgetIdRef = null;
 	}
 
