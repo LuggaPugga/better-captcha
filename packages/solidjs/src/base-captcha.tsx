@@ -5,9 +5,10 @@ import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
 
 type ValueProp = "sitekey" | "endpoint";
 
-type PropsForValue<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp> = TValue extends "sitekey"
+type PropsForValue<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp> = (TValue extends "sitekey"
 	? CaptchaProps<TOptions, THandle>
-	: CaptchaPropsWithEndpoint<TOptions, THandle>;
+	: CaptchaPropsWithEndpoint<TOptions, THandle>) &
+	Record<TValue, string>;
 
 const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
 
