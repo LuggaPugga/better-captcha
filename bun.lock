@@ -16,6 +16,7 @@
       "name": "@better-captcha/docs",
       "version": "0.0.0",
       "dependencies": {
+        "@better-captcha/core": "workspace:*",
         "@better-captcha/react": "workspace:*",
         "@icons-pack/react-simple-icons": "^13.8.0",
         "@radix-ui/react-select": "^2.2.6",

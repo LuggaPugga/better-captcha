@@ -2,6 +2,7 @@ import { SiLit, SiQwik, SiReact, SiSolid, SiSvelte, SiVuedotjs } from "@icons-pa
 import Link from "next/link";
 import { getGithubStars, getNpmDownloads } from "@/lib/api";
 import { Code2, Shield, Zap, Palette, RotateCcw, Terminal } from "lucide-react";
+import { PROVIDER_REGISTRY } from "@better-captcha/core/src/registry";
 
 export const revalidate = 3600;
 
@@ -50,7 +51,7 @@ export default async function HomePage() {
 						<div className="text-sm text-muted-foreground">GitHub stars</div>
 					</div>
 					<div className="p-4 rounded-lg">
-						<div className="text-3xl font-bold text-primary mb-1">7</div>
+						<div className="text-3xl font-bold text-primary mb-1">{PROVIDER_REGISTRY.length}</div>
 						<div className="text-sm text-muted-foreground">CAPTCHA Providers</div>
 					</div>
 					<div className="p-4 rounded-lg">
