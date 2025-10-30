@@ -163,8 +163,7 @@ function createCaptchaComponentInternal<TOptions, THandle extends CaptchaHandle,
 		}
 	}
 
-	const ConcreteComponent =
-		valueProp === "sitekey" ? SitekeyCaptchaComponent : EndpointCaptchaComponent;
+	const ConcreteComponent = valueProp === "sitekey" ? SitekeyCaptchaComponent : EndpointCaptchaComponent;
 
 	if (!customElements.get(elementName)) {
 		customElements.define(elementName, ConcreteComponent);
@@ -180,10 +179,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 	return createCaptchaComponentInternal(ProviderClass, "sitekey", elementName);
 }
 
-export function createCaptchaComponentWithEndpoint<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
->(
+export function createCaptchaComponentWithEndpoint<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
 	elementName: string = "better-captcha",
 ) {

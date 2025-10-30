@@ -7,7 +7,7 @@
 		TProvider extends Provider<ProviderConfig, TOptions, THandle>,
 	> = {
 		providerClass: new (sitekeyOrEndpoint: string) => TProvider;
-	value: string;
+		value: string;
 		options?: TOptions;
 		class?: string;
 		style?: string;

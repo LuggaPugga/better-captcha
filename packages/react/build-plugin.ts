@@ -10,8 +10,8 @@ import { createUnplugin } from "unplugin";
 
 const reactConfig: FrameworkConfig = {
 	baseImport: `import { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "../../base-captcha.js";`,
-	componentCreation: (providerClassName: string, useEndpoint?: boolean) => 
-		useEndpoint 
+	componentCreation: (providerClassName: string, useEndpoint?: boolean) =>
+		useEndpoint
 			? `createCaptchaComponentWithEndpoint(${providerClassName})`
 			: `createCaptchaComponent(${providerClassName})`,
 	componentType: "ForwardRefExoticComponent",

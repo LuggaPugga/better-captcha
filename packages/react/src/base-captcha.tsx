@@ -87,11 +87,19 @@ function createComponentInternal<
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
-	return createComponentInternal<TOptions, THandle, "sitekey">(ProviderClass, "sitekey", "'sitekey' prop must be provided");
+	return createComponentInternal<TOptions, THandle, "sitekey">(
+		ProviderClass,
+		"sitekey",
+		"'sitekey' prop must be provided",
+	);
 }
 
 export function createCaptchaComponentWithEndpoint<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
-	return createComponentInternal<TOptions, THandle, "endpoint">(ProviderClass, "endpoint", "'endpoint' prop must be provided");
+	return createComponentInternal<TOptions, THandle, "endpoint">(
+		ProviderClass,
+		"endpoint",
+		"'endpoint' prop must be provided",
+	);
 }
