@@ -1,6 +1,6 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
-import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
+import type { NoSerialize, QRL } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
 
@@ -23,6 +23,12 @@ function createComponentInternal<
 		const state = useSignal<CaptchaState>({ loading: true, error: null, ready: false });
 		const isRendering = useSignal(false);
 
+	const value = useComputed$(() =>
+		valueProp === "sitekey"
+			? (props as CaptchaProps<TOptions, THandle>).sitekey
+			: (props as CaptchaPropsWithEndpoint<TOptions, THandle>).endpoint,
+	);
+
 		const cleanup$ = $(() => {
 			cleanup(provider.value, widgetId.value, containerEl.value);
 			containerEl.value = null;
@@ -37,13 +43,12 @@ function createComponentInternal<
 			isRendering.value = true;
 			await cleanup$();
 			state.value = { loading: true, error: null, ready: false };
-
 			try {
-				const value = props[valueProp];
-				if (!value) {
+				const currentValue = value.value;
+				if (!currentValue) {
 					throw new Error(errorMessage);
 				}
-				const newProvider = await providerFactory$(value as string);
+				const newProvider = await providerFactory$(currentValue);
 				await newProvider.init();
 
 				const container = document.createElement("div");
@@ -103,12 +108,11 @@ function createComponentInternal<
 
 		useVisibleTask$(async ({ track, cleanup }) => {
 			track(() => hostEl.value);
-			track(() => props[valueProp]);
+			track(() => value.value);
 			track(() => props.options);
 
 			if (!hostEl.value) return;
-			const value = props[valueProp];
-			if (!value) return;
+			if (!value.value) return;
 
 			if (props.autoRender ?? true) {
 				await renderCaptcha$();

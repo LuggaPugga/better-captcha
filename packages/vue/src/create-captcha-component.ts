@@ -3,6 +3,7 @@ import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import {
 	type Component,
 	type ComponentObjectPropsOptions,
+	computed,
 	defineComponent,
 	h,
 	onBeforeUnmount,
@@ -115,7 +116,11 @@ function createComponentInternal<
 				} as THandle & CaptchaHandle;
 			};
 
-			const getValue = () => props[valueProp] as string;
+		const value = computed(() =>
+			valueProp === "sitekey"
+				? (props as CaptchaProps<TOptions>).sitekey
+				: (props as CaptchaPropsWithEndpoint<TOptions>).endpoint,
+		);
 
 			const renderCaptcha = async (): Promise<void> => {
 				const host = elementRef.value;
@@ -131,7 +136,7 @@ function createComponentInternal<
 				cleanup();
 
 				const token = ++renderToken;
-				const activeProvider = new ProviderClass(getValue());
+				const activeProvider = new ProviderClass(value.value);
 
 				state.value = { loading: true, error: null, ready: false };
 
@@ -211,7 +216,7 @@ function createComponentInternal<
 			);
 
 			watch(
-				[() => props[valueProp], () => props.options],
+				[value, () => props.options],
 				() => {
 					if (props.autoRender && hasRendered) {
 						void renderCaptcha();

@@ -35,7 +35,10 @@ function createComponentInternal<
 ) {
 	return forwardRef<THandle, PropsForValue<TOptions, TValue>>(function CaptchaComponent(props, ref) {
 		const { options, className, style, autoRender = true } = props;
-		const value = props[valueProp];
+		const value =
+			valueProp === "sitekey"
+				? (props as CaptchaProps<TOptions>).sitekey
+				: (props as CaptchaPropsWithEndpoint<TOptions>).endpoint;
 		if (!value) {
 			throw new Error(errorMessage);
 		}

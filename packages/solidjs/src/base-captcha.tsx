@@ -26,11 +26,16 @@ function createComponentInternal<
 		);
 		const props = pickedProps as PropsForValue<TOptions, THandle, TValue>;
 
-		const value = props[valueProp];
-		if (!value) {
+		const value = createMemo(() =>
+			valueProp === "sitekey"
+				? (props as CaptchaProps<TOptions, THandle>).sitekey
+				: (props as CaptchaPropsWithEndpoint<TOptions, THandle>).endpoint,
+		);
+
+		if (!value()) {
 			throw new Error(errorMessage);
 		}
-		const provider = createMemo(() => new ProviderClass(value as string));
+		const provider = createMemo(() => new ProviderClass(value() as string));
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
 		const autoRender = () => props.autoRender ?? true;
@@ -115,7 +120,7 @@ function createComponentInternal<
 		createEffect(() => {
 			const element = elementRef();
 			const shouldAutoRender = autoRender();
-			props[valueProp];
+			value();
 			props.options;
 
 			if (!element || !hasRendered) return;
