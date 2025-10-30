@@ -96,10 +96,12 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 	destroy(widgetId: string) {
 		const widget = this.widgetMap.get(widgetId);
-		if (widget?.parentNode) {
-			widget.parentNode.removeChild(widget);
-			this.widgetMap.delete(widgetId);
+		if (!widget) {
+			return;
 		}
+
+		widget.remove();
+		this.widgetMap.delete(widgetId);
 	}
 
 	getResponse(widgetId: string): string {
