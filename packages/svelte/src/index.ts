@@ -18,19 +18,13 @@ interface CaptchaPropsShared<TOptions = unknown> {
 	onerror?: (error: Error) => void;
 }
 
-export type CaptchaProps<TOptions = unknown> = Omit<
-	CaptchaPropsShared<TOptions> & {
-		sitekey: string;
-	},
-	"endpoint"
->;
+export type CaptchaProps<TOptions = unknown> = CaptchaPropsShared<TOptions> & {
+	sitekey: string;
+};
 
-export type CaptchaPropsWithEndpoint<TOptions = unknown> = Omit<
-	CaptchaPropsShared<TOptions> & {
-		endpoint: string;
-	},
-	"sitekey"
->;
+export type CaptchaPropsWithEndpoint<TOptions = unknown> = CaptchaPropsShared<TOptions> & {
+	endpoint: string;
+};
 
 export interface CaptchaComponentMethods {
 	execute(): Promise<void>;

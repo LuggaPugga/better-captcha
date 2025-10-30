@@ -25,19 +25,13 @@ type CaptchaSharedProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle>
 	autoRender?: boolean;
 };
 
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
-	CaptchaSharedProps<TOptions, THandle> & {
-		sitekey: string;
-	},
-	"endpoint"
->;
+export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<TOptions, THandle> & {
+	sitekey: string;
+};
 
-export type CaptchaPropsWithEndpoint<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
-	CaptchaSharedProps<TOptions, THandle> & {
-		endpoint: string;
-	},
-	"sitekey"
->;
+export type CaptchaPropsWithEndpoint<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<TOptions, THandle> & {
+	endpoint: string;
+};
 
 export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./base-captcha";
 
