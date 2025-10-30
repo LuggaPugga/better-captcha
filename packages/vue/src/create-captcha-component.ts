@@ -73,7 +73,13 @@ export function createCaptchaComponent<
 			let hasRendered = false;
 			let pendingRender = false;
 
-			const validateIdentifierProp = (): string | undefined => {
+			// Pure helper function that returns the identifier value without side effects
+			const getIdentifierValue = (): string | undefined => {
+				return identifierProp === "endpoint" ? props.endpoint : props.sitekey;
+			};
+
+			// Side-effect-only function that validates and emits errors
+			const validateIdentifierProp = (): void => {
 				const expectedValue = identifierProp === "endpoint" ? props.endpoint : props.sitekey;
 				const unexpectedValue = identifierProp === "endpoint" ? props.sitekey : props.endpoint;
 				
@@ -84,13 +90,22 @@ export function createCaptchaComponent<
 					);
 					state.value = { loading: false, error, ready: false };
 					emit("error", error);
-					return undefined;
+					return;
 				}
 				
-				return expectedValue;
+				// Emit error when expected identifier is missing
+				if (expectedValue === undefined || expectedValue === null || expectedValue === "") {
+					const error = new Error(
+						`Provider requires '${identifierProp}' prop, but it was not provided or is empty`
+					);
+					state.value = { loading: false, error, ready: false };
+					emit("error", error);
+					return;
+				}
 			};
 
-			const identifier = computed(() => validateIdentifierProp());
+			// Pure computed property that only returns the derived identifier value
+			const identifier = computed(() => getIdentifierValue());
 
 			const cleanup = (cancelRender = false): void => {
 				if (cancelRender) {
@@ -126,10 +141,10 @@ export function createCaptchaComponent<
 				const host = elementRef.value;
 				if (!host) return;
 
-				// Validate identifier prop before rendering
-				const validatedIdentifier = validateIdentifierProp();
+				validateIdentifierProp();
+				const validatedIdentifier = getIdentifierValue();
 				if (!validatedIdentifier) {
-					return; // Error already emitted by validateIdentifierProp
+					return;
 				}
 
 				if (isRendering) {
@@ -212,12 +227,12 @@ export function createCaptchaComponent<
 				},
 			);
 
-			// Watch for prop changes and validate
 			watch(
 				[() => props.sitekey, () => props.endpoint],
 				() => {
 					validateIdentifierProp();
 				},
+				{ immediate: true },
 			);
 
 			watch(
