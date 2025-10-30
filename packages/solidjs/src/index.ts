@@ -9,10 +9,12 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-type CaptchaSharedProps<TOptions, THandle extends CaptchaHandle> = Omit<
+export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
 	JSX.HTMLAttributes<HTMLDivElement>,
 	"children" | "className" | "style"
 > & {
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: JSX.CSSProperties;
@@ -22,21 +24,7 @@ type CaptchaSharedProps<TOptions, THandle extends CaptchaHandle> = Omit<
 	controller?: CaptchaController<THandle>;
 };
 
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<
-	TOptions,
-	THandle
-> & {
-	sitekey: string;
-};
-
-export type CaptchaPropsWithEndpoint<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<
-	TOptions,
-	THandle
-> & {
-	endpoint: string;
-};
-
-export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./base-captcha";
+export { createCaptchaComponent } from "./base-captcha";
 
 export type CaptchaController<THandle extends CaptchaHandle = CaptchaHandle> = {
 	handle: () => THandle | null;

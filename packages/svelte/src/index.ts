@@ -9,7 +9,9 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-interface CaptchaPropsShared<TOptions = unknown> {
+export interface CaptchaProps<TOptions = unknown> {
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: string;
@@ -17,14 +19,6 @@ interface CaptchaPropsShared<TOptions = unknown> {
 	onready?: (handle: CaptchaHandle) => void;
 	onerror?: (error: Error) => void;
 }
-
-export type CaptchaProps<TOptions = unknown> = CaptchaPropsShared<TOptions> & {
-	sitekey: string;
-};
-
-export type CaptchaPropsWithEndpoint<TOptions = unknown> = CaptchaPropsShared<TOptions> & {
-	endpoint: string;
-};
 
 export interface CaptchaComponentMethods {
 	execute(): Promise<void>;

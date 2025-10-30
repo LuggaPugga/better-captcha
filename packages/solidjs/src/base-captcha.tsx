@@ -1,41 +1,35 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
-import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
-
-type ValueProp = "sitekey" | "endpoint";
-
-type PropsForValue<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp> = (TValue extends "sitekey"
-	? CaptchaProps<TOptions, THandle>
-	: CaptchaPropsWithEndpoint<TOptions, THandle>) &
-	Record<TValue, string>;
+import type { CaptchaProps } from "./index";
 
 const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
 
-function createComponentInternal<
+export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
-	TValue extends ValueProp = "sitekey",
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider, valueProp: TValue, errorMessage: string) {
-	return function CaptchaComponent(allProps: PropsForValue<TOptions, THandle, TValue>): JSX.Element {
-		const keys = [...BASE_KEYS, valueProp] as const;
-		const [pickedProps, divProps] = splitProps(
-			allProps as PropsForValue<TOptions, THandle, TValue>,
-			keys as unknown as readonly (keyof PropsForValue<TOptions, THandle, TValue>)[],
-		);
-		const props = pickedProps as PropsForValue<TOptions, THandle, TValue>;
+>(ProviderClass: new (identifier: string) => TProvider) {
+	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
+		const [props, divProps] = splitProps(allProps, [
+			...BASE_KEYS,
+			"sitekey",
+			"endpoint",
+		] as readonly (keyof CaptchaProps<TOptions, THandle>)[]);
 
-		const value = createMemo(() =>
-			valueProp === "sitekey"
-				? (props as CaptchaProps<TOptions, THandle>).sitekey
-				: (props as CaptchaPropsWithEndpoint<TOptions, THandle>).endpoint,
-		);
+		const identifier = createMemo(() => {
+			const p = props as { sitekey?: string; endpoint?: string };
+			return p.sitekey || p.endpoint || "";
+		});
 
-		if (!value()) {
-			throw new Error(errorMessage);
-		}
-		const provider = createMemo(() => new ProviderClass(value() as string));
+		const provider = createMemo(() => {
+			const id = identifier();
+			if (!id) {
+				return null;
+			}
+			return new ProviderClass(id);
+		});
+
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
 		const autoRender = () => props.autoRender ?? true;
@@ -63,7 +57,7 @@ function createComponentInternal<
 			const currentProvider = provider();
 			const options = props.options;
 
-			if (!element) return;
+			if (!element || !currentProvider) return;
 
 			if (isRendering) {
 				pendingRender = true;
@@ -112,15 +106,16 @@ function createComponentInternal<
 		};
 
 		onMount(() => {
-			if (autoRender()) {
-				void renderCaptcha();
+			const shouldAutoRender = autoRender();
+			if (shouldAutoRender) {
+				renderCaptcha();
 			}
 		});
 
 		createEffect(() => {
 			const element = elementRef();
 			const shouldAutoRender = autoRender();
-			value();
+			identifier();
 			props.options;
 
 			if (!element || !hasRendered) return;
@@ -128,10 +123,6 @@ function createComponentInternal<
 			if (shouldAutoRender) {
 				void renderCaptcha();
 			}
-
-			onCleanup(() => {
-				performCleanup();
-			});
 		});
 
 		createEffect(() => {
@@ -143,7 +134,9 @@ function createComponentInternal<
 		const baseHandle = createMemo(() => {
 			const id = widgetId();
 			if (id == null) return null;
-			return provider().getHandle(id) as THandle;
+			const currentProvider = provider();
+			if (!currentProvider) return null;
+			return currentProvider.getHandle(id) as THandle;
 		});
 
 		const handle = createMemo(() => {
@@ -196,6 +189,10 @@ function createComponentInternal<
 			return id !== null && id !== undefined ? `better-captcha-${id}` : "better-captcha-loading";
 		});
 
+		onCleanup(() => {
+			performCleanup();
+		});
+
 		return (
 			<div
 				{...divProps}
@@ -208,28 +205,4 @@ function createComponentInternal<
 			/>
 		);
 	};
-}
-
-export function createCaptchaComponent<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider) {
-	return createComponentInternal<TOptions, THandle, TProvider, "sitekey">(
-		ProviderClass,
-		"sitekey",
-		"'sitekey' prop must be provided",
-	);
-}
-
-export function createCaptchaComponentWithEndpoint<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider) {
-	return createComponentInternal<TOptions, THandle, TProvider, "endpoint">(
-		ProviderClass,
-		"endpoint",
-		"'endpoint' prop must be provided",
-	);
 }

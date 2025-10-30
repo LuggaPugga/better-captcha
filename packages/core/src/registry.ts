@@ -15,7 +15,8 @@ export interface ProviderMetadata {
 	renderParamsType: string;
 	renderParamsOmit: string;
 	extraTypes: string[];
-	useEndpoint?: boolean;
+	/** The prop name to use for the identifier (default: "sitekey") */
+	identifierProp?: "sitekey" | "endpoint";
 }
 
 export const PROVIDER_REGISTRY: ProviderMetadata[] = [
@@ -27,7 +28,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element"',
 		extraTypes: [],
-		useEndpoint: true,
+		identifierProp: "endpoint",
 	},
 	{
 		name: "captcha-fox",

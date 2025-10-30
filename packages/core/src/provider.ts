@@ -71,16 +71,16 @@ export abstract class Provider<
 	TExtraHandle extends object = Record<string, never>,
 > {
 	protected config: TConfig;
-	protected sitekey: string;
+	protected identifier: string;
 
 	/**
 	 * Create a new provider instance
 	 * @param config - Provider configuration
-	 * @param sitekey - Site key for the CAPTCHA service
+	 * @param identifier - Identifier for the CAPTCHA service (sitekey, endpoint, etc.)
 	 */
-	constructor(config: TConfig, sitekey: string) {
+	constructor(config: TConfig, identifier: string) {
 		this.config = config;
-		this.sitekey = sitekey;
+		this.identifier = identifier;
 	}
 
 	/**

@@ -37,7 +37,7 @@ export class FriendlyCaptchaProvider extends Provider<
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">) {
 		return window.frcaptcha.createWidget({
 			element,
-			sitekey: this.sitekey,
+			sitekey: this.identifier,
 			...options,
 		}).id;
 	}

@@ -42,7 +42,7 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
 		const widgetId = window.turnstile.render(element, {
-			sitekey: this.sitekey,
+			sitekey: this.identifier,
 			...options,
 		});
 		return widgetId ?? undefined;

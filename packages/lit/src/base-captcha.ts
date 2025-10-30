@@ -17,20 +17,17 @@ const defaultHandle: CaptchaHandle = {
 	}),
 };
 
-type ValueProp = "sitekey" | "endpoint";
-
 type CaptchaElement<THandle> = CustomElementConstructor & {
 	new (): LitElement & { getHandle: () => THandle };
 };
 
-function createCaptchaComponentInternal<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp>(
-	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
-	valueProp: TValue,
-	elementName: string,
+export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+	ProviderClass: new (identifier: string) => Provider<ProviderConfig, TOptions, THandle>,
+	elementName: string = "better-captcha",
 ): CaptchaElement<THandle> {
-	const valueProperty = valueProp;
-
-	abstract class CaptchaComponentBase extends LitElement {
+	class CaptchaComponent extends LitElement {
+		@property({ attribute: "sitekey" }) sitekey?: string;
+		@property({ attribute: "endpoint" }) endpoint?: string;
 		@property({ type: Object }) options: TOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
 
@@ -45,7 +42,9 @@ function createCaptchaComponentInternal<TOptions, THandle extends CaptchaHandle,
 		protected lifecycle: CaptchaLifecycle<TOptions, THandle> | null = null;
 		protected initialized = false;
 
-		protected abstract getValue(): string;
+		protected getValue(): string {
+			return this.sitekey || this.endpoint || "";
+		}
 
 		protected createRenderRoot() {
 			return this;
@@ -91,7 +90,8 @@ function createCaptchaComponentInternal<TOptions, THandle extends CaptchaHandle,
 
 		updated(changedProperties: Map<string, unknown>) {
 			const value = this.getValue();
-			if (this.initialized && changedProperties.has(valueProperty) && value && this.autoRender) {
+			const identifierChanged = changedProperties.has("sitekey") || changedProperties.has("endpoint");
+			if (this.initialized && identifierChanged && value && this.autoRender) {
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;
@@ -147,41 +147,9 @@ function createCaptchaComponentInternal<TOptions, THandle extends CaptchaHandle,
 		}
 	}
 
-	class SitekeyCaptchaComponent extends CaptchaComponentBase {
-		@property({ attribute: "sitekey" }) sitekey: string = "";
-
-		protected getValue(): string {
-			return this.sitekey;
-		}
-	}
-
-	class EndpointCaptchaComponent extends CaptchaComponentBase {
-		@property({ attribute: "endpoint" }) endpoint: string = "";
-
-		protected getValue(): string {
-			return this.endpoint;
-		}
-	}
-
-	const ConcreteComponent = valueProp === "sitekey" ? SitekeyCaptchaComponent : EndpointCaptchaComponent;
-
 	if (!customElements.get(elementName)) {
-		customElements.define(elementName, ConcreteComponent);
+		customElements.define(elementName, CaptchaComponent);
 	}
 
-	return ConcreteComponent as unknown as CaptchaElement<THandle>;
-}
-
-export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
-	elementName: string = "better-captcha",
-) {
-	return createCaptchaComponentInternal(ProviderClass, "sitekey", elementName);
-}
-
-export function createCaptchaComponentWithEndpoint<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
-	elementName: string = "better-captcha",
-) {
-	return createCaptchaComponentInternal(ProviderClass, "endpoint", elementName);
+	return CaptchaComponent as unknown as CaptchaElement<THandle>;
 }

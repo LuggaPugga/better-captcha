@@ -2,7 +2,6 @@ import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } 
 import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import {
 	type Component,
-	type ComponentObjectPropsOptions,
 	computed,
 	defineComponent,
 	h,
@@ -13,58 +12,46 @@ import {
 	type StyleValue,
 	watch,
 } from "vue";
-import { CaptchaEmits, CaptchaProps, CaptchaPropsWithEndpoint } from ".";
+import { CaptchaEmits, CaptchaProps } from ".";
 
-type ValuePropName = "sitekey" | "endpoint";
-
-type PropsForValue<TOptions, TValue extends ValuePropName> = TValue extends "sitekey"
-	? CaptchaProps<TOptions>
-	: CaptchaPropsWithEndpoint<TOptions>;
-
-function createComponentInternal<
+export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
-	TValue extends ValuePropName = "sitekey",
->(
-	ProviderClass: new (sitekeyOrEndpoint: string) => TProvider,
-	valueProp: TValue,
-): Component<PropsForValue<TOptions, TValue>, CaptchaEmits<THandle>> {
-	type Props = PropsForValue<TOptions, TValue>;
-
-	const propsDefinition: ComponentObjectPropsOptions = {
-		options: {
-			type: Object as PropType<TOptions>,
-			default: undefined,
-		},
-		class: {
-			type: String,
-			default: undefined,
-		},
-		style: {
-			type: [String, Object, Array] as PropType<StyleValue>,
-			default: undefined,
-		},
-		autoRender: {
-			type: Boolean,
-			default: true,
-		},
-	};
-
-	(propsDefinition as Record<string, unknown>)[valueProp] = {
-		type: String,
-		required: true,
-	};
-
+>(ProviderClass: new (identifier: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
 	return defineComponent({
 		name: "BetterCaptcha",
-		props: propsDefinition,
+		props: {
+			sitekey: {
+				type: String,
+				default: undefined,
+			},
+			endpoint: {
+				type: String,
+				default: undefined,
+			},
+			options: {
+				type: Object as PropType<TOptions>,
+				default: undefined,
+			},
+			class: {
+				type: String,
+				default: undefined,
+			},
+			style: {
+				type: [String, Object, Array] as PropType<StyleValue>,
+				default: undefined,
+			},
+			autoRender: {
+				type: Boolean,
+				default: true,
+			},
+		},
 		emits: {
 			ready: (_handle: THandle) => true,
 			error: (_error: Error) => true,
 		},
-		setup(rawProps, { emit, expose }) {
-			const props = rawProps as unknown as Props;
+		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
 			const state = ref<CaptchaState>({ loading: props.autoRender ?? true, error: null, ready: false });
 			const widgetId = ref<WidgetId | null>(null);
@@ -85,6 +72,8 @@ function createComponentInternal<
 			let isRendering = false;
 			let hasRendered = false;
 			let pendingRender = false;
+
+			const identifier = computed(() => props.sitekey || props.endpoint);
 
 			const cleanup = (cancelRender = false): void => {
 				if (cancelRender) {
@@ -116,15 +105,16 @@ function createComponentInternal<
 				} as THandle & CaptchaHandle;
 			};
 
-		const value = computed(() =>
-			valueProp === "sitekey"
-				? (props as CaptchaProps<TOptions>).sitekey
-				: (props as CaptchaPropsWithEndpoint<TOptions>).endpoint,
-		);
-
 			const renderCaptcha = async (): Promise<void> => {
 				const host = elementRef.value;
 				if (!host) return;
+
+				if (!identifier.value) {
+					const error = new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+					state.value = { loading: false, error, ready: false };
+					emit("error", error);
+					return;
+				}
 
 				if (isRendering) {
 					pendingRender = true;
@@ -136,7 +126,7 @@ function createComponentInternal<
 				cleanup();
 
 				const token = ++renderToken;
-				const activeProvider = new ProviderClass(value.value);
+				const activeProvider = new ProviderClass(identifier.value);
 
 				state.value = { loading: true, error: null, ready: false };
 
@@ -191,15 +181,6 @@ function createComponentInternal<
 				}
 			};
 
-			expose({
-				execute: () => handle.value.execute(),
-				reset: () => handle.value.reset(),
-				destroy: () => handle.value.destroy(),
-				render: () => renderCaptcha(),
-				getResponse: () => handle.value.getResponse(),
-				getComponentState: () => state.value,
-			});
-
 			onMounted(() => {
 				if (props.autoRender) {
 					void renderCaptcha();
@@ -216,7 +197,7 @@ function createComponentInternal<
 			);
 
 			watch(
-				[value, () => props.options],
+				[identifier, () => props.options],
 				() => {
 					if (props.autoRender && hasRendered) {
 						void renderCaptcha();
@@ -229,11 +210,18 @@ function createComponentInternal<
 				cleanup(true);
 			});
 
+			expose({
+				execute: () => handle.value.execute(),
+				reset: () => handle.value.reset(),
+				destroy: () => handle.value.destroy(),
+				render: () => renderCaptcha(),
+				getResponse: () => handle.value.getResponse(),
+				getComponentState: () => state.value,
+			});
+
 			return () => {
-				const elementId =
-					widgetId.value !== null && widgetId.value !== undefined
-						? `better-captcha-${widgetId.value}`
-						: "better-captcha-loading";
+				const id = widgetId.value;
+				const elementId = id !== null && id !== undefined ? `better-captcha-${id}` : "better-captcha-loading";
 
 				return h("div", {
 					id: elementId,
@@ -245,21 +233,5 @@ function createComponentInternal<
 				});
 			};
 		},
-	}) as unknown as Component<Props, CaptchaEmits<THandle>>;
-}
-
-export function createCaptchaComponent<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
-	return createComponentInternal<TOptions, THandle, TProvider, "sitekey">(ProviderClass, "sitekey");
-}
-
-export function createCaptchaComponentWithEndpoint<
-	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider): Component<CaptchaPropsWithEndpoint<TOptions>, CaptchaEmits<THandle>> {
-	return createComponentInternal<TOptions, THandle, TProvider, "endpoint">(ProviderClass, "endpoint");
+	}) as unknown as Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>>;
 }

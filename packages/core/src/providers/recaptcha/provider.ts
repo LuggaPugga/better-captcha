@@ -48,7 +48,7 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 		return new Promise<number>((resolve) => {
 			window.grecaptcha.ready(() => {
 				const widgetId = window.grecaptcha.render(element, {
-					sitekey: this.sitekey,
+					sitekey: this.identifier,
 					...resolvedOptions,
 				});
 				resolve(widgetId);

@@ -6,20 +6,14 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-type CaptchaSharedProps<TOptions> = {
+export type CaptchaProps<TOptions> = {
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	className?: string;
 	style?: React.CSSProperties;
 	autoRender?: boolean;
 };
 
-export type CaptchaProps<TOptions> = CaptchaSharedProps<TOptions> & {
-	sitekey: string;
-};
-
-export type CaptchaPropsWithEndpoint<TOptions> = CaptchaSharedProps<TOptions> & {
-	endpoint: string;
-};
-
-export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./base-captcha";
+export { createCaptchaComponent } from "./base-captcha";
 export { useCaptchaLifecycle } from "./use-captcha-lifecycle";

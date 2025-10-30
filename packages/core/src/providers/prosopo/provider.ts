@@ -40,7 +40,7 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 		}
 
 		window.procaptcha?.render(element, {
-			siteKey: this.sitekey,
+			siteKey: this.identifier,
 			...resolvedOptions,
 		});
 

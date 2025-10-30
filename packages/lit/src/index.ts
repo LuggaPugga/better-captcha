@@ -6,5 +6,5 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./base-captcha";
+export { createCaptchaComponent } from "./base-captcha";
 export { CaptchaLifecycle } from "./use-captcha-lifecycle";

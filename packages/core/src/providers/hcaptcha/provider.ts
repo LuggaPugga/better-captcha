@@ -47,7 +47,7 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 			resolvedOptions.theme = getSystemTheme();
 		}
 		return window.hcaptcha.render(element, {
-			sitekey: this.sitekey,
+			sitekey: this.identifier,
 			...resolvedOptions,
 		});
 	}

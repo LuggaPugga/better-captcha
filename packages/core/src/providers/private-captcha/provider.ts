@@ -107,7 +107,7 @@ export class PrivateCaptchaProvider extends Provider<
 		const callbackNames = this.setupCallbacks(widgetId, { onInit, onError, onStart, onFinish });
 
 		const widget = window.privateCaptcha.render(element, {
-			sitekey: this.sitekey,
+			sitekey: this.identifier,
 			...widgetOptions,
 		});
 
@@ -125,7 +125,7 @@ export class PrivateCaptchaProvider extends Provider<
 	reset(widgetId: string) {
 		const widget = this.widgetMap.get(widgetId);
 		if (widget) {
-			widget.reset({ sitekey: this.sitekey });
+			widget.reset({ sitekey: this.identifier });
 		}
 	}
 

@@ -3,7 +3,7 @@ import type { ProviderMetadata } from "../registry.js";
 
 export interface FrameworkConfig {
 	baseImport: string;
-	componentCreation: (providerClassName: string, useEndpoint?: boolean) => string;
+	componentCreation: (providerClassName: string) => string;
 	componentType: string;
 	componentTypeImports?: string;
 	fileExtension: string;
@@ -62,7 +62,7 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 		declarations: [
 			{
 				name: meta.componentName,
-				initializer: config.componentCreation(meta.providerClassName, meta.useEndpoint),
+				initializer: config.componentCreation(meta.providerClassName),
 			},
 		],
 	});
@@ -77,7 +77,15 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 }
 
 export function generateProviderModuleDts(meta: ProviderMetadata, config: FrameworkConfig): GeneratedFiles {
-	const { name, componentName, handleType, renderParamsType, renderParamsOmit, extraTypes, useEndpoint } = meta;
+	const {
+		name,
+		componentName,
+		handleType,
+		renderParamsType,
+		renderParamsOmit,
+		extraTypes,
+		identifierProp = "sitekey",
+	} = meta;
 
 	const project = createProject();
 	const sourceFile = project.createSourceFile("provider.ts", "", { overwrite: true });
@@ -93,9 +101,8 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		}
 	}
 
-	const propsTypesToImport = useEndpoint ? ["CaptchaPropsWithEndpoint"] : ["CaptchaProps"];
 	sourceFile.addImportDeclaration({
-		namedImports: propsTypesToImport,
+		namedImports: ["CaptchaProps"],
 		moduleSpecifier: "../../index.d.ts",
 		isTypeOnly: true,
 	});
@@ -110,34 +117,25 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 	const propsTypeName = `${componentName}Props`;
 	const optionsType = `Omit<${renderParamsType}, ${renderParamsOmit}>`;
 
-	if (config.propsStructure === "two-params") {
-		if (useEndpoint) {
-			sourceFile.addTypeAlias({
-				name: propsTypeName,
-				type: `CaptchaPropsWithEndpoint<${optionsType}, ${handleType}>`,
-				isExported: true,
-			});
-		} else {
-			sourceFile.addTypeAlias({
-				name: propsTypeName,
-				type: `CaptchaProps<${optionsType}, ${handleType}>`,
-				isExported: true,
-			});
-		}
+	// Build the props type based on identifier prop
+	const basePropsType =
+		config.propsStructure === "two-params"
+			? `CaptchaProps<${optionsType}, ${handleType}>`
+			: `CaptchaProps<${optionsType}>`;
+
+	// Add the appropriate identifier prop (sitekey or endpoint)
+	if (identifierProp === "endpoint") {
+		sourceFile.addTypeAlias({
+			name: propsTypeName,
+			type: `Omit<${basePropsType}, "sitekey" | "endpoint"> & { endpoint: string }`,
+			isExported: true,
+		});
 	} else {
-		if (useEndpoint) {
-			sourceFile.addTypeAlias({
-				name: propsTypeName,
-				type: `CaptchaPropsWithEndpoint<${optionsType}>`,
-				isExported: true,
-			});
-		} else {
-			sourceFile.addTypeAlias({
-				name: propsTypeName,
-				type: `CaptchaProps<${optionsType}>`,
-				isExported: true,
-			});
-		}
+		sourceFile.addTypeAlias({
+			name: propsTypeName,
+			type: `Omit<${basePropsType}, "sitekey" | "endpoint"> & { sitekey: string }`,
+			isExported: true,
+		});
 	}
 
 	let componentTypeString: string;
