@@ -10,7 +10,7 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 	constructor(endpoint: string) {
 		super(
 			{
-				scriptUrl: "https://cdn.jsdelivr.net/npm/@cap.js/widget",
+				scriptUrl: "https://cdn.jsdelivr.net/npm/@cap.js/widget@0.1.30",
 			},
 			endpoint,
 		);
