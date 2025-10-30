@@ -18,8 +18,11 @@ function toPosix(p: string): string {
 }
 
 const solidjsConfig: FrameworkConfig = {
-	baseImport: `import { createCaptchaComponent } from "${BASE_SPEC}";`,
-	componentCreation: (providerClassName: string) => `createCaptchaComponent(${providerClassName})`,
+	baseImport: `import { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "${BASE_SPEC}";`,
+	componentCreation: (providerClassName: string, useEndpoint?: boolean) =>
+		useEndpoint
+			? `createCaptchaComponentWithEndpoint(${providerClassName})`
+			: `createCaptchaComponent(${providerClassName})`,
 	componentType: "Component",
 	componentTypeImports: '{ Component } from "solid-js"',
 	fileExtension: ".js",
@@ -43,7 +46,7 @@ export const unplugin = createUnplugin(() => {
 		load(id) {
 			if (id === BASE_SPEC) {
 				return {
-					code: `export { createCaptchaComponent } from "${baseAbs}";`,
+					code: `export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "${baseAbs}";`,
 					map: null,
 				};
 			}

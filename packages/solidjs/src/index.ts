@@ -22,21 +22,19 @@ type CaptchaSharedProps<TOptions, THandle extends CaptchaHandle> = Omit<
 	controller?: CaptchaController<THandle>;
 };
 
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<
-	TOptions,
-	THandle
-> & {
-	sitekey: string;
-	endpoint?: never;
-};
+export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
+	CaptchaSharedProps<TOptions, THandle> & {
+		sitekey: string;
+	},
+	"endpoint"
+>;
 
-export type CaptchaPropsWithEndpoint<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<
-	TOptions,
-	THandle
-> & {
-	endpoint: string;
-	sitekey?: never;
-};
+export type CaptchaPropsWithEndpoint<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
+	CaptchaSharedProps<TOptions, THandle> & {
+		endpoint: string;
+	},
+	"sitekey"
+>;
 
 export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./base-captcha";
 

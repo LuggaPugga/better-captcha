@@ -16,15 +16,19 @@ interface CaptchaPropsShared<TOptions> {
 	autoRender?: boolean;
 }
 
-export type CaptchaProps<TOptions> = CaptchaPropsShared<TOptions> & {
-	sitekey: string;
-	endpoint?: never;
-};
+export type CaptchaProps<TOptions> = Omit<
+	CaptchaPropsShared<TOptions> & {
+		sitekey: string;
+	},
+	"endpoint"
+>;
 
-export type CaptchaPropsWithEndpoint<TOptions> = CaptchaPropsShared<TOptions> & {
-	endpoint: string;
-	sitekey?: never;
-};
+export type CaptchaPropsWithEndpoint<TOptions> = Omit<
+	CaptchaPropsShared<TOptions> & {
+		endpoint: string;
+	},
+	"sitekey"
+>;
 
 export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {
 	ready: (handle: THandle) => void;

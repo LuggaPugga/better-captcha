@@ -52,7 +52,6 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 		moduleSpecifier: `@better-captcha/core/providers/${meta.name}`,
 	});
 
-	// Insert "use client" at the top after imports are added
 	if (config.useClientDirective) {
 		sourceFile.insertStatements(0, '"use client";');
 	}
@@ -94,19 +93,12 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		}
 	}
 
-	if (useEndpoint) {
-		sourceFile.addImportDeclaration({
-			namedImports: ["CaptchaPropsWithEndpoint"],
-			moduleSpecifier: "../../index.d.ts",
-			isTypeOnly: true,
-		});
-	} else {
-		sourceFile.addImportDeclaration({
-			namedImports: ["CaptchaProps"],
-			moduleSpecifier: "../../index.d.ts",
-			isTypeOnly: true,
-		});
-	}
+	const propsTypesToImport = useEndpoint ? ["CaptchaPropsWithEndpoint"] : ["CaptchaProps"];
+	sourceFile.addImportDeclaration({
+		namedImports: propsTypesToImport,
+		moduleSpecifier: "../../index.d.ts",
+		isTypeOnly: true,
+	});
 
 	const typeImports = [handleType, renderParamsType, ...extraTypes];
 	sourceFile.addImportDeclaration({
@@ -116,27 +108,43 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 	});
 
 	const propsTypeName = `${componentName}Props`;
-	if (useEndpoint) {
-		sourceFile.addTypeAlias({
-			name: propsTypeName,
-			type: `CaptchaPropsWithEndpoint<Omit<${renderParamsType}, ${renderParamsOmit}>>`,
-			isExported: true,
-		});
+	const optionsType = `Omit<${renderParamsType}, ${renderParamsOmit}>`;
+
+	if (config.propsStructure === "two-params") {
+		if (useEndpoint) {
+			sourceFile.addTypeAlias({
+				name: propsTypeName,
+				type: `CaptchaPropsWithEndpoint<${optionsType}, ${handleType}>`,
+				isExported: true,
+			});
+		} else {
+			sourceFile.addTypeAlias({
+				name: propsTypeName,
+				type: `CaptchaProps<${optionsType}, ${handleType}>`,
+				isExported: true,
+			});
+		}
 	} else {
-		sourceFile.addTypeAlias({
-			name: propsTypeName,
-			type: `CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>>`,
-			isExported: true,
-		});
+		if (useEndpoint) {
+			sourceFile.addTypeAlias({
+				name: propsTypeName,
+				type: `CaptchaPropsWithEndpoint<${optionsType}>`,
+				isExported: true,
+			});
+		} else {
+			sourceFile.addTypeAlias({
+				name: propsTypeName,
+				type: `CaptchaProps<${optionsType}>`,
+				isExported: true,
+			});
+		}
 	}
 
 	let componentTypeString: string;
 	if (config.propsStructure === "single-with-ref") {
-		if (useEndpoint) {
-			componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
-		} else {
-			componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
-		}
+		componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
+	} else if (config.propsStructure === "two-params") {
+		componentTypeString = `${config.componentType}<${propsTypeName}>`;
 	} else {
 		componentTypeString = `${config.componentType}<${propsTypeName}>`;
 	}
