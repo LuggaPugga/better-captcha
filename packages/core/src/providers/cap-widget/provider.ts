@@ -30,7 +30,7 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element">): string {
 		const widget = document.createElement("cap-widget") as CapWidget;
-		widget.setAttribute("data-cap-api-endpoint", this.endpoint);
+		widget.setAttribute("data-cap-api-endpoint", this.sitekey);
 
 		const attributeMap: Record<string, string> = {
 			workerCount: "data-cap-worker-count",
