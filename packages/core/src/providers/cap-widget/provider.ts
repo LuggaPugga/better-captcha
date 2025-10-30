@@ -8,7 +8,6 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 	private widgetMap = new Map<string, CapWidget>();
 
 	constructor(endpoint: string) {
-		// Note: base class uses 'sitekey' parameter name, but for CapWidget this is actually the API endpoint
 		super(
 			{
 				scriptUrl: "https://cdn.jsdelivr.net/npm/@cap.js/widget",
@@ -24,20 +23,15 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 			defer: true,
 		});
 
-		// Wait for the custom element to be defined
 		if (typeof window !== "undefined" && customElements) {
 			await customElements.whenDefined("cap-widget");
 		}
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element">): string {
-		// Create the cap-widget element
 		const widget = document.createElement("cap-widget") as CapWidget;
+		widget.setAttribute("data-cap-api-endpoint", this.endpoint);
 
-		// Set the API endpoint (using sitekey as the endpoint value)
-		widget.setAttribute("data-cap-api-endpoint", this.sitekey);
-
-		// Map camelCase props to data-cap-* attributes
 		const attributeMap: Record<string, string> = {
 			workerCount: "data-cap-worker-count",
 			hiddenFieldName: "data-cap-hidden-field-name",
@@ -52,7 +46,6 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 			i18nWasmDisabled: "data-cap-i18n-wasm-disabled",
 		};
 
-		// Apply options as attributes
 		if (options) {
 			for (const [key, value] of Object.entries(options)) {
 				if (value !== undefined && value !== null) {
@@ -62,19 +55,14 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 			}
 		}
 
-		// Append to element
 		element.appendChild(widget);
 
-		// Generate a unique ID for this widget
 		const widgetId = `cap-widget-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 		widget.id = widgetId;
 
-		// Listen for solve event - token is automatically stored in widget.token property
 		widget.addEventListener("solve", () => {
-			// Token is accessible via widget.token
 		});
 
-		// Store widget reference
 		this.widgetMap.set(widgetId, widget);
 
 		return widgetId;
@@ -106,7 +94,6 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 	getResponse(widgetId: string): string {
 		const widget = this.widgetMap.get(widgetId);
-		// CapWidget stores the token in the token property
 		return widget?.token ?? "";
 	}
 
