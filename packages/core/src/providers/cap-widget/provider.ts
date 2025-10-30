@@ -4,11 +4,7 @@ import type { CapWidget, RenderParameters } from "./types";
 
 export type CapWidgetHandle = CaptchaHandle;
 
-export class CapWidgetProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "element">,
-	CapWidgetHandle
-> {
+export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParameters, "element">, CapWidgetHandle> {
 	private widgetMap = new Map<string, CapWidget>();
 
 	constructor(endpoint: string) {

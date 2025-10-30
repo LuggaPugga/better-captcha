@@ -1,5 +1,5 @@
 import { useCaptchaController } from "@better-captcha/qwik";
-import { type RenderParameters, CapWidget, type CapWidgetHandle } from "@better-captcha/qwik/provider/cap-widget";
+import { CapWidget, type CapWidgetHandle, type RenderParameters } from "@better-captcha/qwik/provider/cap-widget";
 import { component$, useSignal } from "@builder.io/qwik";
 
 export const CapWidgetTest = component$(() => {

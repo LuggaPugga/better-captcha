@@ -1,5 +1,5 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
-import { type RenderParameters, CapWidget, type CapWidgetHandle } from "@better-captcha/solidjs/provider/cap-widget";
+import { CapWidget, type CapWidgetHandle, type RenderParameters } from "@better-captcha/solidjs/provider/cap-widget";
 import { createSignal } from "solid-js";
 
 export function CapWidgetTest() {
