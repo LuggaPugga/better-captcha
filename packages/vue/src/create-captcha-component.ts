@@ -18,7 +18,7 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (identifier: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
+>(ProviderClass: new (identifier: string) => TProvider, identifierProp: "sitekey" | "endpoint" = "sitekey"): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
 	return defineComponent({
 		name: "BetterCaptcha",
 		props: {
@@ -73,7 +73,24 @@ export function createCaptchaComponent<
 			let hasRendered = false;
 			let pendingRender = false;
 
-			const identifier = computed(() => props.sitekey || props.endpoint);
+			const validateIdentifierProp = (): string | undefined => {
+				const expectedValue = identifierProp === "endpoint" ? props.endpoint : props.sitekey;
+				const unexpectedValue = identifierProp === "endpoint" ? props.sitekey : props.endpoint;
+				
+				// Validate that only the correct identifier prop is provided
+				if (unexpectedValue !== undefined && unexpectedValue !== null && unexpectedValue !== "") {
+					const error = new Error(
+						`Provider expects '${identifierProp}' prop, but '${identifierProp === "endpoint" ? "sitekey" : "endpoint"}' was provided instead`
+					);
+					state.value = { loading: false, error, ready: false };
+					emit("error", error);
+					return undefined;
+				}
+				
+				return expectedValue;
+			};
+
+			const identifier = computed(() => validateIdentifierProp());
 
 			const cleanup = (cancelRender = false): void => {
 				if (cancelRender) {
@@ -109,11 +126,10 @@ export function createCaptchaComponent<
 				const host = elementRef.value;
 				if (!host) return;
 
-				if (!identifier.value) {
-					const error = new Error("Either 'sitekey' or 'endpoint' prop must be provided");
-					state.value = { loading: false, error, ready: false };
-					emit("error", error);
-					return;
+				// Validate identifier prop before rendering
+				const validatedIdentifier = validateIdentifierProp();
+				if (!validatedIdentifier) {
+					return; // Error already emitted by validateIdentifierProp
 				}
 
 				if (isRendering) {
@@ -126,7 +142,7 @@ export function createCaptchaComponent<
 				cleanup();
 
 				const token = ++renderToken;
-				const activeProvider = new ProviderClass(identifier.value);
+				const activeProvider = new ProviderClass(validatedIdentifier);
 
 				state.value = { loading: true, error: null, ready: false };
 
@@ -193,6 +209,14 @@ export function createCaptchaComponent<
 					if (ready) {
 						hasRendered = true;
 					}
+				},
+			);
+
+			// Watch for prop changes and validate
+			watch(
+				[() => props.sitekey, () => props.endpoint],
+				() => {
+					validateIdentifierProp();
 				},
 			);
 
