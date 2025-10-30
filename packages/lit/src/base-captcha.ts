@@ -18,11 +18,12 @@ const defaultHandle: CaptchaHandle = {
 };
 
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (sitekey: string) => Provider<ProviderConfig, TOptions, THandle>,
+	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
 	elementName: string = "better-captcha",
 ) {
 	class CaptchaComponent extends LitElement {
 		@property() sitekey: string = "";
+		@property() endpoint: string = "";
 		@property({ type: Object }) options: TOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
 
@@ -44,7 +45,8 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		async connectedCallback() {
 			super.connectedCallback();
 			await this.updateComplete;
-			if (!this.initialized && this.elementRef.value && this.sitekey) {
+			const value = this.endpoint || this.sitekey;
+			if (!this.initialized && this.elementRef.value && value) {
 				if (this.autoRender) {
 					this.initializeCaptcha();
 				}
@@ -65,11 +67,12 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		private initializeCaptcha() {
-			if (!this.sitekey || !this.elementRef.value) return;
+			const value = this.endpoint || this.sitekey;
+			if (!value || !this.elementRef.value) return;
 
 			this.lifecycle?.cleanup();
 
-			this.provider = new ProviderClass(this.sitekey);
+			this.provider = new ProviderClass(value);
 
 			this.lifecycle = new CaptchaLifecycle(this.provider, this.options, (state) => {
 				this.captchaState = state;
@@ -78,7 +81,13 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		updated(changedProperties: Map<string, unknown>) {
-			if (this.initialized && changedProperties.has("sitekey") && this.sitekey && this.autoRender) {
+			const value = this.endpoint || this.sitekey;
+			if (
+				this.initialized &&
+				(changedProperties.has("sitekey") || changedProperties.has("endpoint")) &&
+				value &&
+				this.autoRender
+			) {
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;

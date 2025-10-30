@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { writable } from "svelte/store";
+	import CapWidgetTest from "./components/CapWidgetTest.svelte";
 	import CaptchaFoxTest from "./components/CaptchaFoxTest.svelte";
 	import FriendlyCaptchaTest from "./components/FriendlyCaptchaTest.svelte";
 	import HCaptchaTest from "./components/HCaptchaTest.svelte";
@@ -18,6 +19,7 @@
 		{ key: "private-captcha", name: "Private Captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox" },
 		{ key: "prosopo", name: "Prosopo" },
+		{ key: "cap-widget", name: "CapWidget" },
 	];
 
 	function setProvider(key: string) {
@@ -52,6 +54,8 @@
 			<CaptchaFoxTest />
 		{:else if $currentProvider === "prosopo"}
 			<ProsopoTest />
+		{:else if $currentProvider === "cap-widget"}
+			<CapWidgetTest />
 		{/if}
 	</div>
 </div>

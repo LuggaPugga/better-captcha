@@ -6,8 +6,9 @@
 		THandle extends CaptchaHandle,
 		TProvider extends Provider<ProviderConfig, TOptions, THandle>,
 	> = {
-		providerClass: new (sitekey: string) => TProvider;
-		sitekey: string;
+		providerClass: new (sitekeyOrEndpoint: string) => TProvider;
+		sitekey?: string;
+		endpoint?: string;
 		options?: TOptions;
 		class?: string;
 		style?: string;
@@ -27,6 +28,7 @@
 	let {
 		providerClass: ProviderClass,
 		sitekey,
+		endpoint,
 		options = undefined,
 		class: className = undefined,
 		style = undefined,
@@ -66,7 +68,11 @@ let pendingRender = false;
 		captchaState = { loading: true, error: null, ready: false };
 
 		try {
-			const newProvider = new ProviderClass(sitekey);
+			const value = endpoint ?? sitekey;
+			if (!value) {
+				throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+			}
+			const newProvider = new ProviderClass(value);
 			await newProvider.init();
 
 			const newContainer = document.createElement("div");
@@ -148,6 +154,7 @@ let pendingRender = false;
 
 	$effect(() => {
 		sitekey;
+		endpoint;
 		options;
 		if (autoRender && hasRendered) {
 			renderCaptcha();

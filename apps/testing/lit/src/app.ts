@@ -7,6 +7,7 @@ import "./friendly-captcha-test.js";
 import "./private-captcha-test.js";
 import "./captcha-fox-test.js";
 import "./prosopo-test.js";
+import "./cap-widget-test.js";
 
 @customElement("app-root")
 export class App extends LitElement {
@@ -26,6 +27,7 @@ export class App extends LitElement {
 		{ key: "private-captcha", name: "Private Captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox" },
 		{ key: "prosopo", name: "Prosopo" },
+		{ key: "cap-widget", name: "CapWidget" },
 	];
 
 	render() {
@@ -59,6 +61,7 @@ export class App extends LitElement {
 					${this.currentProvider === "private-captcha" ? html`<private-captcha-test></private-captcha-test>` : ""}
 					${this.currentProvider === "captcha-fox" ? html`<captcha-fox-test></captcha-fox-test>` : ""}
 					${this.currentProvider === "prosopo" ? html`<prosopo-test></prosopo-test>` : ""}
+					${this.currentProvider === "cap-widget" ? html`<cap-widget-test></cap-widget-test>` : ""}
 				</div>
 			</div>
 		`;

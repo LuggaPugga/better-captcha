@@ -23,12 +23,14 @@
 			<PrivateCaptchaTest v-else-if="currentProvider === 'private-captcha'" />
 			<CaptchaFoxTest v-else-if="currentProvider === 'captcha-fox'" />
 			<ProsopoTest v-else-if="currentProvider === 'prosopo'" />
+			<CapWidgetTest v-else-if="currentProvider === 'cap-widget'" />
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { ref } from "vue";
+	import CapWidgetTest from "./components/CapWidgetTest.vue";
 	import CaptchaFoxTest from "./components/CaptchaFoxTest.vue";
 	import FriendlyCaptchaTest from "./components/FriendlyCaptchaTest.vue";
 	import HCaptchaTest from "./components/HCaptchaTest.vue";
@@ -47,6 +49,7 @@
 		{ key: "private-captcha", name: "Private Captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox" },
 		{ key: "prosopo", name: "Prosopo" },
+		{ key: "cap-widget", name: "CapWidget" },
 	];
 </script>
 

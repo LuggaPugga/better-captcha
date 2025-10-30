@@ -4,7 +4,8 @@ import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle> = {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;
@@ -18,7 +19,7 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(providerFactory$: QRL<(sitekey: string) => TProvider>) {
+>(providerFactory$: QRL<(sitekeyOrEndpoint: string) => TProvider>) {
 	return component$<CaptchaProps<TOptions, THandle>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const provider = useSignal<TProvider | null>(null);
@@ -43,7 +44,11 @@ export function createCaptchaComponent<
 			state.value = { loading: true, error: null, ready: false };
 
 			try {
-				const newProvider = await providerFactory$(props.sitekey);
+				const value = props.endpoint ?? props.sitekey;
+				if (!value) {
+					throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+				}
+				const newProvider = await providerFactory$(value);
 				await newProvider.init();
 
 				const container = document.createElement("div");
@@ -104,9 +109,12 @@ export function createCaptchaComponent<
 		useVisibleTask$(async ({ track, cleanup }) => {
 			track(() => hostEl.value);
 			track(() => props.sitekey);
+			track(() => props.endpoint);
 			track(() => props.options);
 
-			if (!hostEl.value || !props.sitekey) return;
+			if (!hostEl.value) return;
+			const value = props.endpoint ?? props.sitekey;
+			if (!value) return;
 
 			if (props.autoRender ?? true) {
 				await renderCaptcha$();

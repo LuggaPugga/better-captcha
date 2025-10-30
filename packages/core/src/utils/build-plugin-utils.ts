@@ -78,7 +78,7 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 }
 
 export function generateProviderModuleDts(meta: ProviderMetadata, config: FrameworkConfig): GeneratedFiles {
-	const { name, componentName, handleType, renderParamsType, renderParamsOmit, extraTypes } = meta;
+	const { name, componentName, handleType, renderParamsType, renderParamsOmit, extraTypes, useEndpoint } = meta;
 
 	const project = createProject();
 	const sourceFile = project.createSourceFile("provider.ts", "", { overwrite: true });
@@ -107,14 +107,30 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		isTypeOnly: true,
 	});
 
-	// Generate the component type based on the framework's props structure
+	const propsTypeName = `${componentName}Props`;
+	if (useEndpoint) {
+		sourceFile.addTypeAlias({
+			name: propsTypeName,
+			type: `Omit<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>>, "sitekey"> & { endpoint: string }`,
+			isExported: true,
+		});
+	} else {
+		sourceFile.addTypeAlias({
+			name: propsTypeName,
+			type: `CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>> & { sitekey: string }`,
+			isExported: true,
+		});
+	}
+
 	let componentTypeString: string;
 	if (config.propsStructure === "single-with-ref") {
-		// React style: CaptchaProps<Options> & RefAttributes<Handle>
-		componentTypeString = `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>> & RefAttributes<${handleType}>>`;
+		if (useEndpoint) {
+			componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
+		} else {
+			componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
+		}
 	} else {
-		// Default (SolidJS/Qwik style): CaptchaProps<Options, Handle>
-		componentTypeString = `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>, ${handleType}>>`;
+		componentTypeString = `${config.componentType}<${propsTypeName}>`;
 	}
 
 	sourceFile.addVariableStatement({
@@ -129,7 +145,7 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		],
 	});
 
-	const reExportTypes = [handleType, renderParamsType, ...extraTypes];
+	const reExportTypes = [handleType, renderParamsType, ...extraTypes, propsTypeName];
 	sourceFile.addExportDeclaration({
 		namedExports: reExportTypes,
 		isTypeOnly: true,

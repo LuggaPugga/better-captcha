@@ -10,7 +10,8 @@ export type {
 } from "@better-captcha/core";
 
 export interface CaptchaProps<TOptions> {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: StyleValue;

@@ -17,14 +17,18 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekey: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
 	return defineComponent({
 		name: "BetterCaptcha",
 
 		props: {
 			sitekey: {
 				type: String,
-				required: true,
+				required: false,
+			},
+			endpoint: {
+				type: String,
+				required: false,
 			},
 			options: {
 				type: Object as PropType<TOptions>,
@@ -115,7 +119,8 @@ export function createCaptchaComponent<
 				cleanup();
 
 				const token = ++renderToken;
-				const activeProvider = new ProviderClass(props.sitekey);
+				const value = props.endpoint ?? props.sitekey ?? "";
+				const activeProvider = new ProviderClass(value);
 
 				state.value = { loading: true, error: null, ready: false };
 

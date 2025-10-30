@@ -16,7 +16,8 @@ export type {
  * @template THandle - Type of handle returned by the CAPTCHA provider
  */
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;

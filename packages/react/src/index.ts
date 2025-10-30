@@ -11,7 +11,8 @@ export type {
  * @template TOptions - Type of options specific to the CAPTCHA provider
  */
 export type CaptchaProps<TOptions> = {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	className?: string;
 	style?: React.CSSProperties;

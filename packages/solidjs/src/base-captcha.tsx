@@ -7,10 +7,11 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekey: string) => TProvider) {
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider) {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [
 			"sitekey",
+			"endpoint",
 			"options",
 			"class",
 			"style",
@@ -20,7 +21,11 @@ export function createCaptchaComponent<
 			"controller",
 		]);
 
-		const provider = createMemo(() => new ProviderClass(props.sitekey));
+		const value = props.endpoint ?? props.sitekey;
+		if (!value) {
+			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+		}
+		const provider = createMemo(() => new ProviderClass(value));
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
 		const autoRender = () => props.autoRender ?? true;
@@ -106,6 +111,7 @@ export function createCaptchaComponent<
 			const element = elementRef();
 			const shouldAutoRender = autoRender();
 			props.sitekey;
+			props.endpoint;
 			props.options;
 
 			if (!element || !hasRendered) return;

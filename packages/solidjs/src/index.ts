@@ -17,7 +17,8 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	JSX.HTMLAttributes<HTMLDivElement>,
 	"children" | "className" | "style"
 > & {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: JSX.CSSProperties;
