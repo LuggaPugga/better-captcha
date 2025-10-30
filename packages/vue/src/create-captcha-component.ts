@@ -141,7 +141,6 @@ export function createCaptchaComponent<
 				const host = elementRef.value;
 				if (!host) return;
 
-				validateIdentifierProp();
 				const validatedIdentifier = getIdentifierValue();
 				if (!validatedIdentifier) {
 					return;
