@@ -60,8 +60,7 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 		const widgetId = `cap-widget-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 		widget.id = widgetId;
 
-		widget.addEventListener("solve", () => {
-		});
+		widget.addEventListener("solve", () => {});
 
 		this.widgetMap.set(widgetId, widget);
 
