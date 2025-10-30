@@ -2,6 +2,7 @@ import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } 
 import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import {
 	type Component,
+	type ComponentObjectPropsOptions,
 	defineComponent,
 	h,
 	onBeforeUnmount,
@@ -9,51 +10,60 @@ import {
 	type PropType,
 	ref,
 	type StyleValue,
-	watch
+	watch,
 } from "vue";
-import { CaptchaEmits, CaptchaProps } from ".";
+import { CaptchaEmits, CaptchaProps, CaptchaPropsWithEndpoint } from ".";
 
-export function createCaptchaComponent<
+type ValuePropName = "sitekey" | "endpoint";
+
+type PropsForValue<TOptions, TValue extends ValuePropName> = TValue extends "sitekey"
+	? CaptchaProps<TOptions>
+	: CaptchaPropsWithEndpoint<TOptions>;
+
+function createComponentInternal<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
+	TValue extends ValuePropName = "sitekey",
+>(
+	ProviderClass: new (sitekeyOrEndpoint: string) => TProvider,
+	valueProp: TValue,
+): Component<PropsForValue<TOptions, TValue>, CaptchaEmits<THandle>> {
+	type Props = PropsForValue<TOptions, TValue>;
+
+	const propsDefinition: ComponentObjectPropsOptions = {
+		options: {
+			type: Object as PropType<TOptions>,
+			default: undefined,
+		},
+		class: {
+			type: String,
+			default: undefined,
+		},
+		style: {
+			type: [String, Object, Array] as PropType<StyleValue>,
+			default: undefined,
+		},
+		autoRender: {
+			type: Boolean,
+			default: true,
+		},
+	};
+
+	(propsDefinition as Record<string, unknown>)[valueProp] = {
+		type: String,
+		required: true,
+	};
+
 	return defineComponent({
 		name: "BetterCaptcha",
-
-		props: {
-			sitekey: {
-				type: String,
-				required: false,
-			},
-			endpoint: {
-				type: String,
-				required: false,
-			},
-			options: {
-				type: Object as PropType<TOptions>,
-				default: undefined,
-			},
-			class: {
-				type: String,
-				default: undefined,
-			},
-			style: {
-				type: [String, Object, Array] as PropType<StyleValue>,
-				default: undefined,
-			},
-			autoRender: {
-				type: Boolean,
-				default: true,
-			},
-		},
-
+		props: propsDefinition,
 		emits: {
 			ready: (_handle: THandle) => true,
 			error: (_error: Error) => true,
 		},
-
-		setup(props, { emit, expose }) {
+		setup(rawProps, { emit, expose }) {
+			const props = rawProps as unknown as Props;
 			const elementRef = ref<HTMLDivElement>();
 			const state = ref<CaptchaState>({ loading: props.autoRender ?? true, error: null, ready: false });
 			const widgetId = ref<WidgetId | null>(null);
@@ -105,6 +115,8 @@ export function createCaptchaComponent<
 				} as THandle & CaptchaHandle;
 			};
 
+			const getValue = () => props[valueProp] as string;
+
 			const renderCaptcha = async (): Promise<void> => {
 				const host = elementRef.value;
 				if (!host) return;
@@ -119,8 +131,7 @@ export function createCaptchaComponent<
 				cleanup();
 
 				const token = ++renderToken;
-				const value = props.endpoint ?? props.sitekey ?? "";
-				const activeProvider = new ProviderClass(value);
+				const activeProvider = new ProviderClass(getValue());
 
 				state.value = { loading: true, error: null, ready: false };
 
@@ -186,24 +197,24 @@ export function createCaptchaComponent<
 
 			onMounted(() => {
 				if (props.autoRender) {
-				void renderCaptcha();
+					void renderCaptcha();
 				}
 			});
 
-		watch(
-			() => state.value.ready,
-			(ready) => {
-				if (ready) {
-					hasRendered = true;
-				}
-			},
-		);
+			watch(
+				() => state.value.ready,
+				(ready) => {
+					if (ready) {
+						hasRendered = true;
+					}
+				},
+			);
 
 			watch(
-				[() => props.sitekey, () => props.options],
+				[() => props[valueProp], () => props.options],
 				() => {
-				if (props.autoRender && hasRendered) {
-					void renderCaptcha();
+					if (props.autoRender && hasRendered) {
+						void renderCaptcha();
 					}
 				},
 				{ deep: true },
@@ -229,5 +240,21 @@ export function createCaptchaComponent<
 				});
 			};
 		},
-	});
+	}) as unknown as Component<Props, CaptchaEmits<THandle>>;
+}
+
+export function createCaptchaComponent<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
+	return createComponentInternal<TOptions, THandle, TProvider, "sitekey">(ProviderClass, "sitekey");
+}
+
+export function createCaptchaComponentWithEndpoint<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider): Component<CaptchaPropsWithEndpoint<TOptions>, CaptchaEmits<THandle>> {
+	return createComponentInternal<TOptions, THandle, TProvider, "endpoint">(ProviderClass, "endpoint");
 }

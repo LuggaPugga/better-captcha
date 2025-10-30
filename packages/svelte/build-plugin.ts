@@ -27,7 +27,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 
 	const propType = useEndpoint ? "endpoint: string;" : "sitekey: string;";
 	const propName = useEndpoint ? "endpoint" : "sitekey";
-	const propBinding = useEndpoint ? "{endpoint}" : "{sitekey}";
+	const propBinding = useEndpoint ? "endpoint" : "sitekey";
 
 	return `<script lang="ts">
 	import BaseCaptcha from "../../base-captcha.svelte";
@@ -40,6 +40,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		options?: Omit<${renderParamsType}, ${renderParamsOmit}>;
 		class?: string;
 		style?: string;
+		autoRender?: boolean;
 		onready?: (handle: ${handleType}) => void;
 		onerror?: (error: Error) => void;
 	}
@@ -49,6 +50,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		options = undefined,
 		class: className = undefined,
 		style = undefined,
+		autoRender = true,
 		onready = undefined,
 		onerror = undefined
 	}: Props = $props();
@@ -84,10 +86,11 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 <BaseCaptcha
 	bind:this={baseCaptchaRef}
 	providerClass={${providerClassName}}
-	${propBinding}
+	value={${propBinding}}
 	{options}
 	class={className}
 	{style}
+	{autoRender}
 	{onready}
 	{onerror}
 />

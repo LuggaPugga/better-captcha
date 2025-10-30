@@ -15,18 +15,33 @@ export type {
  * @template TOptions - Type of options specific to the CAPTCHA provider
  * @template THandle - Type of handle returned by the CAPTCHA provider
  */
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = {
-	sitekey?: string;
-	endpoint?: string;
+type CaptchaSharedProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = {
 	options?: TOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;
 	onReady?: QRL<(handle: NoSerialize<THandle>) => void>;
 	onError?: QRL<(error: Error) => void>;
 	controller?: Signal<NoSerialize<THandle> | null>;
+	autoRender?: boolean;
 };
 
-export { createCaptchaComponent } from "./base-captcha";
+export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<
+	TOptions,
+	THandle
+> & {
+	sitekey: string;
+	endpoint?: never;
+};
+
+export type CaptchaPropsWithEndpoint<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = CaptchaSharedProps<
+	TOptions,
+	THandle
+> & {
+	endpoint: string;
+	sitekey?: never;
+};
+
+export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./base-captcha";
 
 export type CaptchaController<THandle extends CaptchaHandle = CaptchaHandle> = Signal<NoSerialize<THandle> | null>;
 

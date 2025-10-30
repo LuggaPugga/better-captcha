@@ -3,7 +3,7 @@ import type { ProviderMetadata } from "../registry.js";
 
 export interface FrameworkConfig {
 	baseImport: string;
-	componentCreation: (providerClassName: string) => string;
+	componentCreation: (providerClassName: string, useEndpoint?: boolean) => string;
 	componentType: string;
 	componentTypeImports?: string;
 	fileExtension: string;
@@ -63,7 +63,7 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 		declarations: [
 			{
 				name: meta.componentName,
-				initializer: config.componentCreation(meta.providerClassName),
+				initializer: config.componentCreation(meta.providerClassName, meta.useEndpoint),
 			},
 		],
 	});
@@ -94,11 +94,19 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		}
 	}
 
-	sourceFile.addImportDeclaration({
-		namedImports: ["CaptchaProps"],
-		moduleSpecifier: "../../index.d.ts",
-		isTypeOnly: true,
-	});
+	if (useEndpoint) {
+		sourceFile.addImportDeclaration({
+			namedImports: ["CaptchaPropsWithEndpoint"],
+			moduleSpecifier: "../../index.d.ts",
+			isTypeOnly: true,
+		});
+	} else {
+		sourceFile.addImportDeclaration({
+			namedImports: ["CaptchaProps"],
+			moduleSpecifier: "../../index.d.ts",
+			isTypeOnly: true,
+		});
+	}
 
 	const typeImports = [handleType, renderParamsType, ...extraTypes];
 	sourceFile.addImportDeclaration({
@@ -111,13 +119,13 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 	if (useEndpoint) {
 		sourceFile.addTypeAlias({
 			name: propsTypeName,
-			type: `Omit<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>>, "sitekey"> & { endpoint: string }`,
+			type: `CaptchaPropsWithEndpoint<Omit<${renderParamsType}, ${renderParamsOmit}>>`,
 			isExported: true,
 		});
 	} else {
 		sourceFile.addTypeAlias({
 			name: propsTypeName,
-			type: `CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>> & { sitekey: string }`,
+			type: `CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>>`,
 			isExported: true,
 		});
 	}

@@ -17,26 +17,35 @@ const defaultHandle: CaptchaHandle = {
 	}),
 };
 
-export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+type ValueProp = "sitekey" | "endpoint";
+
+type CaptchaElement<THandle> = CustomElementConstructor & {
+	new (): LitElement & { getHandle: () => THandle };
+};
+
+function createCaptchaComponentInternal<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp>(
 	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
-	elementName: string = "better-captcha",
-) {
-	class CaptchaComponent extends LitElement {
-		@property() sitekey: string = "";
-		@property() endpoint: string = "";
+	valueProp: TValue,
+	elementName: string,
+): CaptchaElement<THandle> {
+	const valueProperty = valueProp;
+
+	abstract class CaptchaComponentBase extends LitElement {
 		@property({ type: Object }) options: TOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
 
-		@state() private captchaState: CaptchaState = {
+		@state() protected captchaState: CaptchaState = {
 			loading: true,
 			error: null,
 			ready: false,
 		};
 
-		private elementRef: Ref<HTMLDivElement> = createRef();
-		private provider: Provider<ProviderConfig, TOptions, THandle> | null = null;
-		private lifecycle: CaptchaLifecycle<TOptions, THandle> | null = null;
-		private initialized = false;
+		protected elementRef: Ref<HTMLDivElement> = createRef();
+		protected provider: Provider<ProviderConfig, TOptions, THandle> | null = null;
+		protected lifecycle: CaptchaLifecycle<TOptions, THandle> | null = null;
+		protected initialized = false;
+
+		protected abstract getValue(): string;
 
 		protected createRenderRoot() {
 			return this;
@@ -45,7 +54,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		async connectedCallback() {
 			super.connectedCallback();
 			await this.updateComplete;
-			const value = this.endpoint || this.sitekey;
+			const value = this.getValue();
 			if (!this.initialized && this.elementRef.value && value) {
 				if (this.autoRender) {
 					this.initializeCaptcha();
@@ -59,15 +68,15 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			this.cleanup();
 		}
 
-		private cleanup() {
+		protected cleanup() {
 			this.lifecycle?.cleanup();
 			this.lifecycle = null;
 			this.provider = null;
 			this.initialized = false;
 		}
 
-		private initializeCaptcha() {
-			const value = this.endpoint || this.sitekey;
+		protected initializeCaptcha() {
+			const value = this.getValue();
 			if (!value || !this.elementRef.value) return;
 
 			this.lifecycle?.cleanup();
@@ -81,13 +90,8 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		updated(changedProperties: Map<string, unknown>) {
-			const value = this.endpoint || this.sitekey;
-			if (
-				this.initialized &&
-				(changedProperties.has("sitekey") || changedProperties.has("endpoint")) &&
-				value &&
-				this.autoRender
-			) {
+			const value = this.getValue();
+			if (this.initialized && changedProperties.has(valueProperty) && value && this.autoRender) {
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;
@@ -143,11 +147,45 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 	}
 
-	if (!customElements.get(elementName)) {
-		customElements.define(elementName, CaptchaComponent);
+	class SitekeyCaptchaComponent extends CaptchaComponentBase {
+		@property({ attribute: "sitekey" }) sitekey: string = "";
+
+		protected getValue(): string {
+			return this.sitekey;
+		}
 	}
 
-	return CaptchaComponent as unknown as CustomElementConstructor & {
-		new (): LitElement & { getHandle: () => THandle };
-	};
+	class EndpointCaptchaComponent extends CaptchaComponentBase {
+		@property({ attribute: "endpoint" }) endpoint: string = "";
+
+		protected getValue(): string {
+			return this.endpoint;
+		}
+	}
+
+	const ConcreteComponent =
+		valueProp === "sitekey" ? SitekeyCaptchaComponent : EndpointCaptchaComponent;
+
+	if (!customElements.get(elementName)) {
+		customElements.define(elementName, ConcreteComponent);
+	}
+
+	return ConcreteComponent as unknown as CaptchaElement<THandle>;
+}
+
+export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
+	elementName: string = "better-captcha",
+) {
+	return createCaptchaComponentInternal(ProviderClass, "sitekey", elementName);
+}
+
+export function createCaptchaComponentWithEndpoint<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+>(
+	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
+	elementName: string = "better-captcha",
+) {
+	return createCaptchaComponentInternal(ProviderClass, "endpoint", elementName);
 }

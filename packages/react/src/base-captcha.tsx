@@ -2,7 +2,7 @@
 
 import type { CaptchaHandle, Provider, ProviderConfig } from "@better-captcha/core";
 import { forwardRef, useImperativeHandle, useMemo } from "react";
-import type { CaptchaProps } from "./index";
+import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 
 const defaultHandle: CaptchaHandle = {
@@ -18,18 +18,29 @@ const defaultHandle: CaptchaHandle = {
 	}),
 };
 
-export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+type ValueProp = "sitekey" | "endpoint";
+
+type PropsForValue<TOptions, TValue extends ValueProp> = TValue extends "sitekey"
+	? CaptchaProps<TOptions>
+	: CaptchaPropsWithEndpoint<TOptions>;
+
+function createComponentInternal<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TValue extends ValueProp = "sitekey",
+>(
 	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
+	valueProp: TValue,
+	errorMessage: string,
 ) {
-	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(
-		{ sitekey, endpoint, options, className, style, autoRender = true },
-		ref,
-	) {
-		const value = endpoint ?? sitekey;
+	return forwardRef<THandle, PropsForValue<TOptions, TValue>>(function CaptchaComponent(props, ref) {
+		const { options, className, style, autoRender = true } = props;
+		const value = props[valueProp];
 		if (!value) {
-			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+			throw new Error(errorMessage);
 		}
-		const provider = useMemo(() => new ProviderClass(value), [ProviderClass, value]);
+
+		const provider = useMemo(() => new ProviderClass(value as string), [ProviderClass, value]);
 		const { elementRef, state, widgetIdRef, setState, renderCaptcha } = useCaptchaLifecycle(
 			provider,
 			options,
@@ -71,4 +82,16 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			/>
 		);
 	});
+}
+
+export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
+) {
+	return createComponentInternal<TOptions, THandle, "sitekey">(ProviderClass, "sitekey", "'sitekey' prop must be provided");
+}
+
+export function createCaptchaComponentWithEndpoint<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
+	ProviderClass: new (sitekeyOrEndpoint: string) => Provider<ProviderConfig, TOptions, THandle>,
+) {
+	return createComponentInternal<TOptions, THandle, "endpoint">(ProviderClass, "endpoint", "'endpoint' prop must be provided");
 }

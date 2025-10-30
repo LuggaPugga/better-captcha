@@ -7,8 +7,7 @@
 		TProvider extends Provider<ProviderConfig, TOptions, THandle>,
 	> = {
 		providerClass: new (sitekeyOrEndpoint: string) => TProvider;
-		sitekey?: string;
-		endpoint?: string;
+	value: string;
 		options?: TOptions;
 		class?: string;
 		style?: string;
@@ -25,17 +24,16 @@
 
 	type Props = BaseCaptchaProps<TOptions, THandle, TProvider>;
 
-	let {
-		providerClass: ProviderClass,
-		sitekey,
-		endpoint,
-		options = undefined,
-		class: className = undefined,
-		style = undefined,
-		autoRender = true,
-		onready = undefined,
-		onerror = undefined
-	}: Props = $props();
+let {
+	providerClass: ProviderClass,
+	value,
+	options = undefined,
+	class: className = undefined,
+	style = undefined,
+	autoRender = true,
+	onready = undefined,
+	onerror = undefined
+}: Props = $props();
 
 	let elementRef: HTMLDivElement | undefined = $state();
 	let captchaState = $state<CaptchaState>({ loading: autoRender, error: null, ready: false });
@@ -67,12 +65,11 @@ let pendingRender = false;
 		cleanup();
 		captchaState = { loading: true, error: null, ready: false };
 
-		try {
-			const value = endpoint ?? sitekey;
-			if (!value) {
-				throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
-			}
-			const newProvider = new ProviderClass(value);
+	try {
+		if (!value) {
+			throw new Error("'value' prop must be provided");
+		}
+		const newProvider = new ProviderClass(value);
 			await newProvider.init();
 
 			const newContainer = document.createElement("div");
@@ -153,8 +150,7 @@ let pendingRender = false;
 	});
 
 	$effect(() => {
-		sitekey;
-		endpoint;
+		value;
 		options;
 		if (autoRender && hasRendered) {
 			renderCaptcha();

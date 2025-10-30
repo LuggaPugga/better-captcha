@@ -2,25 +2,20 @@ import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } 
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
 
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle> = {
-	sitekey?: string;
-	endpoint?: string;
-	options?: TOptions;
-	class?: string;
-	style?: string | Record<string, string | number>;
-	autoRender?: boolean;
-	controller?: Signal<NoSerialize<THandle> | null>;
-	onReady?: QRL<(handle: NoSerialize<THandle>) => void>;
-	onError?: QRL<(error: Error) => void>;
-};
+type ValueProp = "sitekey" | "endpoint";
 
-export function createCaptchaComponent<
+type PropsForValue<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp> = TValue extends "sitekey"
+	? CaptchaProps<TOptions, THandle>
+	: CaptchaPropsWithEndpoint<TOptions, THandle>;
+
+function createComponentInternal<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(providerFactory$: QRL<(sitekeyOrEndpoint: string) => TProvider>) {
-	return component$<CaptchaProps<TOptions, THandle>>((props) => {
+>(providerFactory$: QRL<(sitekeyOrEndpoint: string) => TProvider>, valueProp: ValueProp, errorMessage: string) {
+	return component$<PropsForValue<TOptions, THandle, typeof valueProp>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const provider = useSignal<TProvider | null>(null);
 		const widgetId = useSignal<WidgetId | null>(null);
@@ -44,11 +39,11 @@ export function createCaptchaComponent<
 			state.value = { loading: true, error: null, ready: false };
 
 			try {
-				const value = props.endpoint ?? props.sitekey;
+				const value = props[valueProp];
 				if (!value) {
-					throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+					throw new Error(errorMessage);
 				}
-				const newProvider = await providerFactory$(value);
+				const newProvider = await providerFactory$(value as string);
 				await newProvider.init();
 
 				const container = document.createElement("div");
@@ -108,12 +103,11 @@ export function createCaptchaComponent<
 
 		useVisibleTask$(async ({ track, cleanup }) => {
 			track(() => hostEl.value);
-			track(() => props.sitekey);
-			track(() => props.endpoint);
+			track(() => props[valueProp]);
 			track(() => props.options);
 
 			if (!hostEl.value) return;
-			const value = props.endpoint ?? props.sitekey;
+			const value = props[valueProp];
 			if (!value) return;
 
 			if (props.autoRender ?? true) {
@@ -160,4 +154,28 @@ export function createCaptchaComponent<
 			/>
 		);
 	});
+}
+
+export function createCaptchaComponent<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(providerFactory$: QRL<(sitekeyOrEndpoint: string) => TProvider>) {
+	return createComponentInternal<TOptions, THandle, TProvider>(
+		providerFactory$,
+		"sitekey",
+		"'sitekey' prop must be provided",
+	);
+}
+
+export function createCaptchaComponentWithEndpoint<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(providerFactory$: QRL<(sitekeyOrEndpoint: string) => TProvider>) {
+	return createComponentInternal<TOptions, THandle, TProvider>(
+		providerFactory$,
+		"endpoint",
+		"'endpoint' prop must be provided",
+	);
 }

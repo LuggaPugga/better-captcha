@@ -28,7 +28,7 @@ function generateComponentFiles(metadata: ProviderMetadata): GeneratedFiles {
 	const sourceFile = project.createSourceFile("component.ts", "", { overwrite: true });
 
 	sourceFile.addImportDeclaration({
-		namedImports: ["createCaptchaComponent"],
+		namedImports: [metadata.useEndpoint ? "createCaptchaComponentWithEndpoint" : "createCaptchaComponent"],
 		moduleSpecifier: "../../base-captcha.js",
 	});
 
@@ -37,13 +37,17 @@ function generateComponentFiles(metadata: ProviderMetadata): GeneratedFiles {
 		moduleSpecifier: `@better-captcha/core/providers/${metadata.name}`,
 	});
 
+	const createCall = metadata.useEndpoint
+		? `createCaptchaComponentWithEndpoint(${metadata.providerClassName}, "${elementName}")`
+		: `createCaptchaComponent(${metadata.providerClassName}, "${elementName}")`;
+
 	sourceFile.addVariableStatement({
 		declarationKind: VariableDeclarationKind.Const,
 		isExported: true,
 		declarations: [
 			{
 				name: metadata.componentName,
-				initializer: `createCaptchaComponent(${metadata.providerClassName}, "${elementName}")`,
+				initializer: createCall,
 			},
 		],
 	});

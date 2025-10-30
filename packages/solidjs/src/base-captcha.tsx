@@ -1,31 +1,35 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
-import type { CaptchaProps } from "./index";
+import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
 
-export function createCaptchaComponent<
+type ValueProp = "sitekey" | "endpoint";
+
+type PropsForValue<TOptions, THandle extends CaptchaHandle, TValue extends ValueProp> = TValue extends "sitekey"
+	? CaptchaProps<TOptions, THandle>
+	: CaptchaPropsWithEndpoint<TOptions, THandle>;
+
+const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
+
+function createComponentInternal<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider) {
-	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
-		const [props, divProps] = splitProps(allProps, [
-			"sitekey",
-			"endpoint",
-			"options",
-			"class",
-			"style",
-			"autoRender",
-			"onReady",
-			"onError",
-			"controller",
-		]);
+	TValue extends ValueProp = "sitekey",
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider, valueProp: TValue, errorMessage: string) {
+	return function CaptchaComponent(allProps: PropsForValue<TOptions, THandle, TValue>): JSX.Element {
+		const keys = [...BASE_KEYS, valueProp] as const;
+		const [pickedProps, divProps] = splitProps(
+			allProps as PropsForValue<TOptions, THandle, TValue>,
+			keys as unknown as readonly (keyof PropsForValue<TOptions, THandle, TValue>)[],
+		);
+		const props = pickedProps as PropsForValue<TOptions, THandle, TValue>;
 
-		const value = props.endpoint ?? props.sitekey;
+		const value = props[valueProp];
 		if (!value) {
-			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+			throw new Error(errorMessage);
 		}
-		const provider = createMemo(() => new ProviderClass(value));
+		const provider = createMemo(() => new ProviderClass(value as string));
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
 		const autoRender = () => props.autoRender ?? true;
@@ -110,8 +114,7 @@ export function createCaptchaComponent<
 		createEffect(() => {
 			const element = elementRef();
 			const shouldAutoRender = autoRender();
-			props.sitekey;
-			props.endpoint;
+			props[valueProp];
 			props.options;
 
 			if (!element || !hasRendered) return;
@@ -199,4 +202,28 @@ export function createCaptchaComponent<
 			/>
 		);
 	};
+}
+
+export function createCaptchaComponent<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider) {
+	return createComponentInternal<TOptions, THandle, TProvider, "sitekey">(
+		ProviderClass,
+		"sitekey",
+		"'sitekey' prop must be provided",
+	);
+}
+
+export function createCaptchaComponentWithEndpoint<
+	TOptions = unknown,
+	THandle extends CaptchaHandle = CaptchaHandle,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(ProviderClass: new (sitekeyOrEndpoint: string) => TProvider) {
+	return createComponentInternal<TOptions, THandle, TProvider, "endpoint">(
+		ProviderClass,
+		"endpoint",
+		"'endpoint' prop must be provided",
+	);
 }

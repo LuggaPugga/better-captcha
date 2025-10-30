@@ -9,14 +9,22 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export interface CaptchaProps<TOptions> {
-	sitekey?: string;
-	endpoint?: string;
+interface CaptchaPropsShared<TOptions> {
 	options?: TOptions;
 	class?: string;
 	style?: StyleValue;
 	autoRender?: boolean;
 }
+
+export type CaptchaProps<TOptions> = CaptchaPropsShared<TOptions> & {
+	sitekey: string;
+	endpoint?: never;
+};
+
+export type CaptchaPropsWithEndpoint<TOptions> = CaptchaPropsShared<TOptions> & {
+	endpoint: string;
+	sitekey?: never;
+};
 
 export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {
 	ready: (handle: THandle) => void;
@@ -29,4 +37,4 @@ export type CaptchaComponent<TOptions, THandle extends CaptchaHandle = CaptchaHa
 >;
 
 export { type UseCaptchaReturn, useCaptcha } from "./composables/use-captcha";
-export { createCaptchaComponent } from "./create-captcha-component";
+export { createCaptchaComponent, createCaptchaComponentWithEndpoint } from "./create-captcha-component";
