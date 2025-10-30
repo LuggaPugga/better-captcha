@@ -271,5 +271,5 @@ export function createCaptchaComponent<
 				});
 			};
 		},
-	}) as unknown as Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>>;
+	}) as Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>>;
 }
