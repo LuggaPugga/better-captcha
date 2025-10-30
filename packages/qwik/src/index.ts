@@ -19,7 +19,7 @@ type CaptchaSharedProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle>
 	options?: TOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;
-	onReady?: QRL<(handle: NoSerialize<THandle>) => void>;
+	onReady?: QRL<(handle: NoSerialize<THandle>) => unknown>;
 	onError?: QRL<(error: Error) => void>;
 	controller?: Signal<NoSerialize<THandle> | null>;
 	autoRender?: boolean;
