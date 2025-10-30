@@ -161,7 +161,7 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		],
 	});
 
-	const reExportTypes = [handleType, renderParamsType, ...extraTypes, propsTypeName];
+	const reExportTypes = [handleType, renderParamsType, ...extraTypes];
 	sourceFile.addExportDeclaration({
 		namedExports: reExportTypes,
 		isTypeOnly: true,
