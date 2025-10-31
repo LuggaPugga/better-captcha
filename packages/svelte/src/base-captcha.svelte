@@ -86,6 +86,7 @@
 			const newProvider = new ProviderClass(value);
 			await newProvider.init();
 			const newContainer = document.createElement("div");
+			container = newContainer;
 			host.appendChild(newContainer);
 			const id =
 				options !== undefined
@@ -93,7 +94,6 @@
 					: await newProvider.render(newContainer);
 			if (id == null) throw new Error("Captcha render returned null widget id");
 			provider = newProvider;
-			container = newContainer;
 			widgetId = id;
 			setCaptchaState({ loading: false, error: null, ready: true });
 			hasRendered = true;
@@ -104,6 +104,7 @@
 		} catch (error) {
 			const err = error instanceof Error ? error : new Error(String(error));
 			console.error("[better-captcha] render:", err);
+			cleanup();
 			setCaptchaState({ loading: false, error: err, ready: false });
 			onerror?.(err);
 		} finally {
@@ -150,7 +151,8 @@
 	$effect(() => {
 		value;
 		options;
-		if (autoRender && hasRendered) {
+		const canRetry = captchaState.error != null;
+		if (autoRender && (hasRendered || canRetry)) {
 			queueMicrotask(renderCaptcha);
 		}
 	});
