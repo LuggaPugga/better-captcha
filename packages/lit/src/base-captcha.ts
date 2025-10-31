@@ -17,25 +17,34 @@ const defaultHandle: CaptchaHandle = {
 	}),
 };
 
+type CaptchaElement<THandle> = CustomElementConstructor & {
+	new (): LitElement & { getHandle: () => THandle };
+};
+
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (sitekey: string) => Provider<ProviderConfig, TOptions, THandle>,
+	ProviderClass: new (identifier: string) => Provider<ProviderConfig, TOptions, THandle>,
 	elementName: string = "better-captcha",
-) {
+): CaptchaElement<THandle> {
 	class CaptchaComponent extends LitElement {
-		@property() sitekey: string = "";
+		@property({ attribute: "sitekey" }) sitekey?: string;
+		@property({ attribute: "endpoint" }) endpoint?: string;
 		@property({ type: Object }) options: TOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
 
-		@state() private captchaState: CaptchaState = {
+		@state() protected captchaState: CaptchaState = {
 			loading: true,
 			error: null,
 			ready: false,
 		};
 
-		private elementRef: Ref<HTMLDivElement> = createRef();
-		private provider: Provider<ProviderConfig, TOptions, THandle> | null = null;
-		private lifecycle: CaptchaLifecycle<TOptions, THandle> | null = null;
-		private initialized = false;
+		protected elementRef: Ref<HTMLDivElement> = createRef();
+		protected provider: Provider<ProviderConfig, TOptions, THandle> | null = null;
+		protected lifecycle: CaptchaLifecycle<TOptions, THandle> | null = null;
+		protected initialized = false;
+
+		protected getValue(): string {
+			return this.sitekey || this.endpoint || "";
+		}
 
 		protected createRenderRoot() {
 			return this;
@@ -44,7 +53,8 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		async connectedCallback() {
 			super.connectedCallback();
 			await this.updateComplete;
-			if (!this.initialized && this.elementRef.value && this.sitekey) {
+			const value = this.getValue();
+			if (!this.initialized && this.elementRef.value && value) {
 				if (this.autoRender) {
 					this.initializeCaptcha();
 				}
@@ -57,19 +67,20 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			this.cleanup();
 		}
 
-		private cleanup() {
+		protected cleanup() {
 			this.lifecycle?.cleanup();
 			this.lifecycle = null;
 			this.provider = null;
 			this.initialized = false;
 		}
 
-		private initializeCaptcha() {
-			if (!this.sitekey || !this.elementRef.value) return;
+		protected initializeCaptcha() {
+			const value = this.getValue();
+			if (!value || !this.elementRef.value) return;
 
 			this.lifecycle?.cleanup();
 
-			this.provider = new ProviderClass(this.sitekey);
+			this.provider = new ProviderClass(value);
 
 			this.lifecycle = new CaptchaLifecycle(this.provider, this.options, (state) => {
 				this.captchaState = state;
@@ -78,7 +89,9 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		updated(changedProperties: Map<string, unknown>) {
-			if (this.initialized && changedProperties.has("sitekey") && this.sitekey && this.autoRender) {
+			const value = this.getValue();
+			const identifierChanged = changedProperties.has("sitekey") || changedProperties.has("endpoint");
+			if (this.initialized && identifierChanged && value && this.autoRender) {
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;
@@ -138,7 +151,5 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		customElements.define(elementName, CaptchaComponent);
 	}
 
-	return CaptchaComponent as unknown as CustomElementConstructor & {
-		new (): LitElement & { getHandle: () => THandle };
-	};
+	return CaptchaComponent as unknown as CaptchaElement<THandle>;
 }

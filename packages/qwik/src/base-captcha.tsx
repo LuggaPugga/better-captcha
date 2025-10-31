@@ -1,24 +1,14 @@
 import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
-import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
+import type { NoSerialize, QRL } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
-
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle> = {
-	sitekey: string;
-	options?: TOptions;
-	class?: string;
-	style?: string | Record<string, string | number>;
-	autoRender?: boolean;
-	controller?: Signal<NoSerialize<THandle> | null>;
-	onReady?: QRL<(handle: NoSerialize<THandle>) => void>;
-	onError?: QRL<(error: Error) => void>;
-};
+import type { CaptchaProps } from "./index";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(providerFactory$: QRL<(sitekey: string) => TProvider>) {
+>(providerFactory$: QRL<(identifier: string) => TProvider>) {
 	return component$<CaptchaProps<TOptions, THandle>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const provider = useSignal<TProvider | null>(null);
@@ -26,6 +16,8 @@ export function createCaptchaComponent<
 		const containerEl = useSignal<HTMLDivElement | null>(null);
 		const state = useSignal<CaptchaState>({ loading: true, error: null, ready: false });
 		const isRendering = useSignal(false);
+
+	const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
 
 		const cleanup$ = $(() => {
 			cleanup(provider.value, widgetId.value, containerEl.value);
@@ -41,9 +33,12 @@ export function createCaptchaComponent<
 			isRendering.value = true;
 			await cleanup$();
 			state.value = { loading: true, error: null, ready: false };
-
 			try {
-				const newProvider = await providerFactory$(props.sitekey);
+				const currentValue = identifier.value;
+				if (!currentValue) {
+					throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+				}
+				const newProvider = await providerFactory$(currentValue);
 				await newProvider.init();
 
 				const container = document.createElement("div");
@@ -101,12 +96,13 @@ export function createCaptchaComponent<
 			} as THandle);
 		});
 
-		useVisibleTask$(async ({ track, cleanup }) => {
-			track(() => hostEl.value);
-			track(() => props.sitekey);
-			track(() => props.options);
+	useVisibleTask$(async ({ track, cleanup }) => {
+		track(() => hostEl.value);
+		track(() => identifier.value);
+		track(() => props.options);
 
-			if (!hostEl.value || !props.sitekey) return;
+		if (!hostEl.value) return;
+		if (!identifier.value) return;
 
 			if (props.autoRender ?? true) {
 				await renderCaptcha$();

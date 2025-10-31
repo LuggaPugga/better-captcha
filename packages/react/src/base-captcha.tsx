@@ -19,13 +19,17 @@ const defaultHandle: CaptchaHandle = {
 };
 
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (sitekey: string) => Provider<ProviderConfig, TOptions, THandle>,
+	ProviderClass: new (identifier: string) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
-	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(
-		{ sitekey, options, className, style, autoRender = true },
-		ref,
-	) {
-		const provider = useMemo(() => new ProviderClass(sitekey), [ProviderClass, sitekey]);
+	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(props, ref) {
+		const { options, className, style, autoRender = true } = props;
+		const p = props as CaptchaProps<TOptions> & { sitekey?: string; endpoint?: string };
+		const identifier = p.sitekey || p.endpoint;
+		if (!identifier) {
+			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
+		}
+
+		const provider = useMemo(() => new ProviderClass(identifier), [ProviderClass, identifier]);
 		const { elementRef, state, widgetIdRef, setState, renderCaptcha } = useCaptchaLifecycle(
 			provider,
 			options,

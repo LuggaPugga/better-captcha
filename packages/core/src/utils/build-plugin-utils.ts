@@ -52,7 +52,6 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 		moduleSpecifier: `@better-captcha/core/providers/${meta.name}`,
 	});
 
-	// Insert "use client" at the top after imports are added
 	if (config.useClientDirective) {
 		sourceFile.insertStatements(0, '"use client";');
 	}
@@ -78,7 +77,15 @@ export function generateProviderModule(meta: ProviderMetadata, config: Framework
 }
 
 export function generateProviderModuleDts(meta: ProviderMetadata, config: FrameworkConfig): GeneratedFiles {
-	const { name, componentName, handleType, renderParamsType, renderParamsOmit, extraTypes } = meta;
+	const {
+		name,
+		componentName,
+		handleType,
+		renderParamsType,
+		renderParamsOmit,
+		extraTypes,
+		identifierProp = "sitekey",
+	} = meta;
 
 	const project = createProject();
 	const sourceFile = project.createSourceFile("provider.ts", "", { overwrite: true });
@@ -107,14 +114,37 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		isTypeOnly: true,
 	});
 
-	// Generate the component type based on the framework's props structure
+	const propsTypeName = `${componentName}Props`;
+	const optionsType = `Omit<${renderParamsType}, ${renderParamsOmit}>`;
+
+	// Build the props type based on identifier prop
+	const basePropsType =
+		config.propsStructure === "two-params"
+			? `CaptchaProps<${optionsType}, ${handleType}>`
+			: `CaptchaProps<${optionsType}>`;
+
+	// Add the appropriate identifier prop (sitekey or endpoint)
+	if (identifierProp === "endpoint") {
+		sourceFile.addTypeAlias({
+			name: propsTypeName,
+			type: `Omit<${basePropsType}, "sitekey" | "endpoint"> & { endpoint: string }`,
+			isExported: true,
+		});
+	} else {
+		sourceFile.addTypeAlias({
+			name: propsTypeName,
+			type: `Omit<${basePropsType}, "sitekey" | "endpoint"> & { sitekey: string }`,
+			isExported: true,
+		});
+	}
+
 	let componentTypeString: string;
 	if (config.propsStructure === "single-with-ref") {
-		// React style: CaptchaProps<Options> & RefAttributes<Handle>
-		componentTypeString = `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>> & RefAttributes<${handleType}>>`;
+		componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
+	} else if (config.propsStructure === "two-params") {
+		componentTypeString = `${config.componentType}<${propsTypeName}>`;
 	} else {
-		// Default (SolidJS/Qwik style): CaptchaProps<Options, Handle>
-		componentTypeString = `${config.componentType}<CaptchaProps<Omit<${renderParamsType}, ${renderParamsOmit}>, ${handleType}>>`;
+		componentTypeString = `${config.componentType}<${propsTypeName}>`;
 	}
 
 	sourceFile.addVariableStatement({

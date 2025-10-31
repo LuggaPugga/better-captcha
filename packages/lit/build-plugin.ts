@@ -37,13 +37,15 @@ function generateComponentFiles(metadata: ProviderMetadata): GeneratedFiles {
 		moduleSpecifier: `@better-captcha/core/providers/${metadata.name}`,
 	});
 
+	const createCall = `createCaptchaComponent(${metadata.providerClassName}, "${elementName}")`;
+
 	sourceFile.addVariableStatement({
 		declarationKind: VariableDeclarationKind.Const,
 		isExported: true,
 		declarations: [
 			{
 				name: metadata.componentName,
-				initializer: `createCaptchaComponent(${metadata.providerClassName}, "${elementName}")`,
+				initializer: createCall,
 			},
 		],
 	});

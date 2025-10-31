@@ -9,13 +9,14 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export interface CaptchaProps<TOptions> {
-	sitekey: string;
+export type CaptchaProps<TOptions> = {
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: StyleValue;
 	autoRender?: boolean;
-}
+};
 
 export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {
 	ready: (handle: THandle) => void;

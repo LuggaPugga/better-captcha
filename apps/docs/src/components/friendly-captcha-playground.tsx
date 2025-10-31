@@ -12,7 +12,7 @@ export function FriendlyCaptchaPlayground() {
 	});
 	return (
 		<div className="space-y-2">
-			<FriendlyCaptcha sitekey="" options={options} />
+			<FriendlyCaptcha sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} />
 
 			<div className="flex gap-2">
 				<Select

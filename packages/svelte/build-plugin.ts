@@ -32,19 +32,23 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 	import type { CaptchaState } from "@better-captcha/core";
 
 	interface Props {
-		sitekey: string;
+		sitekey?: string;
+		endpoint?: string;
 		options?: Omit<${renderParamsType}, ${renderParamsOmit}>;
 		class?: string;
 		style?: string;
+		autoRender?: boolean;
 		onready?: (handle: ${handleType}) => void;
 		onerror?: (error: Error) => void;
 	}
 
 	let {
 		sitekey,
+		endpoint,
 		options = undefined,
 		class: className = undefined,
 		style = undefined,
+		autoRender = true,
 		onready = undefined,
 		onerror = undefined
 	}: Props = $props();
@@ -80,10 +84,11 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 <BaseCaptcha
 	bind:this={baseCaptchaRef}
 	providerClass={${providerClassName}}
-	{sitekey}
+	value={sitekey || endpoint}
 	{options}
 	class={className}
 	{style}
+	{autoRender}
 	{onready}
 	{onerror}
 />
@@ -106,7 +111,8 @@ import type {
 } from "@better-captcha/core/providers/${name}";
 
 export interface ${componentName}Props {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: Omit<${renderParamsType}, ${renderParamsOmit}>;
 	class?: string;
 	style?: string;

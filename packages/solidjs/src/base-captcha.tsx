@@ -3,24 +3,33 @@ import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import type { CaptchaProps } from "./index";
 
+const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
+
 export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (sitekey: string) => TProvider) {
+>(ProviderClass: new (identifier: string) => TProvider) {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [
+			...BASE_KEYS,
 			"sitekey",
-			"options",
-			"class",
-			"style",
-			"autoRender",
-			"onReady",
-			"onError",
-			"controller",
-		]);
+			"endpoint",
+		] as readonly (keyof CaptchaProps<TOptions, THandle>)[]);
 
-		const provider = createMemo(() => new ProviderClass(props.sitekey));
+		const identifier = createMemo(() => {
+			const p = props as { sitekey?: string; endpoint?: string };
+			return p.sitekey || p.endpoint || "";
+		});
+
+		const provider = createMemo(() => {
+			const id = identifier();
+			if (!id) {
+				return null;
+			}
+			return new ProviderClass(id);
+		});
+
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
 		const autoRender = () => props.autoRender ?? true;
@@ -48,7 +57,7 @@ export function createCaptchaComponent<
 			const currentProvider = provider();
 			const options = props.options;
 
-			if (!element) return;
+			if (!element || !currentProvider) return;
 
 			if (isRendering) {
 				pendingRender = true;
@@ -97,15 +106,16 @@ export function createCaptchaComponent<
 		};
 
 		onMount(() => {
-			if (autoRender()) {
-				void renderCaptcha();
+			const shouldAutoRender = autoRender();
+			if (shouldAutoRender) {
+				renderCaptcha();
 			}
 		});
 
 		createEffect(() => {
 			const element = elementRef();
 			const shouldAutoRender = autoRender();
-			props.sitekey;
+			identifier();
 			props.options;
 
 			if (!element || !hasRendered) return;
@@ -113,10 +123,6 @@ export function createCaptchaComponent<
 			if (shouldAutoRender) {
 				void renderCaptcha();
 			}
-
-			onCleanup(() => {
-				performCleanup();
-			});
 		});
 
 		createEffect(() => {
@@ -128,7 +134,9 @@ export function createCaptchaComponent<
 		const baseHandle = createMemo(() => {
 			const id = widgetId();
 			if (id == null) return null;
-			return provider().getHandle(id) as THandle;
+			const currentProvider = provider();
+			if (!currentProvider) return null;
+			return currentProvider.getHandle(id) as THandle;
 		});
 
 		const handle = createMemo(() => {
@@ -179,6 +187,10 @@ export function createCaptchaComponent<
 		const elementId = createMemo(() => {
 			const id = widgetId();
 			return id !== null && id !== undefined ? `better-captcha-${id}` : "better-captcha-loading";
+		});
+
+		onCleanup(() => {
+			performCleanup();
 		});
 
 		return (

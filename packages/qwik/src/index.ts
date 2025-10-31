@@ -16,13 +16,15 @@ export type {
  * @template THandle - Type of handle returned by the CAPTCHA provider
  */
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;
-	onReady?: QRL<(handle: NoSerialize<THandle>) => void>;
+	onReady?: QRL<(handle: NoSerialize<THandle>) => unknown>;
 	onError?: QRL<(error: Error) => void>;
 	controller?: Signal<NoSerialize<THandle> | null>;
+	autoRender?: boolean;
 };
 
 export { createCaptchaComponent } from "./base-captcha";

@@ -1,3 +1,4 @@
+import { CapWidgetProvider } from "./providers/cap-widget";
 import { CaptchaFoxProvider } from "./providers/captcha-fox";
 import { FriendlyCaptchaProvider } from "./providers/friendly-captcha";
 import { HCaptchaProvider } from "./providers/hcaptcha";
@@ -14,9 +15,21 @@ export interface ProviderMetadata {
 	renderParamsType: string;
 	renderParamsOmit: string;
 	extraTypes: string[];
+	/** The prop name to use for the identifier (default: "sitekey") */
+	identifierProp?: "sitekey" | "endpoint";
 }
 
 export const PROVIDER_REGISTRY: ProviderMetadata[] = [
+	{
+		name: "cap-widget",
+		componentName: "CapWidget",
+		providerClassName: "CapWidgetProvider",
+		handleType: "CapWidgetHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"element"',
+		extraTypes: [],
+		identifierProp: "endpoint",
+	},
 	{
 		name: "captcha-fox",
 		componentName: "CaptchaFox",
@@ -83,6 +96,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 ];
 
 export const PROVIDER_CLASSES = {
+	CapWidgetProvider,
 	CaptchaFoxProvider,
 	FriendlyCaptchaProvider,
 	HCaptchaProvider,
@@ -92,6 +106,7 @@ export const PROVIDER_CLASSES = {
 	TurnstileProvider,
 } as const;
 
+export type { CapWidgetHandle } from "./providers/cap-widget";
 export type { CaptchaFoxHandle } from "./providers/captcha-fox";
 export type { FriendlyCaptchaHandle } from "./providers/friendly-captcha";
 export type { HCaptchaHandle } from "./providers/hcaptcha";

@@ -9,15 +9,12 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-/**
- * Props for CAPTCHA components
- * @template TOptions - Type of options specific to the CAPTCHA provider
- */
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
 	JSX.HTMLAttributes<HTMLDivElement>,
 	"children" | "className" | "style"
 > & {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: JSX.CSSProperties;

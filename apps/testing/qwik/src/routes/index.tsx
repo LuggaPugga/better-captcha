@@ -1,5 +1,6 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { CapWidgetTest } from "../components/cap-widget-test";
 import { CaptchaFoxTest } from "../components/captcha-fox-test";
 import { FriendlyCaptchaTest } from "../components/friendly-captcha-test";
 import { HCaptchaTest } from "../components/hcaptcha-test";
@@ -19,6 +20,7 @@ export default component$(() => {
 		{ key: "private-captcha", name: "Private Captcha", path: "/private-captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
+		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 	];
 
 	return (
@@ -49,6 +51,7 @@ export default component$(() => {
 				{currentProvider.value === "private-captcha" && <PrivateCaptchaTest />}
 				{currentProvider.value === "captcha-fox" && <CaptchaFoxTest />}
 				{currentProvider.value === "prosopo" && <ProsopoTest />}
+				{currentProvider.value === "cap-widget" && <CapWidgetTest />}
 			</div>
 		</>
 	);

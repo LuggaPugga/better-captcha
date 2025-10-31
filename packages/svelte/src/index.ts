@@ -10,10 +10,12 @@ export type {
 } from "@better-captcha/core";
 
 export interface CaptchaProps<TOptions = unknown> {
-	sitekey: string;
+	sitekey?: string;
+	endpoint?: string;
 	options?: TOptions;
 	class?: string;
 	style?: string;
+	autoRender?: boolean;
 	onready?: (handle: CaptchaHandle) => void;
 	onerror?: (error: Error) => void;
 }

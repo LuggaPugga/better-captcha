@@ -39,7 +39,7 @@ export class CaptchaFoxProvider extends Provider<
 			resolvedOptions.theme = getSystemTheme();
 		}
 		return window.captchafox?.render(element, {
-			sitekey: this.sitekey,
+			sitekey: this.identifier,
 			...resolvedOptions,
 		});
 	}
