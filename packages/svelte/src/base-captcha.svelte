@@ -17,32 +17,43 @@
 	};
 </script>
 
-<script lang="ts" generics="TOptions, THandle extends CaptchaHandle, TProvider extends Provider<ProviderConfig, TOptions, THandle>">
+<script
+	lang="ts"
+	generics="TOptions, THandle extends CaptchaHandle, TProvider extends Provider<ProviderConfig, TOptions, THandle>"
+>
 	import type { CaptchaState, WidgetId } from "@better-captcha/core";
 	import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 	import { onMount, onDestroy } from "svelte";
 
 	type Props = BaseCaptchaProps<TOptions, THandle, TProvider>;
 
-let {
-	providerClass: ProviderClass,
-	value,
-	options = undefined,
-	class: className = undefined,
-	style = undefined,
-	autoRender = true,
-	onready = undefined,
-	onerror = undefined
-}: Props = $props();
+	const {
+		providerClass: ProviderClass,
+		value,
+		options = undefined,
+		class: className = "",
+		style = "",
+		autoRender = true,
+		onready = undefined,
+		onerror = undefined,
+	}: Props = $props();
 
 	let elementRef: HTMLDivElement | undefined = $state();
-	let captchaState = $state<CaptchaState>({ loading: autoRender, error: null, ready: false });
+	let captchaState = $state<CaptchaState>({
+		loading: autoRender,
+		error: null,
+		ready: false,
+	});
 	let widgetId: WidgetId | null = $state(null);
-
 	let container: HTMLDivElement | null = null;
 	let provider: TProvider | null = null;
 	let isRendering = false;
-let pendingRender = false;
+	let pendingRender = false;
+	let hasRendered = false;
+
+	function setCaptchaState(state: Partial<CaptchaState>) {
+		Object.assign(captchaState, state);
+	}
 
 	function cleanup(): void {
 		cleanupWidget(provider, widgetId, container);
@@ -51,40 +62,40 @@ let pendingRender = false;
 		widgetId = null;
 	}
 
-	async function renderCaptcha(): Promise<void> {
-		const host = elementRef;
-	if (!host) return;
-
-	if (isRendering) {
-		pendingRender = true;
-		return;
+	function handlePendingRender() {
+		isRendering = false;
+		if (pendingRender) {
+			pendingRender = false;
+			queueMicrotask(renderCaptcha);
+		}
 	}
 
-		isRendering = true;
-	pendingRender = false;
-		cleanup();
-		captchaState = { loading: true, error: null, ready: false };
-
-	try {
-		if (!value) {
-			throw new Error("'value' prop must be provided");
+	async function renderCaptcha(): Promise<void> {
+		const host = elementRef;
+		if (!host) return;
+		if (isRendering) {
+			pendingRender = true;
+			return;
 		}
-		const newProvider = new ProviderClass(value);
+		isRendering = true;
+		pendingRender = false;
+		cleanup();
+		setCaptchaState({ loading: true, error: null, ready: false });
+ 		try {
+			if (!value) throw new Error("'value' prop must be provided");
+			const newProvider = new ProviderClass(value);
 			await newProvider.init();
-
 			const newContainer = document.createElement("div");
-			host.appendChild(newContainer);
-
-			const id = options !== undefined
-				? await newProvider.render(newContainer, options)
-				: await newProvider.render(newContainer);
-
-			if (id == null) throw new Error("Captcha render returned null widget id");
-
-			provider = newProvider;
 			container = newContainer;
+			host.appendChild(newContainer);
+			const id =
+				options !== undefined
+					? await newProvider.render(newContainer, options)
+					: await newProvider.render(newContainer);
+			if (id == null) throw new Error("Captcha render returned null widget id");
+			provider = newProvider;
 			widgetId = id;
-			captchaState = { loading: false, error: null, ready: true };
+			setCaptchaState({ loading: false, error: null, ready: true });
 			hasRendered = true;
 			if (onready && provider) {
 				const handle = provider.getHandle(id);
@@ -93,44 +104,36 @@ let pendingRender = false;
 		} catch (error) {
 			const err = error instanceof Error ? error : new Error(String(error));
 			console.error("[better-captcha] render:", err);
-			captchaState = { loading: false, error: err, ready: false };
+			cleanup();
+			setCaptchaState({ loading: false, error: err, ready: false });
 			onerror?.(err);
 		} finally {
-			isRendering = false;
-		if (pendingRender) {
-			pendingRender = false;
-			queueMicrotask(() => {
-				void renderCaptcha();
-			});
+			handlePendingRender();
 		}
+	}
+
+	function withHandle<R>(action: (h: THandle) => R): R | void {
+		if (provider && widgetId != null) {
+			return action(provider.getHandle(widgetId));
 		}
 	}
 
 	export async function execute(): Promise<void> {
-		if (provider && widgetId != null) {
-			await provider.getHandle(widgetId).execute();
-		}
+		await withHandle((h) => h.execute());
 	}
 
 	export function reset(): void {
-		if (provider && widgetId != null) {
-			provider.getHandle(widgetId).reset();
-		}
+		withHandle((h) => h.reset());
 	}
 
 	export function destroy(): void {
-		if (provider && widgetId != null) {
-			provider.getHandle(widgetId).destroy();
-		}
+		withHandle((h) => h.destroy());
 		cleanup();
-		captchaState = { loading: false, error: null, ready: false };
+		setCaptchaState({ loading: false, error: null, ready: false });
 	}
 
 	export function getResponse(): string {
-		if (provider && widgetId != null) {
-			return provider.getHandle(widgetId).getResponse();
-		}
-		return "";
+		return withHandle((h) => h.getResponse()) ?? "";
 	}
 
 	export function getComponentState(): CaptchaState {
@@ -141,19 +144,16 @@ let pendingRender = false;
 		await renderCaptcha();
 	}
 
-	let hasRendered = false;
-
 	onMount(() => {
-		if (autoRender) {
-			renderCaptcha();
-		}
+		if (autoRender) void renderCaptcha();
 	});
 
 	$effect(() => {
 		value;
 		options;
-		if (autoRender && hasRendered) {
-			renderCaptcha();
+		const canRetry = captchaState.error != null;
+		if (autoRender && (hasRendered || canRetry)) {
+			queueMicrotask(renderCaptcha);
 		}
 	});
 
@@ -162,7 +162,9 @@ let pendingRender = false;
 	});
 
 	const elementId = $derived(
-		widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading"
+		widgetId != null
+			? `better-captcha-${widgetId}`
+			: "better-captcha-loading",
 	);
 </script>
 
