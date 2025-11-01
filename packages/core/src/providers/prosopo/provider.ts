@@ -49,15 +49,26 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 			renderOptions.callback = (output: string) => {
 				if (typeof existingCallback === "function") {
 					existingCallback(output);
+				} else if (typeof existingCallback === "string") {
+					const existingFn = (globalThis as Record<string, unknown>)[existingCallback];
+					if (typeof existingFn === "function") {
+						(existingFn as (value: string) => void)(output);
+					}
 				}
 				callbacks.onSolve?.(output);
 			};
 		}
+
 		if (callbacks?.onError) {
 			const existingErrorCallback = renderOptions["error-callback"];
 			renderOptions["error-callback"] = (output: string) => {
 				if (typeof existingErrorCallback === "function") {
 					existingErrorCallback(output);
+				} else if (typeof existingErrorCallback === "string") {
+					const existingFn = (globalThis as Record<string, unknown>)[existingErrorCallback];
+					if (typeof existingFn === "function") {
+						(existingFn as (value: string) => void)(output);
+					}
 				}
 				callbacks.onError?.(output);
 			};
