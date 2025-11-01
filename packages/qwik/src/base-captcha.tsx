@@ -17,6 +17,7 @@ export function createCaptchaComponent<
 		const state = useSignal<CaptchaState>({ loading: true, error: null, ready: false });
 		const isRendering = useSignal(false);
 		const hasEmittedReady = useSignal(false);
+		const hasEmittedError = useSignal(false);
 
 		const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
 
@@ -35,8 +36,9 @@ export function createCaptchaComponent<
 			await cleanup$();
 			state.value = { loading: true, error: null, ready: false };
 			hasEmittedReady.value = false;
-			let resolveRender!: () => void;
-			const renderComplete = new Promise<void>((resolve) => {
+			hasEmittedError.value = false;
+			let resolveRender!: (success: boolean) => void;
+			const renderComplete = new Promise<boolean>((resolve) => {
 				resolveRender = resolve;
 			});
 			try {
@@ -54,7 +56,8 @@ export function createCaptchaComponent<
 				const callbacks: CaptchaCallbacks = {
 					onReady: async () => {
 						if (!props.onReady$ || hasEmittedReady.value) return;
-						await renderComplete;
+						const success = await renderComplete;
+						if (!success) return;
 						hasEmittedReady.value = true;
 						await props.onReady$(await buildHandle$());
 					},
@@ -64,7 +67,8 @@ export function createCaptchaComponent<
 					},
 					onError: async (err: Error | string) => {
 						const onError$ = props.onError$;
-						if (onError$) {
+						if (onError$ && !hasEmittedError.value) {
+							hasEmittedError.value = true;
 							const error = err instanceof Error ? err : new Error(String(err));
 							await onError$(error);
 						}
@@ -77,7 +81,7 @@ export function createCaptchaComponent<
 				provider.value = newProvider;
 				widgetId.value = id;
 				state.value = { loading: false, error: null, ready: true };
-				resolveRender();
+				resolveRender(true);
 				if (props.onReady$ && !hasEmittedReady.value) {
 					hasEmittedReady.value = true;
 					await props.onReady$(await buildHandle$());
@@ -86,9 +90,13 @@ export function createCaptchaComponent<
 				const error = err instanceof Error ? err : new Error(String(err));
 				console.error("[better-captcha] render:", error);
 				state.value = { loading: false, error, ready: false };
-				if (props.onError$) await props.onError$(error);
-				resolveRender();
+				if (props.onError$ && !hasEmittedError.value) {
+					hasEmittedError.value = true;
+					await props.onError$(error);
+				}
+				resolveRender(false);
 			} finally {
+				resolveRender = null!;
 				isRendering.value = false;
 			}
 		});
