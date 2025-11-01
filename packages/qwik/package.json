@@ -1,6 +1,6 @@
 {
 	"name": "@better-captcha/qwik",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Better Captcha for Qwik - Universal CAPTCHA component library",
 	"main": "./dist/index.qwik.mjs",
 	"qwik": "./dist/index.qwik.mjs",
