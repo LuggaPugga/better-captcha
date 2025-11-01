@@ -1,6 +1,13 @@
 import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
-import type { CapWidget, RenderParameters } from "./types";
+import type {
+	CapErrorEvent,
+	CapProgressEvent,
+	CapResetEvent,
+	CapSolveEvent,
+	CapWidget,
+	RenderParameters,
+} from "./types";
 
 export type CapWidgetHandle = CaptchaHandle;
 
@@ -46,12 +53,36 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 			i18nWasmDisabled: "data-cap-i18n-wasm-disabled",
 		};
 
+		const callbackMap: Record<
+			string,
+			{ event: string; handler?: (event: CapSolveEvent | CapProgressEvent | CapResetEvent | CapErrorEvent) => void }
+		> = {
+			onsolve: { event: "solve" },
+			onprogress: { event: "progress" },
+			onreset: { event: "reset" },
+			onerror: { event: "error" },
+		};
+
 		if (options) {
 			for (const [key, value] of Object.entries(options)) {
-				if (value !== undefined && value !== null) {
-					const attributeName = attributeMap[key] || key;
-					widget.setAttribute(attributeName, String(value));
+				if (value === undefined || value === null) {
+					continue;
 				}
+
+				if (callbackMap[key]) {
+					const callbackInfo = callbackMap[key];
+					if (typeof value === "function") {
+						callbackInfo.handler = value as (
+							event: CapSolveEvent | CapProgressEvent | CapResetEvent | CapErrorEvent,
+						) => void;
+					} else if (typeof value === "string") {
+						widget.setAttribute(key, value);
+					}
+					continue;
+				}
+
+				const attributeName = attributeMap[key] || key;
+				widget.setAttribute(attributeName, String(value));
 			}
 		}
 
@@ -60,7 +91,18 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 		const widgetId = `cap-widget-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 		widget.id = widgetId;
 
-		widget.addEventListener("solve", () => {});
+		if (callbackMap.onsolve?.handler) {
+			widget.addEventListener("solve", callbackMap.onsolve.handler as (event: CapSolveEvent) => void);
+		}
+		if (callbackMap.onprogress?.handler) {
+			widget.addEventListener("progress", callbackMap.onprogress.handler as (event: CapProgressEvent) => void);
+		}
+		if (callbackMap.onreset?.handler) {
+			widget.addEventListener("reset", callbackMap.onreset.handler as (event: CapResetEvent) => void);
+		}
+		if (callbackMap.onerror?.handler) {
+			widget.addEventListener("error", callbackMap.onerror.handler as (event: CapErrorEvent) => void);
+		}
 
 		this.widgetMap.set(widgetId, widget);
 
