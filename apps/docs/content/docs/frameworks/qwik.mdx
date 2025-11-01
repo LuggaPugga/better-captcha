@@ -49,6 +49,49 @@ export default component$(() => {
 
 The handle is available once the widget is ready. Use optional chaining when calling methods.
 
+## Callbacks
+
+All captcha components support three lifecycle callbacks via QRL props (note the `$` suffix):
+
+```tsx
+import { component$, $ } from "@builder.io/qwik";
+import { useCaptchaController } from "@better-captcha/qwik";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/qwik/provider/recaptcha";
+
+export default component$(() => {
+  const controller = useCaptchaController<ReCaptchaHandle>();
+
+  const handleReady$ = $((handle: ReCaptchaHandle) => {
+    console.log("Captcha is ready", handle);
+  });
+
+  const handleSolve$ = $((token: string) => {
+    console.log("Captcha solved with token:", token);
+    // Send token to your backend for verification
+  });
+
+  const handleError$ = $((error: Error) => {
+    console.error("Captcha error:", error);
+  });
+
+  return (
+    <ReCaptcha
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      controller={controller}
+      onReady$={handleReady$}
+      onSolve$={handleSolve$}
+      onError$={handleError$}
+    />
+  );
+});
+```
+
+### Callback Reference
+
+- **onReady$**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
+- **onSolve$**: Called when the captcha challenge is successfully solved with the response token
+- **onError$**: Called when an error occurs during initialization or solving
+
 ## Manual Rendering
 
 By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
