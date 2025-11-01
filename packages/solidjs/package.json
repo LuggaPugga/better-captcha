@@ -1,7 +1,7 @@
 {
 	"name": "@better-captcha/solidjs",
 	"description": "SolidJS wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",

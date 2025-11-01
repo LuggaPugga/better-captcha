@@ -1,5 +1,5 @@
 <script module lang="ts">
-	import type { CaptchaHandle, Provider, ProviderConfig } from "@better-captcha/core";
+	import type { CaptchaCallbacks, CaptchaHandle, Provider, ProviderConfig } from "@better-captcha/core";
 
 	export type BaseCaptchaProps<
 		TOptions,
@@ -14,6 +14,7 @@
 		autoRender?: boolean;
 		onready?: (handle: THandle) => void;
 		onerror?: (error: Error) => void;
+		onSolve?: (token: string) => void;
 	};
 </script>
 
@@ -36,6 +37,7 @@
 		autoRender = true,
 		onready = undefined,
 		onerror = undefined,
+		onSolve = undefined,
 	}: Props = $props();
 
 	let elementRef: HTMLDivElement | undefined = $state();
@@ -88,19 +90,31 @@
 			const newContainer = document.createElement("div");
 			container = newContainer;
 			host.appendChild(newContainer);
+			
+			const callbacks: CaptchaCallbacks = {
+				onSolve: (token: string) => {
+					onSolve?.(token);
+				},
+				onError: (err: Error | string) => {
+					const error = err instanceof Error ? err : new Error(String(err));
+					onerror?.(error);
+				},
+			};
+			
 			const id =
 				options !== undefined
-					? await newProvider.render(newContainer, options)
-					: await newProvider.render(newContainer);
+					? await newProvider.render(newContainer, options, callbacks)
+					: await newProvider.render(newContainer, undefined, callbacks);
 			if (id == null) throw new Error("Captcha render returned null widget id");
 			provider = newProvider;
 			widgetId = id;
-			setCaptchaState({ loading: false, error: null, ready: true });
-			hasRendered = true;
-			if (onready && provider) {
-				const handle = provider.getHandle(id);
+			
+			if (onready) {
+				const handle = newProvider.getHandle(id);
 				onready(handle);
 			}
+			setCaptchaState({ loading: false, error: null, ready: true });
+			hasRendered = true;
 		} catch (error) {
 			const err = error instanceof Error ? error : new Error(String(error));
 			console.error("[better-captcha] render:", err);

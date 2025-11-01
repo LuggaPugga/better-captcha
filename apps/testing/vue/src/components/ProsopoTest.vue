@@ -7,7 +7,9 @@
 			:options="options"
 			@ready="onReady"
 			@error="onError"
+			@solve="onSolve"
 		/>
+		<p v-if="solved" id="captcha-solved">Captcha Solved!</p>
 		<div style="margin-top: 10px">
 			<button type="button" @click="handleDestroy">Destroy</button>
 			<button type="button" @click="handleReset">Reset</button>
@@ -28,6 +30,7 @@
 	const captchaRef = ref<ProsopoHandle | null>(null);
 	const response = ref<string | null>(null);
 	const error = ref<Error | null>(null);
+	const solved = ref<boolean>(false);
 
 	const options = ref<Omit<RenderParameters, "siteKey">>({
 		theme: "light",
@@ -40,6 +43,11 @@
 	const onError = (err: Error) => {
 		error.value = err;
 		console.error("Captcha error:", err);
+	};
+
+	const onSolve = (token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
 	};
 
 	const handleDestroy = () => {

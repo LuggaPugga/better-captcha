@@ -43,6 +43,47 @@ export default function Example() {
 
 The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining when calling methods.
 
+## Callbacks
+
+All captcha components support three lifecycle callbacks:
+
+```tsx
+import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  const controller = createCaptchaController<ReCaptchaHandle>();
+
+  const handleReady = (handle: ReCaptchaHandle) => {
+    console.log("Captcha is ready", handle);
+  };
+
+  const handleSolve = (token: string) => {
+    console.log("Captcha solved with token:", token);
+    // Send token to your backend for verification
+  };
+
+  const handleError = (error: Error) => {
+    console.error("Captcha error:", error);
+  };
+
+  return (
+    <ReCaptcha
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      controller={controller}
+      onReady={handleReady}
+      onSolve={handleSolve}
+      onError={handleError}
+    />
+  );
+}
+```
+
+### Callback Reference
+
+- **onReady**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
+- **onSolve**: Called when the captcha challenge is successfully solved with the response token
+- **onError**: Called when an error occurs during initialization or solving
+
 ## Manual Rendering
 
 By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:

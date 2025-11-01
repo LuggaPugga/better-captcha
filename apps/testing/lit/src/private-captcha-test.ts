@@ -20,10 +20,18 @@ export class PrivateCaptchaTest extends LitElement {
 	@state()
 	private response: string | null = null;
 
+	@state()
+	private solved = false;
+
 	// Disable shadow DOM for compatibility with captcha providers
 	protected createRenderRoot() {
 		return this;
 	}
+
+	private handleSolve = (token: string) => {
+		this.solved = true;
+		console.log("Captcha solved with token:", token);
+	};
 
 	private handleDestroy() {
 		this.captchaRef.value?.getHandle()?.destroy();
@@ -61,8 +69,10 @@ export class PrivateCaptchaTest extends LitElement {
 						${ref(this.captchaRef)}
 						sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
 						.options=${this.options}
+						.onSolve=${this.handleSolve}
 					></private-captcha-widget>
 				</form>
+				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>
 				<button type="button" @click=${this.handleExecute}>Execute</button>

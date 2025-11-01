@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import {
 	type Component,
@@ -50,6 +50,7 @@ export function createCaptchaComponent<
 		emits: {
 			ready: (_handle: THandle) => true,
 			error: (_error: Error) => true,
+			solve: (_token: string) => true,
 		},
 		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
@@ -73,17 +74,14 @@ export function createCaptchaComponent<
 			let hasRendered = false;
 			let pendingRender = false;
 
-			// Pure helper function that returns the identifier value without side effects
 			const getIdentifierValue = (): string | undefined => {
 				return identifierProp === "endpoint" ? props.endpoint : props.sitekey;
 			};
 
-			// Side-effect-only function that validates and emits errors
 			const validateIdentifierProp = (): void => {
 				const expectedValue = identifierProp === "endpoint" ? props.endpoint : props.sitekey;
 				const unexpectedValue = identifierProp === "endpoint" ? props.sitekey : props.endpoint;
 				
-				// Validate that only the correct identifier prop is provided
 				if (unexpectedValue !== undefined && unexpectedValue !== null && unexpectedValue !== "") {
 					const error = new Error(
 						`Provider expects '${identifierProp}' prop, but '${identifierProp === "endpoint" ? "sitekey" : "endpoint"}' was provided instead`
@@ -93,7 +91,6 @@ export function createCaptchaComponent<
 					return;
 				}
 				
-				// Emit error when expected identifier is missing
 				if (expectedValue === undefined || expectedValue === null || expectedValue === "") {
 					const error = new Error(
 						`Provider requires '${identifierProp}' prop, but it was not provided or is empty`
@@ -104,7 +101,6 @@ export function createCaptchaComponent<
 				}
 			};
 
-			// Pure computed property that only returns the derived identifier value
 			const identifier = computed(() => getIdentifierValue());
 
 			const cleanup = (cancelRender = false): void => {
@@ -172,10 +168,29 @@ export function createCaptchaComponent<
 					mountTarget = document.createElement("div");
 					host.appendChild(mountTarget);
 
+					const callbacks: CaptchaCallbacks = {
+						onReady: () => {
+							if (token === renderToken) {
+								emit("ready", handle.value);
+							}
+						},
+						onSolve: (solveToken: string) => {
+							if (token === renderToken) {
+								emit("solve", solveToken);
+							}
+						},
+						onError: (err: Error | string) => {
+							if (token === renderToken) {
+								const error = err instanceof Error ? err : new Error(String(err));
+								emit("error", error);
+							}
+						},
+					};
+
 					const id =
 						props.options !== undefined
-							? await activeProvider.render(mountTarget, props.options as TOptions)
-							: await activeProvider.render(mountTarget);
+							? await activeProvider.render(mountTarget, props.options as TOptions, callbacks)
+							: await activeProvider.render(mountTarget, undefined, callbacks);
 					if (token !== renderToken) {
 						mountTarget.remove();
 						isRendering = false;
@@ -187,7 +202,6 @@ export function createCaptchaComponent<
 					widgetId.value = id ?? null;
 					handle.value = buildActiveHandle();
 					state.value = { loading: false, error: null, ready: true };
-					emit("ready", handle.value);
 				} catch (error) {
 					mountTarget?.remove();
 					if (token !== renderToken) {

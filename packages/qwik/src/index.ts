@@ -21,8 +21,9 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	options?: TOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;
-	onReady?: QRL<(handle: NoSerialize<THandle>) => unknown>;
-	onError?: QRL<(error: Error) => void>;
+	onReady$?: QRL<(handle: NoSerialize<THandle>) => unknown>;
+	onError$?: QRL<(error: Error) => void>;
+	onSolve$?: QRL<(token: string) => void>;
 	controller?: Signal<NoSerialize<THandle> | null>;
 	autoRender?: boolean;
 };

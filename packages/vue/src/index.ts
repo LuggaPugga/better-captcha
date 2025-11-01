@@ -21,6 +21,7 @@ export type CaptchaProps<TOptions> = {
 export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {
 	ready: (handle: THandle) => void;
 	error: (error: Error) => void;
+	solve: (token: string) => void;
 }
 
 export type CaptchaComponent<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = DefineComponent<

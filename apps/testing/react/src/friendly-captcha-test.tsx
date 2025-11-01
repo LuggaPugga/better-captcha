@@ -14,15 +14,22 @@ export function FriendlyCaptchaTest() {
 		}),
 	);
 	const [response, setResponse] = useState<string | null>(null);
+	const [solved, setSolved] = useState<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = turnstileRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
-			<FriendlyCaptcha ref={turnstileRef} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} />
+			<FriendlyCaptcha ref={turnstileRef} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} onSolve={handleSolve} />
+			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy
 			</button>

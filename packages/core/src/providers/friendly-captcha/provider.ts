@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type { FrcaptchaGlobal, FriendlyCaptchaSDK, RenderParameters } from "./types";
 
@@ -34,12 +34,44 @@ export class FriendlyCaptchaProvider extends Provider<
 		});
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">) {
-		return window.frcaptcha.createWidget({
+	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">, callbacks?: CaptchaCallbacks) {
+		const widget = window.frcaptcha.createWidget({
 			element,
 			sitekey: this.identifier,
 			...options,
-		}).id;
+		});
+
+		if (callbacks?.onSolve) {
+			widget.addEventListener("frc:widget.complete", (event) => {
+				callbacks.onSolve?.(event.detail.response);
+			});
+		}
+		if (callbacks?.onError) {
+			widget.addEventListener("frc:widget.error", (event) => {
+				const error = event.detail.error;
+				callbacks.onError?.(error ? `${error.code}: ${error.detail || ""}` : "Unknown error");
+			});
+		}
+		if (callbacks?.onReady) {
+			const checkReady = () => {
+				if (widget.getState() === "ready") {
+					callbacks.onReady?.();
+				} else {
+					widget.addEventListener(
+						"frc:widget.statechange",
+						(event) => {
+							if (event.detail.state === "ready") {
+								callbacks.onReady?.();
+							}
+						},
+						{ once: true },
+					);
+				}
+			};
+			queueMicrotask(checkReady);
+		}
+
+		return widget.id;
 	}
 
 	reset(widgetId: string) {

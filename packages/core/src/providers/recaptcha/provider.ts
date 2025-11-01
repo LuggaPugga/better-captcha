@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { ReCaptcha, RenderParameters } from "./types";
@@ -40,17 +40,30 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 		return url.toString();
 	}
 
-	async render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
+	async render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">, callbacks?: CaptchaCallbacks) {
 		const resolvedOptions = options ? { ...options } : undefined;
 		if (resolvedOptions?.theme === "auto") {
 			resolvedOptions.theme = getSystemTheme();
 		}
+
+		const renderOptions: RenderParameters = {
+			sitekey: this.identifier,
+			...resolvedOptions,
+		};
+
+		if (callbacks?.onSolve && !renderOptions.callback) {
+			renderOptions.callback = (response: string) => callbacks.onSolve?.(response);
+		}
+		if (callbacks?.onError && !renderOptions["error-callback"]) {
+			renderOptions["error-callback"] = () => callbacks.onError?.("reCAPTCHA error");
+		}
+
 		return new Promise<number>((resolve) => {
 			window.grecaptcha.ready(() => {
-				const widgetId = window.grecaptcha.render(element, {
-					sitekey: this.identifier,
-					...resolvedOptions,
-				});
+				const widgetId = window.grecaptcha.render(element, renderOptions);
+				if (callbacks?.onReady) {
+					queueMicrotask(() => callbacks.onReady?.());
+				}
 				resolve(widgetId);
 			});
 		});

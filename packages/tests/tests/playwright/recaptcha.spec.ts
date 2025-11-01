@@ -45,6 +45,9 @@ test("widget has response", async () => {
 	await expect(page.locator("#captcha-response")).toBeVisible();
 	await expect(page.locator("#captcha-response")).not.toHaveText("No response");
 	await expect(page.locator("#captcha-response")).not.toHaveText("");
+
+	await expect(page.locator("#captcha-solved")).toBeVisible({ timeout: 10000 });
+	await expect(page.locator("#captcha-solved")).toHaveText("Captcha Solved!");
 });
 
 test("widget can be reset", async () => {

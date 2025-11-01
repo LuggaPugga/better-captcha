@@ -1,6 +1,6 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/qwik/provider/hcaptcha";
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const HCaptchaTest = component$(() => {
 	const controller = useCaptchaController<HCaptchaHandle>();
@@ -9,10 +9,22 @@ export const HCaptchaTest = component$(() => {
 		size: "normal",
 	});
 	const response = useSignal<string | null>(null);
+	const solved = useSignal<boolean>(false);
+
+	const handleSolve$ = $((token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
+	});
 
 	return (
 		<div>
-			<HCaptcha controller={controller} options={options.value} sitekey="10000000-ffff-ffff-ffff-000000000001" />
+			<HCaptcha
+				controller={controller}
+				options={options.value}
+				sitekey="10000000-ffff-ffff-ffff-000000000001"
+				onSolve$={handleSolve$}
+			/>
+			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"
 				onClick$={() => {

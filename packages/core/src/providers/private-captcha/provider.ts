@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { PrivateCaptcha, RenderParameters } from "./types";
@@ -91,7 +91,7 @@ export class PrivateCaptchaProvider extends Provider<
 		return callbackNames;
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">, callbacks?: CaptchaCallbacks) {
 		const { onInit, onError, onStart, onFinish, ...restOptions } = options || {};
 		const widgetOptions = { ...restOptions };
 		if (widgetOptions.theme === "auto") {
@@ -104,7 +104,28 @@ export class PrivateCaptchaProvider extends Provider<
 		}
 
 		this.elementMap.set(widgetId, element);
-		const callbackNames = this.setupCallbacks(widgetId, { onInit, onError, onStart, onFinish });
+
+		const nativeCallbacks = {
+			onInit: onInit || (callbacks?.onReady ? () => callbacks.onReady?.() : undefined),
+			onError:
+				onError ||
+				(callbacks?.onError
+					? (detail: PrivateCaptcha.CaptchaEventDetail) => {
+							callbacks.onError?.("Private Captcha error");
+						}
+					: undefined),
+			onStart,
+			onFinish:
+				onFinish ||
+				(callbacks?.onSolve
+					? (detail: PrivateCaptcha.CaptchaEventDetail) => {
+							const token = this.getResponse(widgetId);
+							callbacks.onSolve?.(token);
+						}
+					: undefined),
+		};
+
+		const callbackNames = this.setupCallbacks(widgetId, nativeCallbacks);
 
 		const widget = window.privateCaptcha.render(element, {
 			sitekey: this.identifier,

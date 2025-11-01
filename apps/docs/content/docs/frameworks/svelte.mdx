@@ -60,6 +60,43 @@ function logResponse() {
 
 Use `bind:this` to get a reference to the component instance, then call methods directly on it. Always use optional chaining since the reference may be undefined.
 
+## Callbacks
+
+All captcha components support three lifecycle callbacks:
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+import type { ReCaptchaHandle } from "@better-captcha/svelte/provider/recaptcha";
+
+function onReady(handle: ReCaptchaHandle) {
+  console.log("Captcha is ready", handle);
+}
+
+function onSolve(token: string) {
+  console.log("Captcha solved with token:", token);
+  // Send token to your backend for verification
+}
+
+function onError(error: Error) {
+  console.error("Captcha error:", error);
+}
+</script>
+
+<ReCaptcha
+  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+  onready={onReady}
+  onsolve={onSolve}
+  onerror={onError}
+/>
+```
+
+### Callback Reference
+
+- **onready**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
+- **onsolve**: Called when the captcha challenge is successfully solved with the response token
+- **onerror**: Called when an error occurs during initialization or solving
+
 ## Manual Rendering
 
 By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:

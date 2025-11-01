@@ -58,6 +58,44 @@ const logResponse = () => {
 
 `useCaptcha()` keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via `ref="recaptchaRef"`.
 
+## Callbacks
+
+All captcha components support three lifecycle callbacks via events:
+
+```vue
+<template>
+  <ReCaptcha 
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+    @ready="handleReady"
+    @solve="handleSolve"
+    @error="handleError"
+  />
+</template>
+
+<script setup lang="ts">
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/vue/provider/recaptcha";
+
+const handleReady = (handle: ReCaptchaHandle) => {
+  console.log("Captcha is ready", handle);
+};
+
+const handleSolve = (token: string) => {
+  console.log("Captcha solved with token:", token);
+  // Send token to your backend for verification
+};
+
+const handleError = (error: Error) => {
+  console.error("Captcha error:", error);
+};
+</script>
+```
+
+### Callback Reference
+
+- **@ready**: Emitted when the captcha widget is successfully rendered and ready for interaction (receives handle)
+- **@solve**: Emitted when the captcha challenge is successfully solved with the response token
+- **@error**: Emitted when an error occurs during initialization or solving
+
 ## Manual Rendering
 
 By default, captchas automatically render on mount. Disable this with `:autoRender="false"` and render manually using `render()`:

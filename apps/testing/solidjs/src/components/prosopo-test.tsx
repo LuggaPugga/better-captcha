@@ -6,10 +6,16 @@ export function ProsopoTest() {
 	const controller = createCaptchaController<ProsopoHandle>();
 	const [response, setResponse] = createSignal<string>("");
 	const [theme, setTheme] = createSignal<"light" | "dark" | "auto">("light");
+	const [solved, setSolved] = createSignal<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = controller.handle()?.getResponse() || "No response";
 		setResponse(captchaResponse);
+	};
+
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
 	};
 
 	return (
@@ -30,7 +36,9 @@ export function ProsopoTest() {
 							console.error("Prosopo CAPTCHA error:", error);
 						},
 					}}
+					onSolve={handleSolve}
 				/>
+				{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			</div>
 
 			<div>

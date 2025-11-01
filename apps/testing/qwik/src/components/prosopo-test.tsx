@@ -14,10 +14,17 @@ export const ProsopoTest = component$(() => {
 		}),
 	});
 	const response = useSignal<string | null>(null);
+	const solved = useSignal<boolean>(false);
+
+	const handleSolve$ = $((token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
+	});
 
 	return (
 		<div>
-			<Prosopo controller={controller} options={options.value} sitekey="no_test_site_key" />
+			<Prosopo controller={controller} options={options.value} sitekey="no_test_site_key" onSolve$={handleSolve$} />
+			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"
 				onClick$={() => {

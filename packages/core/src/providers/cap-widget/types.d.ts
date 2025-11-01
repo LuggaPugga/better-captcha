@@ -135,12 +135,12 @@ export interface RenderParameters {
 	i18nErrorAriaLabel?: string;
 	/** i18n WASM disabled message. */
 	i18nWasmDisabled?: string;
-	/** On solve event handler. */
-	onsolve?: string;
-	/** On progress event handler. */
-	onprogress?: string;
-	/** On reset event handler. */
-	onreset?: string;
-	/** On error event handler. */
-	onerror?: string;
+	/** On solve event handler. Can be a function or a string (for HTML attribute). */
+	onsolve?: string | ((event: CapSolveEvent) => void);
+	/** On progress event handler. Can be a function or a string (for HTML attribute). */
+	onprogress?: string | ((event: CapProgressEvent) => void);
+	/** On reset event handler. Can be a function or a string (for HTML attribute). */
+	onreset?: string | ((event: CapResetEvent) => void);
+	/** On error event handler. Can be a function or a string (for HTML attribute). */
+	onerror?: string | ((event: CapErrorEvent) => void);
 }

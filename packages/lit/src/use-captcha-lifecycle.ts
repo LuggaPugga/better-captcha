@@ -1,4 +1,11 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	WidgetId,
+} from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 
 export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle> {
@@ -17,6 +24,7 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 		private provider: Provider<ProviderConfig, TOptions, THandle>,
 		private options: TOptions | undefined,
 		private onStateChange: (state: CaptchaState) => void,
+		private callbacks?: CaptchaCallbacks,
 	) {}
 
 	async initialize(element: HTMLDivElement) {
@@ -32,7 +40,7 @@ export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle 
 			this.containerRef = container;
 			element.appendChild(container);
 
-			const id = await this.provider.render(container, this.options);
+			const id = await this.provider.render(container, this.options, this.callbacks);
 			if (this.cancelled) {
 				cleanup(this.provider, id ?? null, container);
 				if (this.containerRef === container) this.containerRef = null;

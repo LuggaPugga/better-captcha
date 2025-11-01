@@ -55,6 +55,56 @@ const response = handle.getResponse();
 console.log(response);
 ```
 
+## Callbacks
+
+All captcha components support three lifecycle callbacks via properties and custom events:
+
+```ts
+import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+
+const captcha = document.querySelector('recaptcha-captcha') as ReCaptcha;
+
+// Set callbacks via properties
+captcha.onReady = (handle) => {
+  console.log("Captcha is ready", handle);
+};
+
+captcha.onSolve = (token: string) => {
+  console.log("Captcha solved with token:", token);
+  // Send token to your backend for verification
+};
+
+captcha.onError = (error: Error | string) => {
+  console.error("Captcha error:", error);
+};
+
+// Or listen to custom events
+captcha.addEventListener('ready', (e) => {
+  console.log("Captcha ready", e.detail);
+});
+
+captcha.addEventListener('solve', (e) => {
+  console.log("Captcha solved", e.detail.token);
+});
+
+captcha.addEventListener('error', (e) => {
+  console.error("Captcha error", e.detail.error);
+});
+```
+
+```html
+<recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
+```
+
+### Callback Reference
+
+- **onReady** (property): Called when the captcha widget is successfully rendered and ready for interaction
+- **onSolve** (property): Called when the captcha challenge is successfully solved with the response token
+- **onError** (property): Called when an error occurs during initialization or solving
+- **ready** (event): Custom event emitted when captcha is ready (event detail contains handle)
+- **solve** (event): Custom event emitted when captcha is solved (event detail contains token)
+- **error** (event): Custom event emitted when an error occurs (event detail contains error)
+
 ## Setting Options
 
 You can set options via attributes or properties:

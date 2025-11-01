@@ -6,6 +6,7 @@
 	let captchaRef: PrivateCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
+	const solved = writable<boolean>(false);
 
 	let options = $state<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -18,6 +19,11 @@
 	function onError(err: Error) {
 		error.set(err);
 		console.error("Captcha error:", err);
+	}
+
+	function onSolve(token: string) {
+		solved.set(true);
+		console.log("Captcha solved with token:", token);
 	}
 
 	function handleDestroy() {
@@ -60,8 +66,12 @@
 			{options}
 			onready={onReady}
 			onerror={onError}
+			onSolve={onSolve}
 		/>
 	</form>
+	{#if $solved}
+		<p id="captcha-solved">Captcha Solved!</p>
+	{/if}
 	<div style="margin-top: 10px">
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>

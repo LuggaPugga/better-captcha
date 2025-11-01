@@ -20,9 +20,17 @@ export class CaptchaFoxTest extends LitElement {
 	@state()
 	private response: string | null = null;
 
+	@state()
+	private solved = false;
+
 	protected createRenderRoot() {
 		return this;
 	}
+
+	private handleSolve = (token: string) => {
+		this.solved = true;
+		console.log("Captcha solved with token:", token);
+	};
 
 	private handleDestroy() {
 		this.captchaRef.value?.getHandle()?.destroy();
@@ -59,7 +67,9 @@ export class CaptchaFoxTest extends LitElement {
 					${ref(this.captchaRef)}
 					sitekey="sk_11111111000000001111111100000000"
 					.options=${this.options}
+					.onSolve=${this.handleSolve}
 				></captcha-fox-captcha>
+				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>
 				<button type="button" @click=${this.handleExecute}>Execute</button>

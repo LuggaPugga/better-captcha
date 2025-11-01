@@ -44,6 +44,44 @@ export default function Example() {
 
 The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to keep type-safety.
 
+## Callbacks
+
+All captcha components support three lifecycle callbacks:
+
+```tsx
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+export default function Example() {
+  const handleReady = () => {
+    console.log("Captcha is ready");
+  };
+
+  const handleSolve = (token: string) => {
+    console.log("Captcha solved with token:", token);
+    // Send token to your backend for verification
+  };
+
+  const handleError = (error: Error | string) => {
+    console.error("Captcha error:", error);
+  };
+
+  return (
+    <ReCaptcha 
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      onReady={handleReady}
+      onSolve={handleSolve}
+      onError={handleError}
+    />
+  );
+}
+```
+
+### Callback Reference
+
+- **onReady**: Called when the captcha widget is successfully rendered and ready for interaction
+- **onSolve**: Called when the captcha challenge is successfully solved with the response token
+- **onError**: Called when an error occurs during initialization or solving
+
 ## Manual Rendering
 
 By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
