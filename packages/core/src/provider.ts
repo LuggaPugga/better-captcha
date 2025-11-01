@@ -95,7 +95,6 @@ export abstract class Provider<
 > {
 	protected config: TConfig;
 	protected identifier: string;
-	protected callbacks: CaptchaCallbacks = {};
 
 	/**
 	 * Create a new provider instance
@@ -105,14 +104,6 @@ export abstract class Provider<
 	constructor(config: TConfig, identifier: string) {
 		this.config = config;
 		this.identifier = identifier;
-	}
-
-	/**
-	 * Set callbacks for the provider
-	 * @param callbacks - Callbacks to set
-	 */
-	setCallbacks(callbacks: CaptchaCallbacks): void {
-		this.callbacks = callbacks;
 	}
 
 	/**
