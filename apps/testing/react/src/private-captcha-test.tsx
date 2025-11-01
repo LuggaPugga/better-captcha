@@ -14,17 +14,24 @@ export function PrivateCaptchaTest() {
 		}),
 	);
 	const [response, setResponse] = useState<string | null>(null);
+	const [solved, setSolved] = useState<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = turnstileRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha ref={turnstileRef} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options} />
+				<PrivateCaptcha ref={turnstileRef} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options} onSolve={handleSolve} />
 			</form>
+			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy
 			</button>

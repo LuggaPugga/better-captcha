@@ -1,6 +1,6 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/qwik/provider/recaptcha";
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const RecaptchaTest = component$(() => {
 	const controller = useCaptchaController<ReCaptchaHandle>();
@@ -9,10 +9,17 @@ export const RecaptchaTest = component$(() => {
 		size: "normal",
 	});
 	const response = useSignal<string | null>(null);
+	const solved = useSignal<boolean>(false);
+
+	const handleSolve$ = $((token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
+	});
 
 	return (
 		<div>
-			<ReCaptcha controller={controller} options={options.value} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" />
+			<ReCaptcha controller={controller} options={options.value} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" onSolve$={handleSolve$} />
+			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"
 				onClick$={() => {

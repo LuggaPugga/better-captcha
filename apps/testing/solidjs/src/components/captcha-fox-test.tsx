@@ -9,15 +9,22 @@ export function CaptchaFoxTest() {
 		mode: "inline",
 	});
 	const [response, setResponse] = createSignal<string | null>(null);
+	const [solved, setSolved] = createSignal<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = controller.handle()?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
-			<CaptchaFox controller={controller} sitekey="sk_11111111000000001111111100000000" options={options()} />
+			<CaptchaFox controller={controller} sitekey="sk_11111111000000001111111100000000" options={options()} onSolve={handleSolve} />
+			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy
 			</button>

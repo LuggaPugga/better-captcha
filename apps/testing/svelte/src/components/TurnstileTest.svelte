@@ -6,6 +6,7 @@
 	let captchaRef: Turnstile | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
+	const solved = writable<boolean>(false);
 
 	let options = $state<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -19,6 +20,11 @@
 	function onError(err: Error) {
 		error.set(err);
 		console.error("Captcha error:", err);
+	}
+
+	function onSolve(token: string) {
+		solved.set(true);
+		console.log("Captcha solved with token:", token);
 	}
 
 	function handleDestroy() {
@@ -53,7 +59,10 @@
 
 <div>
 	<h3>Turnstile Test</h3>
-	<Turnstile bind:this={captchaRef} sitekey="1x00000000000000000000AA" {options} onready={onReady} onerror={onError} />
+	<Turnstile bind:this={captchaRef} sitekey="1x00000000000000000000AA" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	{#if $solved}
+		<p id="captcha-solved">Captcha Solved!</p>
+	{/if}
 	<div style="margin-top: 10px">
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>

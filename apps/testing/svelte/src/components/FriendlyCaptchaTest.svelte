@@ -6,6 +6,7 @@
 	let captchaRef: FriendlyCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
+	const solved = writable<boolean>(false);
 
 	let theme = $state<"light" | "dark">("light");
 
@@ -20,6 +21,11 @@
 	function onError(err: Error) {
 		error.set(err);
 		console.error("Captcha error:", err);
+	}
+
+	function onSolve(token: string) {
+		solved.set(true);
+		console.log("Captcha solved with token:", token);
 	}
 
 	function handleDestroy() {
@@ -52,7 +58,10 @@
 
 <div>
 	<h3>Friendly Captcha Test</h3>
-	<FriendlyCaptcha bind:this={captchaRef} sitekey="FCMGEMUD5P6765JJ" {options} onready={onReady} onerror={onError} />
+	<FriendlyCaptcha bind:this={captchaRef} sitekey="FCMGEMUD5P6765JJ" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	{#if $solved}
+		<p id="captcha-solved">Captcha Solved!</p>
+	{/if}
 	<div style="margin-top: 10px">
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>

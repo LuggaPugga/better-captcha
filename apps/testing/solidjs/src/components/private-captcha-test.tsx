@@ -13,17 +13,24 @@ export function PrivateCaptchaTest() {
 		startMode: "auto",
 	});
 	const [response, setResponse] = createSignal<string | null>(null);
+	const [solved, setSolved] = createSignal<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = controller.handle()?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha controller={controller} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options()} />
+				<PrivateCaptcha controller={controller} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options()} onSolve={handleSolve} />
 			</form>
+			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy
 			</button>
