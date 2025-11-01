@@ -14,7 +14,7 @@
 		autoRender?: boolean;
 		onready?: (handle: THandle) => void;
 		onerror?: (error: Error) => void;
-		onsolve?: (token: string) => void;
+		onSolve?: (token: string) => void;
 	};
 </script>
 
@@ -37,7 +37,7 @@
 		autoRender = true,
 		onready = undefined,
 		onerror = undefined,
-		onsolve = undefined,
+		onSolve = undefined,
 	}: Props = $props();
 
 	let elementRef: HTMLDivElement | undefined = $state();
@@ -93,7 +93,7 @@
 			
 			const callbacks: CaptchaCallbacks = {
 				onSolve: (token: string) => {
-					onsolve?.(token);
+					onSolve?.(token);
 				},
 				onError: (err: Error | string) => {
 					const error = err instanceof Error ? err : new Error(String(err));

@@ -40,7 +40,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		autoRender?: boolean;
 		onready?: (handle: ${handleType}) => void;
 		onerror?: (error: Error) => void;
-		onsolve?: (token: string) => void;
+		onSolve?: (token: string) => void;
 	}
 
 	let {
@@ -52,7 +52,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		autoRender = true,
 		onready = undefined,
 		onerror = undefined,
-		onsolve = undefined
+		onSolve = undefined
 	}: Props = $props();
 
 	let baseCaptchaRef: BaseCaptcha<Omit<${renderParamsType}, ${renderParamsOmit}>, ${handleType}, typeof ${providerClassName}> | undefined = $state(undefined);
@@ -93,7 +93,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 	{autoRender}
 	{onready}
 	{onerror}
-	{onsolve}
+	{onSolve}
 />
 `;
 }
@@ -121,7 +121,7 @@ export interface ${componentName}Props {
 	style?: string;
 	onready?: (handle: ${handleType}) => void;
 	onerror?: (error: Error) => void;
-	onsolve?: (token: string) => void;
+	onSolve?: (token: string) => void;
 }
 
 /**
