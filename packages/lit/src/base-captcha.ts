@@ -100,9 +100,14 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				},
 			};
 
-			this.lifecycle = new CaptchaLifecycle(this.provider, this.options, (state) => {
-				this.captchaState = state;
-			}, callbacks);
+			this.lifecycle = new CaptchaLifecycle(
+				this.provider,
+				this.options,
+				(state) => {
+					this.captchaState = state;
+				},
+				callbacks,
+			);
 			this.lifecycle.initialize(this.elementRef.value);
 		}
 

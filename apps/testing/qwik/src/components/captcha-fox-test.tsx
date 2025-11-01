@@ -18,7 +18,12 @@ export const CaptchaFoxTest = component$(() => {
 
 	return (
 		<div>
-			<CaptchaFox controller={controller} options={options.value} sitekey="sk_11111111000000001111111100000000" onSolve$={handleSolve$} />
+			<CaptchaFox
+				controller={controller}
+				options={options.value}
+				sitekey="sk_11111111000000001111111100000000"
+				onSolve$={handleSolve$}
+			/>
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"

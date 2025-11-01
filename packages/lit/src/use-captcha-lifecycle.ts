@@ -1,4 +1,11 @@
-import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	WidgetId,
+} from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 
 export class CaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle> {

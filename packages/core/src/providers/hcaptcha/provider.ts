@@ -46,12 +46,12 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 		if (resolvedOptions?.theme === "auto") {
 			resolvedOptions.theme = getSystemTheme();
 		}
-		
+
 		const renderOptions: RenderParameters = {
 			sitekey: this.identifier,
 			...resolvedOptions,
 		};
-		
+
 		if (callbacks?.onSolve && !renderOptions.callback) {
 			renderOptions.callback = (token: string) => callbacks.onSolve?.(token);
 		}
@@ -63,7 +63,7 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 		if (callbacks?.onReady) {
 			queueMicrotask(() => callbacks.onReady?.());
 		}
-		
+
 		return window.hcaptcha.render(element, renderOptions);
 	}
 

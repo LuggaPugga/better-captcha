@@ -23,7 +23,12 @@ export function HCaptchaTest() {
 
 	return (
 		<div>
-			<HCaptcha controller={controller} sitekey="10000000-ffff-ffff-ffff-000000000001" options={options()} onSolve={handleSolve} />
+			<HCaptcha
+				controller={controller}
+				sitekey="10000000-ffff-ffff-ffff-000000000001"
+				options={options()}
+				onSolve={handleSolve}
+			/>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy

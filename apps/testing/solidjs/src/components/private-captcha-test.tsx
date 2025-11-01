@@ -28,7 +28,12 @@ export function PrivateCaptchaTest() {
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha controller={controller} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options()} onSolve={handleSolve} />
+				<PrivateCaptcha
+					controller={controller}
+					sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
+					options={options()}
+					onSolve={handleSolve}
+				/>
 			</form>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>

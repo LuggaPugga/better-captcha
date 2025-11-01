@@ -15,7 +15,12 @@ export const CapWidgetTest = component$(() => {
 
 	return (
 		<div>
-			<CapWidget controller={controller} options={options.value} endpoint="https://captcha.gurl.eu.org/api/" onSolve$={handleSolve$} />
+			<CapWidget
+				controller={controller}
+				options={options.value}
+				endpoint="https://captcha.gurl.eu.org/api/"
+				onSolve$={handleSolve$}
+			/>
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"

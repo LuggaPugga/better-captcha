@@ -131,7 +131,7 @@ export abstract class Provider<
 	abstract render(
 		element: HTMLElement,
 		options?: TOptions,
-		callbacks?: CaptchaCallbacks
+		callbacks?: CaptchaCallbacks,
 	): WidgetId | undefined | Promise<WidgetId>;
 
 	/**

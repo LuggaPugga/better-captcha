@@ -23,7 +23,12 @@ export function CaptchaFoxTest() {
 
 	return (
 		<div>
-			<CaptchaFox controller={controller} sitekey="sk_11111111000000001111111100000000" options={options()} onSolve={handleSolve} />
+			<CaptchaFox
+				controller={controller}
+				sitekey="sk_11111111000000001111111100000000"
+				options={options()}
+				onSolve={handleSolve}
+			/>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy

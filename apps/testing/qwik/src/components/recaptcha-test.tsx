@@ -18,7 +18,12 @@ export const RecaptchaTest = component$(() => {
 
 	return (
 		<div>
-			<ReCaptcha controller={controller} options={options.value} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" onSolve$={handleSolve$} />
+			<ReCaptcha
+				controller={controller}
+				options={options.value}
+				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+				onSolve$={handleSolve$}
+			/>
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"

@@ -20,7 +20,12 @@ export function CapWidgetTest() {
 
 	return (
 		<div>
-			<CapWidget controller={controller} options={options()} endpoint="https://captcha.gurl.eu.org/api/" onSolve={handleSolve} />
+			<CapWidget
+				controller={controller}
+				options={options()}
+				endpoint="https://captcha.gurl.eu.org/api/"
+				onSolve={handleSolve}
+			/>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy

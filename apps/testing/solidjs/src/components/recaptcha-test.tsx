@@ -23,7 +23,12 @@ export function RecaptchaTest() {
 
 	return (
 		<div>
-			<ReCaptcha controller={controller} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options()} onSolve={handleSolve} />
+			<ReCaptcha
+				controller={controller}
+				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+				options={options()}
+				onSolve={handleSolve}
+			/>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy
