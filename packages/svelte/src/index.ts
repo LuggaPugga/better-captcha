@@ -18,6 +18,7 @@ export interface CaptchaProps<TOptions = unknown> {
 	autoRender?: boolean;
 	onready?: (handle: CaptchaHandle) => void;
 	onerror?: (error: Error) => void;
+	onsolve?: (token: string) => void;
 }
 
 export interface CaptchaComponentMethods {

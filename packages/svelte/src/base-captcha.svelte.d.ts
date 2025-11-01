@@ -13,6 +13,7 @@ export interface BaseCaptchaProps<
 	style?: string;
 	onready?: (handle: THandle) => void;
 	onerror?: (error: Error) => void;
+	onsolve?: (token: string) => void;
 }
 
 export default class BaseCaptcha<

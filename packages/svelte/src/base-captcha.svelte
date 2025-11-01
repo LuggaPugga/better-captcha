@@ -92,12 +92,6 @@
 			host.appendChild(newContainer);
 			
 			const callbacks: CaptchaCallbacks = {
-				onReady: () => {
-					if (onready && provider && widgetId != null) {
-						const handle = provider.getHandle(widgetId);
-						onready(handle);
-					}
-				},
 				onSolve: (token: string) => {
 					onsolve?.(token);
 				},
@@ -114,6 +108,11 @@
 			if (id == null) throw new Error("Captcha render returned null widget id");
 			provider = newProvider;
 			widgetId = id;
+			
+			if (onready) {
+				const handle = newProvider.getHandle(id);
+				onready(handle);
+			}
 			setCaptchaState({ loading: false, error: null, ready: true });
 			hasRendered = true;
 		} catch (error) {
