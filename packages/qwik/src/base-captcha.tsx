@@ -140,9 +140,6 @@ export function createCaptchaComponent<
 			track(() => hostEl.value);
 			track(() => identifier.value);
 			track(() => props.options);
-			track(() => props.onSolve$);
-			track(() => props.onError$);
-			track(() => props.onReady$);
 
 			if (!hostEl.value) return;
 			if (!identifier.value) return;
