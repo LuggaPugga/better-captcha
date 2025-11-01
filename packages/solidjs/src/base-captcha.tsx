@@ -127,7 +127,7 @@ export function createCaptchaComponent<
 					execute: async () => {},
 					reset: () => {},
 					destroy: () => {},
-					render: async () => void renderCaptcha(),
+					render: () => renderCaptcha(),
 					getResponse: () => "",
 					getComponentState: () => state(),
 				} as THandle;
@@ -152,7 +152,9 @@ export function createCaptchaComponent<
 		createEffect(() => {
 			const h = handle();
 			props.controller?.set(h);
-			props.onReady?.(h);
+			if (state().ready) {
+				props.onReady?.(h);
+			}
 		});
 
 		const elementId = createMemo(() =>
