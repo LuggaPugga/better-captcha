@@ -1,4 +1,11 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	WidgetId,
+} from "@better-captcha/core";
 import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -6,6 +13,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	provider: Provider<ProviderConfig, TOptions, THandle>,
 	options: TOptions | undefined,
 	autoRender = true,
+	callbacks?: CaptchaCallbacks,
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
 	const widgetIdRef = useRef<WidgetId | null>(null);
@@ -13,6 +21,11 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	const lastKeyRef = useRef<string>("");
 	const isRenderingRef = useRef(false);
 	const pendingRenderRef = useRef(false);
+	const callbacksRef = useRef<CaptchaCallbacks | undefined>(callbacks);
+
+	if (callbacksRef.current !== callbacks) {
+		callbacksRef.current = callbacks;
+	}
 
 	const [state, setState] = useState<CaptchaState>({
 		loading: autoRender,
@@ -47,14 +60,18 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 			el.appendChild(container);
 			containerRef.current = container;
 
-			const id = await provider.render(container, options);
+			const currentCallbacks = callbacksRef.current;
+			const id = await provider.render(container, options, currentCallbacks);
 			widgetIdRef.current = id ?? null;
 
 			setState({ loading: false, error: null, ready: true });
+			currentCallbacks?.onReady?.();
 		} catch (err) {
 			console.error("[better-captcha] render:", err);
 			cleanup(); // remove container and reset refs
-			setState({ loading: false, error: err as Error, ready: false });
+			const error = err as Error;
+			setState({ loading: false, error, ready: false });
+			callbacksRef.current?.onError?.(error);
 		} finally {
 			isRenderingRef.current = false;
 			if (pendingRenderRef.current) {

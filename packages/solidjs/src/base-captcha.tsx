@@ -1,9 +1,16 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	WidgetId,
+} from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import type { CaptchaProps } from "./index";
 
-const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
+const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "onSolve", "controller"] as const;
 
 export function createCaptchaComponent<
 	TOptions = unknown,
@@ -71,7 +78,16 @@ export function createCaptchaComponent<
 				containerRef = container;
 				element.appendChild(container);
 
-				const id = await currentProvider.render(container, props.options);
+				const callbacks: CaptchaCallbacks = {
+					onReady: () => props.onReady?.(handle()),
+					onSolve: (token: string) => props.onSolve?.(token),
+					onError: (err: Error | string) => {
+						const error = err instanceof Error ? err : new Error(String(err));
+						props.onError?.(error);
+					},
+				};
+
+				const id = await currentProvider.render(container, props.options, callbacks);
 
 				batch(() => {
 					setWidgetId(id ?? null);

@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type {
 	CapErrorEvent,
@@ -35,7 +35,7 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 		}
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "element">): string {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "element">, callbacks?: CaptchaCallbacks): string {
 		const widget = document.createElement("cap-widget") as CapWidget;
 		widget.setAttribute("data-cap-api-endpoint", this.identifier);
 
@@ -102,6 +102,20 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 		}
 		if (callbackMap.onerror?.handler) {
 			widget.addEventListener("error", callbackMap.onerror.handler as (event: CapErrorEvent) => void);
+		}
+
+		if (callbacks?.onSolve) {
+			widget.addEventListener("solve", (event: CapSolveEvent) => {
+				callbacks.onSolve?.(event.detail.token);
+			});
+		}
+		if (callbacks?.onError) {
+			widget.addEventListener("error", (event: CapErrorEvent) => {
+				callbacks.onError?.(event.detail.message);
+			});
+		}
+		if (callbacks?.onReady) {
+			queueMicrotask(() => callbacks.onReady?.());
 		}
 
 		this.widgetMap.set(widgetId, widget);

@@ -13,6 +13,9 @@ export type CaptchaProps<TOptions> = {
 	className?: string;
 	style?: React.CSSProperties;
 	autoRender?: boolean;
+	onReady?: () => void;
+	onSolve?: (token: string) => void;
+	onError?: (error: Error | string) => void;
 };
 
 export { createCaptchaComponent } from "./base-captcha";

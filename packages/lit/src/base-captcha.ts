@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig } from "@better-captcha/core";
+import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig } from "@better-captcha/core";
 import { html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
@@ -30,6 +30,9 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		@property({ attribute: "endpoint" }) endpoint?: string;
 		@property({ type: Object }) options: TOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
+		@property({ type: Object }) onReady?: () => void;
+		@property({ type: Object }) onSolve?: (token: string) => void;
+		@property({ type: Object }) onError?: (error: Error | string) => void;
 
 		@state() protected captchaState: CaptchaState = {
 			loading: true,
@@ -82,9 +85,24 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 			this.provider = new ProviderClass(value);
 
+			const callbacks: CaptchaCallbacks = {
+				onReady: () => {
+					this.onReady?.();
+					this.dispatchEvent(new CustomEvent("ready"));
+				},
+				onSolve: (token: string) => {
+					this.onSolve?.(token);
+					this.dispatchEvent(new CustomEvent("solve", { detail: { token } }));
+				},
+				onError: (error: Error | string) => {
+					this.onError?.(error);
+					this.dispatchEvent(new CustomEvent("error", { detail: { error } }));
+				},
+			};
+
 			this.lifecycle = new CaptchaLifecycle(this.provider, this.options, (state) => {
 				this.captchaState = state;
-			});
+			}, callbacks);
 			this.lifecycle.initialize(this.elementRef.value);
 		}
 

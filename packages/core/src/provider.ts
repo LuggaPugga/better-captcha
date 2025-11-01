@@ -60,6 +60,29 @@ export interface CaptchaState {
 }
 
 /**
+ * Standard callbacks for CAPTCHA lifecycle events
+ * These callbacks are optional and can be used across all providers
+ */
+export interface CaptchaCallbacks {
+	/**
+	 * Called when the CAPTCHA widget is successfully rendered and ready for interaction
+	 */
+	onReady?: () => void;
+
+	/**
+	 * Called when the CAPTCHA challenge is successfully solved and a token is generated
+	 * @param token - The response token from the CAPTCHA provider
+	 */
+	onSolve?: (token: string) => void;
+
+	/**
+	 * Called when an error occurs during CAPTCHA initialization or solving
+	 * @param error - The error that occurred
+	 */
+	onError?: (error: Error | string) => void;
+}
+
+/**
  * Abstract base class for CAPTCHA providers
  * @template TConfig - Configuration type for the provider
  * @template TOptions - Options type for rendering
@@ -72,6 +95,7 @@ export abstract class Provider<
 > {
 	protected config: TConfig;
 	protected identifier: string;
+	protected callbacks: CaptchaCallbacks = {};
 
 	/**
 	 * Create a new provider instance
@@ -84,6 +108,14 @@ export abstract class Provider<
 	}
 
 	/**
+	 * Set callbacks for the provider
+	 * @param callbacks - Callbacks to set
+	 */
+	setCallbacks(callbacks: CaptchaCallbacks): void {
+		this.callbacks = callbacks;
+	}
+
+	/**
 	 * Initialize the provider (load scripts, etc.)
 	 * @returns Promise that resolves when initialization is complete
 	 */
@@ -93,9 +125,14 @@ export abstract class Provider<
 	 * Render the CAPTCHA widget in the specified element
 	 * @param element - DOM element to render the widget in
 	 * @param options - Provider-specific rendering options
+	 * @param callbacks - Optional callbacks for lifecycle events
 	 * @returns Widget ID or promise resolving to widget ID
 	 */
-	abstract render(element: HTMLElement, options?: TOptions): WidgetId | undefined | Promise<WidgetId>;
+	abstract render(
+		element: HTMLElement,
+		options?: TOptions,
+		callbacks?: CaptchaCallbacks
+	): WidgetId | undefined | Promise<WidgetId>;
 
 	/**
 	 * Reset the CAPTCHA widget to its initial state

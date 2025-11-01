@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import type { NoSerialize, QRL } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
@@ -45,7 +45,28 @@ export function createCaptchaComponent<
 				el.appendChild(container);
 				containerEl.value = container;
 
-				const id = await newProvider.render(container, props.options);
+				const callbacks: CaptchaCallbacks = {
+					onReady: async () => {
+						const onReady$ = props.onReady$;
+						if (onReady$) {
+							const h = await buildHandle$();
+							await onReady$(h);
+						}
+					},
+					onSolve: async (token: string) => {
+						const onSolve$ = props.onSolve$;
+						if (onSolve$) await onSolve$(token);
+					},
+					onError: async (err: Error | string) => {
+						const onError$ = props.onError$;
+						if (onError$) {
+							const error = err instanceof Error ? err : new Error(String(err));
+							await onError$(error);
+						}
+					},
+				};
+
+				const id = await newProvider.render(container, props.options, callbacks);
 				if (id == null) throw new Error("Captcha render returned null widget id");
 
 				provider.value = newProvider;
@@ -55,7 +76,7 @@ export function createCaptchaComponent<
 				const error = err instanceof Error ? err : new Error(String(err));
 				console.error("[better-captcha] render:", error);
 				state.value = { loading: false, error, ready: false };
-				if (props.onError) await props.onError(error);
+				if (props.onError$) await props.onError$(error);
 			} finally {
 				isRendering.value = false;
 			}
@@ -100,6 +121,9 @@ export function createCaptchaComponent<
 		track(() => hostEl.value);
 		track(() => identifier.value);
 		track(() => props.options);
+		track(() => props.onSolve$);
+		track(() => props.onError$);
+		track(() => props.onReady$);
 
 		if (!hostEl.value) return;
 		if (!identifier.value) return;
@@ -125,9 +149,9 @@ export function createCaptchaComponent<
 
 		useTask$(async ({ track }) => {
 			track(() => state.value.ready);
-			if (state.value.ready && props.onReady) {
+			if (state.value.ready && props.onReady$) {
 				const handle = await buildHandle$();
-				await props.onReady(handle);
+				await props.onReady$(handle);
 			}
 		});
 

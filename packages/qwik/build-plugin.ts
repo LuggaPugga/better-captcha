@@ -296,6 +296,7 @@ function genIndexDts(): string {
 	style?: string | Record<string, string | number>;
 	onReady$?: QRL<(handle: NoSerialize<THandle>) => unknown>;
 	onError$?: QRL<(error: Error) => unknown>;
+	onSolve$?: QRL<(token: string) => void>;
 	controller?: { value: NoSerialize<THandle> | null } | null;
 	autoRender?: boolean;
 }`,
