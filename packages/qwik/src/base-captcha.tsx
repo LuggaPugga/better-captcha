@@ -16,8 +16,9 @@ export function createCaptchaComponent<
 		const containerEl = useSignal<HTMLDivElement | null>(null);
 		const state = useSignal<CaptchaState>({ loading: true, error: null, ready: false });
 		const isRendering = useSignal(false);
+		const hasEmittedReady = useSignal(false);
 
-	const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
+		const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
 
 		const cleanup$ = $(() => {
 			cleanup(provider.value, widgetId.value, containerEl.value);
@@ -33,6 +34,11 @@ export function createCaptchaComponent<
 			isRendering.value = true;
 			await cleanup$();
 			state.value = { loading: true, error: null, ready: false };
+			hasEmittedReady.value = false;
+			let resolveRender!: () => void;
+			const renderComplete = new Promise<void>((resolve) => {
+				resolveRender = resolve;
+			});
 			try {
 				const currentValue = identifier.value;
 				if (!currentValue) {
@@ -47,11 +53,10 @@ export function createCaptchaComponent<
 
 				const callbacks: CaptchaCallbacks = {
 					onReady: async () => {
-						const onReady$ = props.onReady$;
-						if (onReady$) {
-							const h = await buildHandle$();
-							await onReady$(h);
-						}
+						if (!props.onReady$ || hasEmittedReady.value) return;
+						await renderComplete;
+						hasEmittedReady.value = true;
+						await props.onReady$(await buildHandle$());
 					},
 					onSolve: async (token: string) => {
 						const onSolve$ = props.onSolve$;
@@ -72,11 +77,17 @@ export function createCaptchaComponent<
 				provider.value = newProvider;
 				widgetId.value = id;
 				state.value = { loading: false, error: null, ready: true };
+				resolveRender();
+				if (props.onReady$ && !hasEmittedReady.value) {
+					hasEmittedReady.value = true;
+					await props.onReady$(await buildHandle$());
+				}
 			} catch (err) {
 				const error = err instanceof Error ? err : new Error(String(err));
 				console.error("[better-captcha] render:", error);
 				state.value = { loading: false, error, ready: false };
 				if (props.onError$) await props.onError$(error);
+				resolveRender();
 			} finally {
 				isRendering.value = false;
 			}
@@ -117,16 +128,16 @@ export function createCaptchaComponent<
 			} as THandle);
 		});
 
-	useVisibleTask$(async ({ track, cleanup }) => {
-		track(() => hostEl.value);
-		track(() => identifier.value);
-		track(() => props.options);
-		track(() => props.onSolve$);
-		track(() => props.onError$);
-		track(() => props.onReady$);
+		useVisibleTask$(async ({ track, cleanup }) => {
+			track(() => hostEl.value);
+			track(() => identifier.value);
+			track(() => props.options);
+			track(() => props.onSolve$);
+			track(() => props.onError$);
+			track(() => props.onReady$);
 
-		if (!hostEl.value) return;
-		if (!identifier.value) return;
+			if (!hostEl.value) return;
+			if (!identifier.value) return;
 
 			if (props.autoRender ?? true) {
 				await renderCaptcha$();
@@ -147,11 +158,10 @@ export function createCaptchaComponent<
 			props.controller.value = await buildHandle$();
 		});
 
-		useTask$(async ({ track }) => {
+		useTask$(({ track }) => {
 			track(() => state.value.ready);
-			if (state.value.ready && props.onReady$) {
-				const handle = await buildHandle$();
-				await props.onReady$(handle);
+			if (!state.value.ready) {
+				hasEmittedReady.value = false;
 			}
 		});
 
