@@ -5,34 +5,25 @@ import type { CaptchaProps } from "./index";
 
 const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
 
+type AnyProvider<TOptions, THandle extends CaptchaHandle> = Provider<ProviderConfig, TOptions, THandle>;
+
 export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+	TProvider extends AnyProvider<TOptions, THandle> = AnyProvider<TOptions, THandle>,
 >(ProviderClass: new (identifier: string) => TProvider) {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
-		const [props, divProps] = splitProps(allProps, [
-			...BASE_KEYS,
-			"sitekey",
-			"endpoint",
-		] as readonly (keyof CaptchaProps<TOptions, THandle>)[]);
+		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
+		const identifier = createMemo<string>(() => props.sitekey || props.endpoint || "");
+		const autoRender = createMemo<boolean>(() => props.autoRender ?? true);
 
-		const identifier = createMemo(() => {
-			const p = props as { sitekey?: string; endpoint?: string };
-			return p.sitekey || p.endpoint || "";
-		});
-
-		const provider = createMemo(() => {
+		const provider = createMemo<TProvider | null>(() => {
 			const id = identifier();
-			if (!id) {
-				return null;
-			}
-			return new ProviderClass(id);
+			return id ? new ProviderClass(id) : null;
 		});
 
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
-		const autoRender = () => props.autoRender ?? true;
 		const [state, setState] = createSignal<CaptchaState>({
 			loading: autoRender(),
 			error: null,
@@ -44,19 +35,19 @@ export function createCaptchaComponent<
 		let hasRendered = false;
 		let pendingRender = false;
 
+		const setLoading = (loading: boolean) => setState((s) => ({ ...s, loading }));
+		const setReady = (ready: boolean) => setState((s) => ({ ...s, ready }));
+		const setError = (error: Error | null) => setState((s) => ({ ...s, error }));
+
 		const performCleanup = () => {
 			cleanup(provider(), widgetId(), containerRef);
 			containerRef = null;
-			batch(() => {
-				setWidgetId(null);
-			});
+			setWidgetId(null);
 		};
 
 		const renderCaptcha = async () => {
 			const element = elementRef();
 			const currentProvider = provider();
-			const options = props.options;
-
 			if (!element || !currentProvider) return;
 
 			if (isRendering) {
@@ -68,10 +59,11 @@ export function createCaptchaComponent<
 			pendingRender = false;
 
 			performCleanup();
-
 			batch(() => {
 				setWidgetId(null);
-				setState({ loading: true, error: null, ready: false });
+				setLoading(true);
+				setError(null);
+				setReady(false);
 			});
 
 			try {
@@ -81,75 +73,61 @@ export function createCaptchaComponent<
 				containerRef = container;
 				element.appendChild(container);
 
-				const id = await currentProvider.render(container, options);
+				const id = await currentProvider.render(container, props.options);
 
 				batch(() => {
 					setWidgetId(id ?? null);
-					setState({ loading: false, error: null, ready: true });
+					setLoading(false);
+					setReady(true);
 				});
-			} catch (error) {
-				const err = error instanceof Error ? error : new Error(String(error));
+			} catch (e) {
+				const err = e instanceof Error ? e : new Error(String(e));
 				console.error("[better-captcha] render:", err);
 				batch(() => {
-					setState({ loading: false, error: err, ready: false });
+					setLoading(false);
+					setError(err);
+					setReady(false);
 				});
 				props.onError?.(err);
 			} finally {
 				isRendering = false;
 				if (pendingRender) {
 					pendingRender = false;
-					queueMicrotask(() => {
-						void renderCaptcha();
-					});
+					queueMicrotask(() => void renderCaptcha());
 				}
 			}
 		};
 
 		onMount(() => {
-			const shouldAutoRender = autoRender();
-			if (shouldAutoRender) {
-				renderCaptcha();
-			}
+			if (autoRender()) void renderCaptcha();
 		});
 
 		createEffect(() => {
-			const element = elementRef();
-			const shouldAutoRender = autoRender();
-			identifier();
-			props.options;
-
-			if (!element || !hasRendered) return;
-
-			if (shouldAutoRender) {
-				void renderCaptcha();
-			}
+			const el = elementRef();
+			const _id = identifier();
+			const _opts = props.options;
+			if (!el || !hasRendered) return;
+			if (autoRender()) void renderCaptcha();
 		});
 
 		createEffect(() => {
-			if (state().ready) {
-				hasRendered = true;
-			}
+			if (state().ready) hasRendered = true;
 		});
 
-		const baseHandle = createMemo(() => {
+		const baseHandle = createMemo<THandle | null>(() => {
 			const id = widgetId();
-			if (id == null) return null;
 			const currentProvider = provider();
-			if (!currentProvider) return null;
-			return currentProvider.getHandle(id) as THandle;
+			return id != null && currentProvider ? (currentProvider.getHandle(id) as THandle) : null;
 		});
 
-		const handle = createMemo(() => {
-			const id = widgetId();
+		const handle = createMemo<THandle>(() => {
 			const base = baseHandle();
-			if (!base || id == null) {
+			if (!base) {
 				return {
 					execute: async () => {},
 					reset: () => {},
 					destroy: () => {},
-					render: async () => {
-						await renderCaptcha();
-					},
+					render: async () => void renderCaptcha(),
 					getResponse: () => "",
 					getComponentState: () => state(),
 				} as THandle;
@@ -161,37 +139,27 @@ export function createCaptchaComponent<
 					base.destroy();
 					performCleanup();
 					batch(() => {
-						setState({ loading: false, error: null, ready: false });
+						setLoading(false);
+						setError(null);
+						setReady(false);
 					});
 				},
-				render: async () => {
-					await renderCaptcha();
-				},
+				render: async () => void renderCaptcha(),
 				getComponentState: () => state(),
 			} as THandle;
 		});
 
 		createEffect(() => {
-			const currentHandle = handle();
-			const controller = props.controller;
-
-			if (controller) {
-				controller.set(currentHandle);
-			}
-
-			if (currentHandle) {
-				props.onReady?.(currentHandle);
-			}
+			const h = handle();
+			props.controller?.set(h);
+			props.onReady?.(h);
 		});
 
-		const elementId = createMemo(() => {
-			const id = widgetId();
-			return id !== null && id !== undefined ? `better-captcha-${id}` : "better-captcha-loading";
-		});
+		const elementId = createMemo(() =>
+			widgetId() != null ? `better-captcha-${widgetId()}` : "better-captcha-loading",
+		);
 
-		onCleanup(() => {
-			performCleanup();
-		});
+		onCleanup(performCleanup);
 
 		return (
 			<div
