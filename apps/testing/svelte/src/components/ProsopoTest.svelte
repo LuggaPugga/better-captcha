@@ -59,7 +59,7 @@
 
 <div>
 	<h3>Prosopo Test</h3>
-	<Prosopo bind:this={captchaRef} sitekey="5Hxxxxxxxxxxxxxxxxxxx_xxx" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	<Prosopo bind:this={captchaRef} sitekey="5Hxxxxxxxxxxxxxxxxxxx_xxx" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

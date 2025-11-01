@@ -49,7 +49,7 @@
 
 <div>
 	<h3>CapWidget Test</h3>
-	<CapWidget bind:this={captchaRef} endpoint="https://captcha.gurl.eu.org/api/" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	<CapWidget bind:this={captchaRef} endpoint="https://captcha.gurl.eu.org/api/" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

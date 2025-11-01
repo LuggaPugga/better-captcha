@@ -59,7 +59,7 @@
 
 <div>
 	<h3>Turnstile Test</h3>
-	<Turnstile bind:this={captchaRef} sitekey="1x00000000000000000000AA" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	<Turnstile bind:this={captchaRef} sitekey="1x00000000000000000000AA" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

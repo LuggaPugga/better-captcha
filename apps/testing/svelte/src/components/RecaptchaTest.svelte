@@ -65,7 +65,7 @@
 		{options}
 		onready={onReady}
 		onerror={onError}
-		onsolve={onSolve}
+		onSolve={onSolve}
 	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>

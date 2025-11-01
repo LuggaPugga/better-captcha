@@ -62,7 +62,7 @@
 
 <div>
 	<h3>Captcha Fox Test</h3>
-	<CaptchaFox bind:this={captchaRef} sitekey="sk_11111111000000001111111100000000" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	<CaptchaFox bind:this={captchaRef} sitekey="sk_11111111000000001111111100000000" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

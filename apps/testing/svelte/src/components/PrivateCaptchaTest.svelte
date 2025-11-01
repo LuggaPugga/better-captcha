@@ -66,7 +66,7 @@
 			{options}
 			onready={onReady}
 			onerror={onError}
-			onsolve={onSolve}
+			onSolve={onSolve}
 		/>
 	</form>
 	{#if $solved}

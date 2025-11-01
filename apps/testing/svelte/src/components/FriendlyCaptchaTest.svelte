@@ -58,7 +58,7 @@
 
 <div>
 	<h3>Friendly Captcha Test</h3>
-	<FriendlyCaptcha bind:this={captchaRef} sitekey="FCMGEMUD5P6765JJ" {options} onready={onReady} onerror={onError} onsolve={onSolve} />
+	<FriendlyCaptcha bind:this={captchaRef} sitekey="FCMGEMUD5P6765JJ" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}
