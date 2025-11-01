@@ -5,13 +5,11 @@ import type { CaptchaProps } from "./index";
 
 const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "controller"] as const;
 
-type AnyProvider<TOptions, THandle extends CaptchaHandle> = Provider<ProviderConfig, TOptions, THandle>;
-
 export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends AnyProvider<TOptions, THandle> = AnyProvider<TOptions, THandle>,
->(ProviderClass: new (identifier: string) => TProvider) {
+	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+>(ProviderClass: new (identifier: string) => TProvider): (allProps: CaptchaProps<TOptions, THandle>) => JSX.Element {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
 		const identifier = createMemo<string>(() => props.sitekey || props.endpoint || "");
