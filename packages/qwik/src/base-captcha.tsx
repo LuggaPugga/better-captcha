@@ -82,10 +82,6 @@ export function createCaptchaComponent<
 				widgetId.value = id;
 				state.value = { loading: false, error: null, ready: true };
 				resolveRender(true);
-				if (props.onReady$ && !hasEmittedReady.value) {
-					hasEmittedReady.value = true;
-					await props.onReady$(await buildHandle$());
-				}
 			} catch (err) {
 				const error = err instanceof Error ? err : new Error(String(err));
 				console.error("[better-captcha] render:", error);
@@ -98,6 +94,19 @@ export function createCaptchaComponent<
 			} finally {
 				resolveRender = null!;
 				isRendering.value = false;
+			}
+
+			if (state.value.ready && props.onReady$ && !hasEmittedReady.value) {
+				try {
+					hasEmittedReady.value = true;
+					await props.onReady$(await buildHandle$());
+				} catch (err) {
+					const error = err instanceof Error ? err : new Error(String(err));
+					if (props.onError$ && !hasEmittedError.value) {
+						hasEmittedError.value = true;
+						await props.onError$(error);
+					}
+				}
 			}
 		});
 
