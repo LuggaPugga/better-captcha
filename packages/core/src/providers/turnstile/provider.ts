@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { RenderParameters, Turnstile } from "./types";
 
@@ -40,11 +40,23 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 		return url.toString();
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">) {
-		const widgetId = window.turnstile.render(element, {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">, callbacks?: CaptchaCallbacks) {
+		const renderOptions: RenderParameters = {
 			sitekey: this.identifier,
 			...options,
-		});
+		};
+
+		if (callbacks?.onSolve && !renderOptions.callback) {
+			renderOptions.callback = (token: string) => callbacks.onSolve?.(token);
+		}
+		if (callbacks?.onError && !renderOptions["error-callback"]) {
+			renderOptions["error-callback"] = (error: string) => callbacks.onError?.(error);
+		}
+		if (callbacks?.onReady) {
+			queueMicrotask(() => callbacks.onReady?.());
+		}
+
+		const widgetId = window.turnstile.render(element, renderOptions);
 		return widgetId ?? undefined;
 	}
 

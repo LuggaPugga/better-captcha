@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { RenderParameters, WidgetApi } from "./types";
@@ -31,7 +31,7 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 		});
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "siteKey">): string {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "siteKey">, callbacks?: CaptchaCallbacks): string {
 		this.widgetId = `prosopo-widget-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 		const resolvedOptions = options ? { ...options } : undefined;
@@ -39,10 +39,45 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 			resolvedOptions.theme = getSystemTheme();
 		}
 
-		window.procaptcha?.render(element, {
+		const renderOptions: RenderParameters = {
 			siteKey: this.identifier,
 			...resolvedOptions,
-		});
+		};
+
+		if (callbacks?.onSolve) {
+			const existingCallback = renderOptions.callback;
+			renderOptions.callback = (output: string) => {
+				if (typeof existingCallback === "function") {
+					existingCallback(output);
+				} else if (typeof existingCallback === "string") {
+					const existingFn = (globalThis as Record<string, unknown>)[existingCallback];
+					if (typeof existingFn === "function") {
+						(existingFn as (value: string) => void)(output);
+					}
+				}
+				callbacks.onSolve?.(output);
+			};
+		}
+
+		if (callbacks?.onError) {
+			const existingErrorCallback = renderOptions["error-callback"];
+			renderOptions["error-callback"] = (output: string) => {
+				if (typeof existingErrorCallback === "function") {
+					existingErrorCallback(output);
+				} else if (typeof existingErrorCallback === "string") {
+					const existingFn = (globalThis as Record<string, unknown>)[existingErrorCallback];
+					if (typeof existingFn === "function") {
+						(existingFn as (value: string) => void)(output);
+					}
+				}
+				callbacks.onError?.(output);
+			};
+		}
+		if (callbacks?.onReady) {
+			queueMicrotask(() => callbacks.onReady?.());
+		}
+
+		window.procaptcha?.render(element, renderOptions);
 
 		return this.widgetId;
 	}

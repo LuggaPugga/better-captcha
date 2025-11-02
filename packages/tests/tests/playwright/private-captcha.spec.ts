@@ -36,6 +36,9 @@ test("widget can be executed", async () => {
 	await page.locator("input[name='private-captcha-solution']").waitFor({ state: "attached" });
 	await expect(page.locator("input[name='private-captcha-solution']")).toHaveValue(/^AQI.*$/);
 	await expect(page.locator('[id^="better-captcha-private-captcha"]')).toHaveCount(1);
+
+	await expect(page.locator("#captcha-solved")).toBeVisible({ timeout: 10000 });
+	await expect(page.locator("#captcha-solved")).toHaveText("Captcha Solved!");
 });
 
 test("widget has response", async () => {

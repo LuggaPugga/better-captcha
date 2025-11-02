@@ -1,6 +1,6 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/qwik/provider/captcha-fox";
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const CaptchaFoxTest = component$(() => {
 	const controller = useCaptchaController<CaptchaFoxHandle>();
@@ -9,10 +9,22 @@ export const CaptchaFoxTest = component$(() => {
 		mode: "inline",
 	});
 	const response = useSignal<string | null>(null);
+	const solved = useSignal<boolean>(false);
+
+	const handleSolve$ = $((token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
+	});
 
 	return (
 		<div>
-			<CaptchaFox controller={controller} options={options.value} sitekey="sk_11111111000000001111111100000000" />
+			<CaptchaFox
+				controller={controller}
+				options={options.value}
+				sitekey="sk_11111111000000001111111100000000"
+				onSolve$={handleSolve$}
+			/>
+			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"
 				onClick$={() => {

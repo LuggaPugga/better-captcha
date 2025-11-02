@@ -22,7 +22,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 	ProviderClass: new (identifier: string) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
 	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(props, ref) {
-		const { options, className, style, autoRender = true } = props;
+		const { options, className, style, autoRender = true, onReady, onSolve, onError } = props;
 		const p = props as CaptchaProps<TOptions> & { sitekey?: string; endpoint?: string };
 		const identifier = p.sitekey || p.endpoint;
 		if (!identifier) {
@@ -30,10 +30,12 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		const provider = useMemo(() => new ProviderClass(identifier), [ProviderClass, identifier]);
+		const callbacks = useMemo(() => ({ onReady, onSolve, onError }), [onReady, onSolve, onError]);
 		const { elementRef, state, widgetIdRef, setState, renderCaptcha } = useCaptchaLifecycle(
 			provider,
 			options,
 			autoRender,
+			callbacks,
 		);
 
 		useImperativeHandle(ref, () => {

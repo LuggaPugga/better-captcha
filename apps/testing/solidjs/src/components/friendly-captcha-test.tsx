@@ -13,15 +13,27 @@ export function FriendlyCaptchaTest() {
 		startMode: "focus",
 	});
 	const [response, setResponse] = createSignal<string | null>(null);
+	const [solved, setSolved] = createSignal<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = controller.handle()?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
-			<FriendlyCaptcha controller={controller} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options()} />
+			<FriendlyCaptcha
+				controller={controller}
+				sitekey="FC-00000000-0000-0000-0000-000000000000"
+				options={options()}
+				onSolve={handleSolve}
+			/>
+			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy
 			</button>

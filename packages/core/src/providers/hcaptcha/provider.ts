@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { HCaptcha, RenderParameters } from "./types";
@@ -41,15 +41,30 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 		return url.toString();
 	}
 
-	render(element: HTMLElement, options?: RenderParameters) {
+	render(element: HTMLElement, options?: RenderParameters, callbacks?: CaptchaCallbacks) {
 		const resolvedOptions = options ? { ...options } : undefined;
 		if (resolvedOptions?.theme === "auto") {
 			resolvedOptions.theme = getSystemTheme();
 		}
-		return window.hcaptcha.render(element, {
+
+		const renderOptions: RenderParameters = {
 			sitekey: this.identifier,
 			...resolvedOptions,
-		});
+		};
+
+		if (callbacks?.onSolve && !renderOptions.callback) {
+			renderOptions.callback = (token: string) => callbacks.onSolve?.(token);
+		}
+		if (callbacks?.onError && !renderOptions["error-callback"]) {
+			renderOptions["error-callback"] = (error?: string | Error) => {
+				callbacks.onError?.(error || "Unknown error");
+			};
+		}
+		if (callbacks?.onReady) {
+			queueMicrotask(() => callbacks.onReady?.());
+		}
+
+		return window.hcaptcha.render(element, renderOptions);
 	}
 
 	reset(widgetId: string) {

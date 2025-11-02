@@ -37,6 +37,9 @@ test("widget can be executed", async () => {
 		.locator("iframe[data-hcaptcha-response='10000000-aaaa-bbbb-cccc-000000000001']")
 		.waitFor({ state: "attached" });
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
+
+	await expect(page.locator("#captcha-solved")).toBeVisible({ timeout: 10000 });
+	await expect(page.locator("#captcha-solved")).toHaveText("Captcha Solved!");
 });
 
 test("widget has response", async () => {

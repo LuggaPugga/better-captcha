@@ -6,6 +6,7 @@
 	let captchaRef: CapWidget | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
+	const solved = writable<boolean>(false);
 
 	let options = $state<RenderParameters>({});
 
@@ -16,6 +17,11 @@
 	function onError(err: Error) {
 		error.set(err);
 		console.error("Captcha error:", err);
+	}
+
+	function onSolve(token: string) {
+		solved.set(true);
+		console.log("Captcha solved with token:", token);
 	}
 
 	function handleDestroy() {
@@ -43,7 +49,10 @@
 
 <div>
 	<h3>CapWidget Test</h3>
-	<CapWidget bind:this={captchaRef} endpoint="https://captcha.gurl.eu.org/api/" {options} onready={onReady} onerror={onError} />
+	<CapWidget bind:this={captchaRef} endpoint="https://captcha.gurl.eu.org/api/" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	{#if $solved}
+		<p id="captcha-solved">Captcha Solved!</p>
+	{/if}
 	<div style="margin-top: 10px">
 		<button type="button" onclick={handleDestroy}>Destroy</button>
 		<button type="button" onclick={handleReset}>Reset</button>

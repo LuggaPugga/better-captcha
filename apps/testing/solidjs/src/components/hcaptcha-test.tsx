@@ -9,15 +9,27 @@ export function HCaptchaTest() {
 		size: "normal",
 	});
 	const [response, setResponse] = createSignal<string | null>(null);
+	const [solved, setSolved] = createSignal<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = controller.handle()?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
-			<HCaptcha controller={controller} sitekey="10000000-ffff-ffff-ffff-000000000001" options={options()} />
+			<HCaptcha
+				controller={controller}
+				sitekey="10000000-ffff-ffff-ffff-000000000001"
+				options={options()}
+				onSolve={handleSolve}
+			/>
+			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy
 			</button>

@@ -21,6 +21,7 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	autoRender?: boolean;
 	onReady?: (handle: THandle) => void;
 	onError?: (error: Error) => void;
+	onSolve?: (token: string) => void;
 	controller?: CaptchaController<THandle>;
 };
 

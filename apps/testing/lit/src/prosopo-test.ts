@@ -17,9 +17,17 @@ export class ProsopoTest extends LitElement {
 	@state()
 	private response: string | null = null;
 
+	@state()
+	private solved = false;
+
 	protected createRenderRoot() {
 		return this;
 	}
+
+	private handleSolve = (token: string) => {
+		this.solved = true;
+		console.log("Captcha solved with token:", token);
+	};
 
 	private handleDestroy() {
 		this.captchaRef.value?.getHandle()?.destroy();
@@ -67,7 +75,9 @@ export class ProsopoTest extends LitElement {
 					${ref(this.captchaRef)}
 					sitekey="no_test_site_key"
 					.options=${options}
+					.onSolve=${this.handleSolve}
 				></prosopo-captcha>
+				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleGetResponse}>Get Response</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>
 				<button type="button" @click=${this.handleExecute}>Execute</button>

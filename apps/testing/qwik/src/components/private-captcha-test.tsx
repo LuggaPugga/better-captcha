@@ -4,7 +4,7 @@ import {
 	type PrivateCaptchaHandle,
 	type RenderParameters,
 } from "@better-captcha/qwik/provider/private-captcha";
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const PrivateCaptchaTest = component$(() => {
 	const controller = useCaptchaController<PrivateCaptchaHandle>();
@@ -12,12 +12,24 @@ export const PrivateCaptchaTest = component$(() => {
 		theme: "light",
 	});
 	const response = useSignal<string | null>(null);
+	const solved = useSignal<boolean>(false);
+
+	const handleSolve$ = $((token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
+	});
 
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha controller={controller} options={options.value} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" />
+				<PrivateCaptcha
+					controller={controller}
+					options={options.value}
+					sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
+					onSolve$={handleSolve$}
+				/>
 			</form>
+			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"
 				onClick$={() => {

@@ -5,10 +5,16 @@ export function ProsopoTest() {
 	const captchaRef = useRef<ProsopoHandle>(null);
 	const [response, setResponse] = useState<string>("");
 	const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
+	const [solved, setSolved] = useState<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = captchaRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
+	};
+
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
 	};
 
 	return (
@@ -29,7 +35,9 @@ export function ProsopoTest() {
 							console.error("Prosopo CAPTCHA error:", error);
 						},
 					}}
+					onSolve={handleSolve}
 				/>
+				{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			</div>
 
 			<div>

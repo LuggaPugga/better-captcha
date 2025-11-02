@@ -1,4 +1,4 @@
-import { type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { RenderParameters, WidgetApi } from "./types";
@@ -33,15 +33,28 @@ export class CaptchaFoxProvider extends Provider<
 		});
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">) {
+	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">, callbacks?: CaptchaCallbacks) {
 		const resolvedOptions = options ? { ...options } : undefined;
 		if (resolvedOptions?.theme === "auto") {
 			resolvedOptions.theme = getSystemTheme();
 		}
-		return window.captchafox?.render(element, {
+
+		const renderOptions: RenderParameters = {
 			sitekey: this.identifier,
 			...resolvedOptions,
-		});
+		};
+
+		if (callbacks?.onSolve && !renderOptions.onVerify) {
+			renderOptions.onVerify = (token: string) => callbacks.onSolve?.(token);
+		}
+		if (callbacks?.onError && !renderOptions.onError) {
+			renderOptions.onError = (error?: Error | string) => callbacks.onError?.(error || "Unknown error");
+		}
+		if (callbacks?.onReady) {
+			queueMicrotask(() => callbacks.onReady?.());
+		}
+
+		return window.captchafox?.render(element, renderOptions);
 	}
 
 	reset(widgetId: string) {

@@ -4,7 +4,7 @@ import {
 	type FriendlyCaptchaHandle,
 	type RenderParameters,
 } from "@better-captcha/qwik/provider/friendly-captcha";
-import { component$, useSignal } from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const FriendlyCaptchaTest = component$(() => {
 	const controller = useCaptchaController<FriendlyCaptchaHandle>();
@@ -13,6 +13,12 @@ export const FriendlyCaptchaTest = component$(() => {
 		startMode: "focus",
 	});
 	const response = useSignal<string | null>(null);
+	const solved = useSignal<boolean>(false);
+
+	const handleSolve$ = $((token: string) => {
+		solved.value = true;
+		console.log("Captcha solved with token:", token);
+	});
 
 	return (
 		<div>
@@ -20,7 +26,9 @@ export const FriendlyCaptchaTest = component$(() => {
 				controller={controller}
 				options={options.value}
 				sitekey="FC-00000000-0000-0000-0000-000000000000"
+				onSolve$={handleSolve$}
 			/>
+			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"
 				onClick$={() => {

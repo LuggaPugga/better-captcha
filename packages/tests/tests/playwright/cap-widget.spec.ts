@@ -39,6 +39,11 @@ test("widget can be executed", async () => {
 	});
 });
 
+test("onSolve callback fires", async () => {
+	await expect(page.locator("#captcha-solved")).toBeVisible({ timeout: 10000 });
+	await expect(page.locator("#captcha-solved")).toHaveText("Captcha Solved!");
+});
+
 test("widget has response", async () => {
 	await page.locator("button", { hasText: "Get Response" }).first().click();
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);

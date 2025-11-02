@@ -7,15 +7,27 @@ export function CapWidgetTest() {
 		return {};
 	});
 	const [response, setResponse] = useState<string | null>(null);
+	const [solved, setSolved] = useState<boolean>(false);
 
 	const handleGetResponse = () => {
 		const captchaResponse = capWidgetRef.current?.getResponse() || "No response";
 		setResponse(captchaResponse);
 	};
 
+	const handleSolve = (token: string) => {
+		setSolved(true);
+		console.log("Captcha solved with token:", token);
+	};
+
 	return (
 		<div>
-			<CapWidget ref={capWidgetRef} options={options} endpoint="https://captcha.gurl.eu.org/api/" />
+			<CapWidget 
+				ref={capWidgetRef} 
+				options={options} 
+				endpoint="https://captcha.gurl.eu.org/api/" 
+				onSolve={handleSolve}
+			/>
+			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => capWidgetRef.current?.destroy()}>
 				Destroy
 			</button>
