@@ -5,9 +5,9 @@
 		"[npm][NPM Packages](https://www.npmjs.com/org/better-captcha)",
 		"---Docs---",
 		"...",
-		"---Provider---",
-		"...provider",
 		"---Frameworks---",
-		"...frameworks"
+		"...frameworks",
+		"---Provider---",
+		"...provider"
 	]
 }
