@@ -7,7 +7,7 @@ import { CaptchaFoxPlayground } from "../../../src/components/captcha-fox-playgr
 
 ## About Captcha Fox
 
-Captcha Fox is a privacy-focused CAPTCHA service that provides comprehensive bot protection with customizable themes, multiple challenge types, and extensive internationalization support.
+Captcha Fox is a modern, privacy-focused CAPTCHA service that provides bot protection with customizable themes, multiple challenge types, and extensive internationalization support.
 
 For more information, visit the [official Captcha Fox documentation](https://docs.captchafox.com/).
 
@@ -80,8 +80,20 @@ For more information, visit the [official Captcha Fox documentation](https://doc
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/captcha-fox/types.d.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/captcha-fox/provider.ts" name="CaptchaFoxHandle" />
+
+## Best Practices
+
+- **Customization**: Take advantage of extensive theme customization options to match your brand
+- **Internationalization**: Use the `lang` option to provide localized experiences
+- **Privacy**: Captcha Fox is designed with privacy in mind - no unnecessary tracking
+- **Analytics**: Use the built-in analytics to understand bot traffic patterns
+- **Auto Theme**: Use `theme: "auto"` to automatically match your site's color scheme

@@ -22,21 +22,24 @@ import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
 <recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
 ```
 
-## Element Names
+## Custom Element Names
 
-Each provider has its own custom element name:
+Each provider is registered as a custom element with its own tag name:
 
-- **Turnstile**: `<turnstile-captcha>`
-- **hCaptcha**: `<hcaptcha-captcha>`
-- **reCAPTCHA**: `<recaptcha-captcha>`
-- **Friendly Captcha**: `<friendly-captcha>`
-- **Private Captcha**: `<private-captcha-widget>`
-- **Captcha Fox**: `<captcha-fox-captcha>`
-- **Prosopo**: `<prosopo-captcha>`
+| Provider | Element Name |
+|----------|--------------|
+| **Turnstile** | `<turnstile-captcha>` |
+| **hCaptcha** | `<hcaptcha-captcha>` |
+| **reCAPTCHA** | `<recaptcha-captcha>` |
+| **Friendly Captcha** | `<friendly-captcha>` |
+| **Private Captcha** | `<private-captcha-widget>` |
+| **Captcha Fox** | `<captcha-fox-captcha>` |
+| **Prosopo** | `<prosopo-captcha>` |
+| **CapWidget** | `<cap-widget-captcha>` |
 
 ## Imperative Handle
 
-Lit web components expose a `getHandle()` method to access the imperative handle.
+Lit web components expose a `getHandle()` method to access the imperative handle for programmatic control.
 
 ```ts
 import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
@@ -55,16 +58,17 @@ const response = handle.getResponse();
 console.log(response);
 ```
 
-## Callbacks
+## Lifecycle Callbacks
 
-All captcha components support three lifecycle callbacks via properties and custom events:
+All captcha components support three lifecycle callbacks via both properties and custom events.
+
+### Using Properties
 
 ```ts
 import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
 
 const captcha = document.querySelector('recaptcha-captcha') as ReCaptcha;
 
-// Set callbacks via properties
 captcha.onReady = (handle) => {
   console.log("Captcha is ready", handle);
 };
@@ -77,8 +81,13 @@ captcha.onSolve = (token: string) => {
 captcha.onError = (error: Error | string) => {
   console.error("Captcha error:", error);
 };
+```
 
-// Or listen to custom events
+### Using Custom Events
+
+```ts
+const captcha = document.querySelector('recaptcha-captcha');
+
 captcha.addEventListener('ready', (e) => {
   console.log("Captcha ready", e.detail);
 });
@@ -92,22 +101,15 @@ captcha.addEventListener('error', (e) => {
 });
 ```
 
-```html
-<recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
-```
-
-### Callback Reference
-
-- **onReady** (property): Called when the captcha widget is successfully rendered and ready for interaction
-- **onSolve** (property): Called when the captcha challenge is successfully solved with the response token
-- **onError** (property): Called when an error occurs during initialization or solving
-- **ready** (event): Custom event emitted when captcha is ready (event detail contains handle)
-- **solve** (event): Custom event emitted when captcha is solved (event detail contains token)
-- **error** (event): Custom event emitted when an error occurs (event detail contains error)
+| Callback/Event | Type | Description |
+|----------------|------|-------------|
+| `onReady` / `ready` | Property / Event | Called/emitted when widget is ready (receives handle) |
+| `onSolve` / `solve` | Property / Event | Called/emitted when challenge is solved (receives token) |
+| `onError` / `error` | Property / Event | Called/emitted when an error occurs (receives error) |
 
 ## Setting Options
 
-You can set options via attributes or properties:
+Configure the widget via attributes for simple values or properties for complex objects.
 
 ```html
 <!-- Via attributes (for simple values) -->
@@ -118,11 +120,12 @@ You can set options via attributes or properties:
 // Via properties (for complex objects)
 const captcha = document.querySelector('recaptcha-captcha');
 captcha.options = { theme: 'dark', size: 'compact' };
+captcha.scriptOptions = { autoLoad: false, timeout: 30000 };
 ```
 
 ## Manual Rendering
 
-By default, captchas automatically render on mount. Disable this with `autoRender="false"` and render manually using `render()`:
+By default, captchas automatically render on mount. For more control, disable auto-rendering and trigger it manually.
 
 ```html
 <recaptcha-captcha sitekey="your-site-key" autoRender="false"></recaptcha-captcha>
@@ -138,7 +141,19 @@ function showCaptcha() {
 }
 ```
 
-## Common Methods
+## Common Attributes & Properties
+
+| Attribute/Property | Type | Required | Description |
+|-------------------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | Your provider's site key |
+| `options` | `object` | ❌ | Provider-specific configuration options |
+| `autoRender` | `boolean` | ❌ | Whether to render automatically on mount (default: `true`) |
+| `scriptOptions` | `object` | ❌ | Script loading configuration (see [Script Options](/docs/script-options)) |
+| `onReady` | `function` | ❌ | Callback when widget is ready |
+| `onSolve` | `function` | ❌ | Callback when challenge is solved |
+| `onError` | `function` | ❌ | Callback when an error occurs |
+
+## Handle Methods
 
 All providers implement these methods on the handle:
 
@@ -146,11 +161,16 @@ All providers implement these methods on the handle:
 
 ## Available Providers
 
-- [ReCaptcha](/docs/provider/recaptcha)
-- [HCaptcha](/docs/provider/hcaptcha)
-- [Turnstile](/docs/provider/turnstile)
-- [Friendly Captcha](/docs/provider/friendly-captcha)
-- [Private Captcha](/docs/provider/private-captcha)
-- [Captcha Fox](/docs/provider/captcha-fox)
-- [Prosopo](/docs/provider/prosopo)
+| Provider | Import Path | Element Name |
+|----------|-------------|--------------|
+| **ReCaptcha** | `@better-captcha/lit/provider/recaptcha` | `<recaptcha-captcha>` |
+| **HCaptcha** | `@better-captcha/lit/provider/hcaptcha` | `<hcaptcha-captcha>` |
+| **Turnstile** | `@better-captcha/lit/provider/turnstile` | `<turnstile-captcha>` |
+| **Friendly Captcha** | `@better-captcha/lit/provider/friendly-captcha` | `<friendly-captcha>` |
+| **Private Captcha** | `@better-captcha/lit/provider/private-captcha` | `<private-captcha-widget>` |
+| **Captcha Fox** | `@better-captcha/lit/provider/captcha-fox` | `<captcha-fox-captcha>` |
+| **Prosopo** | `@better-captcha/lit/provider/prosopo` | `<prosopo-captcha>` |
+| **CapWidget** | `@better-captcha/lit/provider/cap-widget` | `<cap-widget-captcha>` |
+
+See the [Provider Documentation](/docs/provider) for provider-specific options and configuration.
 

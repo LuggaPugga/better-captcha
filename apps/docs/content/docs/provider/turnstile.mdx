@@ -7,9 +7,9 @@ import { TurnstilePlayground } from "../../../src/components/turnstile-playgroun
 
 ## About Turnstile
 
-Cloudflare Turnstile is a privacy-focused CAPTCHA alternative that automatically verifies users without interactive challenges, enhancing user experience while maintaining security.
+Cloudflare Turnstile is a privacy-first CAPTCHA alternative that verifies users without interactive challenges in most cases. It leverages Cloudflare's global network and threat intelligence to provide seamless bot protection.
 
-For more information, visit the [official Cloudflare Turnstile documentation](https://www.cloudflare.com/application-services/products/turnstile/).
+For more information, visit the [official Cloudflare Turnstile documentation](https://developers.cloudflare.com/turnstile/).
 
 ## Showcase
 <TurnstilePlayground />
@@ -80,8 +80,34 @@ For more information, visit the [official Cloudflare Turnstile documentation](ht
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/turnstile/index.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/turnstile/provider.ts" name="TurnstileHandle" />
+
+## Testing
+
+Cloudflare provides test keys for development:
+
+| Type | Site Key |
+|------|----------|
+| **Always Passes** | `1x00000000000000000000AA` |
+| **Always Blocks** | `2x00000000000000000000AB` |
+| **Forces Interactive Challenge** | `3x00000000000000000000FF` |
+
+<Callout type="info">
+Test keys are designed for development and automated testing. They will always behave predictably based on the type.
+</Callout>
+
+## Best Practices
+
+- **Invisible by Default**: Turnstile is designed to be invisible in most cases - no user interaction needed
+- **Native Auto Theme**: Turnstile natively supports `theme: "auto"` - no conversion needed
+- **Lightweight**: Turnstile has minimal impact on page load times
+- **Privacy-First**: No tracking or cookies, making it ideal for privacy-conscious applications
+- **Cloudflare Integration**: Works seamlessly with other Cloudflare services

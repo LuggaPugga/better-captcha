@@ -7,7 +7,7 @@ import { HCaptchaPlayground } from "../../../src/components/hcaptcha-playground"
 
 ## About HCaptcha
 
-hCaptcha provides a security solution that differentiates between humans and bots, offering both interactive and passive modes to suit various user experience needs.
+hCaptcha is a privacy-focused CAPTCHA service that protects your site from bots while offering both interactive and passive verification modes to balance security with user experience.
 
 For more information, visit the [official hCaptcha documentation](https://docs.hcaptcha.com/).
 
@@ -80,8 +80,33 @@ For more information, visit the [official hCaptcha documentation](https://docs.h
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/hcaptcha/types.d.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/hcaptcha/provider.ts" name="HCaptchaHandle" />
+
+## Testing
+
+hCaptcha provides test keys for development:
+
+| Type | Site Key |
+|------|----------|
+| **Always Passes** | `10000000-ffff-ffff-ffff-000000000001` |
+| **Always Fails** | `20000000-ffff-ffff-ffff-000000000002` |
+
+<Callout type="info">
+Test keys are designed for development and automated testing. Replace with real keys for production use.
+</Callout>
+
+## Best Practices
+
+- **Privacy Compliance**: hCaptcha is designed with privacy in mind and is GDPR/CCPA compliant by default
+- **Monetization**: Consider enabling monetization in your dashboard to earn from CAPTCHA solves
+- **Difficulty Levels**: Adjust difficulty based on your security needs vs. user experience
+- **Passive Mode**: Use passive mode for lower-risk scenarios to improve UX
+- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically

@@ -5,12 +5,35 @@ description: Configure how Better CAPTCHA loads provider scripts, including manu
 
 ## Overview
 
-Every Better CAPTCHA component now accepts a `scriptOptions` prop. Use it to control how each provider loads its remote script before rendering the widget.
+Every Better CAPTCHA component accepts a `scriptOptions` prop to control how provider scripts are loaded. This gives you fine-grained control over script loading behavior, timeouts, and manual script injection.
 
-- `autoLoad` (default `true`): set to `false` if you prefer to inject the provider script yourself and let Better CAPTCHA skip automatic loading.
-- `timeout` (default `15000` milliseconds): override the maximum time Better CAPTCHA waits for a script to finish loading before throwing an error.
+## Configuration Options
 
-If you disable automatic loading, make sure the provider script is available globally before you call `render()` or mount the component. Once the script is present, the provider behaves exactly the same as when it is auto-loaded.
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `autoLoad` | `boolean` | `true` | Whether to automatically load the provider script |
+| `timeout` | `number` | `15000` | Maximum time (in milliseconds) to wait for script loading |
+
+### Auto Load
+
+Set `autoLoad: false` if you prefer to inject the provider script yourself. This is useful when:
+
+- You want to load scripts through a custom script loader
+- You need to add custom attributes to the script tag
+- You're using a CSP policy that requires specific script handling
+- You want to optimize script loading with your own strategy
+
+<Callout type="warn">
+When `autoLoad` is disabled, ensure the provider script is available globally before the component mounts or before calling `render()`.
+</Callout>
+
+### Timeout
+
+Override the default 15-second timeout if you need more time for script loading. This is useful for:
+
+- Slow network connections
+- Custom script hosts
+- Development environments with slower response times
 
 ## Usage
 
@@ -92,11 +115,43 @@ If you disable automatic loading, make sure the provider script is available glo
   </Tab>
 </Tabs>
 
-## Manual Loading Checklist
+## Examples
 
-- Add the provider script tag to your page before rendering the component.
-- Set `scriptOptions.autoLoad` to `false` so Better CAPTCHA skips its built-in loader.
-- (Optional) Adjust `scriptOptions.timeout` if you rely on slower networks or custom script hosts.
+### Increase Timeout
 
-Once configured, the rest of the integration—including callbacks and lifecycle methods—continues to work the same way across all frameworks.
+Useful for slower networks or custom CDN configurations:
 
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{ timeout: 30000 }} // 30 seconds
+/>
+```
+
+### Manual Script Loading
+
+Load the script yourself and disable auto-loading:
+
+```html
+<!-- Add this to your HTML head -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+```
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{ autoLoad: false }}
+/>
+```
+
+### Combined Configuration
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{
+    autoLoad: false,
+    timeout: 30000
+  }}
+/>
+```

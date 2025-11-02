@@ -7,9 +7,9 @@ import { PrivateCaptchaPlayground } from "../../../src/components/private-captch
 
 ## About Private Captcha
 
-Private Captcha is an independent, user-friendly, and GDPR-compliant CAPTCHA service that operates without tracking user data, ensuring privacy and accessibility.
+Private Captcha is an independent, privacy-focused CAPTCHA service that operates without tracking user data. It's designed to be user-friendly, accessible, and fully GDPR-compliant.
 
-For more information, visit the [official Private Captcha documentation](https://privatecaptcha.com/).
+For more information, visit the [official Private Captcha website](https://privatecaptcha.com/).
 
 ## Showcase
 <PrivateCaptchaPlayground />
@@ -91,8 +91,26 @@ For more information, visit the [official Private Captcha documentation](https:/
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/private-captcha/index.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/private-captcha/provider.ts" name="PrivateCaptchaHandle" />
+
+## Important Notes
+
+<Callout type="warn">
+Private Captcha only works inside a `<form>` element. Make sure to wrap the component in a form tag.
+</Callout>
+
+## Best Practices
+
+- **Form Requirement**: Always place Private Captcha inside a `<form>` element
+- **Privacy Focus**: Ideal for applications with strict privacy requirements
+- **Self-Hosting**: Consider self-hosting for maximum control and data sovereignty
+- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme
+- **Accessibility**: Built with accessibility in mind for inclusive user experiences

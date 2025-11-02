@@ -22,7 +22,7 @@ export default function Example() {
 
 ## Imperative Handle
 
-SolidJS uses a controller pattern with `createCaptchaController` to access the imperative handle.
+SolidJS uses a controller pattern with `createCaptchaController` to access the imperative handle in a reactive way.
 
 ```tsx
 import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
@@ -41,11 +41,13 @@ export default function Example() {
 }
 ```
 
-The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining when calling methods.
+<Callout type="info">
+The controller's `handle()` function returns the handle once the widget is ready, or `null` if not yet initialized. Always use optional chaining (`?.`) when calling methods.
+</Callout>
 
-## Callbacks
+## Lifecycle Callbacks
 
-All captcha components support three lifecycle callbacks:
+All captcha components support three lifecycle callbacks for handling different stages of the widget lifecycle.
 
 ```tsx
 import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
@@ -78,15 +80,15 @@ export default function Example() {
 }
 ```
 
-### Callback Reference
-
-- **onReady**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
-- **onSolve**: Called when the captcha challenge is successfully solved with the response token
-- **onError**: Called when an error occurs during initialization or solving
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onReady` | `(handle: Handle) => void` | Called when the widget is rendered and ready (receives handle) |
+| `onSolve` | `(token: string) => void` | Called when the challenge is solved with the response token |
+| `onError` | `(error: Error) => void` | Called when an error occurs during initialization or solving |
 
 ## Manual Rendering
 
-By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+By default, captchas automatically render on mount. For more control, disable auto-rendering and trigger it manually.
 
 ```tsx
 import { ReCaptcha, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
@@ -96,14 +98,31 @@ export default function Example() {
 
   return (
     <>
-      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} autoRender={false} />
+      <ReCaptcha 
+        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+        controller={controller} 
+        autoRender={false} 
+      />
       <button onClick={async () => await controller.handle()?.render()}>Show Captcha</button>
     </>
   );
 }
 ```
 
-## Common Methods
+## Common Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | Your provider's site key |
+| `controller` | `Controller` | ❌ | Controller from `createCaptchaController()` for imperative access |
+| `options` | `object` | ❌ | Provider-specific configuration options |
+| `autoRender` | `boolean` | ❌ | Whether to render automatically on mount (default: `true`) |
+| `scriptOptions` | `object` | ❌ | Script loading configuration (see [Script Options](/docs/script-options)) |
+| `onReady` | `function` | ❌ | Callback when widget is ready |
+| `onSolve` | `function` | ❌ | Callback when challenge is solved |
+| `onError` | `function` | ❌ | Callback when an error occurs |
+
+## Handle Methods
 
 All providers implement these methods on the handle:
 
@@ -111,11 +130,16 @@ All providers implement these methods on the handle:
 
 ## Available Providers
 
-- [ReCaptcha](/docs/provider/recaptcha)
-- [HCaptcha](/docs/provider/hcaptcha)
-- [Turnstile](/docs/provider/turnstile)
-- [Friendly Captcha](/docs/provider/friendly-captcha)
-- [Private Captcha](/docs/provider/private-captcha)
-- [Captcha Fox](/docs/provider/captcha-fox)
-- [Prosopo](/docs/provider/prosopo)
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/solidjs/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/solidjs/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/solidjs/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/solidjs/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/solidjs/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/solidjs/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/solidjs/provider/prosopo` |
+| **CapWidget** | `@better-captcha/solidjs/provider/cap-widget` |
+
+See the [Provider Documentation](/docs/provider) for provider-specific options and configuration.
 

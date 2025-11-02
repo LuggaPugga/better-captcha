@@ -7,7 +7,7 @@ import { CapWidgetPlayground } from "../../../src/components/cap-widget-playgrou
 
 ## About CapWidget
 
-CapWidget is a privacy-focused CAPTCHA solution using the Cap.JS widget library. It provides a client-side CAPTCHA widget that can be integrated into your application for bot protection.
+CapWidget is a privacy-focused CAPTCHA solution built on the Cap.JS widget library. It provides a lightweight, client-side CAPTCHA widget for bot protection.
 
 For more information, visit the [official Cap.JS documentation](https://capjs.js.org/guide/widget.html).
 
@@ -82,9 +82,24 @@ CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoi
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/cap-widget/index.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/cap-widget/provider.ts" name="CapWidgetHandle" />
 
+<Callout type="info">
+CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoint for the CAPTCHA service.
+</Callout>
+
+## Best Practices
+
+- **Endpoint Configuration**: Ensure your API endpoint is properly configured and accessible
+- **Client-Side**: CapWidget performs client-side verification - ensure proper server-side validation
+- **Lightweight**: Minimal impact on page load times
+- **Open Source**: Benefit from community contributions and transparency
+- **Customization**: Customize the widget appearance to match your application's design

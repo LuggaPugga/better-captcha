@@ -7,7 +7,7 @@ import { FriendlyCaptchaPlayground } from "../../../src/components/friendly-capt
 
 ## About Friendly Captcha
 
-Friendly Captcha offers a privacy-friendly and accessible solution to protect websites from bots, eliminating the need for user interaction by performing background cryptographic tasks.
+Friendly Captcha is a privacy-friendly, GDPR-compliant CAPTCHA alternative that protects websites from bots without user interaction. It works by performing cryptographic puzzles in the background, making it invisible to legitimate users.
 
 For more information, visit the [official Friendly Captcha documentation](https://developer.friendlycaptcha.com/docs/v2).
 
@@ -80,8 +80,21 @@ For more information, visit the [official Friendly Captcha documentation](https:
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/friendly-captcha/types.d.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/friendly-captcha/provider.ts" name="FriendlyCaptchaHandle" />
+
+## Best Practices
+
+- **Invisible UX**: Friendly Captcha is completely invisible - users never see a challenge
+- **Privacy Compliant**: Built with GDPR and CCPA compliance in mind from the ground up
+- **Native Auto Theme**: Supports `theme: "auto"` natively for seamless integration
+- **Accessibility**: Fully accessible - no visual challenges that could exclude users
+- **Performance**: Minimal impact on page performance, works in background
+- **EU Hosting**: Data can be hosted in the EU for additional privacy compliance

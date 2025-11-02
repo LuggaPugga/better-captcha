@@ -7,9 +7,13 @@ import { ReCaptchaPlayground } from "../../../src/components/recaptcha-playgroun
 
 ## About ReCaptcha
 
-Google reCAPTCHA is a widely-used service that protects websites from spam and abuse by distinguishing human users from bots through various challenge mechanisms.
+Google reCAPTCHA is one of the most widely-used CAPTCHA services, protecting millions of websites from spam and abuse. It uses advanced risk analysis to distinguish human users from bots through various challenge mechanisms.
 
 For more information, visit the [official Google reCAPTCHA documentation](https://developers.google.com/recaptcha).
+
+<Callout type="warn">
+reCAPTCHA v3 is not supported yet. Currently only v2 (checkbox and invisible) are supported.
+</Callout>
 
 ## Showcase
 <ReCaptchaPlayground />
@@ -80,8 +84,20 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
   </Tab>
 </Tabs>
 
-## Provider Options
+## Configuration
+
+### Provider Options
+
 <AutoTypeTable path="../../packages/core/src/providers/recaptcha/types.d.ts" name="RenderParameters" />
 
-## Imperative Handle Functions
+### Imperative Handle
+
 <AutoTypeTable path="../../packages/core/src/providers/recaptcha/provider.ts" name="ReCaptchaHandle" />
+
+## Best Practices
+
+- **Choose the Right Version**: Use v2 for interactive challenges, v3 for invisible score-based protection
+- **Handle Errors Gracefully**: Always implement the `onError` callback to handle network failures
+- **Verify Server-Side**: Always verify the response token on your backend
+- **Consider UX**: For v2 invisible, ensure users understand why they're seeing a challenge
+- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically

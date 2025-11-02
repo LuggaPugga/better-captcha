@@ -23,7 +23,7 @@ export default component$(() => {
 
 ## Imperative Handle
 
-Qwik uses the `useCaptchaController` hook to access the imperative handle via a controller pattern.
+Qwik uses the `useCaptchaController` hook to access the imperative handle via a controller pattern that works with Qwik's serialization model.
 
 ```tsx
 import { component$ } from "@builder.io/qwik";
@@ -47,11 +47,13 @@ export default component$(() => {
 });
 ```
 
-The handle is available once the widget is ready. Use optional chaining when calling methods.
+<Callout type="info">
+The handle is available once the widget is ready. Always use optional chaining (`?.`) when calling methods since the controller may not be initialized yet.
+</Callout>
 
-## Callbacks
+## Lifecycle Callbacks
 
-All captcha components support three lifecycle callbacks via QRL props (note the `$` suffix):
+All captcha components support three lifecycle callbacks via QRL props. Note the `$` suffix required by Qwik for serializable functions.
 
 ```tsx
 import { component$, $ } from "@builder.io/qwik";
@@ -86,15 +88,15 @@ export default component$(() => {
 });
 ```
 
-### Callback Reference
-
-- **onReady$**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
-- **onSolve$**: Called when the captcha challenge is successfully solved with the response token
-- **onError$**: Called when an error occurs during initialization or solving
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onReady$` | `(handle: Handle) => void` | Called when the widget is rendered and ready (receives handle) |
+| `onSolve$` | `(token: string) => void` | Called when the challenge is solved with the response token |
+| `onError$` | `(error: Error) => void` | Called when an error occurs during initialization or solving |
 
 ## Manual Rendering
 
-By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+By default, captchas automatically render on mount. For more control, disable auto-rendering and trigger it manually.
 
 ```tsx
 import { component$ } from "@builder.io/qwik";
@@ -106,14 +108,31 @@ export default component$(() => {
 
   return (
     <>
-      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} autoRender={false} />
+      <ReCaptcha 
+        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+        controller={controller} 
+        autoRender={false} 
+      />
       <button onClick$={async () => await controller.value?.render()}>Show Captcha</button>
     </>
   );
 });
 ```
 
-## Common Methods
+## Common Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | Your provider's site key |
+| `controller` | `Signal` | ❌ | Controller from `useCaptchaController()` for imperative access |
+| `options` | `object` | ❌ | Provider-specific configuration options |
+| `autoRender` | `boolean` | ❌ | Whether to render automatically on mount (default: `true`) |
+| `scriptOptions` | `object` | ❌ | Script loading configuration (see [Script Options](/docs/script-options)) |
+| `onReady$` | `QRL` | ❌ | Callback when widget is ready |
+| `onSolve$` | `QRL` | ❌ | Callback when challenge is solved |
+| `onError$` | `QRL` | ❌ | Callback when an error occurs |
+
+## Handle Methods
 
 All providers implement these methods on the handle:
 
@@ -121,11 +140,16 @@ All providers implement these methods on the handle:
 
 ## Available Providers
 
-- [ReCaptcha](/docs/provider/recaptcha)
-- [HCaptcha](/docs/provider/hcaptcha)
-- [Turnstile](/docs/provider/turnstile)
-- [Friendly Captcha](/docs/provider/friendly-captcha)
-- [Private Captcha](/docs/provider/private-captcha)
-- [Captcha Fox](/docs/provider/captcha-fox)
-- [Prosopo](/docs/provider/prosopo)
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/qwik/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/qwik/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/qwik/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/qwik/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/qwik/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/qwik/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/qwik/provider/prosopo` |
+| **CapWidget** | `@better-captcha/qwik/provider/cap-widget` |
+
+See the [Provider Documentation](/docs/provider) for provider-specific options and configuration.
 

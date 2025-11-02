@@ -3,13 +3,22 @@ title: Auto Theme
 description: Automatic theme detection for CAPTCHA providers that don't natively support "auto" theme.
 ---
 
-## Auto Theme
+## Overview
 
-The library automatically detects your users' system theme preference and applies it to CAPTCHA providers that don't natively support `"auto"` theme.
+Better CAPTCHA automatically detects your users' system theme preference and applies it to CAPTCHA providers that don't natively support `"auto"` theme mode. This ensures a seamless experience across light and dark modes without additional configuration.
 
 ## How It Works
 
-When you set `theme: "auto"`, the library detects the system theme using `prefers-color-scheme` and converts it to `"light"` or `"dark"` before passing it to the provider.
+When you set `theme: "auto"` in the options, the library:
+
+1. Detects the system theme using the `prefers-color-scheme` CSS media query
+2. Converts it to either `"light"` or `"dark"`
+3. Passes the resolved theme to the provider
+4. Automatically updates when the system theme changes
+
+<Callout type="info">
+Providers with native auto theme support (Turnstile, Friendly Captcha) pass through the `"auto"` value directly without conversion.
+</Callout>
 
 <Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
@@ -93,12 +102,21 @@ When you set `theme: "auto"`, the library detects the system theme using `prefer
 </Tabs>
 
 ## Provider Support
-| Provider | Native auto theme support | Enhanced with auto theme |
-|----------|--------------------------|--------------------------|
-| Turnstile | ✅ | ❌ |
-| FriendlyCaptcha | ✅ | ❌ |
-| reCAPTCHA | ❌ | ✅ |
-| hCaptcha | ❌ | ✅ |
-| PrivateCaptcha | ❌ | ✅ |
-| CaptchaFox | ❌ | ✅ |
-| Prosopo | ❌ | ✅ |
+
+| Provider | Native Support | Better CAPTCHA Enhancement | Behavior |
+|----------|----------------|---------------------------|----------|
+| **Turnstile** | ✅ Yes | Not needed | Passes `"auto"` directly to provider |
+| **Friendly Captcha** | ✅ Yes | Not needed | Passes `"auto"` directly to provider |
+| **reCAPTCHA** | ❌ No | ✅ Enhanced | Converts to `"light"` or `"dark"` |
+| **hCaptcha** | ❌ No | ✅ Enhanced | Converts to `"light"` or `"dark"` |
+| **Private Captcha** | ❌ No | ✅ Enhanced | Converts to `"light"` or `"dark"` |
+| **Captcha Fox** | ❌ No | ✅ Enhanced | Converts to `"light"` or `"dark"` |
+| **Prosopo** | ❌ No | ✅ Enhanced | Converts to `"light"` or `"dark"` |
+| **CapWidget** | ❌ No | ✅ Enhanced | Converts to `"light"` or `"dark"` |
+
+## Benefits
+
+- **Seamless User Experience**: Automatically matches your site's theme
+- **No Manual Detection**: No need to implement your own theme detection logic
+- **Reactive Updates**: Automatically responds to system theme changes
+- **Universal API**: Use `theme: "auto"` across all providers with consistent behavior

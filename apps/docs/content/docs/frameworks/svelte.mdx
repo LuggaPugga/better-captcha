@@ -22,7 +22,7 @@ import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
 
 ## Imperative Handle
 
-Svelte uses `bind:this` to access component methods directly.
+Svelte uses `bind:this` to access component methods directly through a component reference.
 
 ```svelte
 <script lang="ts">
@@ -58,11 +58,13 @@ function logResponse() {
 <button onclick={logResponse}>Log response</button>
 ```
 
-Use `bind:this` to get a reference to the component instance, then call methods directly on it. Always use optional chaining since the reference may be undefined.
+<Callout type="info">
+Use `bind:this` to get a reference to the component instance, then call methods directly on it. Always use optional chaining (`?.`) since the reference may be undefined initially.
+</Callout>
 
-## Callbacks
+## Lifecycle Callbacks
 
-All captcha components support three lifecycle callbacks:
+All captcha components support three lifecycle callbacks for handling different stages of the widget lifecycle.
 
 ```svelte
 <script lang="ts">
@@ -91,15 +93,15 @@ function onError(error: Error) {
 />
 ```
 
-### Callback Reference
-
-- **onready**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
-- **onSolve**: Called when the captcha challenge is successfully solved with the response token
-- **onerror**: Called when an error occurs during initialization or solving
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onready` | `(handle: Handle) => void` | Called when the widget is rendered and ready (receives handle) |
+| `onSolve` | `(token: string) => void` | Called when the challenge is solved with the response token |
+| `onerror` | `(error: Error) => void` | Called when an error occurs during initialization or solving |
 
 ## Manual Rendering
 
-By default, captchas automatically render on mount. Disable this with `autoRender={false}` and render manually using `render()`:
+By default, captchas automatically render on mount. For more control, disable auto-rendering and trigger it manually.
 
 ```svelte
 <script lang="ts">
@@ -112,11 +114,27 @@ function render() {
 }
 </script>
 
-<ReCaptcha bind:this={captchaRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" autoRender={false} />
+<ReCaptcha 
+  bind:this={captchaRef} 
+  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+  autoRender={false} 
+/>
 <button onclick={render}>Show Captcha</button>
 ```
 
-## Common Methods
+## Common Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | Your provider's site key |
+| `options` | `object` | ❌ | Provider-specific configuration options |
+| `autoRender` | `boolean` | ❌ | Whether to render automatically on mount (default: `true`) |
+| `scriptOptions` | `object` | ❌ | Script loading configuration (see [Script Options](/docs/script-options)) |
+| `onready` | `function` | ❌ | Callback when widget is ready |
+| `onSolve` | `function` | ❌ | Callback when challenge is solved |
+| `onerror` | `function` | ❌ | Callback when an error occurs |
+
+## Handle Methods
 
 All providers implement these methods on the handle:
 
@@ -124,11 +142,16 @@ All providers implement these methods on the handle:
 
 ## Available Providers
 
-- [ReCaptcha](/docs/provider/recaptcha)
-- [HCaptcha](/docs/provider/hcaptcha)
-- [Turnstile](/docs/provider/turnstile)
-- [Friendly Captcha](/docs/provider/friendly-captcha)
-- [Private Captcha](/docs/provider/private-captcha)
-- [Captcha Fox](/docs/provider/captcha-fox)
-- [Prosopo](/docs/provider/prosopo)
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/svelte/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/svelte/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/svelte/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/svelte/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/svelte/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/svelte/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/svelte/provider/prosopo` |
+| **CapWidget** | `@better-captcha/svelte/provider/cap-widget` |
+
+See the [Provider Documentation](/docs/provider) for provider-specific options and configuration.
 

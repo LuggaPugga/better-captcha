@@ -56,11 +56,13 @@ const logResponse = () => {
 </script>
 ```
 
-`useCaptcha()` keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via `ref="recaptchaRef"`.
+<Callout type="info">
+The `useCaptcha()` composable keeps a stable handle reference and exposes helpers like `execute` and `reset`. You can also access the handle directly via template refs.
+</Callout>
 
-## Callbacks
+## Lifecycle Callbacks
 
-All captcha components support three lifecycle callbacks via events:
+All captcha components support three lifecycle callbacks via Vue events.
 
 ```vue
 <template>
@@ -90,23 +92,28 @@ const handleError = (error: Error) => {
 </script>
 ```
 
-### Callback Reference
-
-- **@ready**: Emitted when the captcha widget is successfully rendered and ready for interaction (receives handle)
-- **@solve**: Emitted when the captcha challenge is successfully solved with the response token
-- **@error**: Emitted when an error occurs during initialization or solving
+| Event | Parameters | Description |
+|-------|-----------|-------------|
+| `@ready` | `(handle: Handle) => void` | Emitted when the widget is rendered and ready (receives handle) |
+| `@solve` | `(token: string) => void` | Emitted when the challenge is solved with the response token |
+| `@error` | `(error: Error) => void` | Emitted when an error occurs during initialization or solving |
 
 ## Manual Rendering
 
-By default, captchas automatically render on mount. Disable this with `:autoRender="false"` and render manually using `render()`:
+By default, captchas automatically render on mount. For more control, disable auto-rendering and trigger it manually.
 
 ```vue
 <template>
-  <ReCaptcha ref="recaptchaRef" sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" :autoRender="false" />
+  <ReCaptcha 
+    ref="recaptchaRef" 
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+    :autoRender="false" 
+  />
   <button @click="showCaptcha">Show Captcha</button>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
 
 const recaptchaRef = ref(null);
@@ -117,7 +124,19 @@ const showCaptcha = () => {
 </script>
 ```
 
-## Common Methods
+## Common Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | Your provider's site key |
+| `options` | `object` | ❌ | Provider-specific configuration options |
+| `autoRender` | `boolean` | ❌ | Whether to render automatically on mount (default: `true`) |
+| `scriptOptions` | `object` | ❌ | Script loading configuration (see [Script Options](/docs/script-options)) |
+| `@ready` | `event` | ❌ | Event when widget is ready |
+| `@solve` | `event` | ❌ | Event when challenge is solved |
+| `@error` | `event` | ❌ | Event when an error occurs |
+
+## Handle Methods
 
 All providers implement these methods on the handle:
 
@@ -125,11 +144,16 @@ All providers implement these methods on the handle:
 
 ## Available Providers
 
-- [ReCaptcha](/docs/provider/recaptcha)
-- [HCaptcha](/docs/provider/hcaptcha)
-- [Turnstile](/docs/provider/turnstile)
-- [Friendly Captcha](/docs/provider/friendly-captcha)
-- [Private Captcha](/docs/provider/private-captcha)
-- [Captcha Fox](/docs/provider/captcha-fox)
-- [Prosopo](/docs/provider/prosopo)
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/vue/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/vue/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/vue/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/vue/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/vue/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/vue/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/vue/provider/prosopo` |
+| **CapWidget** | `@better-captcha/vue/provider/cap-widget` |
+
+See the [Provider Documentation](/docs/provider) for provider-specific options and configuration.
 
