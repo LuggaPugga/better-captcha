@@ -1,4 +1,10 @@
-import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaCallbacks,
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+	type ScriptOptions,
+} from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { PrivateCaptcha, RenderParameters } from "./types";
@@ -25,10 +31,11 @@ export class PrivateCaptchaProvider extends Provider<
 	private elementMap = new Map<string, HTMLElement>();
 	private widgetIdCounter = 0;
 
-	constructor(sitekey: string) {
+	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{
 				scriptUrl: "https://cdn.privatecaptcha.com/widget/js/privatecaptcha.js",
+				scriptOptions,
 			},
 			sitekey,
 		);
@@ -37,10 +44,13 @@ export class PrivateCaptchaProvider extends Provider<
 	async init() {
 		const scriptUrl = this.buildScriptUrl();
 
-		await loadScript(scriptUrl, {
-			async: true,
-			defer: true,
-		});
+		if (this.config.scriptOptions?.autoLoad !== false) {
+			await loadScript(scriptUrl, {
+				async: true,
+				defer: true,
+				timeout: this.config.scriptOptions?.timeout,
+			});
+		}
 	}
 
 	private buildScriptUrl() {
@@ -110,7 +120,7 @@ export class PrivateCaptchaProvider extends Provider<
 			onError:
 				onError ||
 				(callbacks?.onError
-					? (detail: PrivateCaptcha.CaptchaEventDetail) => {
+					? (_detail: PrivateCaptcha.CaptchaEventDetail) => {
 							callbacks.onError?.("Private Captcha error");
 						}
 					: undefined),
@@ -118,7 +128,7 @@ export class PrivateCaptchaProvider extends Provider<
 			onFinish:
 				onFinish ||
 				(callbacks?.onSolve
-					? (detail: PrivateCaptcha.CaptchaEventDetail) => {
+					? (_detail: PrivateCaptcha.CaptchaEventDetail) => {
 							const token = this.getResponse(widgetId);
 							callbacks.onSolve?.(token);
 						}

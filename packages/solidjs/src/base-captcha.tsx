@@ -4,19 +4,32 @@ import type {
 	CaptchaState,
 	Provider,
 	ProviderConfig,
+	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import type { CaptchaProps } from "./index";
 
-const BASE_KEYS = ["options", "class", "style", "autoRender", "onReady", "onError", "onSolve", "controller"] as const;
+const BASE_KEYS = [
+	"options",
+	"scriptOptions",
+	"class",
+	"style",
+	"autoRender",
+	"onReady",
+	"onError",
+	"onSolve",
+	"controller",
+] as const;
 
 export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (identifier: string) => TProvider): (allProps: CaptchaProps<TOptions, THandle>) => JSX.Element {
+>(
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
+): (allProps: CaptchaProps<TOptions, THandle>) => JSX.Element {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
 		const identifier = createMemo<string>(() => props.sitekey || props.endpoint || "");
@@ -24,7 +37,7 @@ export function createCaptchaComponent<
 
 		const provider = createMemo<TProvider | null>(() => {
 			const id = identifier();
-			return id ? new ProviderClass(id) : null;
+			return id ? new ProviderClass(id, props.scriptOptions) : null;
 		});
 
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
@@ -120,6 +133,7 @@ export function createCaptchaComponent<
 			const el = elementRef();
 			const _id = identifier();
 			const _opts = props.options;
+			const _scriptOpts = props.scriptOptions;
 			if (!el || !hasRendered) return;
 			if (autoRender()) void renderCaptcha();
 		});

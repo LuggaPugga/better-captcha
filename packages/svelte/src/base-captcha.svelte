@@ -1,14 +1,15 @@
 <script module lang="ts">
-	import type { CaptchaCallbacks, CaptchaHandle, Provider, ProviderConfig } from "@better-captcha/core";
+	import type { CaptchaCallbacks, CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
 
 	export type BaseCaptchaProps<
 		TOptions,
 		THandle extends CaptchaHandle,
 		TProvider extends Provider<ProviderConfig, TOptions, THandle>,
 	> = {
-		providerClass: new (sitekeyOrEndpoint: string) => TProvider;
+		providerClass: new (sitekeyOrEndpoint: string, scriptOptions?: ScriptOptions) => TProvider;
 		value: string;
 		options?: TOptions;
+		scriptOptions?: ScriptOptions;
 		class?: string;
 		style?: string;
 		autoRender?: boolean;
@@ -32,6 +33,7 @@
 		providerClass: ProviderClass,
 		value,
 		options = undefined,
+		scriptOptions = undefined,
 		class: className = "",
 		style = "",
 		autoRender = true,
@@ -83,9 +85,9 @@
 		pendingRender = false;
 		cleanup();
 		setCaptchaState({ loading: true, error: null, ready: false });
- 		try {
+		try {
 			if (!value) throw new Error("'value' prop must be provided");
-			const newProvider = new ProviderClass(value);
+			const newProvider = new ProviderClass(value, scriptOptions);
 			await newProvider.init();
 			const newContainer = document.createElement("div");
 			container = newContainer;
@@ -163,8 +165,9 @@
 	});
 
 	$effect(() => {
-		value;
-		options;
+	value;
+	options;
+	scriptOptions;
 		const canRetry = captchaState.error != null;
 		if (autoRender && (hasRendered || canRetry)) {
 			queueMicrotask(renderCaptcha);

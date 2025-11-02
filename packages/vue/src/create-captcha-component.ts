@@ -1,4 +1,12 @@
-import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	ScriptOptions,
+	WidgetId,
+} from "@better-captcha/core";
 import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
 import {
 	type Component,
@@ -18,7 +26,10 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (identifier: string) => TProvider, identifierProp: "sitekey" | "endpoint" = "sitekey"): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
+>(
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
+	identifierProp: "sitekey" | "endpoint" = "sitekey",
+): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
 	return defineComponent({
 		name: "BetterCaptcha",
 		props: {
@@ -32,6 +43,10 @@ export function createCaptchaComponent<
 			},
 			options: {
 				type: Object as PropType<TOptions>,
+				default: undefined,
+			},
+			scriptOptions: {
+				type: Object as PropType<ScriptOptions>,
 				default: undefined,
 			},
 			class: {
@@ -152,7 +167,7 @@ export function createCaptchaComponent<
 				cleanup();
 
 				const token = ++renderToken;
-				const activeProvider = new ProviderClass(validatedIdentifier);
+				const activeProvider = new ProviderClass(validatedIdentifier, props.scriptOptions);
 
 				state.value = { loading: true, error: null, ready: false };
 
@@ -249,7 +264,7 @@ export function createCaptchaComponent<
 			);
 
 			watch(
-				[identifier, () => props.options],
+				[identifier, () => props.options, () => props.scriptOptions],
 				() => {
 					if (props.autoRender && hasRendered) {
 						void renderCaptcha();

@@ -1,0 +1,102 @@
+---
+title: Script Options
+description: Configure how Better CAPTCHA loads provider scripts, including manual loading and custom timeouts.
+---
+
+## Overview
+
+Every Better CAPTCHA component now accepts a `scriptOptions` prop. Use it to control how each provider loads its remote script before rendering the widget.
+
+- `autoLoad` (default `true`): set to `false` if you prefer to inject the provider script yourself and let Better CAPTCHA skip automatic loading.
+- `timeout` (default `15000` milliseconds): override the maximum time Better CAPTCHA waits for a script to finish loading before throwing an error.
+
+If you disable automatic loading, make sure the provider script is available globally before you call `render()` or mount the component. Once the script is present, the provider behaves exactly the same as when it is auto-loaded.
+
+## Usage
+
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+  <ReCaptcha
+    sitekey="your-site-key"
+    scriptOptions={{ autoLoad: false, timeout: 30000 }}
+    onReady={() => console.log("ready")}
+  />;
+  ```
+  </Tab>
+
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+  export default component$(() => (
+    <ReCaptcha
+      sitekey="your-site-key"
+      scriptOptions={{ autoLoad: false, timeout: 30000 }}
+    />
+  ));
+  ```
+  </Tab>
+
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+  <ReCaptcha
+    sitekey="your-site-key"
+    scriptOptions={{ autoLoad: false, timeout: 30000 }}
+  />;
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptcha
+      sitekey="your-site-key"
+      :script-options="{ autoLoad: false, timeout: 30000 }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+  </script>
+
+  <ReCaptcha
+    sitekey="your-site-key"
+    scriptOptions={{ autoLoad: false, timeout: 30000 }}
+  />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import "@better-captcha/lit/provider/recaptcha";
+
+  const captcha = document.createElement("better-captcha-recaptcha");
+  captcha.setAttribute("sitekey", "your-site-key");
+  captcha.scriptOptions = { autoLoad: false, timeout: 30000 };
+  document.body.appendChild(captcha);
+  ```
+  </Tab>
+</Tabs>
+
+## Manual Loading Checklist
+
+- Add the provider script tag to your page before rendering the component.
+- Set `scriptOptions.autoLoad` to `false` so Better CAPTCHA skips its built-in loader.
+- (Optional) Adjust `scriptOptions.timeout` if you rely on slower networks or custom script hosts.
+
+Once configured, the rest of the integration—including callbacks and lifecycle methods—continues to work the same way across all frameworks.
+

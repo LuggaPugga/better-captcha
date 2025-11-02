@@ -1,4 +1,4 @@
-import type { CaptchaHandle } from "@better-captcha/core";
+import type { CaptchaHandle, ScriptOptions } from "@better-captcha/core";
 import { createSignal, type JSX } from "solid-js";
 
 export type {
@@ -6,6 +6,7 @@ export type {
 	CaptchaState,
 	Provider,
 	ProviderConfig,
+	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
 
@@ -16,6 +17,7 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
+	scriptOptions?: ScriptOptions;
 	class?: string;
 	style?: JSX.CSSProperties;
 	autoRender?: boolean;

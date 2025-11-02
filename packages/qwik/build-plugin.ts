@@ -34,7 +34,7 @@ function createProject(): Project {
 const qwikConfig: FrameworkConfig = {
 	baseImport: `import { createCaptchaComponent } from "${BASE_SPEC}";`,
 	componentCreation: (providerClassName: string) => {
-		return `createCaptchaComponent($((identifier: string) => new ${providerClassName}(identifier)))`;
+		return `createCaptchaComponent($((identifier: string, scriptOptions?: import("@better-captcha/core").ScriptOptions) => new ${providerClassName}(identifier, scriptOptions)))`;
 	},
 	componentType: "Component",
 	componentTypeImports: '{ Component } from "@builder.io/qwik"',
@@ -61,15 +61,16 @@ function genProviderModule(meta: ProviderMetadata): string {
 		moduleSpecifier: `@better-captcha/core/providers/${meta.name}`,
 	});
 
-	sourceFile.addVariableStatement({
-		declarationKind: VariableDeclarationKind.Const,
-		declarations: [
-			{
-				name: `${meta.componentName}Factory`,
-				initializer: `$((value: string) => new ${meta.providerClassName}(value))`,
-			},
-		],
-	});
+		sourceFile.addVariableStatement({
+			declarationKind: VariableDeclarationKind.Const,
+			declarations: [
+				{
+					name: `${meta.componentName}Factory`,
+					initializer:
+						`$((value: string, scriptOptions?: import("@better-captcha/core").ScriptOptions) => new ${meta.providerClassName}(value, scriptOptions))`,
+				},
+			],
+		});
 
 	sourceFile.addVariableStatement({
 		declarationKind: VariableDeclarationKind.Const,
@@ -174,7 +175,7 @@ function genProviderModuleJs(meta: ProviderMetadata): string {
 		declarations: [
 			{
 				name: `${meta.componentName}Factory`,
-				initializer: `$(\n    (value) => new ${meta.providerClassName}(value),\n)`,
+				initializer: `$(\n    (value, scriptOptions) => new ${meta.providerClassName}(value, scriptOptions),\n)`,
 			},
 		],
 	});
@@ -207,7 +208,7 @@ function genProviderModuleCjs(meta: ProviderMetadata): string {
 	lines.push(`const { ${meta.providerClassName} } = require("@better-captcha/core/providers/${meta.name}");`);
 	lines.push("");
 	lines.push(`const ${meta.componentName}Factory = $(`);
-	lines.push(`    (value) => new ${meta.providerClassName}(value),`);
+	lines.push(`    (value, scriptOptions) => new ${meta.providerClassName}(value, scriptOptions),`);
 	lines.push(");");
 	lines.push("");
 	lines.push(
@@ -378,7 +379,7 @@ function genBaseCaptchaDts(): string {
 
 	// Add type imports
 	sourceFile.addImportDeclaration({
-		namedImports: ["CaptchaHandle", "Provider", "ProviderConfig"],
+		namedImports: ["CaptchaHandle", "Provider", "ProviderConfig", "ScriptOptions"],
 		moduleSpecifier: "@better-captcha/core",
 		isTypeOnly: true,
 	});
@@ -410,7 +411,7 @@ function genBaseCaptchaDts(): string {
 		parameters: [
 			{
 				name: "providerFactory$",
-				type: "QRL<(value: string) => TProvider>",
+				type: "QRL<(value: string, scriptOptions?: ScriptOptions) => TProvider>",
 			},
 		],
 		returnType: "Component<CaptchaProps<TOptions, THandle>>",
@@ -432,7 +433,7 @@ function genBaseCaptchaDts(): string {
 		parameters: [
 			{
 				name: "providerFactory$",
-				type: "QRL<(value: string) => TProvider>",
+				type: "QRL<(value: string, scriptOptions?: ScriptOptions) => TProvider>",
 			},
 		],
 		returnType: "Component<CaptchaPropsWithEndpoint<TOptions, THandle>>",

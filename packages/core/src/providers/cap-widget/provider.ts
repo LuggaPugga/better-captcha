@@ -1,4 +1,10 @@
-import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaCallbacks,
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+	type ScriptOptions,
+} from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type {
 	CapErrorEvent,
@@ -14,21 +20,25 @@ export type CapWidgetHandle = CaptchaHandle;
 export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParameters, "element">, CapWidgetHandle> {
 	private widgetMap = new Map<string, CapWidget>();
 
-	constructor(endpoint: string) {
+	constructor(endpoint: string, scriptOptions?: ScriptOptions) {
 		super(
 			{
 				scriptUrl: "https://cdn.jsdelivr.net/npm/@cap.js/widget@0.1.30",
+				scriptOptions,
 			},
 			endpoint,
 		);
 	}
 
 	async init() {
-		await loadScript(this.config.scriptUrl, {
-			type: "module",
-			async: true,
-			defer: true,
-		});
+		if (this.config.scriptOptions?.autoLoad !== false) {
+			await loadScript(this.config.scriptUrl, {
+				type: "module",
+				async: true,
+				defer: true,
+				timeout: this.config.scriptOptions?.timeout,
+			});
+		}
 
 		if (typeof window !== "undefined" && customElements) {
 			await customElements.whenDefined("cap-widget");
