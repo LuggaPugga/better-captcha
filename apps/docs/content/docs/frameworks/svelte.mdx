@@ -86,7 +86,7 @@ function onError(error: Error) {
 <ReCaptcha
   sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
   onready={onReady}
-  onsolve={onSolve}
+  onSolve={onSolve}
   onerror={onError}
 />
 ```
@@ -94,7 +94,7 @@ function onError(error: Error) {
 ### Callback Reference
 
 - **onready**: Called when the captcha widget is successfully rendered and ready for interaction (receives handle)
-- **onsolve**: Called when the captcha challenge is successfully solved with the response token
+- **onSolve**: Called when the captcha challenge is successfully solved with the response token
 - **onerror**: Called when an error occurs during initialization or solving
 
 ## Manual Rendering
