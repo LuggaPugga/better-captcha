@@ -1,8 +1,11 @@
+import type { ScriptOptions } from "@better-captcha/core";
+
 export type {
 	CaptchaHandle,
 	CaptchaState,
 	Provider,
 	ProviderConfig,
+	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
 
@@ -10,6 +13,7 @@ export type CaptchaProps<TOptions> = {
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
+	scriptOptions?: ScriptOptions;
 	className?: string;
 	style?: React.CSSProperties;
 	autoRender?: boolean;

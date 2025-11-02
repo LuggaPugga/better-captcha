@@ -1,4 +1,11 @@
-import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	ScriptOptions,
+} from "@better-captcha/core";
 import { html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
@@ -22,13 +29,14 @@ type CaptchaElement<THandle> = CustomElementConstructor & {
 };
 
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (identifier: string) => Provider<ProviderConfig, TOptions, THandle>,
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
 	elementName: string = "better-captcha",
 ): CaptchaElement<THandle> {
 	class CaptchaComponent extends LitElement {
 		@property({ attribute: "sitekey" }) sitekey?: string;
 		@property({ attribute: "endpoint" }) endpoint?: string;
 		@property({ type: Object }) options: TOptions | undefined;
+		@property({ type: Object }) scriptOptions: ScriptOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
 		@property({ type: Object }) onReady?: () => void;
 		@property({ type: Object }) onSolve?: (token: string) => void;
@@ -83,7 +91,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 			this.lifecycle?.cleanup();
 
-			this.provider = new ProviderClass(value);
+			this.provider = new ProviderClass(value, this.scriptOptions);
 
 			const callbacks: CaptchaCallbacks = {
 				onReady: () => {
@@ -122,6 +130,14 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				this.initialized &&
 				changedProperties.has("options") &&
 				changedProperties.get("options") !== undefined &&
+				this.autoRender
+			) {
+				this.cleanup();
+				this.initializeCaptcha();
+				this.initialized = true;
+			} else if (
+				this.initialized &&
+				changedProperties.has("scriptOptions") &&
 				this.autoRender
 			) {
 				this.cleanup();

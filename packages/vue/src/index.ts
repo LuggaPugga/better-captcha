@@ -1,4 +1,4 @@
-import type { CaptchaHandle } from "@better-captcha/core";
+import type { CaptchaHandle, ScriptOptions } from "@better-captcha/core";
 import type { DefineComponent, StyleValue } from "vue";
 
 export type {
@@ -6,6 +6,7 @@ export type {
 	CaptchaState,
 	Provider,
 	ProviderConfig,
+	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
 
@@ -13,6 +14,7 @@ export type CaptchaProps<TOptions> = {
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
+	scriptOptions?: ScriptOptions;
 	class?: string;
 	style?: StyleValue;
 	autoRender?: boolean;

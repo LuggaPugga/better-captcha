@@ -1,5 +1,19 @@
+export interface ScriptOptions {
+	/**
+	 * When false, the provider will not load the remote script automatically.
+	 * Defaults to true.
+	 */
+	autoLoad?: boolean;
+	/**
+	 * Custom timeout (in milliseconds) for script loading.
+	 * Defaults to 15000ms when not provided.
+	 */
+	timeout?: number;
+}
+
 export interface ProviderConfig {
 	scriptUrl: string;
+	scriptOptions?: ScriptOptions;
 }
 
 export type WidgetId = string | number;

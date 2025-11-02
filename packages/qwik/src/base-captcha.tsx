@@ -1,4 +1,12 @@
-import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ProviderConfig, WidgetId } from "@better-captcha/core";
+import type {
+	CaptchaCallbacks,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	ScriptOptions,
+	WidgetId,
+} from "@better-captcha/core";
 import { cleanup } from "@better-captcha/core/utils/lifecycle";
 import type { NoSerialize, QRL } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
@@ -8,7 +16,7 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(providerFactory$: QRL<(identifier: string) => TProvider>) {
+>(providerFactory$: QRL<(identifier: string, scriptOptions?: ScriptOptions) => TProvider>) {
 	return component$<CaptchaProps<TOptions, THandle>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const provider = useSignal<TProvider | null>(null);
@@ -46,7 +54,7 @@ export function createCaptchaComponent<
 				if (!currentValue) {
 					throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
 				}
-				const newProvider = await providerFactory$(currentValue);
+			const newProvider = await providerFactory$(currentValue, props.scriptOptions);
 				await newProvider.init();
 
 				const container = document.createElement("div");
@@ -149,6 +157,7 @@ export function createCaptchaComponent<
 			track(() => hostEl.value);
 			track(() => identifier.value);
 			track(() => props.options);
+			track(() => props.scriptOptions);
 
 			if (!hostEl.value) return;
 			if (!identifier.value) return;

@@ -1,4 +1,4 @@
-import type { CaptchaHandle } from "@better-captcha/core";
+import type { CaptchaHandle, ScriptOptions } from "@better-captcha/core";
 import type { NoSerialize, QRL, Signal } from "@builder.io/qwik";
 import { useSignal } from "@builder.io/qwik";
 
@@ -7,6 +7,7 @@ export type {
 	CaptchaState,
 	Provider,
 	ProviderConfig,
+	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
 
@@ -19,6 +20,7 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
+	scriptOptions?: ScriptOptions;
 	class?: string;
 	style?: string | Record<string, string | number>;
 	onReady$?: QRL<(handle: NoSerialize<THandle>) => unknown>;

@@ -1,4 +1,10 @@
-import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaCallbacks,
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+	type ScriptOptions,
+} from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { RenderParameters, WidgetApi } from "./types";
@@ -14,21 +20,25 @@ export type ProsopoHandle = CaptchaHandle;
 export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParameters, "siteKey">, ProsopoHandle> {
 	private widgetId: string | null = null;
 
-	constructor(sitekey: string) {
+	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{
 				scriptUrl: "https://js.prosopo.io/js/procaptcha.bundle.js",
+				scriptOptions,
 			},
 			sitekey,
 		);
 	}
 
 	async init(): Promise<void> {
-		await loadScript(this.config.scriptUrl, {
-			type: "module",
-			async: true,
-			defer: true,
-		});
+		if (this.config.scriptOptions?.autoLoad !== false) {
+			await loadScript(this.config.scriptUrl, {
+				type: "module",
+				async: true,
+				defer: true,
+				timeout: this.config.scriptOptions?.timeout,
+			});
+		}
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "siteKey">, callbacks?: CaptchaCallbacks): string {

@@ -1,4 +1,10 @@
-import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ProviderConfig } from "../../provider";
+import {
+	type CaptchaCallbacks,
+	type CaptchaHandle,
+	Provider,
+	type ProviderConfig,
+	type ScriptOptions,
+} from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import type { RenderParameters, Turnstile } from "./types";
 
@@ -15,10 +21,11 @@ export type TurnstileHandle = CaptchaHandle & {
 };
 
 export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, TurnstileHandle> {
-	constructor(sitekey: string) {
+	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{
 				scriptUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+				scriptOptions,
 			},
 			sitekey,
 		);
@@ -27,11 +34,14 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 	async init() {
 		const scriptUrl = this.buildScriptUrl();
 
-		await loadScript(scriptUrl, {
-			async: true,
-			defer: true,
-			callbackName: TURNSTILE_ONLOAD_CALLBACK,
-		});
+		if (this.config.scriptOptions?.autoLoad !== false) {
+			await loadScript(scriptUrl, {
+				async: true,
+				defer: true,
+				callbackName: TURNSTILE_ONLOAD_CALLBACK,
+				timeout: this.config.scriptOptions?.timeout,
+			});
+		}
 	}
 
 	private buildScriptUrl() {
