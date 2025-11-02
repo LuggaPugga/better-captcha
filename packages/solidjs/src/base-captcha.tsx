@@ -27,9 +27,9 @@ export function createCaptchaComponent<
 	TOptions = unknown,
 	THandle extends CaptchaHandle = CaptchaHandle,
 	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
->(ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider): (
-	allProps: CaptchaProps<TOptions, THandle>,
-) => JSX.Element {
+>(
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
+): (allProps: CaptchaProps<TOptions, THandle>) => JSX.Element {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
 		const identifier = createMemo<string>(() => props.sitekey || props.endpoint || "");

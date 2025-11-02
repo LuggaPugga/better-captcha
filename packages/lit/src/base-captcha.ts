@@ -135,11 +135,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;
-			} else if (
-				this.initialized &&
-				changedProperties.has("scriptOptions") &&
-				this.autoRender
-			) {
+			} else if (this.initialized && changedProperties.has("scriptOptions") && this.autoRender) {
 				this.cleanup();
 				this.initializeCaptcha();
 				this.initialized = true;

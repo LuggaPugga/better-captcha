@@ -19,7 +19,6 @@ const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
 export type ReCaptchaHandle = CaptchaHandle;
 
-
 export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, ReCaptchaHandle> {
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
