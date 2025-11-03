@@ -49,6 +49,9 @@ test("widget has response", async () => {
 	await responseLocator.waitFor({ state: "visible" });
 	await expect(responseLocator).not.toHaveText("No response");
 	await expect(responseLocator).not.toHaveText("");
+
+	await page.locator("#captcha-solved").waitFor({ state: "visible" });
+	await expect(page.locator("#captcha-solved")).toHaveText("Captcha Solved!");
 });
 
 test("widget can be reset", async () => {
