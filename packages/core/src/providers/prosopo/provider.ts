@@ -32,7 +32,8 @@ export class ProsopoProvider extends Provider<ProviderConfig, Omit<RenderParamet
 
 	async init(): Promise<void> {
 		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(this.config.scriptUrl, {
+			const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
+			await loadScript(scriptUrl, {
 				type: "module",
 				async: true,
 				defer: true,

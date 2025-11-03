@@ -13,6 +13,7 @@ Every Better CAPTCHA component accepts a `scriptOptions` prop to control how pro
 |--------|------|---------|-------------|
 | `autoLoad` | `boolean` | `true` | Whether to automatically load the provider script |
 | `timeout` | `number` | `15000` | Maximum time (in milliseconds) to wait for script loading |
+| `overrideScriptUrl` | `string` | `undefined` | Override the default script URL with a custom one |
 
 ### Auto Load
 
@@ -34,6 +35,19 @@ Override the default 15-second timeout if you need more time for script loading.
 - Slow network connections
 - Custom script hosts
 - Development environments with slower response times
+
+### Override Script URL
+
+Use `overrideScriptUrl` to load the provider script from a custom URL instead of the default one. This is useful for:
+
+- Using a custom CDN or mirror
+- Loading scripts from a self-hosted location
+- Bypassing network restrictions
+- Testing with different script versions
+
+<Callout type="info">
+  When using `overrideScriptUrl`, make sure the custom URL points to a compatible version of the provider script. The URL should be the full path to the script file.
+</Callout>
 
 ## Usage
 
@@ -144,6 +158,19 @@ Load the script yourself and disable auto-loading:
 />
 ```
 
+### Custom Script URL
+
+Load the script from a custom URL:
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{
+    overrideScriptUrl: "https://custom-cdn.com/recaptcha/api.js"
+  }}
+/>
+```
+
 ### Combined Configuration
 
 ```tsx
@@ -151,7 +178,8 @@ Load the script yourself and disable auto-loading:
   sitekey="your-site-key"
   scriptOptions={{
     autoLoad: false,
-    timeout: 30000
+    timeout: 30000,
+    overrideScriptUrl: "https://custom-cdn.com/recaptcha/api.js"
   }}
 />
 ```

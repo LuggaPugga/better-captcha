@@ -32,7 +32,16 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
-		const scriptUrl = this.buildScriptUrl();
+		let scriptUrl: string;
+		if (this.config.scriptOptions?.overrideScriptUrl) {
+			const url = new URL(this.config.scriptOptions.overrideScriptUrl);
+			if (!url.searchParams.has("onload")) {
+				url.searchParams.set("onload", TURNSTILE_ONLOAD_CALLBACK);
+			}
+			scriptUrl = url.toString();
+		} else {
+			scriptUrl = this.buildScriptUrl();
+		}
 
 		if (this.config.scriptOptions?.autoLoad !== false) {
 			await loadScript(scriptUrl, {
