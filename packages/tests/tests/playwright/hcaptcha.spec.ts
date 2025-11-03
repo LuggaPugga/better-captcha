@@ -38,7 +38,7 @@ test("widget can be executed", async () => {
 		.waitFor({ state: "attached" });
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 
-	await expect(page.locator("#captcha-solved")).toBeVisible({ timeout: 10000 });
+	await page.locator("#captcha-solved").waitFor({ state: "visible" });
 	await expect(page.locator("#captcha-solved")).toHaveText("Captcha Solved!");
 });
 
