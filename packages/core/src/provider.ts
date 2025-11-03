@@ -9,6 +9,11 @@ export interface ScriptOptions {
 	 * Defaults to 15000ms when not provided.
 	 */
 	timeout?: number;
+	/**
+	 * Override the default script URL with a custom one.
+	 * Defaults to undefined.
+	 */
+	overrideScriptUrl?: string;
 }
 
 export interface ProviderConfig {
