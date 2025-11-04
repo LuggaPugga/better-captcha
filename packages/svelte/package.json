@@ -75,7 +75,7 @@
 		"playwright": "^1.56.0",
 		"svelte": "^5.0.0",
 		"ts-morph": "^27.0.2",
-		"tsdown": "^0.15.6",
+		"tsdown": "^0.16.0",
 		"unplugin": "^2.3.10"
 	}
 }

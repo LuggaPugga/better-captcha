@@ -76,7 +76,7 @@
 		"rolldown-plugin-solid": "^0.2.1",
 		"solid-js": "^1.9.9",
 		"ts-morph": "^27.0.2",
-		"tsdown": "^0.15.12",
+		"tsdown": "^0.16.0",
 		"unplugin": "^2.3.10"
 	}
 }
