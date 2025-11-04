@@ -77,11 +77,13 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 			lastKeyRef.current = key;
 			void renderCaptcha();
 		}
+	}, [autoRender, ProviderClass, identifier, options, scriptOptions, renderCaptcha]);
 
+	useEffect(() => {
 		return () => {
 			controller.cleanup();
 		};
-	}, [autoRender, ProviderClass, identifier, options, scriptOptions, controller, renderCaptcha]);
+	}, [controller]);
 
 	const widgetIdRef = useRef<WidgetId | null>(null);
 	widgetIdRef.current = widgetId;
