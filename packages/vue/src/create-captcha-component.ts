@@ -163,7 +163,7 @@ export function createCaptchaComponent<
 				(cbs) => {
 					controller.setCallbacks(cbs);
 				},
-				{ immediate: true, deep: true },
+				{ immediate: true },
 			);
 
 			const renderCaptcha = async (): Promise<void> => {
