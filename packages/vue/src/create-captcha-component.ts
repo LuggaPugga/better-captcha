@@ -218,7 +218,7 @@ export function createCaptchaComponent<
 			expose({
 				execute: () => controller.getHandle().execute(),
 				reset: () => controller.getHandle().reset(),
-				destroy: () => controller.getHandle().destroy(),
+				destroy: () => controller.cleanup(),
 				render: () => renderCaptcha(),
 				getResponse: () => controller.getHandle().getResponse(),
 				getComponentState: () => state.value,
