@@ -64,8 +64,9 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			await this.updateComplete;
 			const value = this.getValue();
 			if (!this.initialized && this.elementRef.value && value) {
+				this.configureController();
 				if (this.autoRender) {
-					this.initializeCaptcha();
+					void this.controller.render();
 				}
 				this.initialized = true;
 			}
@@ -81,9 +82,9 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			this.initialized = false;
 		}
 
-		protected async initializeCaptcha() {
+		protected configureController(): boolean {
 			const value = this.getValue();
-			if (!value || !this.elementRef.value) return;
+			if (!value || !this.elementRef.value) return false;
 
 			this.controller.attachHost(this.elementRef.value);
 			this.controller.setIdentifier(value);
@@ -106,6 +107,11 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			};
 
 			this.controller.setCallbacks(callbacks);
+			return true;
+		}
+
+		protected async initializeCaptcha() {
+			if (!this.configureController()) return;
 			await this.controller.render();
 		}
 
