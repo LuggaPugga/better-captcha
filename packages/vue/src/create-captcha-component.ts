@@ -110,6 +110,7 @@ export function createCaptchaComponent<
 
 			const unsubscribeState = controller.onStateChange((newState) => {
 				state.value = newState;
+				widgetId.value = controller.getWidgetId();
 			});
 
 			watch(
