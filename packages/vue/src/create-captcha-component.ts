@@ -71,7 +71,7 @@ export function createCaptchaComponent<
 		},
 		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
-			const state = ref<CaptchaState>({ loading: props.autoRender ?? true, error: null, ready: false });
+			const state = ref<CaptchaState>({ loading: false, error: null, ready: false });
 			const widgetId = ref<WidgetId | null>(null);
 			let hasRendered = false;
 
