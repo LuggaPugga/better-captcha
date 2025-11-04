@@ -6,23 +6,10 @@ import type {
 	ProviderConfig,
 	ScriptOptions,
 } from "@better-captcha/core";
+import { CaptchaController } from "@better-captcha/core";
 import { html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
-import { CaptchaLifecycle } from "./use-captcha-lifecycle";
-
-const defaultHandle: CaptchaHandle = {
-	execute: async () => {},
-	reset: () => {},
-	destroy: () => {},
-	render: async () => {},
-	getResponse: () => "",
-	getComponentState: () => ({
-		loading: false,
-		error: null,
-		ready: false,
-	}),
-};
 
 type CaptchaElement<THandle> = CustomElementConstructor & {
 	new (): LitElement & { getHandle: () => THandle };
@@ -32,6 +19,8 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
 	elementName: string = "better-captcha",
 ): CaptchaElement<THandle> {
+	const ProviderClassRef = ProviderClass;
+
 	class CaptchaComponent extends LitElement {
 		@property({ attribute: "sitekey" }) sitekey?: string;
 		@property({ attribute: "endpoint" }) endpoint?: string;
@@ -49,9 +38,18 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		};
 
 		protected elementRef: Ref<HTMLDivElement> = createRef();
-		protected provider: Provider<ProviderConfig, TOptions, THandle> | null = null;
-		protected lifecycle: CaptchaLifecycle<TOptions, THandle> | null = null;
+		protected controller: CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>;
 		protected initialized = false;
+
+		constructor() {
+			super();
+			this.controller = new CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>(
+				(id: string, script?: ScriptOptions) => new ProviderClassRef(id, script),
+			);
+			this.controller.onStateChange((state) => {
+				this.captchaState = state;
+			});
+		}
 
 		protected getValue(): string {
 			return this.sitekey || this.endpoint || "";
@@ -66,8 +64,9 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			await this.updateComplete;
 			const value = this.getValue();
 			if (!this.initialized && this.elementRef.value && value) {
+				this.configureController();
 				if (this.autoRender) {
-					this.initializeCaptcha();
+					void this.controller.render();
 				}
 				this.initialized = true;
 			}
@@ -79,19 +78,18 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		protected cleanup() {
-			this.lifecycle?.cleanup();
-			this.lifecycle = null;
-			this.provider = null;
+			this.controller.cleanup();
 			this.initialized = false;
 		}
 
-		protected initializeCaptcha() {
+		protected configureController(): boolean {
 			const value = this.getValue();
-			if (!value || !this.elementRef.value) return;
+			if (!value || !this.elementRef.value) return false;
 
-			this.lifecycle?.cleanup();
-
-			this.provider = new ProviderClass(value, this.scriptOptions);
+			this.controller.attachHost(this.elementRef.value);
+			this.controller.setIdentifier(value);
+			this.controller.setScriptOptions(this.scriptOptions);
+			this.controller.setOptions(this.options);
 
 			const callbacks: CaptchaCallbacks = {
 				onReady: () => {
@@ -108,15 +106,13 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				},
 			};
 
-			this.lifecycle = new CaptchaLifecycle(
-				this.provider,
-				this.options,
-				(state) => {
-					this.captchaState = state;
-				},
-				callbacks,
-			);
-			this.lifecycle.initialize(this.elementRef.value);
+			this.controller.setCallbacks(callbacks);
+			return true;
+		}
+
+		protected async initializeCaptcha() {
+			if (!this.configureController()) return;
+			await this.controller.render();
 		}
 
 		updated(changedProperties: Map<string, unknown>) {
@@ -124,7 +120,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			const identifierChanged = changedProperties.has("sitekey") || changedProperties.has("endpoint");
 			if (this.initialized && identifierChanged && value && this.autoRender) {
 				this.cleanup();
-				this.initializeCaptcha();
+				void this.initializeCaptcha();
 				this.initialized = true;
 			} else if (
 				this.initialized &&
@@ -133,41 +129,21 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				this.autoRender
 			) {
 				this.cleanup();
-				this.initializeCaptcha();
+				void this.initializeCaptcha();
 				this.initialized = true;
 			} else if (this.initialized && changedProperties.has("scriptOptions") && this.autoRender) {
 				this.cleanup();
-				this.initializeCaptcha();
+				void this.initializeCaptcha();
 				this.initialized = true;
 			}
 		}
 
 		getHandle(): THandle {
-			const id = this.lifecycle?.widgetIdRef;
-			const handle = id != null && this.provider ? this.provider.getHandle(id) : (defaultHandle as THandle);
-
-			return {
-				...handle,
-				getComponentState: () => this.captchaState,
-				destroy: () => {
-					if (id != null) {
-						handle.destroy();
-						if (this.lifecycle) {
-							this.lifecycle.widgetIdRef = null;
-						}
-						this.captchaState = { ...this.captchaState, ready: false, error: null };
-					}
-				},
-				render: async () => {
-					if (this.elementRef.value) {
-						this.initializeCaptcha();
-					}
-				},
-			} as THandle;
+			return this.controller.getHandle();
 		}
 
 		render() {
-			const widgetId = this.lifecycle?.widgetIdRef;
+			const widgetId = this.controller.getWidgetId();
 			const elementId =
 				widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading";
 

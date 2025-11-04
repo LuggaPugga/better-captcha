@@ -9,7 +9,6 @@ export default defineConfig({
 		"src/utils/theme.ts",
 		"src/utils/build-plugin-utils.ts",
 		"src/providers/*/index.ts",
-		"src/utils/lifecycle.ts",
 	],
 	platform: "browser",
 	format: "esm",

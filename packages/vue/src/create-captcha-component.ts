@@ -7,14 +7,16 @@ import type {
 	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
-import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
+import { CaptchaController } from "@better-captcha/core";
 import {
 	type Component,
 	computed,
 	defineComponent,
 	h,
+	nextTick,
 	onBeforeUnmount,
 	onMounted,
+	onUnmounted,
 	type PropType,
 	ref,
 	type StyleValue,
@@ -69,25 +71,9 @@ export function createCaptchaComponent<
 		},
 		setup(props, { emit, expose }) {
 			const elementRef = ref<HTMLDivElement>();
-			const state = ref<CaptchaState>({ loading: props.autoRender ?? true, error: null, ready: false });
+			const state = ref<CaptchaState>({ loading: false, error: null, ready: false });
 			const widgetId = ref<WidgetId | null>(null);
-			const buildFallbackHandle = (): THandle & CaptchaHandle =>
-				({
-					execute: async () => {},
-					reset: () => {},
-					destroy: () => {},
-					render: () => renderCaptcha(),
-					getResponse: () => "",
-					getComponentState: () => state.value,
-				}) as THandle & CaptchaHandle;
-			const handle = ref<THandle & CaptchaHandle>(buildFallbackHandle());
-
-			let container: HTMLDivElement | null = null;
-			let provider: TProvider | null = null;
-			let renderToken = 0;
-			let isRendering = false;
 			let hasRendered = false;
-			let pendingRender = false;
 
 			const getIdentifierValue = (): string | undefined => {
 				return identifierProp === "endpoint" ? props.endpoint : props.sitekey;
@@ -96,19 +82,19 @@ export function createCaptchaComponent<
 			const validateIdentifierProp = (): void => {
 				const expectedValue = identifierProp === "endpoint" ? props.endpoint : props.sitekey;
 				const unexpectedValue = identifierProp === "endpoint" ? props.sitekey : props.endpoint;
-				
+
 				if (unexpectedValue !== undefined && unexpectedValue !== null && unexpectedValue !== "") {
 					const error = new Error(
-						`Provider expects '${identifierProp}' prop, but '${identifierProp === "endpoint" ? "sitekey" : "endpoint"}' was provided instead`
+						`Provider expects '${identifierProp}' prop, but '${identifierProp === "endpoint" ? "sitekey" : "endpoint"}' was provided instead`,
 					);
 					state.value = { loading: false, error, ready: false };
 					emit("error", error);
 					return;
 				}
-				
+
 				if (expectedValue === undefined || expectedValue === null || expectedValue === "") {
 					const error = new Error(
-						`Provider requires '${identifierProp}' prop, but it was not provided or is empty`
+						`Provider requires '${identifierProp}' prop, but it was not provided or is empty`,
 					);
 					state.value = { loading: false, error, ready: false };
 					emit("error", error);
@@ -118,133 +104,73 @@ export function createCaptchaComponent<
 
 			const identifier = computed(() => getIdentifierValue());
 
-			const cleanup = (cancelRender = false): void => {
-				if (cancelRender) {
-					renderToken += 1;
-				}
+			const controller = new CaptchaController<TOptions, THandle, TProvider>(
+				(id: string, script?: ScriptOptions) => new ProviderClass(id, script),
+			);
 
-				cleanupWidget(provider, widgetId.value, container);
+			const unsubscribeState = controller.onStateChange((newState) => {
+				state.value = newState;
+				widgetId.value = controller.getWidgetId();
+			});
 
-				container = null;
-				provider = null;
-				widgetId.value = null;
-				handle.value = buildFallbackHandle();
-			};
+			watch(
+				elementRef,
+				(el) => {
+					controller.attachHost(el ?? null);
+				},
+				{ immediate: true },
+			);
 
-			const buildActiveHandle = (): THandle & CaptchaHandle => {
-				if (!provider || widgetId.value == null) {
-					return buildFallbackHandle();
-				}
+			watch(
+				identifier,
+				(id) => {
+					controller.setIdentifier(id);
+				},
+				{ immediate: true },
+			);
 
-				const baseHandle = provider.getHandle(widgetId.value);
-				return {
-					...baseHandle,
-					getComponentState: () => state.value,
-					destroy: () => {
-						baseHandle.destroy();
-						cleanup(true);
-					},
-					render: () => renderCaptcha(),
-				} as THandle & CaptchaHandle;
-			};
+			watch(
+				() => props.scriptOptions,
+				(scriptOpts) => {
+					controller.setScriptOptions(scriptOpts);
+				},
+				{ immediate: true },
+			);
+
+			watch(
+				() => props.options,
+				(opts) => {
+					controller.setOptions(opts);
+				},
+				{ immediate: true, deep: true },
+			);
+
+			const callbacks = computed<CaptchaCallbacks>(() => ({
+				onReady: () => {
+					emit("ready", controller.getHandle());
+				},
+				onSolve: (token: string) => {
+					emit("solve", token);
+				},
+				onError: (err: Error | string) => {
+					const error = err instanceof Error ? err : new Error(String(err));
+					emit("error", error);
+				},
+			}));
+
+			watch(
+				callbacks,
+				(cbs) => {
+					controller.setCallbacks(cbs);
+				},
+				{ immediate: true },
+			);
 
 			const renderCaptcha = async (): Promise<void> => {
-				const host = elementRef.value;
-				if (!host) return;
-
-				const validatedIdentifier = getIdentifierValue();
-				if (!validatedIdentifier) {
-					return;
-				}
-
-				if (isRendering) {
-					pendingRender = true;
-					return;
-				}
-
-				isRendering = true;
-				pendingRender = false;
-				cleanup();
-
-				const token = ++renderToken;
-				const activeProvider = new ProviderClass(validatedIdentifier, props.scriptOptions);
-
-				state.value = { loading: true, error: null, ready: false };
-
-				let mountTarget: HTMLDivElement | null = null;
-
-				try {
-					await activeProvider.init();
-					if (token !== renderToken) {
-						isRendering = false;
-						return;
-					}
-
-					mountTarget = document.createElement("div");
-					host.appendChild(mountTarget);
-
-					const callbacks: CaptchaCallbacks = {
-						onReady: () => {
-							if (token === renderToken) {
-								emit("ready", handle.value);
-							}
-						},
-						onSolve: (solveToken: string) => {
-							if (token === renderToken) {
-								emit("solve", solveToken);
-							}
-						},
-						onError: (err: Error | string) => {
-							if (token === renderToken) {
-								const error = err instanceof Error ? err : new Error(String(err));
-								emit("error", error);
-							}
-						},
-					};
-
-					const id =
-						props.options !== undefined
-							? await activeProvider.render(mountTarget, props.options as TOptions, callbacks)
-							: await activeProvider.render(mountTarget, undefined, callbacks);
-					if (token !== renderToken) {
-						mountTarget.remove();
-						isRendering = false;
-						return;
-					}
-
-					provider = activeProvider;
-					container = mountTarget;
-					widgetId.value = id ?? null;
-					handle.value = buildActiveHandle();
-					state.value = { loading: false, error: null, ready: true };
-				} catch (error) {
-					mountTarget?.remove();
-					if (token !== renderToken) {
-						isRendering = false;
-						return;
-					}
-
-					const err = error instanceof Error ? error : new Error(String(error));
-					console.error("[better-captcha] render:", err);
-					handle.value = buildFallbackHandle();
-					state.value = { loading: false, error: err, ready: false };
-					emit("error", err);
-				} finally {
-					isRendering = false;
-					if (pendingRender) {
-						pendingRender = false;
-						queueMicrotask(() => {
-							void renderCaptcha();
-						});
-					}
-				}
+				if (!elementRef.value || !identifier.value) return;
+				await controller.render();
+				widgetId.value = controller.getWidgetId();
 			};
-
-			onMounted(() => {
-				if (props.autoRender) {
-					void renderCaptcha();
-				}
-			});
 
 			watch(
 				() => state.value.ready,
@@ -266,23 +192,36 @@ export function createCaptchaComponent<
 			watch(
 				[identifier, () => props.options, () => props.scriptOptions],
 				() => {
-					if (props.autoRender && hasRendered) {
+					if (props.autoRender && hasRendered && elementRef.value && identifier.value) {
 						void renderCaptcha();
 					}
 				},
 				{ deep: true },
 			);
 
+			onMounted(async () => {
+				if (props.autoRender) {
+					await nextTick();
+					if (elementRef.value && identifier.value) {
+						void renderCaptcha();
+					}
+				}
+			});
+
 			onBeforeUnmount(() => {
-				cleanup(true);
+				controller.cleanup();
+			});
+
+			onUnmounted(() => {
+				unsubscribeState();
 			});
 
 			expose({
-				execute: () => handle.value.execute(),
-				reset: () => handle.value.reset(),
-				destroy: () => handle.value.destroy(),
+				execute: () => controller.getHandle().execute(),
+				reset: () => controller.getHandle().reset(),
+				destroy: () => controller.cleanup(),
 				render: () => renderCaptcha(),
-				getResponse: () => handle.value.getResponse(),
+				getResponse: () => controller.getHandle().getResponse(),
 				getComponentState: () => state.value,
 			});
 

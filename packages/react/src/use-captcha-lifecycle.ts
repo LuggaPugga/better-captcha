@@ -4,28 +4,30 @@ import type {
 	CaptchaState,
 	Provider,
 	ProviderConfig,
+	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
-import { cleanup as cleanupWidget } from "@better-captcha/core/utils/lifecycle";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { CaptchaController } from "@better-captcha/core";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	provider: Provider<ProviderConfig, TOptions, THandle>,
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
+	identifier: string,
+	scriptOptions: ScriptOptions | undefined,
 	options: TOptions | undefined,
 	autoRender = true,
 	callbacks?: CaptchaCallbacks,
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
-	const widgetIdRef = useRef<WidgetId | null>(null);
-	const containerRef = useRef<HTMLDivElement | null>(null);
 	const lastKeyRef = useRef<string>("");
-	const isRenderingRef = useRef(false);
-	const pendingRenderRef = useRef(false);
-	const callbacksRef = useRef<CaptchaCallbacks | undefined>(callbacks);
 
-	if (callbacksRef.current !== callbacks) {
-		callbacksRef.current = callbacks;
-	}
+	const controller = useMemo(
+		() =>
+			new CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>(
+				(id: string, script?: ScriptOptions) => new ProviderClass(id, script),
+			),
+		[ProviderClass],
+	);
 
 	const [state, setState] = useState<CaptchaState>({
 		loading: autoRender,
@@ -33,68 +35,59 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 		ready: false,
 	});
 
-	const cleanup = useCallback(() => {
-		cleanupWidget(provider, widgetIdRef.current, containerRef.current);
-		widgetIdRef.current = null;
-		containerRef.current = null;
-	}, [provider]);
+	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
+
+	useEffect(() => {
+		const unsubscribe = controller.onStateChange((newState) => {
+			setState(newState);
+			setWidgetId(controller.getWidgetId());
+		});
+		return unsubscribe;
+	}, [controller]);
+
+	useEffect(() => {
+		controller.attachHost(elementRef.current);
+	}, [controller]);
+
+	useEffect(() => {
+		controller.setIdentifier(identifier);
+	}, [controller, identifier]);
+
+	useEffect(() => {
+		controller.setScriptOptions(scriptOptions);
+	}, [controller, scriptOptions]);
+
+	useEffect(() => {
+		controller.setOptions(options);
+	}, [controller, options]);
+
+	useEffect(() => {
+		controller.setCallbacks(callbacks);
+	}, [controller, callbacks]);
 
 	const renderCaptcha = useCallback(async () => {
-		const el = elementRef.current;
-		if (!el) return;
-
-		if (isRenderingRef.current) {
-			pendingRenderRef.current = true;
-			return;
-		}
-
-		isRenderingRef.current = true;
-		pendingRenderRef.current = false;
-		cleanup();
-		setState({ loading: true, error: null, ready: false });
-
-		try {
-			await provider.init();
-
-			const container = document.createElement("div");
-			el.appendChild(container);
-			containerRef.current = container;
-
-			const currentCallbacks = callbacksRef.current;
-			const id = await provider.render(container, options, currentCallbacks);
-			widgetIdRef.current = id ?? null;
-
-			setState({ loading: false, error: null, ready: true });
-			currentCallbacks?.onReady?.();
-		} catch (err) {
-			console.error("[better-captcha] render:", err);
-			cleanup(); // remove container and reset refs
-			const error = err as Error;
-			setState({ loading: false, error, ready: false });
-			callbacksRef.current?.onError?.(error);
-		} finally {
-			isRenderingRef.current = false;
-			if (pendingRenderRef.current) {
-				pendingRenderRef.current = false;
-				queueMicrotask(() => {
-					void renderCaptcha();
-				});
-			}
-		}
-	}, [cleanup, provider, options]);
+		await controller.render();
+	}, [controller]);
 
 	useEffect(() => {
 		if (!autoRender) return;
-		const key = `${provider?.constructor?.name ?? "Provider"}::${JSON.stringify(options ?? null)}`;
+
+		const key = `${ProviderClass.name ?? "Provider"}::${identifier}::${JSON.stringify(options ?? null)}::${JSON.stringify(scriptOptions ?? null)}`;
 		if (lastKeyRef.current !== key) {
 			lastKeyRef.current = key;
 			void renderCaptcha();
 		}
+	}, [autoRender, ProviderClass, identifier, options, scriptOptions, renderCaptcha]);
 
+	const hostElement = elementRef.current;
+	useEffect(() => {
+		controller.attachHost(hostElement);
 		return () => {
-			cleanup();
+			if (hostElement === elementRef.current) {
+				controller.attachHost(null);
+			}
 		};
-	}, [autoRender, provider, options, renderCaptcha, cleanup]);
+	}, [controller, hostElement]);
 
-	return { elementRef, state, widgetIdRef, renderCaptcha, setState };
+	return { elementRef, state, widgetId, renderCaptcha, controller };
 }

@@ -28,9 +28,6 @@ export default defineConfig({
 		assetFileNames: "assets/[name][extname]",
 		preserveModules: false,
 	},
-	external: (id) => {
-		return id === "solid-js" || id.startsWith("@better-captcha/core");
-	},
 	plugins: [
 		unplugin.rolldown(),
 		solid({

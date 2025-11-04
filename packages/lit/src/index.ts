@@ -8,4 +8,3 @@ export type {
 } from "@better-captcha/core";
 
 export { createCaptchaComponent } from "./base-captcha";
-export { CaptchaLifecycle } from "./use-captcha-lifecycle";
