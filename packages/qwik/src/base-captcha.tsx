@@ -7,7 +7,7 @@ import type {
 	ScriptOptions,
 	WidgetId,
 } from "@better-captcha/core";
-import { cleanup } from "@better-captcha/core/utils/lifecycle";
+import { CaptchaController } from "@better-captcha/core";
 import type { NoSerialize, QRL } from "@builder.io/qwik";
 import { $, component$, noSerialize, useComputed$, useSignal, useTask$, useVisibleTask$ } from "@builder.io/qwik";
 import type { CaptchaProps } from "./index";
@@ -19,92 +19,81 @@ export function createCaptchaComponent<
 >(providerFactory$: QRL<(identifier: string, scriptOptions?: ScriptOptions) => TProvider>) {
 	return component$<CaptchaProps<TOptions, THandle>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
-		const provider = useSignal<TProvider | null>(null);
 		const widgetId = useSignal<WidgetId | null>(null);
-		const containerEl = useSignal<HTMLDivElement | null>(null);
 		const state = useSignal<CaptchaState>({ loading: true, error: null, ready: false });
-		const isRendering = useSignal(false);
 		const hasEmittedReady = useSignal(false);
 		const hasEmittedError = useSignal(false);
+		const lastRenderKey = useSignal<string>("");
 
 		const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
 
-		const cleanup$ = $(() => {
-			cleanup(provider.value, widgetId.value, containerEl.value);
-			containerEl.value = null;
-			widgetId.value = null;
-			provider.value = null;
+		const controller = useSignal<NoSerialize<CaptchaController<TOptions, THandle, TProvider>> | null>(null);
+
+		const cleanup$ = $(async () => {
+			const ctrl = controller.value;
+			if (ctrl) {
+				ctrl.cleanup();
+			}
 		});
 
 		const renderCaptcha$ = $(async () => {
 			const el = hostEl.value;
-			if (!el || isRendering.value) return;
+			if (!el) return;
 
-			isRendering.value = true;
-			await cleanup$();
-			state.value = { loading: true, error: null, ready: false };
-			hasEmittedReady.value = false;
-			hasEmittedError.value = false;
-			let resolveRender!: (success: boolean) => void;
-			const renderComplete = new Promise<boolean>((resolve) => {
-				resolveRender = resolve;
-			});
-			try {
-				const currentValue = identifier.value;
-				if (!currentValue) {
-					throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
-				}
-			const newProvider = await providerFactory$(currentValue, props.scriptOptions);
-				await newProvider.init();
+			const currentValue = identifier.value;
+			if (!currentValue) return;
 
-				const container = document.createElement("div");
-				el.appendChild(container);
-				containerEl.value = container;
-
-				const callbacks: CaptchaCallbacks = {
-					onReady: async () => {
-						if (!props.onReady$ || hasEmittedReady.value) return;
-						const success = await renderComplete;
-						if (!success) return;
-						hasEmittedReady.value = true;
-						await props.onReady$(await buildHandle$());
-					},
-					onSolve: async (token: string) => {
-						const onSolve$ = props.onSolve$;
-						if (onSolve$) await onSolve$(token);
-					},
-					onError: async (err: Error | string) => {
-						const onError$ = props.onError$;
-						if (onError$ && !hasEmittedError.value) {
-							hasEmittedError.value = true;
-							const error = err instanceof Error ? err : new Error(String(err));
-							await onError$(error);
-						}
-					},
-				};
-
-				const id = await newProvider.render(container, props.options, callbacks);
-				if (id == null) throw new Error("Captcha render returned null widget id");
-
-				provider.value = newProvider;
-				widgetId.value = id;
-				state.value = { loading: false, error: null, ready: true };
-				resolveRender(true);
-			} catch (err) {
-				const error = err instanceof Error ? err : new Error(String(err));
-				console.error("[better-captcha] render:", error);
-				state.value = { loading: false, error, ready: false };
-				if (props.onError$ && !hasEmittedError.value) {
-					hasEmittedError.value = true;
-					await props.onError$(error);
-				}
-				resolveRender(false);
-			} finally {
-				resolveRender = null!;
-				isRendering.value = false;
+			const oldCtrl = controller.value;
+			if (oldCtrl) {
+				oldCtrl.cleanup();
 			}
 
-			if (state.value.ready && props.onReady$ && !hasEmittedReady.value) {
+			const provider = await providerFactory$(currentValue, props.scriptOptions);
+
+			const factory = () => provider;
+			const ctrl = new CaptchaController<TOptions, THandle, TProvider>(factory);
+			controller.value = noSerialize(ctrl);
+
+			ctrl.onStateChange((newState: CaptchaState) => {
+				state.value = newState;
+				widgetId.value = ctrl.getWidgetId();
+			});
+
+			ctrl.attachHost(el);
+			ctrl.setIdentifier(currentValue);
+			ctrl.setScriptOptions(props.scriptOptions);
+			ctrl.setOptions(props.options);
+
+			const callbacks: CaptchaCallbacks = {
+				onReady: async () => {
+					if (!props.onReady$ || hasEmittedReady.value) return;
+					const success = ctrl.getState().ready;
+					if (!success) return;
+					hasEmittedReady.value = true;
+					await props.onReady$(await buildHandle$());
+				},
+				onSolve: async (token: string) => {
+					const onSolve$ = props.onSolve$;
+					if (onSolve$) await onSolve$(token);
+				},
+				onError: async (err: Error | string) => {
+					const onError$ = props.onError$;
+					if (onError$ && !hasEmittedError.value) {
+						hasEmittedError.value = true;
+						const error = err instanceof Error ? err : new Error(String(err));
+						await onError$(error);
+					}
+				},
+			};
+			ctrl.setCallbacks(callbacks);
+
+			hasEmittedReady.value = false;
+			hasEmittedError.value = false;
+
+			await ctrl.render();
+			widgetId.value = ctrl.getWidgetId();
+
+			if (ctrl.getState().ready && props.onReady$ && !hasEmittedReady.value) {
 				try {
 					hasEmittedReady.value = true;
 					await props.onReady$(await buildHandle$());
@@ -119,10 +108,8 @@ export function createCaptchaComponent<
 		});
 
 		const buildHandle$ = $((): NoSerialize<THandle> => {
-			const p = provider.value;
-			const id = widgetId.value;
-
-			if (!p || id == null) {
+			const ctrl = controller.value;
+			if (!ctrl) {
 				return noSerialize({
 					execute: async () => {},
 					reset: () => {},
@@ -135,15 +122,11 @@ export function createCaptchaComponent<
 				} as THandle);
 			}
 
-			const base = p.getHandle(id) as THandle;
+			const handle = ctrl.getHandle();
 			return noSerialize({
-				...base,
-				destroy: () => {
-					base.destroy();
-					cleanup(provider.value, widgetId.value, containerEl.value);
-					containerEl.value = null;
-					widgetId.value = null;
-					provider.value = null;
+				...handle,
+				destroy: async () => {
+					handle.destroy();
 					state.value = { loading: false, error: null, ready: false };
 				},
 				render: async () => {
@@ -153,17 +136,29 @@ export function createCaptchaComponent<
 			} as THandle);
 		});
 
+		const updateController$ = $(async () => {
+			const ctrl = controller.value;
+			if (ctrl && hostEl.value) {
+				ctrl.attachHost(hostEl.value);
+			}
+		});
+
 		useVisibleTask$(async ({ track, cleanup }) => {
 			track(() => hostEl.value);
 			track(() => identifier.value);
-			track(() => props.options);
 			track(() => props.scriptOptions);
 
 			if (!hostEl.value) return;
 			if (!identifier.value) return;
 
+			await updateController$();
+
 			if (props.autoRender ?? true) {
-				await renderCaptcha$();
+				const renderKey = `${identifier.value}::${JSON.stringify(props.scriptOptions ?? null)}`;
+				if (lastRenderKey.value !== renderKey) {
+					lastRenderKey.value = renderKey;
+					await renderCaptcha$();
+				}
 			}
 
 			cleanup(async () => {
@@ -171,8 +166,17 @@ export function createCaptchaComponent<
 			});
 		});
 
+		useTask$(({ track }) => {
+			track(() => props.options);
+			const ctrl = controller.value;
+			if (ctrl && state.value.ready) {
+				ctrl.setOptions(props.options);
+				void ctrl.render();
+			}
+		});
+
 		useTask$(async ({ track }) => {
-			track(() => provider.value);
+			track(() => controller.value);
 			track(() => widgetId.value);
 			track(() => state.value.ready);
 
