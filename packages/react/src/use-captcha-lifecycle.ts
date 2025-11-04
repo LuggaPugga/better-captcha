@@ -79,14 +79,15 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 		}
 	}, [autoRender, ProviderClass, identifier, options, scriptOptions, renderCaptcha]);
 
+	const hostElement = elementRef.current;
 	useEffect(() => {
+		controller.attachHost(hostElement);
 		return () => {
-			controller.cleanup();
+			if (hostElement === elementRef.current) {
+				controller.attachHost(null);
+			}
 		};
-	}, [controller]);
+	}, [controller, hostElement]);
 
-	const widgetIdRef = useRef<WidgetId | null>(null);
-	widgetIdRef.current = widgetId;
-
-	return { elementRef, state, widgetIdRef, widgetId, renderCaptcha, controller };
+	return { elementRef, state, widgetId, renderCaptcha, controller };
 }
