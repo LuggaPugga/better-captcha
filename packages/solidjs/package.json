@@ -61,7 +61,7 @@
 		}
 	},
 	"peerDependencies": {
-		"typescript": "^5.9.3",
+		"typescript": "^5.0.0",
 		"solid-js": "^1.5.0"
 	},
 	"dependencies": {
