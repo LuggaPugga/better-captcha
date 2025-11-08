@@ -1,7 +1,7 @@
 {
 	"name": "@better-captcha/lit",
 	"description": "Lit wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",
@@ -62,7 +62,7 @@
 		}
 	},
 	"peerDependencies": {
-		"typescript": "^5.9.2",
+		"typescript": "^5.0.0",
 		"lit": "^3.0.0"
 	},
 	"dependencies": {
