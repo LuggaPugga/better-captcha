@@ -2,7 +2,7 @@ import { SiLit, SiNpm, SiQwik, SiReact, SiSolid, SiSvelte, SiVuedotjs } from "@i
 import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
-import { docs } from "fumadocs-mdx:collections/index";
+import { docs } from 'fumadocs-mdx:collections/server';
 
 export const source = loader({
 	baseUrl: "/docs",
