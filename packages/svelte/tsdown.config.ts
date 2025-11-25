@@ -6,7 +6,6 @@ export default defineConfig({
 		"src/index.ts",
 		"src/create-captcha-component.ts",
 		"src/composables/use-captcha.ts",
-		"virtual:better-captcha-providers",
 		"!build-plugin.ts",
 	],
 	platform: "browser",
