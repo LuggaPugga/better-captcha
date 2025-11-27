@@ -110,7 +110,7 @@
         "eslint": "9.39.1",
         "eslint-plugin-qwik": "^1.17.0",
         "globals": "16.5.0",
-        "prettier": "3.6.2",
+        "prettier": "3.7.0",
         "typescript": "5.9.3",
         "typescript-eslint": "8.48.0",
         "typescript-plugin-css-modules": "5.2.0",
@@ -2753,6 +2753,8 @@
     "svgo/commander": ["commander@7.2.0", "", {}, "sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw=="],
 
     "tar/yallist": ["yallist@5.0.0", "", {}, "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw=="],
+
+    "testing-qwik/prettier": ["prettier@3.7.0", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-pBiBj/gjRY9Qpk1b7cDda6Rbwvkaggos779AHQ0Ek/odwDx6xG6DRBxtnp1QmxbuD7pAO8/SQ8vuhtGv9LoLWA=="],
 
     "unenv/mime": ["mime@3.0.0", "", { "bin": { "mime": "cli.js" } }, "sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A=="],
 
