@@ -16,7 +16,7 @@
 		"@vercel/analytics": "^1.5.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"fumadocs-core": "16.2.0",
+		"fumadocs-core": "16.2.1",
 		"fumadocs-mdx": "14.0.4",
 		"fumadocs-typescript": "4.0.13",
 		"fumadocs-ui": "16.2.1",
