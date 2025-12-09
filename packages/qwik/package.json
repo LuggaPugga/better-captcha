@@ -43,7 +43,7 @@
 	},
 	"devDependencies": {
 		"@builder.io/qwik": "1.17.2",
-		"@types/node": "24.10.1",
+		"@types/node": "24.10.2",
 		"typescript": "5.9.3",
 		"unplugin": "^2.3.10",
 		"vite": "7.2.7",
