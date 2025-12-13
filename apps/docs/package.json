@@ -20,10 +20,10 @@
 		"fumadocs-typescript": "4.0.14",
 		"fumadocs-ui": "16.2.4",
 		"lucide-react": "^0.561.0",
-		"next": "^16.0.7",
+		"next": "^16.0.10",
 		"onedollarstats": "^0.0.11",
-		"react": "19.2.1",
-		"react-dom": "19.2.1",
+		"react": "19.2.3",
+		"react-dom": "19.2.3",
 		"shiki": "^3.18.0",
 		"tailwind-merge": "^3.4.0",
 		"ts-morph": "27.0.2"
