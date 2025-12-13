@@ -62,7 +62,7 @@
 	},
 	"peerDependencies": {
 		"typescript": "^5.0.0",
-		"react": "^18.0.0 || ^19.0.0"
+		"react": "^18 || ^19"
 	},
 	"dependencies": {
 		"@better-captcha/core": "workspace:*"
