@@ -47,7 +47,7 @@
 		"typescript": "5.9.3",
 		"unplugin": "^2.3.10",
 		"vite": "7.2.7",
-		"vite-tsconfig-paths": "^5.0.0",
+		"vite-tsconfig-paths": "^6.0.0",
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.56.1",
 		"@biomejs/biome": "^2.0.0",
