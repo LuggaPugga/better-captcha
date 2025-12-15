@@ -75,7 +75,7 @@
 		"@types/node": "25.0.2",
 		"playwright": "^1.56.0",
 		"ts-morph": "^27.0.2",
-		"tsdown": "^0.17.0",
+		"tsdown": "^0.18.0",
 		"unplugin": "^2.3.10",
 		"vue": "^3.3.0"
 	}

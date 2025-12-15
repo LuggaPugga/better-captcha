@@ -175,7 +175,7 @@
       "version": "0.4.0",
       "devDependencies": {
         "ts-morph": "^27.0.2",
-        "tsdown": "^0.17.0",
+        "tsdown": "^0.18.0",
       },
       "peerDependencies": {
         "typescript": "^5.0.0",
@@ -195,7 +195,7 @@
         "@types/node": "25.0.2",
         "playwright": "^1.56.0",
         "ts-morph": "^27.0.2",
-        "tsdown": "^0.17.0",
+        "tsdown": "^0.18.0",
         "unplugin": "^2.3.10",
       },
       "peerDependencies": {
@@ -239,7 +239,7 @@
         "@types/react": "^18.0.0 || ^19.0.0",
         "playwright": "^1.56.0",
         "ts-morph": "^27.0.2",
-        "tsdown": "^0.17.0",
+        "tsdown": "^0.18.0",
         "unplugin": "^2.3.10",
       },
       "peerDependencies": {
@@ -262,7 +262,7 @@
         "rolldown-plugin-solid": "^0.2.1",
         "solid-js": "^1.9.9",
         "ts-morph": "^27.0.2",
-        "tsdown": "^0.17.0",
+        "tsdown": "^0.18.0",
         "unplugin": "^2.3.10",
       },
       "peerDependencies": {
@@ -284,7 +284,7 @@
         "playwright": "^1.56.0",
         "svelte": "^5.0.0",
         "ts-morph": "^27.0.2",
-        "tsdown": "^0.17.0",
+        "tsdown": "^0.18.0",
         "unplugin": "^2.3.10",
       },
       "peerDependencies": {
@@ -315,7 +315,7 @@
         "@types/node": "25.0.2",
         "playwright": "^1.56.0",
         "ts-morph": "^27.0.2",
-        "tsdown": "^0.17.0",
+        "tsdown": "^0.18.0",
         "unplugin": "^2.3.10",
         "vue": "^3.3.0",
       },
@@ -2362,7 +2362,7 @@
 
     "tsconfig-paths": ["tsconfig-paths@4.2.0", "", { "dependencies": { "json5": "^2.2.2", "minimist": "^1.2.6", "strip-bom": "^3.0.0" } }, "sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg=="],
 
-    "tsdown": ["tsdown@0.17.3", "", { "dependencies": { "ansis": "^4.2.0", "cac": "^6.7.14", "defu": "^6.1.4", "empathic": "^2.0.0", "hookable": "^5.5.3", "import-without-cache": "^0.2.3", "obug": "^2.1.1", "rolldown": "1.0.0-beta.53", "rolldown-plugin-dts": "^0.18.3", "semver": "^7.7.3", "tinyexec": "^1.0.2", "tinyglobby": "^0.2.15", "tree-kill": "^1.2.2", "unconfig-core": "^7.4.2", "unrun": "^0.2.19" }, "peerDependencies": { "@arethetypeswrong/core": "^0.18.1", "@vitejs/devtools": "^0.0.0-alpha.19", "publint": "^0.3.0", "typescript": "^5.0.0", "unplugin-lightningcss": "^0.4.0", "unplugin-unused": "^0.5.0" }, "optionalPeers": ["@arethetypeswrong/core", "@vitejs/devtools", "publint", "typescript", "unplugin-lightningcss", "unplugin-unused"], "bin": { "tsdown": "dist/run.mjs" } }, "sha512-bgLgTog+oyadDTr9SZ57jZtb+A4aglCjo3xgJrkCDxbzcQl2l2iDDr4b06XHSQHwyDNIhYFDgPRhuu1wL3pNsw=="],
+    "tsdown": ["tsdown@0.18.0", "", { "dependencies": { "ansis": "^4.2.0", "cac": "^6.7.14", "defu": "^6.1.4", "empathic": "^2.0.0", "hookable": "^5.5.3", "import-without-cache": "^0.2.3", "obug": "^2.1.1", "rolldown": "1.0.0-beta.53", "rolldown-plugin-dts": "^0.18.3", "semver": "^7.7.3", "tinyexec": "^1.0.2", "tinyglobby": "^0.2.15", "tree-kill": "^1.2.2", "unconfig-core": "^7.4.2", "unrun": "^0.2.19" }, "peerDependencies": { "@arethetypeswrong/core": "^0.18.1", "@vitejs/devtools": "^0.0.0-alpha.19", "publint": "^0.3.0", "typescript": "^5.0.0", "unplugin-lightningcss": "^0.4.0", "unplugin-unused": "^0.5.0" }, "optionalPeers": ["@arethetypeswrong/core", "@vitejs/devtools", "publint", "typescript", "unplugin-lightningcss", "unplugin-unused"], "bin": { "tsdown": "dist/run.mjs" } }, "sha512-Yotdh3NzizysnqR96xfpHFYtEntk1cZvSRHz8A+Pn3ZHNdTQa4fBQxh6HHzWZwfjdQv47xb7GCv6vEWMtxBirw=="],
 
     "tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
