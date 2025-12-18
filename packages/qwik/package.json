@@ -42,7 +42,7 @@
 		"@better-captcha/core": "workspace:*"
 	},
 	"devDependencies": {
-		"@builder.io/qwik": "1.17.2",
+		"@builder.io/qwik": "1.18.0",
 		"@types/node": "25.0.2",
 		"typescript": "5.9.3",
 		"unplugin": "^2.3.10",
