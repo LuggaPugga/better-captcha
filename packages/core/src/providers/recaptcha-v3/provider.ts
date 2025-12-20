@@ -63,7 +63,10 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		const cached = this.tokenCache.get(cacheKey);
 		const now = Date.now();
 
-		if (cached && now - cached.timestamp < this.TOKEN_CACHE_DURATION) {
+		if (cached && now - cached.timestamp < this.TOKEN_CACHE_DURATION && cached.token) {
+			if (callbacks?.onReady) {
+				queueMicrotask(() => callbacks.onReady?.());
+			}
 			if (callbacks?.onSolve) {
 				queueMicrotask(() => callbacks.onSolve?.(cached.token));
 			}
@@ -76,6 +79,10 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 					const token = await window.grecaptcha.execute(this.identifier, {
 						action: options.action,
 					});
+
+					if (!token || typeof token !== "string" || token.trim() === "") {
+						throw new Error("reCAPTCHA v3 returned an invalid token");
+					}
 
 					const tokenTimestamp = Date.now();
 					this.tokenCache.set(cacheKey, {
