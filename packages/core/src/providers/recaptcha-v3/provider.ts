@@ -133,13 +133,19 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		}
 	}
 
-	destroy(widgetId: string) {
-		this.tokenCache.delete(widgetId);
-	}
-
 	getResponse(widgetId: string): string {
 		const cached = this.tokenCache.get(widgetId);
-		return cached?.token ?? "";
+		if (!cached) {
+			return "";
+		}
+		
+		const now = Date.now();
+		if (now - cached.timestamp >= this.TOKEN_CACHE_DURATION) {
+			this.tokenCache.delete(widgetId);
+			return "";
+		}
+		
+		return cached.token;
 	}
 
 	getHandle(widgetId: string): ReCaptchaV3Handle {
