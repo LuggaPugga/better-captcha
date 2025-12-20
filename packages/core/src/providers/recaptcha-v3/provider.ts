@@ -77,9 +77,10 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 						action: options.action,
 					});
 
+					const tokenTimestamp = Date.now();
 					this.tokenCache.set(cacheKey, {
 						token,
-						timestamp: now,
+						timestamp: tokenTimestamp,
 					});
 
 					if (callbacks?.onReady) {
