@@ -32,6 +32,7 @@ export const createPlaywrightConfig = ({ baseURL, command }: PlaywrightConfigOpt
 			},
 			{
 				name: "webkit",
+				testIgnore: ["captcha-fox.spec.ts"],
 				use: {
 					...devices["Desktop Safari"],
 				},
