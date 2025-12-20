@@ -2,9 +2,6 @@
 
 Framework-agnostic wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors without touching your UI.
 
-> [!WARNING]
-> This library is in early development and is not production ready yet. Expect breaking API changes while the provider surface stabilises.
-
 ## Installation
 
 Install the package for your framework:
