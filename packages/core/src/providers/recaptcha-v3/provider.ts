@@ -138,13 +138,13 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		if (!cached) {
 			return "";
 		}
-		
+
 		const now = Date.now();
 		if (now - cached.timestamp >= this.TOKEN_CACHE_DURATION) {
 			this.tokenCache.delete(widgetId);
 			return "";
 		}
-		
+
 		return cached.token;
 	}
 
