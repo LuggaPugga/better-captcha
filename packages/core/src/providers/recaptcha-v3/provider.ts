@@ -115,14 +115,22 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 
 	async execute(widgetId: string): Promise<void> {
 		const action = widgetId;
-		const token = await window.grecaptcha.execute(this.identifier, {
-			action,
-		});
+		try {
+			const token = await window.grecaptcha.execute(this.identifier, {
+				action,
+			});
 
-		this.tokenCache.set(widgetId, {
-			token,
-			timestamp: Date.now(),
-		});
+			if (!token || typeof token !== "string" || token.trim() === "") {
+				throw new Error("reCAPTCHA v3 returned an invalid token");
+			}
+
+			this.tokenCache.set(widgetId, {
+				token,
+				timestamp: Date.now(),
+			});
+		} catch (error) {
+			throw error instanceof Error ? error : new Error("reCAPTCHA v3 execution failed");
+		}
 	}
 
 	destroy(widgetId: string) {
