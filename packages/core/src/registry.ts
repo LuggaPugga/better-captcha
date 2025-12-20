@@ -5,6 +5,7 @@ import { HCaptchaProvider } from "./providers/hcaptcha";
 import { PrivateCaptchaProvider } from "./providers/private-captcha";
 import { ProsopoProvider } from "./providers/prosopo";
 import { ReCaptchaProvider } from "./providers/recaptcha";
+import { ReCaptchaV3Provider } from "./providers/recaptcha-v3";
 import { TurnstileProvider } from "./providers/turnstile";
 
 export interface ProviderMetadata {
@@ -85,6 +86,15 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		extraTypes: [],
 	},
 	{
+		name: "recaptcha-v3",
+		componentName: "ReCaptchaV3",
+		providerClassName: "ReCaptchaV3Provider",
+		handleType: "ReCaptchaV3Handle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"element" | "sitekey"',
+		extraTypes: [],
+	},
+	{
 		name: "turnstile",
 		componentName: "Turnstile",
 		providerClassName: "TurnstileProvider",
@@ -103,6 +113,7 @@ export const PROVIDER_CLASSES = {
 	PrivateCaptchaProvider,
 	ProsopoProvider,
 	ReCaptchaProvider,
+	ReCaptchaV3Provider,
 	TurnstileProvider,
 } as const;
 
@@ -113,6 +124,7 @@ export type { HCaptchaHandle } from "./providers/hcaptcha";
 export type { PrivateCaptchaHandle } from "./providers/private-captcha";
 export type { ProsopoHandle } from "./providers/prosopo";
 export type { ReCaptchaHandle } from "./providers/recaptcha";
+export type { ReCaptchaV3Handle } from "./providers/recaptcha-v3";
 export type { TurnstileHandle } from "./providers/turnstile";
 
 export function getProviderMetadata(name: string): ProviderMetadata | undefined {

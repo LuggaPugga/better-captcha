@@ -3,6 +3,7 @@ import { customElement, state } from "lit/decorators.js";
 import "./turnstile-test.js";
 import "./hcaptcha-test.js";
 import "./recaptcha-test.js";
+import "./recaptcha-v3-test.js";
 import "./friendly-captcha-test.js";
 import "./private-captcha-test.js";
 import "./captcha-fox-test.js";
@@ -23,6 +24,7 @@ export class App extends LitElement {
 		{ key: "turnstile", name: "Turnstile" },
 		{ key: "hcaptcha", name: "hCaptcha" },
 		{ key: "recaptcha", name: "reCAPTCHA" },
+		{ key: "recaptcha-v3", name: "reCAPTCHA v3" },
 		{ key: "friendly-captcha", name: "Friendly Captcha" },
 		{ key: "private-captcha", name: "Private Captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox" },
@@ -57,6 +59,7 @@ export class App extends LitElement {
 					${this.currentProvider === "turnstile" ? html`<turnstile-test></turnstile-test>` : ""}
 					${this.currentProvider === "hcaptcha" ? html`<hcaptcha-test></hcaptcha-test>` : ""}
 					${this.currentProvider === "recaptcha" ? html`<recaptcha-test></recaptcha-test>` : ""}
+					${this.currentProvider === "recaptcha-v3" ? html`<recaptcha-v3-test></recaptcha-v3-test>` : ""}
 					${this.currentProvider === "friendly-captcha" ? html`<friendly-captcha-test></friendly-captcha-test>` : ""}
 					${this.currentProvider === "private-captcha" ? html`<private-captcha-test></private-captcha-test>` : ""}
 					${this.currentProvider === "captcha-fox" ? html`<captcha-fox-test></captcha-fox-test>` : ""}

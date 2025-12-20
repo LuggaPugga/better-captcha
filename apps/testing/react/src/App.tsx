@@ -6,6 +6,7 @@ import { HCaptchaTest } from "./hcaptcha-test";
 import { PrivateCaptchaTest } from "./private-captcha-test";
 import { ProsopoTest } from "./prosopo-test";
 import { RecaptchaTest } from "./recaptcha-test";
+import { RecaptchaV3Test } from "./recaptcha-v3-test";
 import { TurnstileTest } from "./turnstile-test";
 
 export function App() {
@@ -15,6 +16,7 @@ export function App() {
 		{ key: "turnstile", name: "Turnstile", path: "/turnstile" },
 		{ key: "hcaptcha", name: "hCaptcha", path: "/hcaptcha" },
 		{ key: "recaptcha", name: "reCAPTCHA", path: "/recaptcha" },
+		{ key: "recaptcha-v3", name: "reCAPTCHA v3", path: "/recaptcha-v3" },
 		{ key: "friendly-captcha", name: "Friendly Captcha", path: "/friendly-captcha" },
 		{ key: "private-captcha", name: "Private Captcha", path: "/private-captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
@@ -44,6 +46,7 @@ export function App() {
 				{currentProvider === "turnstile" && <TurnstileTest />}
 				{currentProvider === "hcaptcha" && <HCaptchaTest />}
 				{currentProvider === "recaptcha" && <RecaptchaTest />}
+				{currentProvider === "recaptcha-v3" && <RecaptchaV3Test />}
 				{currentProvider === "friendly-captcha" && <FriendlyCaptchaTest />}
 				{currentProvider === "private-captcha" && <PrivateCaptchaTest />}
 				{currentProvider === "captcha-fox" && <CaptchaFoxTest />}

@@ -1,0 +1,101 @@
+---
+title: ReCaptcha v3
+description: Google's invisible, score-based bot protection service
+---
+
+import { ReCaptchaV3Playground } from "../../../src/components/recaptcha-v3-playground";
+
+## About ReCaptcha v3
+
+Google reCAPTCHA v3 is an invisible CAPTCHA service that runs in the background and provides a risk score (0.0 to 1.0) for each user interaction. Unlike v2, it doesn't interrupt users with challenges but instead analyzes their behavior to determine if they're human or bot.
+
+For more information, visit the [official Google reCAPTCHA v3 documentation](https://developers.google.com/recaptcha/docs/v3).
+
+## Showcase
+<ReCaptchaV3Playground />
+
+## Usage
+
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptchaV3 } from "@better-captcha/react/provider/recaptcha-v3";
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptchaV3 } from "@better-captcha/qwik/provider/recaptcha-v3";
+
+  export default component$(() => (
+    <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptchaV3 } from "@better-captcha/solidjs/provider/recaptcha-v3";
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptchaV3
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      :options="{ action: 'submit' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { ReCaptchaV3 } from "@better-captcha/vue/provider/recaptcha-v3";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptchaV3 from "@better-captcha/svelte/provider/recaptcha-v3";
+  </script>
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { ReCaptchaV3 } from "@better-captcha/lit/provider/recaptcha-v3";
+  ```
+
+  ```html
+  <recaptcha-v3-captcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" .options={{ action: "submit" }}></recaptcha-v3-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Provider Options
+
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha-v3/types.d.ts" name="RenderParameters" />
+
+### Imperative Handle
+
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha-v3/provider.ts" name="ReCaptchaV3Handle" />
+
+## Best Practices
+
+- **Use Meaningful Actions**: Use descriptive action names (e.g., "login", "submit", "register") to track different user interactions
+- **Verify Server-Side**: Always verify the response token on your backend and check the score
+- **Set Score Threshold**: Decide on a score threshold (typically 0.5) for accepting submissions
+- **Handle Errors Gracefully**: Always implement the `onError` callback to handle network failures
+- **Token Caching**: The provider automatically caches tokens for 2 minutes to reduce API calls
+- **Multiple Actions**: Use different actions for different pages/interactions to get better analytics
+

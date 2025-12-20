@@ -7,6 +7,7 @@ import { HCaptchaTest } from "../components/hcaptcha-test";
 import { PrivateCaptchaTest } from "../components/private-captcha-test";
 import { ProsopoTest } from "../components/prosopo-test";
 import { RecaptchaTest } from "../components/recaptcha-test";
+import { RecaptchaV3Test } from "../components/recaptcha-v3-test";
 import { TurnstileTest } from "../components/turnstile-test";
 
 export default component$(() => {
@@ -16,6 +17,7 @@ export default component$(() => {
 		{ key: "turnstile", name: "Turnstile", path: "/turnstile" },
 		{ key: "hcaptcha", name: "hCaptcha", path: "/hcaptcha" },
 		{ key: "recaptcha", name: "reCAPTCHA", path: "/recaptcha" },
+		{ key: "recaptcha-v3", name: "reCAPTCHA v3", path: "/recaptcha-v3" },
 		{ key: "friendly-captcha", name: "Friendly Captcha", path: "/friendly-captcha" },
 		{ key: "private-captcha", name: "Private Captcha", path: "/private-captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
@@ -47,6 +49,7 @@ export default component$(() => {
 				{currentProvider.value === "turnstile" && <TurnstileTest />}
 				{currentProvider.value === "hcaptcha" && <HCaptchaTest />}
 				{currentProvider.value === "recaptcha" && <RecaptchaTest />}
+				{currentProvider.value === "recaptcha-v3" && <RecaptchaV3Test />}
 				{currentProvider.value === "friendly-captcha" && <FriendlyCaptchaTest />}
 				{currentProvider.value === "private-captcha" && <PrivateCaptchaTest />}
 				{currentProvider.value === "captcha-fox" && <CaptchaFoxTest />}

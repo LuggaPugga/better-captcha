@@ -13,6 +13,7 @@ export default defineConfig({
 	platform: "browser",
 	format: "esm",
 	dts: true,
+	clean: true,
 	outDir: "./dist",
 	ignoreWatch: [".turbo"],
 	external: ["ts-morph"],
