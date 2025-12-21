@@ -54,6 +54,24 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		return url.toString();
 	}
 
+	private validateToken(token: unknown): string {
+		if (!token || typeof token !== "string" || token.trim() === "") {
+			throw new Error("reCAPTCHA v3 returned an invalid token");
+		}
+		return token;
+	}
+
+	private async executeToken(action: string): Promise<string> {
+		const token = await window.grecaptcha.execute(this.identifier, {
+			action,
+		});
+		return this.validateToken(token);
+	}
+
+	private isTokenValid(cached: TokenCache | undefined, now: number): cached is TokenCache {
+		return !!cached && now - cached.timestamp < this.TOKEN_CACHE_DURATION && !!cached.token;
+	}
+
 	async render(_element: HTMLElement, options?: RenderParameters, callbacks?: CaptchaCallbacks): Promise<string> {
 		if (!options?.action) {
 			throw new Error("reCAPTCHA v3 requires an 'action' parameter");
@@ -63,7 +81,7 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		const cached = this.tokenCache.get(cacheKey);
 		const now = Date.now();
 
-		if (cached && now - cached.timestamp < this.TOKEN_CACHE_DURATION && cached.token) {
+		if (this.isTokenValid(cached, now)) {
 			if (callbacks?.onReady) {
 				queueMicrotask(() => callbacks.onReady?.());
 			}
@@ -76,18 +94,11 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		return new Promise<string>((resolve, reject) => {
 			window.grecaptcha.ready(async () => {
 				try {
-					const token = await window.grecaptcha.execute(this.identifier, {
-						action: options.action,
-					});
+					const token = await this.executeToken(options.action);
 
-					if (!token || typeof token !== "string" || token.trim() === "") {
-						throw new Error("reCAPTCHA v3 returned an invalid token");
-					}
-
-					const tokenTimestamp = Date.now();
 					this.tokenCache.set(cacheKey, {
 						token,
-						timestamp: tokenTimestamp,
+						timestamp: Date.now(),
 					});
 
 					if (callbacks?.onReady) {
@@ -114,15 +125,8 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 	}
 
 	async execute(widgetId: string): Promise<void> {
-		const action = widgetId;
 		try {
-			const token = await window.grecaptcha.execute(this.identifier, {
-				action,
-			});
-
-			if (!token || typeof token !== "string" || token.trim() === "") {
-				throw new Error("reCAPTCHA v3 returned an invalid token");
-			}
+			const token = await this.executeToken(widgetId);
 
 			this.tokenCache.set(widgetId, {
 				token,
@@ -131,6 +135,10 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		} catch (error) {
 			throw error instanceof Error ? error : new Error("reCAPTCHA v3 execution failed");
 		}
+	}
+
+	destroy(widgetId: string) {
+		this.tokenCache.delete(widgetId);
 	}
 
 	getResponse(widgetId: string): string {
