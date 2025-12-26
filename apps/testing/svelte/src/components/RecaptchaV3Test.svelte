@@ -1,12 +1,11 @@
 <script lang="ts">
 	import type { ReCaptchaV3Handle, RenderParameters } from "@better-captcha/svelte/provider/recaptcha-v3";
 	import ReCaptchaV3 from "@better-captcha/svelte/provider/recaptcha-v3";
-	import { writable } from "svelte/store";
 
 	let captchaRef: ReCaptchaV3 | undefined;
-	const response = writable<string | null>(null);
-	const error = writable<Error | null>(null);
-	const solved = writable<boolean>(false);
+	let response = $state<string | null>(null);
+	let error = $state<Error | null>(null);
+	let solved = $state<boolean>(false);
 
 	let options = $state<RenderParameters>({
 		action: "submit",
@@ -17,12 +16,12 @@
 	}
 
 	function onError(err: Error) {
-		error.set(err);
+		error = err;
 		console.error("Captcha error:", err);
 	}
 
 	function onSolve(token: string) {
-		solved.set(true);
+		solved = true;
 		console.log("Captcha solved with token:", token);
 	}
 
@@ -32,7 +31,7 @@
 
 	function handleReset() {
 		captchaRef?.reset();
-		response.set(null);
+		response = null;
 	}
 
 	async function handleExecute() {
@@ -45,7 +44,7 @@
 
 	function handleGetResponse() {
 		const captchaResponse = captchaRef?.getResponse() || "No response";
-		response.set(captchaResponse);
+		response = captchaResponse;
 	}
 
 	function handleChangeAction() {
@@ -66,7 +65,7 @@
 		onerror={onError}
 		onSolve={onSolve}
 	/>
-	{#if $solved}
+	{#if solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}
 	<div style="margin-top: 10px">
@@ -77,11 +76,11 @@
 		<button type="button" onclick={handleGetResponse}>Get Response</button>
 		<button type="button" onclick={handleChangeAction}>Change Action</button>
 	</div>
-	{#if $response}
-		<p id="captcha-response">{$response}</p>
+	{#if response}
+		<p id="captcha-response">{response}</p>
 	{/if}
-	{#if $error}
-		<p style="color: red">Error: {$error.message}</p>
+	{#if error}
+		<p style="color: red">Error: {error.message}</p>
 	{/if}
 </div>
 
