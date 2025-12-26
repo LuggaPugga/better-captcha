@@ -8,6 +8,7 @@
 	import PrivateCaptchaTest from "./components/PrivateCaptchaTest.svelte";
 	import ProsopoTest from "./components/ProsopoTest.svelte";
 	import RecaptchaTest from "./components/RecaptchaTest.svelte";
+	import RecaptchaV3Test from "./components/RecaptchaV3Test.svelte";
 	import TurnstileTest from "./components/TurnstileTest.svelte";
 
 	const currentProvider = writable("turnstile");
@@ -16,6 +17,7 @@
 		{ key: "turnstile", name: "Turnstile" },
 		{ key: "hcaptcha", name: "hCaptcha" },
 		{ key: "recaptcha", name: "reCAPTCHA" },
+		{ key: "recaptcha-v3", name: "reCAPTCHA v3" },
 		{ key: "friendly-captcha", name: "Friendly Captcha" },
 		{ key: "private-captcha", name: "Private Captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox" },
@@ -48,6 +50,8 @@
 			<HCaptchaTest />
 		{:else if $currentProvider === "recaptcha"}
 			<RecaptchaTest />
+		{:else if $currentProvider === "recaptcha-v3"}
+			<RecaptchaV3Test />
 		{:else if $currentProvider === "friendly-captcha"}
 			<FriendlyCaptchaTest />
 		{:else if $currentProvider === "private-captcha"}

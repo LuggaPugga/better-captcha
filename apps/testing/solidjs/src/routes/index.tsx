@@ -9,6 +9,7 @@ import { HCaptchaTest } from "../components/hcaptcha-test";
 import { PrivateCaptchaTest } from "../components/private-captcha-test";
 import { ProsopoTest } from "../components/prosopo-test";
 import { RecaptchaTest } from "../components/recaptcha-test";
+import { RecaptchaV3Test } from "../components/recaptcha-v3-test";
 import { TurnstileTest } from "../components/turnstile-test";
 
 export default clientOnly(async () => ({ default: Home }), { lazy: true });
@@ -20,6 +21,7 @@ export function Home() {
 		{ key: "turnstile", name: "Turnstile", path: "/turnstile" },
 		{ key: "hcaptcha", name: "hCaptcha", path: "/hcaptcha" },
 		{ key: "recaptcha", name: "reCAPTCHA", path: "/recaptcha" },
+		{ key: "recaptcha-v3", name: "reCAPTCHA v3", path: "/recaptcha-v3" },
 		{ key: "friendly-captcha", name: "Friendly Captcha", path: "/friendly-captcha" },
 		{ key: "private-captcha", name: "Private Captcha", path: "/private-captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
@@ -50,6 +52,7 @@ export function Home() {
 				{currentProvider() === "turnstile" && <TurnstileTest />}
 				{currentProvider() === "hcaptcha" && <HCaptchaTest />}
 				{currentProvider() === "recaptcha" && <RecaptchaTest />}
+				{currentProvider() === "recaptcha-v3" && <RecaptchaV3Test />}
 				{currentProvider() === "friendly-captcha" && <FriendlyCaptchaTest />}
 				{currentProvider() === "private-captcha" && <PrivateCaptchaTest />}
 				{currentProvider() === "captcha-fox" && <CaptchaFoxTest />}

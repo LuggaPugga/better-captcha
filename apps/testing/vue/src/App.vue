@@ -19,6 +19,7 @@
 			<TurnstileTest v-if="currentProvider === 'turnstile'" />
 			<HCaptchaTest v-else-if="currentProvider === 'hcaptcha'" />
 			<RecaptchaTest v-else-if="currentProvider === 'recaptcha'" />
+			<RecaptchaV3Test v-else-if="currentProvider === 'recaptcha-v3'" />
 			<FriendlyCaptchaTest v-else-if="currentProvider === 'friendly-captcha'" />
 			<PrivateCaptchaTest v-else-if="currentProvider === 'private-captcha'" />
 			<CaptchaFoxTest v-else-if="currentProvider === 'captcha-fox'" />
@@ -39,6 +40,7 @@
 	import PrivateCaptchaTest from "./components/PrivateCaptchaTest.vue";
 	import ProsopoTest from "./components/ProsopoTest.vue";
 	import RecaptchaTest from "./components/RecaptchaTest.vue";
+	import RecaptchaV3Test from "./components/RecaptchaV3Test.vue";
 	import TurnstileTest from "./components/TurnstileTest.vue";
 
 	const currentProvider = ref("turnstile");
@@ -47,6 +49,7 @@
 		{ key: "turnstile", name: "Turnstile" },
 		{ key: "hcaptcha", name: "hCaptcha" },
 		{ key: "recaptcha", name: "reCAPTCHA" },
+		{ key: "recaptcha-v3", name: "reCAPTCHA v3" },
 		{ key: "friendly-captcha", name: "Friendly Captcha" },
 		{ key: "private-captcha", name: "Private Captcha" },
 		{ key: "captcha-fox", name: "Captcha Fox" },
