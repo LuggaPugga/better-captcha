@@ -1,6 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { clientOnly } from "@solidjs/start";
 import { createSignal } from "solid-js";
+import { AltchaTest } from "../components/altcha-test";
 import { CapWidgetTest } from "../components/cap-widget-test";
 import { CaptchaFoxTest } from "../components/captcha-fox-test";
 import { FriendlyCaptchaTest } from "../components/friendly-captcha-test";
@@ -24,6 +25,7 @@ export function Home() {
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
+		{ key: "altcha", name: "Altcha", path: "/altcha" },
 	];
 
 	return (
@@ -53,6 +55,7 @@ export function Home() {
 				{currentProvider() === "captcha-fox" && <CaptchaFoxTest />}
 				{currentProvider() === "prosopo" && <ProsopoTest />}
 				{currentProvider() === "cap-widget" && <CapWidgetTest />}
+				{currentProvider() === "altcha" && <AltchaTest />}
 			</div>
 		</main>
 	);

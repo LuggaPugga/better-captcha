@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AltchaTest } from "./altcha-test";
 import { CapWidgetTest } from "./cap-widget-test";
 import { CaptchaFoxTest } from "./captcha-fox-test";
 import { FriendlyCaptchaTest } from "./friendly-captcha-test";
@@ -20,6 +21,7 @@ export function App() {
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
+		{ key: "altcha", name: "Altcha", path: "/altcha" },
 	];
 
 	return (
@@ -49,6 +51,7 @@ export function App() {
 				{currentProvider === "captcha-fox" && <CaptchaFoxTest />}
 				{currentProvider === "prosopo" && <ProsopoTest />}
 				{currentProvider === "cap-widget" && <CapWidgetTest />}
+				{currentProvider === "altcha" && <AltchaTest />}
 			</div>
 		</div>
 	);
