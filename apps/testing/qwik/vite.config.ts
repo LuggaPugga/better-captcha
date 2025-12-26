@@ -10,7 +10,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import pkg from "./package.json";
 
 type PkgDep = Record<string, string>;
-const { dependencies = {}, devDependencies = {} } = pkg as any as {
+const { dependencies = {}, devDependencies = {} } = pkg as unknown as {
 	dependencies: PkgDep;
 	devDependencies: PkgDep;
 	[key: string]: unknown;
