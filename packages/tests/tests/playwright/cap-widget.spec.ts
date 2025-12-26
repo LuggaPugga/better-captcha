@@ -54,7 +54,7 @@ test("widget has response", async () => {
 
 test("widget can be reset", async () => {
 	await page.locator("button", { hasText: "Reset" }).first().click();
-	await page.waitForTimeout(100);
+	await page.locator("cap-widget").waitFor({ state: "visible" });
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 	await expect(page.locator("cap-widget")).toBeVisible();
 });
