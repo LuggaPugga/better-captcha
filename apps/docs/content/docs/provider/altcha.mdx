@@ -1,0 +1,107 @@
+---
+title: Altcha
+description: ALTCHA widget provider for bot protection
+---
+
+import { AltchaPlayground } from "../../../src/components/altcha-playground";
+
+## About Altcha
+
+ALTCHA is a privacy-focused, open-source CAPTCHA solution that uses proof-of-work challenges to verify users without tracking or cookies. It provides a lightweight alternative to traditional CAPTCHA services.
+
+For more information, visit the [official ALTCHA documentation](https://altcha.org/docs/widget-integration).
+
+## Showcase
+<AltchaPlayground />
+
+## Usage
+
+Altcha uses an `endpoint` prop instead of `sitekey` to specify the challenge URL endpoint for the CAPTCHA service.
+
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { Altcha } from "@better-captcha/react/provider/altcha";
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { Altcha } from "@better-captcha/qwik/provider/altcha";
+
+  export default component$(() => (
+    <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { Altcha } from "@better-captcha/solidjs/provider/altcha";
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <Altcha
+      endpoint="https://example.com/api/v1/challenge"
+      :options="{}"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { Altcha } from "@better-captcha/vue/provider/altcha";
+  </script>
+  ```
+  </Tab>
+  
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import Altcha from "@better-captcha/svelte/provider/altcha";
+  </script>
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Lit">
+  ```ts
+  import { Altcha } from "@better-captcha/lit/provider/altcha";
+  ```
+
+  ```html
+  <altcha-captcha endpoint="https://example.com/api/v1/challenge"></altcha-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Provider Options
+
+<AutoTypeTable path="../../packages/core/src/providers/altcha/index.ts" name="RenderParameters" />
+
+### Imperative Handle
+
+<AutoTypeTable path="../../packages/core/src/providers/altcha/provider.ts" name="AltchaHandle" />
+
+<Callout type="info">
+Altcha uses an `endpoint` prop instead of `sitekey` to specify the challenge URL endpoint for the CAPTCHA service. When using Sentinel for challenge generation, configure the widget with your Sentinel endpoint URL.
+</Callout>
+
+## Best Practices
+
+- **Endpoint Configuration**: Ensure your challenge endpoint is properly configured and accessible
+- **Proof-of-Work**: Altcha uses client-side proof-of-work computation - ensure proper server-side validation
+- **Lightweight**: Minimal bundle size (~30 kB GZIPped) compared to other CAPTCHA solutions
+- **Privacy-First**: No tracking, cookies, or user data collection
+- **Open Source**: Benefit from community contributions and transparency
+- **Secure Context**: Requires HTTPS connection due to cryptographic API usage
+- **Internationalization**: Supports 50+ languages with automatic language detection

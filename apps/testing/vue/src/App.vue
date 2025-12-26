@@ -24,12 +24,14 @@
 			<CaptchaFoxTest v-else-if="currentProvider === 'captcha-fox'" />
 			<ProsopoTest v-else-if="currentProvider === 'prosopo'" />
 			<CapWidgetTest v-else-if="currentProvider === 'cap-widget'" />
+			<AltchaTest v-else-if="currentProvider === 'altcha'" />
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { ref } from "vue";
+	import AltchaTest from "./components/AltchaTest.vue";
 	import CapWidgetTest from "./components/CapWidgetTest.vue";
 	import CaptchaFoxTest from "./components/CaptchaFoxTest.vue";
 	import FriendlyCaptchaTest from "./components/FriendlyCaptchaTest.vue";
@@ -50,6 +52,7 @@
 		{ key: "captcha-fox", name: "Captcha Fox" },
 		{ key: "prosopo", name: "Prosopo" },
 		{ key: "cap-widget", name: "CapWidget" },
+		{ key: "altcha", name: "Altcha" },
 	];
 </script>
 

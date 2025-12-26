@@ -1,5 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import "./altcha-test.js";
 import "./turnstile-test.js";
 import "./hcaptcha-test.js";
 import "./recaptcha-test.js";
@@ -28,6 +29,7 @@ export class App extends LitElement {
 		{ key: "captcha-fox", name: "Captcha Fox" },
 		{ key: "prosopo", name: "Prosopo" },
 		{ key: "cap-widget", name: "CapWidget" },
+		{ key: "altcha", name: "Altcha" },
 	];
 
 	render() {
@@ -62,6 +64,7 @@ export class App extends LitElement {
 					${this.currentProvider === "captcha-fox" ? html`<captcha-fox-test></captcha-fox-test>` : ""}
 					${this.currentProvider === "prosopo" ? html`<prosopo-test></prosopo-test>` : ""}
 					${this.currentProvider === "cap-widget" ? html`<cap-widget-test></cap-widget-test>` : ""}
+					${this.currentProvider === "altcha" ? html`<altcha-test></altcha-test>` : ""}
 				</div>
 			</div>
 		`;

@@ -1,5 +1,6 @@
 import { component$, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { AltchaTest } from "../components/altcha-test";
 import { CapWidgetTest } from "../components/cap-widget-test";
 import { CaptchaFoxTest } from "../components/captcha-fox-test";
 import { FriendlyCaptchaTest } from "../components/friendly-captcha-test";
@@ -21,6 +22,7 @@ export default component$(() => {
 		{ key: "captcha-fox", name: "Captcha Fox", path: "/captcha-fox" },
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
+		{ key: "altcha", name: "Altcha", path: "/altcha" },
 	];
 
 	return (
@@ -52,6 +54,7 @@ export default component$(() => {
 				{currentProvider.value === "captcha-fox" && <CaptchaFoxTest />}
 				{currentProvider.value === "prosopo" && <ProsopoTest />}
 				{currentProvider.value === "cap-widget" && <CapWidgetTest />}
+				{currentProvider.value === "altcha" && <AltchaTest />}
 			</div>
 		</>
 	);

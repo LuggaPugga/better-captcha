@@ -1,3 +1,4 @@
+import { AltchaProvider } from "./providers/altcha";
 import { CapWidgetProvider } from "./providers/cap-widget";
 import { CaptchaFoxProvider } from "./providers/captcha-fox";
 import { FriendlyCaptchaProvider } from "./providers/friendly-captcha";
@@ -20,6 +21,16 @@ export interface ProviderMetadata {
 }
 
 export const PROVIDER_REGISTRY: ProviderMetadata[] = [
+	{
+		name: "altcha",
+		componentName: "Altcha",
+		providerClassName: "AltchaProvider",
+		handleType: "AltchaHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"element"',
+		extraTypes: [],
+		identifierProp: "endpoint",
+	},
 	{
 		name: "cap-widget",
 		componentName: "CapWidget",
@@ -96,6 +107,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 ];
 
 export const PROVIDER_CLASSES = {
+	AltchaProvider,
 	CapWidgetProvider,
 	CaptchaFoxProvider,
 	FriendlyCaptchaProvider,
@@ -106,6 +118,7 @@ export const PROVIDER_CLASSES = {
 	TurnstileProvider,
 } as const;
 
+export type { AltchaHandle } from "./providers/altcha";
 export type { CapWidgetHandle } from "./providers/cap-widget";
 export type { CaptchaFoxHandle } from "./providers/captcha-fox";
 export type { FriendlyCaptchaHandle } from "./providers/friendly-captcha";
