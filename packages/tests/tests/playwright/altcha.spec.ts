@@ -30,7 +30,7 @@ test("widget containers rendered", async () => {
 
 test("widget can be executed", async () => {
 	await page.locator("button", { hasText: "Reset" }).first().click();
-	await page.waitForTimeout(100);
+	await page.locator("altcha-widget").waitFor({ state: "visible" });
 	await page.locator("button", { hasText: "Execute" }).first().click();
 	await page.waitForSelector("text=Verification failed. Try again later.", { timeout: 15000 });
 	await expect(page.locator("text=Verification failed. Try again later.")).toBeVisible();
@@ -38,7 +38,7 @@ test("widget can be executed", async () => {
 
 test("widget can be reset", async () => {
 	await page.locator("button", { hasText: "Reset" }).first().click();
-	await page.waitForTimeout(100);
+	await page.locator("altcha-widget").waitFor({ state: "visible" });
 	await expect(page.locator('[id^="better-captcha-"]')).toHaveCount(1);
 	await expect(page.locator("altcha-widget")).toBeVisible();
 });
