@@ -17,7 +17,7 @@
 		"start": "turbo run start"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.10",
+		"@biomejs/biome": "2.3.11",
 		"prettier": "^3.7.4",
 		"prettier-plugin-svelte": "^3.4.1",
 		"ts-morph": "^27.0.2",
