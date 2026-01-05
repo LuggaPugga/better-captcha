@@ -1,10 +1,10 @@
 name: Changesets
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-
+      
 jobs:
   changesets:
     runs-on: ubuntu-latest
