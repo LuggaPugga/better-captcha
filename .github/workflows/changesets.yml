@@ -1,9 +1,6 @@
 name: Changesets
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -14,7 +11,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      id-token: write
 
     steps:
       - name: Checkout code
@@ -30,14 +26,12 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Create Release Pull Request
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: bun run release
           version: bun run version
           commit: "chore: version packages"
           title: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

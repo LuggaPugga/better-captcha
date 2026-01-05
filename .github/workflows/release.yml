@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.5
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build packages
+        run: bun run build:packages
+
+      - name: Get tags before publish
+        id: before
+        run: |
+          git fetch --tags
+          echo "tags=$(git tag --sort=-version:refname | head -20 | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Publish to npm
+        run: |
+          bunx changeset publish
+          git push --tags
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get new tags after publish
+        id: after
+        run: |
+          git fetch --tags
+          NEW_TAGS=$(git tag --sort=-version:refname | head -20)
+          BEFORE_TAGS="${{ steps.before.outputs.tags }}"
+          NEW_TAG_LIST=""
+          for tag in $NEW_TAGS; do
+            if ! echo "$BEFORE_TAGS" | grep -qw "$tag"; then
+              NEW_TAG_LIST="$NEW_TAG_LIST $tag"
+            fi
+          done
+          echo "tags=$NEW_TAG_LIST" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Releases
+        if: steps.after.outputs.tags != ''
+        run: |
+          for tag in ${{ steps.after.outputs.tags }}; do
+            if [ -n "$tag" ]; then
+              PACKAGE_NAME=$(echo "$tag" | sed 's/@better-captcha\///' | cut -d'@' -f1)
+              VERSION=$(echo "$tag" | cut -d'@' -f2)
+              
+              CHANGELOG=""
+              if [ -f "packages/$PACKAGE_NAME/CHANGELOG.md" ]; then
+                CHANGELOG=$(awk -v version="$VERSION" '
+                  /^## \[/ { found=0 }
+                  /^## \[' version '\]/ { found=1; next }
+                  found && /^## \[/ { exit }
+                  found { print }
+                ' "packages/$PACKAGE_NAME/CHANGELOG.md")
+              fi
+              
+              if [ -z "$CHANGELOG" ]; then
+                CHANGELOG="Release $VERSION"
+              fi
+              
+              gh release create "$tag" \
+                --title "$tag" \
+                --notes "$CHANGELOG" \
+                --repo "${{ github.repository }}"
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
