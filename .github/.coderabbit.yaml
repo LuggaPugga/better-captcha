@@ -1,0 +1,14 @@
+reviews:
+  review_status: false
+  poem: false
+  collapse_walkthrough: true
+    
+  auto_review:
+    enabled: true
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "renovate[bot]"
+      - "github-actions[bot]"
+
+chat:
+  auto_reply: false
