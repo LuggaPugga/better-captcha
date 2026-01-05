@@ -1,5 +1,11 @@
 # @better-captcha/lit
 
+## 0.5.2
+
+### Patch Changes
+
+- [`be70ce7`](https://github.com/LuggaPugga/better-captcha/commit/be70ce78224adb20db90c21cabcbe8ee43951a78) Thanks [@LuggaPugga](https://github.com/LuggaPugga)! - fix: add correct building with changesets
+
 ## 0.5.1
 
 ### Patch Changes
