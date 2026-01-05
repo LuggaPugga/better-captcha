@@ -16,7 +16,7 @@
 		"lint": "turbo run lint",
 		"start": "turbo run start",
 		"changeset": "changeset",
-		"version": "changeset version",
+		"version": "changeset version && bun install --no-frozen-lockfile",
 		"release": "bun run build:packages && changeset publish"
 	},
 	"devDependencies": {
