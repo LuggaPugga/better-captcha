@@ -1,0 +1,26 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.2/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "LuggaPugga/better-captcha"
+    }
+  ],
+  "commit": false,
+  "fixed": [],
+  "linked": [
+    [
+      "@better-captcha/core",
+      "@better-captcha/react",
+      "@better-captcha/vue",
+      "@better-captcha/svelte",
+      "@better-captcha/solidjs",
+      "@better-captcha/qwik",
+      "@better-captcha/lit"
+    ]
+  ],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["@better-captcha/tests"]
+}
