@@ -20,7 +20,6 @@ export function createCaptchaComponent<
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const widgetId = useSignal<WidgetId | null>(null);
 		const state = useSignal<CaptchaState>({ loading: false, error: null, ready: false });
-		const hasRendered = useSignal(false);
 		const hasEmittedReady = useSignal(false);
 		const hasEmittedError = useSignal(false);
 
@@ -60,7 +59,6 @@ export function createCaptchaComponent<
 			ctrl.onStateChange((newState: CaptchaState) => {
 				state.value = newState;
 				widgetId.value = ctrl.getWidgetId();
-				if (newState.ready) hasRendered.value = true;
 			});
 
 			ctrl.attachHost(el);
