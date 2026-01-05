@@ -17,7 +17,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		}
 
 		const callbacks = useMemo(() => ({ onReady, onSolve, onError }), [onReady, onSolve, onError]);
-		const { elementRef, state, widgetId, controller } = useCaptchaLifecycle(
+		const { elementRef, widgetId, isLoading, controller } = useCaptchaLifecycle(
 			ProviderClass,
 			identifier,
 			scriptOptions,
@@ -38,7 +38,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				className={className}
 				style={style}
 				aria-live="polite"
-				aria-busy={state.loading}
+				aria-busy={isLoading}
 			/>
 		);
 	});

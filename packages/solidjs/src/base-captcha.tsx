@@ -1,5 +1,4 @@
 import type {
-	CaptchaCallbacks,
 	CaptchaHandle,
 	CaptchaState,
 	Provider,
@@ -8,7 +7,17 @@ import type {
 	WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
-import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, onMount, splitProps } from "solid-js";
+import {
+	batch,
+	createEffect,
+	createMemo,
+	createSignal,
+	type JSX,
+	onCleanup,
+	onMount,
+	splitProps,
+	untrack,
+} from "solid-js";
 import type { CaptchaProps } from "./index";
 
 const BASE_KEYS = [
@@ -32,61 +41,53 @@ export function createCaptchaComponent<
 ): (allProps: CaptchaProps<TOptions, THandle>) => JSX.Element {
 	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
-		const identifier = createMemo<string>(() => props.sitekey || props.endpoint || "");
-		const autoRender = createMemo<boolean>(() => props.autoRender ?? true);
+
+		const identifier = createMemo(() => props.sitekey || props.endpoint || "");
+		const autoRender = createMemo(() => props.autoRender ?? true);
 
 		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
 		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
 		const [state, setState] = createSignal<CaptchaState>({
-			loading: autoRender(),
+			loading: false,
 			error: null,
 			ready: false,
 		});
 
+		const isLoading = createMemo(() => (autoRender() ? state().loading || !state().ready : state().loading));
+
 		let hasRendered = false;
 
 		const controller = new CaptchaController<TOptions, THandle, TProvider>(
-			(id: string, script?: ScriptOptions) => new ProviderClass(id, script),
+			(id, script) => new ProviderClass(id, script),
 		);
 
-		controller.onStateChange((newState) => {
+		const unsubscribe = controller.onStateChange((newState) => {
 			batch(() => {
 				setState(newState);
 				setWidgetId(controller.getWidgetId());
+				if (newState.ready) hasRendered = true;
 			});
 		});
 
 		createEffect(() => {
 			const el = elementRef();
+			const id = identifier();
+			const opts = props.options;
+			const sOpts = props.scriptOptions;
+
 			controller.attachHost(el ?? null);
-		});
+			controller.setIdentifier(id);
+			controller.setScriptOptions(sOpts);
+			controller.setOptions(opts);
 
-		createEffect(() => {
-			controller.setIdentifier(identifier());
-		});
-
-		createEffect(() => {
-			controller.setScriptOptions(props.scriptOptions);
-		});
-
-		createEffect(() => {
-			controller.setOptions(props.options);
-		});
-
-		createEffect(() => {
-			const callbacks: CaptchaCallbacks = {
-				onReady: () => {
-					props.onReady?.(handle());
-				},
-				onSolve: (token: string) => {
-					props.onSolve?.(token);
-				},
+			controller.setCallbacks({
+				onReady: () => props.onReady?.(controller.getHandle()),
+				onSolve: (token: string) => props.onSolve?.(token),
 				onError: (err: Error | string) => {
 					const error = err instanceof Error ? err : new Error(String(err));
 					props.onError?.(error);
 				},
-			};
-			controller.setCallbacks(callbacks);
+			});
 		});
 
 		const renderCaptcha = async () => {
@@ -99,26 +100,21 @@ export function createCaptchaComponent<
 		});
 
 		createEffect(() => {
-			const el = elementRef();
-			const _id = identifier();
-			const _opts = props.options;
-			const _scriptOpts = props.scriptOptions;
-			if (!el || !hasRendered) return;
-			if (autoRender()) void renderCaptcha();
+			identifier();
+			props.options;
+			props.scriptOptions;
+
+			untrack(() => {
+				if (autoRender() && (hasRendered || state().error)) {
+					void renderCaptcha();
+				}
+			});
 		});
 
 		createEffect(() => {
-			if (state().ready) hasRendered = true;
-		});
-
-		const handle = createMemo<THandle>(() => {
+			const h = controller.getHandle();
 			widgetId();
-			return controller.getHandle();
-		});
-
-		createEffect(() => {
-			const h = handle();
-			props.controller?.set(h);
+			untrack(() => props.controller?.set(h));
 		});
 
 		const elementId = createMemo(() =>
@@ -127,6 +123,7 @@ export function createCaptchaComponent<
 
 		onCleanup(() => {
 			controller.cleanup();
+			unsubscribe();
 		});
 
 		return (
@@ -137,7 +134,7 @@ export function createCaptchaComponent<
 				class={props.class}
 				style={props.style}
 				aria-live="polite"
-				aria-busy={state().loading}
+				aria-busy={isLoading()}
 			/>
 		);
 	};

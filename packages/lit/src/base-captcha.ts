@@ -1,11 +1,4 @@
-import type {
-	CaptchaCallbacks,
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-} from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import { html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
@@ -32,7 +25,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		@property({ type: Object }) onError?: (error: Error | string) => void;
 
 		@state() protected captchaState: CaptchaState = {
-			loading: true,
+			loading: false,
 			error: null,
 			ready: false,
 		};
@@ -41,10 +34,14 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		protected controller: CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>;
 		protected initialized = false;
 
+		protected get isLoading(): boolean {
+			return this.autoRender ? this.captchaState.loading || !this.captchaState.ready : this.captchaState.loading;
+		}
+
 		constructor() {
 			super();
 			this.controller = new CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>(
-				(id: string, script?: ScriptOptions) => new ProviderClassRef(id, script),
+				(id, script) => new ProviderClassRef(id, script),
 			);
 			this.controller.onStateChange((state) => {
 				this.captchaState = state;
@@ -91,7 +88,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			this.controller.setScriptOptions(this.scriptOptions);
 			this.controller.setOptions(this.options);
 
-			const callbacks: CaptchaCallbacks = {
+			this.controller.setCallbacks({
 				onReady: () => {
 					this.onReady?.();
 					this.dispatchEvent(new CustomEvent("ready"));
@@ -104,9 +101,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 					this.onError?.(error);
 					this.dispatchEvent(new CustomEvent("error", { detail: { error } }));
 				},
-			};
-
-			this.controller.setCallbacks(callbacks);
+			});
 			return true;
 		}
 
@@ -152,7 +147,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 					${ref(this.elementRef)}
 					id="${elementId}"
 					aria-live="polite"
-					aria-busy="${this.captchaState.loading}"
+					aria-busy="${this.isLoading}"
 				></div>
 			`;
 		}
