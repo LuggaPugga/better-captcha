@@ -18,10 +18,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
-		"prettier": "^3.7.4",
-		"prettier-plugin-svelte": "^3.4.1",
 		"ts-morph": "^27.0.2",
-		"turbo": "^2.7.0",
+		"turbo": "^2.7.2",
 		"typescript": "5.9.3"
 	},
 	"engines": {
