@@ -1,5 +1,4 @@
 import type {
-	CaptchaCallbacks,
 	CaptchaHandle,
 	CaptchaState,
 	Provider,
@@ -16,78 +15,77 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	scriptOptions: ScriptOptions | undefined,
 	options: TOptions | undefined,
 	autoRender = true,
-	callbacks?: CaptchaCallbacks,
+	callbacks?: {
+		onReady?: (handle: THandle) => void;
+		onSolve?: (token: string) => void;
+		onError?: (error: Error) => void;
+	},
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
-	const lastKeyRef = useRef<string>("");
+	const hasRenderedRef = useRef(false);
 
 	const controller = useMemo(
 		() =>
 			new CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>(
-				(id: string, script?: ScriptOptions) => new ProviderClass(id, script),
+				(id, script) => new ProviderClass(id, script),
 			),
 		[ProviderClass],
 	);
 
 	const [state, setState] = useState<CaptchaState>({
-		loading: autoRender,
+		loading: false,
 		error: null,
 		ready: false,
 	});
 
 	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
 
+	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
+
 	useEffect(() => {
 		const unsubscribe = controller.onStateChange((newState) => {
 			setState(newState);
 			setWidgetId(controller.getWidgetId());
+			if (newState.ready) hasRenderedRef.current = true;
 		});
 		return unsubscribe;
 	}, [controller]);
 
 	useEffect(() => {
 		controller.attachHost(elementRef.current);
-	}, [controller]);
-
-	useEffect(() => {
 		controller.setIdentifier(identifier);
-	}, [controller, identifier]);
-
-	useEffect(() => {
 		controller.setScriptOptions(scriptOptions);
-	}, [controller, scriptOptions]);
-
-	useEffect(() => {
 		controller.setOptions(options);
-	}, [controller, options]);
-
-	useEffect(() => {
-		controller.setCallbacks(callbacks);
-	}, [controller, callbacks]);
+		controller.setCallbacks({
+			onReady: () => callbacks?.onReady?.(controller.getHandle()),
+			onSolve: (token: string) => callbacks?.onSolve?.(token),
+			onError: (err: Error | string) => {
+				const error = err instanceof Error ? err : new Error(String(err));
+				callbacks?.onError?.(error);
+			},
+		});
+	}, [controller, identifier, scriptOptions, options, callbacks]);
 
 	const renderCaptcha = useCallback(async () => {
 		await controller.render();
 	}, [controller]);
 
+	const renderKeyRef = useRef("");
 	useEffect(() => {
 		if (!autoRender) return;
-
-		const key = `${ProviderClass.name ?? "Provider"}::${identifier}::${JSON.stringify(options ?? null)}::${JSON.stringify(scriptOptions ?? null)}`;
-		if (lastKeyRef.current !== key) {
-			lastKeyRef.current = key;
+		const key = `${identifier}::${JSON.stringify(options)}::${JSON.stringify(scriptOptions)}`;
+		const shouldRender = hasRenderedRef.current || state.error || renderKeyRef.current !== key;
+		if (shouldRender) {
+			renderKeyRef.current = key;
 			void renderCaptcha();
 		}
-	}, [autoRender, ProviderClass, identifier, options, scriptOptions, renderCaptcha]);
+	}, [autoRender, identifier, options, scriptOptions, renderCaptcha, state.error]);
 
-	const hostElement = elementRef.current;
 	useEffect(() => {
-		controller.attachHost(hostElement);
 		return () => {
-			if (hostElement === elementRef.current) {
-				controller.attachHost(null);
-			}
+			controller.cleanup();
 		};
-	}, [controller, hostElement]);
+	}, [controller]);
 
-	return { elementRef, state, widgetId, renderCaptcha, controller };
+	return { elementRef, state, widgetId, isLoading, renderCaptcha, controller };
 }

@@ -1,5 +1,4 @@
 import type {
-	CaptchaCallbacks,
 	CaptchaHandle,
 	CaptchaState,
 	Provider,
@@ -20,12 +19,15 @@ export function createCaptchaComponent<
 	return component$<CaptchaProps<TOptions, THandle>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const widgetId = useSignal<WidgetId | null>(null);
-		const state = useSignal<CaptchaState>({ loading: true, error: null, ready: false });
+		const state = useSignal<CaptchaState>({ loading: false, error: null, ready: false });
 		const hasEmittedReady = useSignal(false);
 		const hasEmittedError = useSignal(false);
-		const lastRenderKey = useSignal<string>("");
 
 		const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
+		const autoRender = useComputed$(() => props.autoRender ?? true);
+		const isLoading = useComputed$(() =>
+			autoRender.value ? state.value.loading || !state.value.ready : state.value.loading,
+		);
 
 		const controller = useSignal<NoSerialize<CaptchaController<TOptions, THandle, TProvider>> | null>(null);
 
@@ -64,7 +66,7 @@ export function createCaptchaComponent<
 			ctrl.setScriptOptions(props.scriptOptions);
 			ctrl.setOptions(props.options);
 
-			const callbacks: CaptchaCallbacks = {
+			ctrl.setCallbacks({
 				onReady: async () => {
 					if (!props.onReady$ || hasEmittedReady.value) return;
 					const success = ctrl.getState().ready;
@@ -73,19 +75,16 @@ export function createCaptchaComponent<
 					await props.onReady$(await buildHandle$());
 				},
 				onSolve: async (token: string) => {
-					const onSolve$ = props.onSolve$;
-					if (onSolve$) await onSolve$(token);
+					if (props.onSolve$) await props.onSolve$(token);
 				},
 				onError: async (err: Error | string) => {
-					const onError$ = props.onError$;
-					if (onError$ && !hasEmittedError.value) {
+					if (props.onError$ && !hasEmittedError.value) {
 						hasEmittedError.value = true;
 						const error = err instanceof Error ? err : new Error(String(err));
-						await onError$(error);
+						await props.onError$(error);
 					}
 				},
-			};
-			ctrl.setCallbacks(callbacks);
+			});
 
 			hasEmittedReady.value = false;
 			hasEmittedError.value = false;
@@ -153,12 +152,8 @@ export function createCaptchaComponent<
 
 			await updateController$();
 
-			if (props.autoRender ?? true) {
-				const renderKey = `${identifier.value}::${JSON.stringify(props.scriptOptions ?? null)}`;
-				if (lastRenderKey.value !== renderKey) {
-					lastRenderKey.value = renderKey;
-					await renderCaptcha$();
-				}
+			if (autoRender.value) {
+				await renderCaptcha$();
 			}
 
 			cleanup(async () => {
@@ -205,7 +200,7 @@ export function createCaptchaComponent<
 				class={props.class}
 				style={props.style}
 				aria-live="polite"
-				aria-busy={state.value.loading}
+				aria-busy={isLoading.value}
 			/>
 		);
 	});
