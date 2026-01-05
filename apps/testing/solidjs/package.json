@@ -1,6 +1,7 @@
 {
 	"name": "testing-solid",
 	"type": "module",
+	"private": true,
 	"scripts": {
 		"dev": "vinxi dev --port 9001",
 		"build": "vinxi build",
