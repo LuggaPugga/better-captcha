@@ -22,5 +22,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["@better-captcha/docs", "testing-react", "svelte-testing", "testing-vue", "testing-solid", "testing-qwik", "lit-testing", "better-auth-example", "vanilla-example"]
 }
