@@ -1,10 +1,10 @@
 import type {
-    CaptchaHandle,
-    CaptchaState,
-    Provider,
-    ProviderConfig,
-    ScriptOptions,
-    WidgetId,
+	CaptchaHandle,
+	CaptchaState,
+	Provider,
+	ProviderConfig,
+	ScriptOptions,
+	WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import type { NoSerialize, QRL } from "@builder.io/qwik";
@@ -154,9 +154,7 @@ export function createCaptchaComponent<
 
 			await updateController$();
 
-			if (autoRender.value && (hasRendered.value || state.value.error)) {
-				await renderCaptcha$();
-			} else if (autoRender.value && !hasRendered.value) {
+			if (autoRender.value) {
 				await renderCaptcha$();
 			}
 
