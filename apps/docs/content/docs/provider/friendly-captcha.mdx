@@ -16,10 +16,18 @@ For more information, visit the [official Friendly Captcha documentation](https:
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { FriendlyCaptcha } from "@better-captcha/react/provider/friendly-captcha";
+
+  <FriendlyCaptcha sitekey="" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { FriendlyCaptcha } from "@better-captcha/preact/provider/friendly-captcha";
 
   <FriendlyCaptcha sitekey="" options={{}} />
   ```

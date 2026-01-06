@@ -16,10 +16,18 @@ For more information, visit the [official Google reCAPTCHA v3 documentation](htt
 
 ## Usage
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { ReCaptchaV3 } from "@better-captcha/react/provider/recaptcha-v3";
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { ReCaptchaV3 } from "@better-captcha/preact/provider/recaptcha-v3";
 
   <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
   ```
