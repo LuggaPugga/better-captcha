@@ -15,6 +15,12 @@ export interface FrameworkConfig {
 	 * - "two-params" (SolidJS/Qwik): CaptchaProps<Options, Handle>
 	 */
 	propsStructure?: "single-with-ref" | "two-params";
+	/**
+	 * Custom ref type template for "single-with-ref" mode.
+	 * Use {handle} as placeholder for the handle type.
+	 * Defaults to "RefAttributes<{handle}>" if not specified.
+	 */
+	refType?: string;
 }
 
 function createProject(): Project {
@@ -140,7 +146,9 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 
 	let componentTypeString: string;
 	if (config.propsStructure === "single-with-ref") {
-		componentTypeString = `${config.componentType}<${propsTypeName} & RefAttributes<${handleType}>>`;
+		const refTypeTemplate = config.refType ?? "RefAttributes<{handle}>";
+		const refType = refTypeTemplate.replace("{handle}", handleType);
+		componentTypeString = `${config.componentType}<${propsTypeName} & ${refType}>`;
 	} else if (config.propsStructure === "two-params") {
 		componentTypeString = `${config.componentType}<${propsTypeName}>`;
 	} else {
