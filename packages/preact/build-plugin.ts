@@ -8,13 +8,12 @@ import {
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
-const reactConfig: FrameworkConfig = {
+const preactConfig: FrameworkConfig = {
 	baseImport: `import { createCaptchaComponent } from "../../base-captcha.js";`,
 	componentCreation: (providerClassName: string) => `createCaptchaComponent(${providerClassName})`,
-	componentType: "ForwardRefExoticComponent",
-	componentTypeImports: '{ ForwardRefExoticComponent, RefAttributes } from "react"',
+	componentType: "FunctionComponent",
+	componentTypeImports: '{ Ref, FunctionComponent } from "preact"',
 	fileExtension: ".js",
-	useClientDirective: true,
 	propsStructure: "single-with-ref",
 };
 
@@ -24,8 +23,8 @@ export const unpluginFactory: UnpluginFactory<undefined> = () => {
 		rollup: {
 			generateBundle() {
 				for (const provider of PROVIDER_REGISTRY) {
-					const jsFiles = generateProviderModule(provider, reactConfig);
-					const dtsFiles = generateProviderModuleDts(provider, reactConfig);
+					const jsFiles = generateProviderModule(provider, preactConfig);
+					const dtsFiles = generateProviderModuleDts(provider, preactConfig);
 
 					this.emitFile({
 						type: "asset",
