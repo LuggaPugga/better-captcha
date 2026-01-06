@@ -1,7 +1,7 @@
 "use client";
 
 import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
-import type { Ref } from "preact";
+import { forwardRef } from "preact/compat";
 import { useImperativeHandle, useMemo } from "preact/hooks";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
@@ -9,13 +9,9 @@ import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
 ) {
-	return function CaptchaComponent(props: CaptchaProps<TOptions> & { ref?: Ref<THandle> }) {
-		const { options, scriptOptions, className, style, autoRender = true, onReady, onSolve, onError, ref } = props;
-
-		const p = props as CaptchaProps<TOptions> & {
-			sitekey?: string;
-			endpoint?: string;
-		};
+	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(props, ref) {
+		const { options, scriptOptions, className, style, autoRender = true, onReady, onSolve, onError } = props;
+		const p = props as CaptchaProps<TOptions> & { sitekey?: string; endpoint?: string };
 		const identifier = p.sitekey || p.endpoint;
 
 		if (!identifier) {
@@ -33,7 +29,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 			callbacks,
 		);
 
-		useImperativeHandle(ref as Ref<THandle>, () => controller.getHandle());
+		useImperativeHandle(ref, () => controller.getHandle());
 
 		const elementId =
 			widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading";
@@ -48,5 +44,5 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 				aria-busy={isLoading}
 			/>
 		);
-	};
+	});
 }
