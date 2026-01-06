@@ -15,6 +15,7 @@ const preactConfig: FrameworkConfig = {
 	componentTypeImports: '{ Ref, FunctionComponent } from "preact"',
 	fileExtension: ".js",
 	propsStructure: "single-with-ref",
+	refType: "{ ref?: Ref<{handle}> }",
 };
 
 export const unpluginFactory: UnpluginFactory<undefined> = () => {
