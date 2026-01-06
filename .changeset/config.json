@@ -15,11 +15,12 @@
       "@better-captcha/svelte",
       "@better-captcha/solidjs",
       "@better-captcha/qwik",
-      "@better-captcha/lit"
+      "@better-captcha/lit",
+      "@better-captcha/preact"
     ]
   ],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@better-captcha/docs", "testing-react", "svelte-testing", "testing-vue", "testing-solid", "testing-qwik", "lit-testing", "better-auth-example", "vanilla-example"]
+  "ignore": ["@better-captcha/docs", "testing-react", "svelte-testing", "testing-vue", "testing-solid", "testing-qwik", "lit-testing", "better-auth-example", "vanilla-example", "preact-testing"]
 }
