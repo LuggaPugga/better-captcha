@@ -28,7 +28,7 @@ export function App() {
 
 	return (
 		<div>
-			<h1>React Captcha Testing</h1>
+			<h1>Preact Captcha Testing</h1>
 
 			<div>
 				<h2>Select Provider:</h2>
