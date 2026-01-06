@@ -1,0 +1,143 @@
+---
+title: Preact
+description: Using better-captcha with Preact
+icon: preact
+---
+
+## Installation
+
+```npm
+npm i @better-captcha/preact
+```
+
+## Basic Usage
+
+```tsx
+import { ReCaptcha } from "@better-captcha/preact/provider/recaptcha";
+
+export default function Example() {
+  return <ReCaptcha sitekey="your-site-key" />;
+}
+```
+
+## Imperative Handle
+
+React uses refs with `useRef` to access the imperative handle for programmatic control.
+
+```tsx
+import { useRef } from "preact/hooks";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/preact/provider/recaptcha";
+
+export default function Example() {
+  const recaptchaRef = useRef<ReCaptchaHandle>(null!);
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" ref={recaptchaRef} />
+      <button onClick={() => recaptchaRef.current.execute()}>Execute</button>
+      <button onClick={() => recaptchaRef.current.reset()}>Reset</button>
+      <button onClick={() => console.log(recaptchaRef.current.getResponse())}>Log response</button>
+    </>
+  );
+}
+```
+
+<Callout type="info">
+The handle is available as soon as the widget is rendered. Until then, a safe no-op handle is exposed to maintain type safety.
+</Callout>
+
+## Lifecycle Callbacks
+
+All captcha components support three lifecycle callbacks for handling different stages of the widget lifecycle.
+
+```tsx
+import { ReCaptcha } from "@better-captcha/preact/provider/recaptcha";
+
+export default function Example() {
+  const handleReady = () => {
+    console.log("Captcha is ready");
+  };
+
+  const handleSolve = (token: string) => {
+    console.log("Captcha solved with token:", token);
+    // Send token to your backend for verification
+  };
+
+  const handleError = (error: Error | string) => {
+    console.error("Captcha error:", error);
+  };
+
+  return (
+    <ReCaptcha 
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      onReady={handleReady}
+      onSolve={handleSolve}
+      onError={handleError}
+    />
+  );
+}
+```
+
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onReady` | `() => void` | Called when the widget is rendered and ready for interaction |
+| `onSolve` | `(token: string) => void` | Called when the challenge is solved with the response token |
+| `onError` | `(error: Error \| string) => void` | Called when an error occurs during initialization or solving |
+
+## Manual Rendering
+
+By default, captchas automatically render on mount. For more control, disable auto-rendering and trigger it manually.
+
+```tsx
+import { useRef } from "preact/hooks";
+import { ReCaptcha } from "@better-captcha/preact/provider/recaptcha";
+
+export default function Example() {
+  const recaptchaRef = useRef(null);
+
+  return (
+    <>
+      <ReCaptcha 
+        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+        ref={recaptchaRef} 
+        autoRender={false} 
+      />
+      <button onClick={() => recaptchaRef.current.render()}>Show Captcha</button>
+    </>
+  );
+}
+```
+
+## Common Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | Your provider's site key |
+| `options` | `object` | ❌ | Provider-specific configuration options |
+| `autoRender` | `boolean` | ❌ | Whether to render automatically on mount (default: `true`) |
+| `scriptOptions` | `object` | ❌ | Script loading configuration (see [Script Options](/docs/script-options)) |
+| `onReady` | `function` | ❌ | Callback when widget is ready |
+| `onSolve` | `function` | ❌ | Callback when challenge is solved |
+| `onError` | `function` | ❌ | Callback when an error occurs |
+
+## Handle Methods
+
+All providers implement these methods on the handle:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## Available Providers
+
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/react/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/react/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/react/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/react/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/react/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/react/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/react/provider/prosopo` |
+| **CapWidget** | `@better-captcha/react/provider/cap-widget` |
+
+See the [Provider Documentation](/docs/provider) for provider-specific options and configuration.
+
