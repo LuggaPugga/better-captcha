@@ -7,4 +7,4 @@
 "@better-captcha/vue": patch
 ---
 
-fix: core resolving as workspace in release
+fix: resolve @better-captcha/core workspace dependency to real version in published packages

@@ -16,8 +16,8 @@
 		"lint": "turbo run lint",
 		"start": "turbo run start",
 		"changeset": "changeset",
-		"version": "changeset version && bun install --no-frozen-lockfile",
-		"release": "bun run build:packages && changeset publish"
+		"ci:version": "changeset version && bun update",
+		"ci:publish": "for dir in packages/core packages/react packages/vue packages/svelte packages/solidjs packages/qwik packages/lit packages/preact; do (cd \"$dir\" && bun publish --access public || true); done && changeset tag"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
