@@ -1,5 +1,11 @@
 # @better-captcha/vue
 
+## 0.5.3
+
+### Patch Changes
+
+- [`cb232bf`](https://github.com/LuggaPugga/better-captcha/commit/cb232bffe9c54d8f4351623dea9ac130000586c8) Thanks [@LuggaPugga](https://github.com/LuggaPugga)! - fix: resolve @better-captcha/core workspace dependency to real version in published packages
+
 ## 0.5.2
 
 ### Patch Changes
