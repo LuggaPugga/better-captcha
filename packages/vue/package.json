@@ -1,7 +1,7 @@
 {
 	"name": "@better-captcha/vue",
 	"description": "Vue 3 wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",
