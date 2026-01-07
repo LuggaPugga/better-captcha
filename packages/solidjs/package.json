@@ -65,7 +65,7 @@
 		"solid-js": "^1.5.0"
 	},
 	"dependencies": {
-		"@better-captcha/core": "workspace:*"
+		"@better-captcha/core": "workspace:^"
 	},
 	"devDependencies": {
 		"@better-captcha/tests": "workspace:*",

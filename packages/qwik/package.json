@@ -39,7 +39,7 @@
 		"qwik": "qwik"
 	},
 	"dependencies": {
-		"@better-captcha/core": "workspace:*"
+		"@better-captcha/core": "workspace:^"
 	},
 	"devDependencies": {
 		"@builder.io/qwik": "1.18.0",
