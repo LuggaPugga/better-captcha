@@ -7,8 +7,7 @@
     }
   ],
   "commit": false,
-  "fixed": [],
-  "linked": [
+  "fixed": [
     [
       "@better-captcha/core",
       "@better-captcha/react",
