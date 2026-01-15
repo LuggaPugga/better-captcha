@@ -18,21 +18,16 @@ export class ScriptLoader {
 		return `betterCaptcha_${prefix}_${++this.callbackId}`;
 	}
 
-	private findScript(src: string): HTMLScriptElement | null {
-		if (!isBrowser) return null;
-		return document.querySelector<HTMLScriptElement>(`script[src="${src}"]`);
-	}
-
 	private setupCallback(options: LoadScriptOptions): Promise<void> | null {
 		const { callbackName, onCallback } = options;
 		if (!callbackName || !isBrowser) return null;
 
-		const win = window as unknown as Record<string, unknown>;
+		const win = window as Record<string, unknown>;
 		const prev = win[callbackName];
 
 		return new Promise<void>((resolve) => {
 			win[callbackName] = (...args: unknown[]) => {
-				if (typeof prev === "function") prev(...args);
+				typeof prev === "function" && prev(...args);
 				onCallback?.(...args);
 				win[callbackName] = prev;
 				resolve();
@@ -41,33 +36,30 @@ export class ScriptLoader {
 	}
 
 	private createScript(src: string, options: LoadScriptOptions): Promise<void> {
-		if (!isBrowser) {
-			return Promise.reject(new Error("Not in browser environment"));
-		}
+		if (!isBrowser) return Promise.reject(new Error("Not in browser environment"));
 
 		const script = document.createElement("script");
-		script.src = src;
-		script.async = options.async ?? true;
-		script.defer = options.defer ?? false;
-		script.type = options.type ?? "text/javascript";
+		Object.assign(script, {
+			src,
+			async: options.async ?? true,
+			defer: options.defer ?? false,
+			type: options.type ?? "text/javascript",
+		});
 
 		return new Promise<void>((resolve, reject) => {
-			const timeout = options.timeout ?? 15000;
 			const timer = setTimeout(() => {
 				script.remove();
 				reject(new Error(`Script timeout: ${src}`));
-			}, timeout);
-
-			const cleanup = () => clearTimeout(timer);
+			}, options.timeout ?? 15000);
 
 			script.onload = () => {
-				cleanup();
+				clearTimeout(timer);
 				this.loaded.add(src);
 				resolve();
 			};
 
 			script.onerror = () => {
-				cleanup();
+				clearTimeout(timer);
 				script.remove();
 				reject(new Error(`Failed to load: ${src}`));
 			};
@@ -76,29 +68,21 @@ export class ScriptLoader {
 		});
 	}
 
+	private withCallback(promise: Promise<void>, callback: Promise<void> | null): Promise<void> {
+		return callback ? Promise.all([promise, callback]).then(() => undefined) : promise;
+	}
+
 	loadScript(src: string, options: LoadScriptOptions = {}): Promise<void> {
-		if (this.loaded.has(src)) {
+		if (this.loaded.has(src) || (isBrowser && document.querySelector(`script[src="${src}"]`))) {
+			if (!this.loaded.has(src)) this.loaded.add(src);
 			options.onCallback?.();
 			return Promise.resolve();
 		}
-
-		const callbackPromise = this.setupCallback(options);
 
 		const existing = this.pending.get(src);
-		if (existing) {
-			return callbackPromise ? Promise.all([existing, callbackPromise]).then(() => {}) : existing;
-		}
+		if (existing) return this.withCallback(existing, this.setupCallback(options));
 
-		const existingScript = this.findScript(src);
-		if (existingScript) {
-			this.loaded.add(src);
-			options.onCallback?.();
-			return Promise.resolve();
-		}
-
-		const loadPromise = this.createScript(src, options);
-		const finalPromise = callbackPromise ? Promise.all([loadPromise, callbackPromise]).then(() => {}) : loadPromise;
-
+		const finalPromise = this.withCallback(this.createScript(src, options), this.setupCallback(options));
 		this.pending.set(src, finalPromise);
 		finalPromise.finally(() => this.pending.delete(src));
 
