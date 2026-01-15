@@ -57,7 +57,10 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 		controller.setScriptOptions(scriptOptions);
 		controller.setOptions(options);
 		controller.setCallbacks({
-			onReady: () => callbacks?.onReady?.(controller.getHandle()),
+			onReady: () => {
+				const handle = controller.getHandle();
+				if (handle) callbacks?.onReady?.(handle);
+			},
 			onSolve: (token: string) => callbacks?.onSolve?.(token),
 			onError: (err: Error | string) => {
 				const error = err instanceof Error ? err : new Error(String(err));
