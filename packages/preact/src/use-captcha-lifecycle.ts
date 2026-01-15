@@ -74,7 +74,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	useEffect(() => {
 		if (!autoRender) return;
 		const key = `${identifier}::${JSON.stringify(options)}::${JSON.stringify(scriptOptions)}`;
-		const shouldRender = hasRenderedRef.current || state.error || renderKeyRef.current !== key;
+		const shouldRender = !hasRenderedRef.current || state.error || renderKeyRef.current !== key;
 		if (shouldRender) {
 			renderKeyRef.current = key;
 			void renderCaptcha();
