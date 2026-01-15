@@ -19,12 +19,24 @@ For more information, visit the [official Private Captcha website](https://priva
     Private Captcha only works inside a form.
 </Callout>
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { PrivateCaptcha } from "@better-captcha/react/provider/private-captcha";
 
-  <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/preact/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
   ```
   </Tab>
   
@@ -45,7 +57,9 @@ For more information, visit the [official Private Captcha website](https://priva
   ```tsx
   import { PrivateCaptcha } from "@better-captcha/solidjs/provider/private-captcha";
 
-  <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
   ```
   </Tab>
 

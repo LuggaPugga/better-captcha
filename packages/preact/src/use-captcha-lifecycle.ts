@@ -7,7 +7,7 @@ import type {
 	WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 
 export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
 	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
@@ -40,6 +40,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 
 	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
 
+	const callbacksRef = useRef(callbacks);
 	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
 
 	useEffect(() => {
@@ -57,17 +58,14 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 		controller.setScriptOptions(scriptOptions);
 		controller.setOptions(options);
 		controller.setCallbacks({
-			onReady: () => {
-				const handle = controller.getHandle();
-				if (handle) callbacks?.onReady?.(handle);
-			},
-			onSolve: (token: string) => callbacks?.onSolve?.(token),
+			onReady: () => callbacksRef.current?.onReady?.(controller.getHandle()),
+			onSolve: (token: string) => callbacksRef.current?.onSolve?.(token),
 			onError: (err: Error | string) => {
 				const error = err instanceof Error ? err : new Error(String(err));
-				callbacks?.onError?.(error);
+				callbacksRef.current?.onError?.(error);
 			},
 		});
-	}, [controller, identifier, scriptOptions, options, callbacks]);
+	}, [controller, identifier, scriptOptions, options]);
 
 	const renderCaptcha = useCallback(async () => {
 		await controller.render();
@@ -77,7 +75,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 	useEffect(() => {
 		if (!autoRender) return;
 		const key = `${identifier}::${JSON.stringify(options)}::${JSON.stringify(scriptOptions)}`;
-		const shouldRender = hasRenderedRef.current || state.error || renderKeyRef.current !== key;
+		const shouldRender = !hasRenderedRef.current || state.error || renderKeyRef.current !== key;
 		if (shouldRender) {
 			renderKeyRef.current = key;
 			void renderCaptcha();

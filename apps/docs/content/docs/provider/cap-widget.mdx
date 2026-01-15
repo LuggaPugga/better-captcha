@@ -18,10 +18,18 @@ For more information, visit the [official Cap.JS documentation](https://capjs.js
 
 CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoint for the CAPTCHA service.
 
-<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
   ```tsx
   import { CapWidget } from "@better-captcha/react/provider/cap-widget";
+
+  <CapWidget endpoint="https://example.com/api/cap" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { CapWidget } from "@better-captcha/preact/provider/cap-widget";
 
   <CapWidget endpoint="https://example.com/api/cap" options={{}} />
   ```

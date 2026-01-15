@@ -12,6 +12,7 @@ Install the package for your framework:
 | Framework | bun | npm |
 |-----------|-----|-----|
 | React | `bun install @better-captcha/react` | `npm install @better-captcha/react` |
+| Preact | `bun install @better-captcha/preact` | `npm install @better-captcha/preact` |
 | Qwik | `bun install @better-captcha/qwik` | `npm install @better-captcha/qwik` |
 | SolidJS | `bun install @better-captcha/solidjs` | `npm install @better-captcha/solidjs` |
 | Vue | `bun install @better-captcha/vue` | `npm install @better-captcha/vue` |
