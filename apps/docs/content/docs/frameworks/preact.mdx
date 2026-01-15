@@ -90,10 +90,10 @@ By default, captchas automatically render on mount. For more control, disable au
 
 ```tsx
 import { useRef } from "preact/hooks";
-import { ReCaptcha } from "@better-captcha/preact/provider/recaptcha";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/preact/provider/recaptcha";
 
 export default function Example() {
-  const recaptchaRef = useRef(null);
+  const recaptchaRef = useRef<ReCaptchaHandle>(null!);
 
   return (
     <>
