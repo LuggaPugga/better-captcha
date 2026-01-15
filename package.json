@@ -24,7 +24,7 @@
 		"@changesets/changelog-github": "^0.5.2",
 		"@changesets/cli": "^2.29.8",
 		"ts-morph": "^27.0.2",
-		"turbo": "^2.7.3",
+		"turbo": "^2.7.4",
 		"typescript": "5.9.3"
 	},
 	"engines": {
