@@ -30,7 +30,7 @@
 		"eslint": "9.39.2",
 		"eslint-plugin-qwik": "^1.17.0",
 		"globals": "17.1.0",
-		"prettier": "3.8.0",
+		"prettier": "3.8.1",
 		"typescript": "5.9.3",
 		"typescript-eslint": "8.53.0",
 		"typescript-plugin-css-modules": "5.2.0",
