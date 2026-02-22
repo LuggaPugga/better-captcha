@@ -1,7 +1,7 @@
 {
 	"name": "@better-captcha/preact",
 	"description": "Preact wrappers for CAPTCHA providers that share the same lifecycle, render flow, and control handle so you can swap vendors easily.",
-	"version": "0.5.5",
+	"version": "0.5.6",
 	"author": "LuggaPugga",
 	"repository": {
 		"type": "git",
