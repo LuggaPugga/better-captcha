@@ -76,6 +76,6 @@
 		"svelte": "^5.0.0",
 		"ts-morph": "^27.0.2",
 		"tsdown": "^0.20.3",
-		"unplugin": "^2.3.10"
+		"unplugin": "^3.0.0"
 	}
 }
