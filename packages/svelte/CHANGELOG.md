@@ -1,5 +1,12 @@
 # @better-captcha/svelte
 
+## 0.5.5
+
+### Patch Changes
+
+- Updated dependencies [1459fba]
+  - @better-captcha/core@0.5.5
+
 ## 0.5.4
 
 ### Patch Changes

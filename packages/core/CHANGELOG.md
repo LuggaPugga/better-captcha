@@ -1,5 +1,11 @@
 # @better-captcha/core
 
+## 0.5.5
+
+### Patch Changes
+
+- 1459fba: Added missing dark/auto theme functionality for cap
+
 ## 0.5.4
 
 ### Patch Changes
