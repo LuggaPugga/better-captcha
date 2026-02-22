@@ -1,5 +1,11 @@
 # @better-captcha/vue
 
+## 0.5.6
+
+### Patch Changes
+
+- @better-captcha/core@0.5.6
+
 ## 0.5.5
 
 ### Patch Changes

@@ -1,5 +1,7 @@
 # @better-captcha/core
 
+## 0.5.6
+
 ## 0.5.5
 
 ### Patch Changes
