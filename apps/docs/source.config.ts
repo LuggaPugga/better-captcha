@@ -1,4 +1,4 @@
-import { defineConfig, defineDocs, frontmatterSchema, metaSchema } from "fumadocs-mdx/config";
+import { defineConfig, defineDocs, metaSchema } from "fumadocs-mdx/config";
 import {
 	createFileSystemGeneratorCache,
 	createGenerator,
@@ -14,7 +14,6 @@ const generator = createGenerator({
 // see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
 export const docs = defineDocs({
 	docs: {
-		schema: frontmatterSchema,
 		postprocess: {
 			includeProcessedMarkdown: true,
 		},
