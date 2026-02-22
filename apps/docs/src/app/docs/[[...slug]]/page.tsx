@@ -27,7 +27,9 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
 				<MDXContent
 					components={getMDXComponents({
 						// this allows you to link to other pages with relative file paths
-						a: createRelativeLink(source, page),
+						a:
+							// @ts-expect-error - fumadocs type signature is overly strict
+							createRelativeLink(source, page),
 					})}
 				/>
 			</DocsBody>

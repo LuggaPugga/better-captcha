@@ -1,7 +1,14 @@
 import { defineConfig, defineDocs, frontmatterSchema, metaSchema } from "fumadocs-mdx/config";
-import { createGenerator, remarkAutoTypeTable } from "fumadocs-typescript";
+import {
+	createFileSystemGeneratorCache,
+	createGenerator,
+	remarkAutoTypeTable,
+} from "fumadocs-typescript";
 
-const generator = createGenerator();
+const generator = createGenerator({
+	// recommended: choose a directory for cache
+	cache: createFileSystemGeneratorCache(".next/fumadocs-typescript"),
+});
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.vercel.app/docs/mdx/collections#define-docs
