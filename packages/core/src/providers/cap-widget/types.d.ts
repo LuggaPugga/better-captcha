@@ -135,6 +135,8 @@ export interface RenderParameters {
 	i18nErrorAriaLabel?: string;
 	/** i18n WASM disabled message. */
 	i18nWasmDisabled?: string;
+	/** The theme of the widget. Set to "auto" to automatically detect the system theme. */
+	theme?: "light" | "dark" | "auto";
 	/** On solve event handler. Can be a function or a string (for HTML attribute). */
 	onsolve?: string | ((event: CapSolveEvent) => void);
 	/** On progress event handler. Can be a function or a string (for HTML attribute). */

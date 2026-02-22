@@ -6,6 +6,7 @@ import {
 	type ScriptOptions,
 } from "../../provider";
 import { loadScript } from "../../utils/load-script";
+import { getSystemTheme } from "../../utils/theme";
 import type {
 	CapErrorEvent,
 	CapProgressEvent,
@@ -49,6 +50,21 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element">, callbacks?: CaptchaCallbacks): string {
 		const widget = document.createElement("cap-widget") as CapWidget;
 		widget.setAttribute("data-cap-api-endpoint", this.identifier);
+
+		const resolvedOptions = options ? { ...options } : undefined;
+		if (resolvedOptions?.theme === "auto") {
+			resolvedOptions.theme = getSystemTheme();
+		}
+
+		if (resolvedOptions?.theme === "dark") {
+			widget.style.setProperty("--cap-background", "#1a1a1a");
+			widget.style.setProperty("--cap-border-color", "#4444448f");
+			widget.style.setProperty("--cap-color", "#e0e0e0");
+			widget.style.setProperty("--cap-checkbox-background", "#2a2a2a91");
+			widget.style.setProperty("--cap-checkbox-border", "1px solid #666666d1");
+			widget.style.setProperty("--cap-spinner-background-color", "#333");
+			widget.style.setProperty("--cap-spinner-color", "#fff");
+		}
 
 		const attributeMap: Record<string, string> = {
 			workerCount: "data-cap-worker-count",
