@@ -75,6 +75,6 @@
 		"playwright": "^1.57.0",
 		"ts-morph": "^27.0.2",
 		"tsdown": "^0.20.3",
-		"unplugin": "^2.3.11"
+		"unplugin": "^3.0.0"
 	}
 }
