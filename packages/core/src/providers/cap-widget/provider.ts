@@ -92,7 +92,7 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 		if (options) {
 			for (const [key, value] of Object.entries(options)) {
-				if (value === undefined || value === null) {
+				if (value === undefined || value === null || key === "theme") {
 					continue;
 				}
 
