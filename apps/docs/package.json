@@ -15,7 +15,7 @@
 		"@radix-ui/react-select": "^2.2.6",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"fumadocs-core": "16.6.6",
+		"fumadocs-core": "16.6.7",
 		"fumadocs-mdx": "14.2.8",
 		"fumadocs-typescript": "5.1.4",
 		"fumadocs-ui": "16.6.6",
