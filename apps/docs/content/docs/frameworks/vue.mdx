@@ -42,7 +42,7 @@ Vue uses template refs or the `useCaptcha` composable for reactive access to the
 import { useCaptcha } from "@better-captcha/vue";
 import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/vue/provider/recaptcha";
 
-const { captchaRef, handle, execute, reset } = useCaptcha<ReCaptchaHandle>();
+const { captchaRef, execute, reset, getResponse } = useCaptcha<ReCaptchaHandle>();
 
 const recaptchaRef = captchaRef;
 
@@ -51,7 +51,7 @@ const onReady = (readyHandle: ReCaptchaHandle) => {
 };
 
 const logResponse = () => {
-  console.log(handle.value?.getResponse());
+  console.log(getResponse());
 };
 </script>
 ```
