@@ -7,9 +7,11 @@ import {
 	verifyPrivateCaptcha,
 	verifyProsopo,
 	verifyReCaptcha,
+	verifyReCaptchaCompatible,
 	verifyToken,
 	verifyTurnstile,
 } from "../src";
+import { assertNonEmptyString } from "../src/shared";
 
 const TOKENS = {
 	turnstile: "XXXX.DUMMY.TOKEN.XXXX",
@@ -202,6 +204,19 @@ describe("hcaptcha", () => {
 });
 
 describe("friendly-captcha", () => {
+	it("returns success when provider returns success", async () => {
+		mockFetchJson({
+			success: true,
+		});
+
+		const result = await verifyFriendlyCaptcha({
+			apiKey: "FCAT_myapikey",
+			response: TOKENS.friendlyCaptcha,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
 	it("sends x-api-key and maps error codes", async () => {
 		const fetchSpy = mockFetchJson({
 			success: false,
@@ -227,6 +242,19 @@ describe("friendly-captcha", () => {
 });
 
 describe("recaptcha-compatible wrappers", () => {
+	it("verifies token with base recaptcha-compatible provider", async () => {
+		const fetchSpy = mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyReCaptchaCompatible({
+			endpoint: "https://example.com/siteverify",
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.privateCaptcha,
+		});
+
+		expect(result.success).toBe(true);
+		expect(getRequest(fetchSpy).url).toBe("https://example.com/siteverify");
+	});
+
 	it("supports captcha-fox, private-captcha, and prosopo", async () => {
 		const fetchSpy = mockFetchJson({ success: true, hostname: "example.com" });
 		const baseOptions = {
@@ -348,6 +376,58 @@ describe("result callbacks", () => {
 });
 
 describe("error handling", () => {
+	it("throws CaptchaServerError for non-object JSON responses", async () => {
+		mockFetchJson([]);
+
+		await expect(
+			verifyTurnstile({
+				secret: KEYS.turnstileSecret,
+				response: TOKENS.turnstile,
+			}),
+		).rejects.toMatchObject({ code: "invalid-response" });
+	});
+
+	it("throws CaptchaServerError when runtime fetch is unavailable", async () => {
+		const originalFetch = globalThis.fetch;
+		(globalThis as { fetch?: typeof fetch }).fetch = undefined;
+
+		try {
+			await expect(
+				verifyTurnstile({
+					secret: KEYS.turnstileSecret,
+					response: TOKENS.turnstile,
+				}),
+			).rejects.toMatchObject({ code: "invalid-runtime" });
+		} finally {
+			(globalThis as { fetch?: typeof fetch }).fetch = originalFetch;
+		}
+	});
+
+	it("throws CaptchaServerError when request times out", async () => {
+		const hangingFetcher = (async (_input, init) => {
+			const signal = init?.signal;
+			await new Promise<never>((_, reject) => {
+				if (!signal) {
+					return;
+				}
+				if (signal.aborted) {
+					reject(signal.reason ?? new Error("aborted"));
+					return;
+				}
+				signal.addEventListener("abort", () => reject(signal.reason ?? new Error("aborted")), { once: true });
+			});
+		}) as unknown as typeof fetch;
+
+		await expect(
+			verifyTurnstile({
+				secret: KEYS.turnstileSecret,
+				response: TOKENS.turnstile,
+				timeoutMs: 5,
+				fetcher: hangingFetcher,
+			}),
+		).rejects.toMatchObject({ code: "network-error" });
+	});
+
 	it("throws CaptchaServerError for non-2xx responses", async () => {
 		mockFetchJson({ message: "bad request" }, 400);
 
@@ -357,5 +437,15 @@ describe("error handling", () => {
 				response: TOKENS.turnstile,
 			}),
 		).rejects.toBeInstanceOf(CaptchaServerError);
+	});
+});
+
+describe("shared utilities", () => {
+	it("throws on empty string values", () => {
+		expect(() => assertNonEmptyString("", "secret", "turnstile")).toThrow(CaptchaServerError);
+	});
+
+	it("throws on non-string values", () => {
+		expect(() => assertNonEmptyString(123, "secret", "turnstile")).toThrow(CaptchaServerError);
 	});
 });

@@ -4,10 +4,12 @@ import {
 	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
+	buildProviderFormBody,
+	finalizeProviderFailure,
 	finalizeVerification,
+	getOptionalObjectString,
 	getOptionalString,
 	getStringArray,
-	withFallbackErrorCodes,
 } from "../shared";
 
 const PROVIDER = "turnstile";
@@ -52,16 +54,10 @@ export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
 
-	const body = new URLSearchParams({
-		secret: options.secret,
-		response: options.response,
+	const body = buildProviderFormBody(options.secret, options.response, {
+		remoteip: options.remoteip,
+		idempotency_key: options.idempotencyKey,
 	});
-	if (options.remoteip) {
-		body.set("remoteip", options.remoteip);
-	}
-	if (options.idempotencyKey) {
-		body.set("idempotency_key", options.idempotencyKey);
-	}
 
 	const raw = await postJson({
 		url: options.endpoint ?? DEFAULT_ENDPOINT,
@@ -76,11 +72,7 @@ export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<
 	const providerErrorCodes = getStringArray(raw["error-codes"]);
 
 	if (!success) {
-		return finalizeVerification(options, {
-			success: false,
-			errorCodes: withFallbackErrorCodes<TurnstileErrorCode>(providerErrorCodes, "verification-failed"),
-			raw,
-		});
+		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
 	const action = getOptionalString(raw.action);
@@ -106,11 +98,7 @@ export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<
 		});
 	}
 
-	const metadataValue = raw.metadata;
-	const ephemeralId =
-		metadataValue && typeof metadataValue === "object"
-			? getOptionalString((metadataValue as Record<string, unknown>).ephemeral_id)
-			: undefined;
+	const ephemeralId = getOptionalObjectString(raw.metadata, "ephemeral_id");
 
 	return finalizeVerification(options, {
 		success: true,
