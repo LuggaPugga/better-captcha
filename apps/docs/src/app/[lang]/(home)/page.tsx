@@ -24,7 +24,7 @@ export default async function HomePage() {
             </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
               <Link
-                href="/en/docs"
+                href="/docs"
             className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 Get Started
@@ -68,42 +68,42 @@ export default async function HomePage() {
         </p>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
           <Link
-            href="/en/docs/frameworks/react"
+            href="/docs/frameworks/react"
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiReact className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">React</span>
           </Link>
           <Link
-            href="/en/docs/frameworks/solidjs"
+            href="/docs/frameworks/solidjs"
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiSolid className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">Solid</span>
           </Link>
           <Link
-            href="/en/docs/frameworks/vue"
+            href="/docs/frameworks/vue"
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiVuedotjs className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">Vue</span>
           </Link>
           <Link
-            href="/en/docs/frameworks/svelte"
+            href="/docs/frameworks/svelte"
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiSvelte className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">Svelte</span>
           </Link>
           <Link
-            href="/en/docs/frameworks/qwik"
+            href="/docs/frameworks/qwik"
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiQwik className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">Qwik</span>
           </Link>
           <Link
-            href="/en/docs/frameworks/lit"
+            href="/docs/frameworks/lit"
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiLit className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
