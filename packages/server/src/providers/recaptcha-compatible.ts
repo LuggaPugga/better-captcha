@@ -79,10 +79,4 @@ export function createReCaptchaCompatibleVerifier(provider: string) {
 		verifyWithReCaptchaCompatibleApi(provider, options);
 }
 
-const verifyDefaultReCaptchaCompatible = createReCaptchaCompatibleVerifier(PROVIDER);
-
-export async function verifyReCaptchaCompatible(
-	options: ReCaptchaCompatibleVerifyOptions,
-): Promise<ReCaptchaCompatibleVerificationResult> {
-	return verifyDefaultReCaptchaCompatible(options);
-}
+export const verifyReCaptchaCompatible = createReCaptchaCompatibleVerifier(PROVIDER);
