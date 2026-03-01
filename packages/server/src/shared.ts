@@ -1,4 +1,5 @@
 import { CaptchaServerError } from "./errors";
+import type { JsonObject } from "./json";
 import type { VerificationFailure, VerificationResult, VerificationSuccess } from "./result";
 
 type MaybePromise<T> = T | Promise<T>;
@@ -8,7 +9,7 @@ export interface VerificationCallbacks<TData, TCode extends string> {
 	onError?: (result: VerificationFailure<TCode>) => MaybePromise<void>;
 }
 
-export interface BaseVerifyOptions<TData = unknown, TCode extends string = string>
+export interface BaseVerifyOptions<TData = JsonObject, TCode extends string = string>
 	extends VerificationCallbacks<TData, TCode> {
 	response: string;
 	timeoutMs?: number;
@@ -22,13 +23,6 @@ export function assertNonEmptyString(value: unknown, field: string, provider: st
 			provider,
 		});
 	}
-}
-
-export function getStringArray(value: unknown): string[] {
-	if (!Array.isArray(value)) {
-		return [];
-	}
-	return value.filter((item): item is string => typeof item === "string");
 }
 
 export function withFallbackErrorCodes<TCode extends string>(codes: string[], fallback: TCode): TCode[] {
@@ -50,30 +44,6 @@ export function buildProviderFormBody(
 		}
 	}
 	return body;
-}
-
-export function getOptionalString(value: unknown): string | undefined {
-	return typeof value === "string" ? value : undefined;
-}
-
-export function getOptionalNumber(value: unknown): number | undefined {
-	return typeof value === "number" ? value : undefined;
-}
-
-export function asBoolean(value: unknown, provider: string): boolean {
-	if (typeof value !== "boolean") {
-		throw new CaptchaServerError("invalid-response", "Provider response is missing a boolean success field.", {
-			provider,
-		});
-	}
-	return value;
-}
-
-export function getOptionalObjectString(value: unknown, key: string): string | undefined {
-	if (!value || typeof value !== "object" || Array.isArray(value)) {
-		return undefined;
-	}
-	return getOptionalString((value as Record<string, unknown>)[key]);
 }
 
 export function getCommonMismatchCodes<TCode extends string>(options: {
@@ -102,7 +72,7 @@ export function getCommonMismatchCodes<TCode extends string>(options: {
 
 export function finalizeProviderFailure<TData, TCode extends string>(
 	options: VerificationCallbacks<TData, TCode>,
-	raw: Record<string, unknown>,
+	raw: JsonObject,
 	providerErrorCodes: string[],
 	fallback: TCode,
 ): Promise<VerificationResult<TData, TCode>> {

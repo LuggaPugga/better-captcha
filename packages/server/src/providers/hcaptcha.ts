@@ -1,16 +1,13 @@
 import { postJson } from "../http";
+import { readBoolean, readNumber, readRequiredBoolean, readString, readStringArray } from "../json";
 import type { VerificationResult } from "../result";
 import {
-	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
 	buildProviderFormBody,
 	finalizeProviderFailure,
 	finalizeVerification,
 	getCommonMismatchCodes,
-	getOptionalNumber,
-	getOptionalString,
-	getStringArray,
 } from "../shared";
 
 const PROVIDER = "hcaptcha";
@@ -70,16 +67,16 @@ export async function verifyHCaptcha(options: HCaptchaVerifyOptions): Promise<HC
 		timeoutMs: options.timeoutMs,
 	});
 
-	const success = asBoolean(raw.success, PROVIDER);
-	const providerErrorCodes = getStringArray(raw["error-codes"]);
+	const success = readRequiredBoolean(raw, "success", PROVIDER);
+	const providerErrorCodes = readStringArray(raw, "error-codes");
 
 	if (!success) {
 		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
-	const hostname = getOptionalString(raw.hostname);
-	const score = getOptionalNumber(raw.score);
-	const action = getOptionalString(raw.action);
+	const hostname = readString(raw, "hostname");
+	const score = readNumber(raw, "score");
+	const action = readString(raw, "action");
 	const mismatches = getCommonMismatchCodes<HCaptchaErrorCode>({
 		expectedHostname: options.expectedHostname,
 		hostname,
@@ -103,11 +100,11 @@ export async function verifyHCaptcha(options: HCaptchaVerifyOptions): Promise<HC
 	return finalizeVerification(options, {
 		success: true,
 		data: {
-			challengeTs: getOptionalString(raw.challenge_ts),
+			challengeTs: readString(raw, "challenge_ts"),
 			hostname,
-			credit: typeof raw.credit === "boolean" ? raw.credit : undefined,
+			credit: readBoolean(raw, "credit"),
 			score,
-			scoreReason: getStringArray(raw.score_reason),
+			scoreReason: readStringArray(raw, "score_reason"),
 		},
 		raw,
 	});

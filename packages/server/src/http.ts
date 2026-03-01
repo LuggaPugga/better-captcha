@@ -1,4 +1,5 @@
 import { CaptchaServerError } from "./errors";
+import { isJsonObject, type JsonObject } from "./json";
 
 export type FetchLike = typeof fetch;
 
@@ -10,7 +11,7 @@ export interface HttpRequestOptions {
 
 interface PostJsonOptions extends HttpRequestOptions {
 	url: string;
-	body: URLSearchParams | Record<string, unknown>;
+	body: URLSearchParams | JsonObject;
 	provider: string;
 	headers?: Record<string, string>;
 }
@@ -67,22 +68,35 @@ function mergeAbortSignal(
 	};
 }
 
-function asObject(value: unknown, provider: string): Record<string, unknown> {
-	if (!value || typeof value !== "object" || Array.isArray(value)) {
+function ensureJsonObject(value: unknown, provider: string): JsonObject {
+	if (!isJsonObject(value)) {
 		throw new CaptchaServerError("invalid-response", "Provider returned a non-object JSON response.", {
 			provider,
 		});
 	}
-	return value as Record<string, unknown>;
+	return value;
+}
+
+async function parseJsonObject(response: Response, provider: string): Promise<JsonObject> {
+	try {
+		return ensureJsonObject(await response.json(), provider);
+	} catch (error) {
+		if (error instanceof CaptchaServerError) {
+			throw error;
+		}
+		throw new CaptchaServerError("invalid-response", "Provider returned invalid JSON.", {
+			provider,
+			cause: error,
+		});
+	}
 }
 
 function createPostRequestInit(
-	body: URLSearchParams | Record<string, unknown>,
+	body: URLSearchParams | JsonObject,
 	signal: AbortSignal | undefined,
 	headers: Record<string, string> | undefined,
 ): RequestInit {
 	const isFormBody = body instanceof URLSearchParams;
-	const serializedBody = isFormBody ? body.toString() : JSON.stringify(body);
 	const contentType = isFormBody ? "application/x-www-form-urlencoded" : "application/json";
 	return {
 		method: "POST",
@@ -91,11 +105,11 @@ function createPostRequestInit(
 			"content-type": contentType,
 			...(headers ?? {}),
 		},
-		body: serializedBody,
+		body: isFormBody ? body : JSON.stringify(body),
 	};
 }
 
-export async function postJson(options: PostJsonOptions): Promise<Record<string, unknown>> {
+export async function postJson(options: PostJsonOptions): Promise<JsonObject> {
 	const { url, body, provider, fetcher, signal, timeoutMs, headers } = options;
 	const fetchImpl = getFetch(fetcher);
 	const abort = mergeAbortSignal(signal, timeoutMs);
@@ -111,8 +125,7 @@ export async function postJson(options: PostJsonOptions): Promise<Record<string,
 			});
 		}
 
-		const data = await response.json();
-		return asObject(data, provider);
+		return parseJsonObject(response, provider);
 	} catch (error) {
 		if (error instanceof CaptchaServerError) {
 			throw error;

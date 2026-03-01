@@ -1,14 +1,12 @@
 import { postJson } from "../http";
+import { readRequiredBoolean, readString, readStringArray } from "../json";
 import type { VerificationResult } from "../result";
 import {
-	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
 	buildProviderFormBody,
 	finalizeProviderFailure,
 	finalizeVerification,
-	getOptionalString,
-	getStringArray,
 } from "../shared";
 
 const PROVIDER = "recaptcha-compatible";
@@ -57,8 +55,8 @@ export async function verifyWithReCaptchaCompatibleApi(
 		timeoutMs: options.timeoutMs,
 	});
 
-	const success = asBoolean(raw.success, provider);
-	const providerErrorCodes = getStringArray(raw["error-codes"]);
+	const success = readRequiredBoolean(raw, "success", provider);
+	const providerErrorCodes = readStringArray(raw, "error-codes");
 
 	if (!success) {
 		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
@@ -67,8 +65,8 @@ export async function verifyWithReCaptchaCompatibleApi(
 	return finalizeVerification(options, {
 		success: true,
 		data: {
-			challengeTs: getOptionalString(raw.challenge_ts),
-			hostname: getOptionalString(raw.hostname),
+			challengeTs: readString(raw, "challenge_ts"),
+			hostname: readString(raw, "hostname"),
 		},
 		raw,
 	});

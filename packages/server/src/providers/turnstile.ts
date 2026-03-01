@@ -1,15 +1,12 @@
 import { postJson } from "../http";
+import { readNestedString, readRequiredBoolean, readString, readStringArray } from "../json";
 import type { VerificationResult } from "../result";
 import {
-	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
 	buildProviderFormBody,
 	finalizeProviderFailure,
 	finalizeVerification,
-	getOptionalObjectString,
-	getOptionalString,
-	getStringArray,
 } from "../shared";
 
 const PROVIDER = "turnstile";
@@ -68,16 +65,16 @@ export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<
 		timeoutMs: options.timeoutMs,
 	});
 
-	const success = asBoolean(raw.success, PROVIDER);
-	const providerErrorCodes = getStringArray(raw["error-codes"]);
+	const success = readRequiredBoolean(raw, "success", PROVIDER);
+	const providerErrorCodes = readStringArray(raw, "error-codes");
 
 	if (!success) {
 		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
-	const action = getOptionalString(raw.action);
-	const hostname = getOptionalString(raw.hostname);
-	const cdata = getOptionalString(raw.cdata);
+	const action = readString(raw, "action");
+	const hostname = readString(raw, "hostname");
+	const cdata = readString(raw, "cdata");
 	const mismatches: TurnstileErrorCode[] = [];
 
 	if (options.expectedAction && action !== options.expectedAction) {
@@ -98,12 +95,12 @@ export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<
 		});
 	}
 
-	const ephemeralId = getOptionalObjectString(raw.metadata, "ephemeral_id");
+	const ephemeralId = readNestedString(raw, "metadata", "ephemeral_id");
 
 	return finalizeVerification(options, {
 		success: true,
 		data: {
-			challengeTs: getOptionalString(raw.challenge_ts),
+			challengeTs: readString(raw, "challenge_ts"),
 			hostname,
 			action,
 			cdata,
