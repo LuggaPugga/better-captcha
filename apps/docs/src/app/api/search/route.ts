@@ -1,7 +1,12 @@
 import { createFromSource } from "fumadocs-core/search/server";
+import { createTokenizer as createMandarinTokenizer } from "@orama/tokenizers/mandarin";
 import { source } from "@/lib/source";
 
 export const { GET } = createFromSource(source, {
-	// https://docs.orama.com/open-source/supported-languages
-	language: "english",
+	localeMap: {
+		en: "english",
+		cn: {
+			tokenizer: createMandarinTokenizer(),
+		},
+	},
 });
