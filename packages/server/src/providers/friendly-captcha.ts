@@ -61,7 +61,6 @@ export async function verifyFriendlyCaptcha(
 		fetcher: options.fetcher,
 		signal: options.signal,
 		timeoutMs: options.timeoutMs,
-		jsonBody: true,
 		headers: {
 			"x-api-key": options.apiKey,
 		},

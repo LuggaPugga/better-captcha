@@ -8,11 +8,10 @@ export interface HttpRequestOptions {
 	timeoutMs?: number;
 }
 
-interface JsonRequestOptions extends HttpRequestOptions {
+interface PostJsonOptions extends HttpRequestOptions {
 	url: string;
 	body: URLSearchParams | Record<string, unknown>;
 	provider: string;
-	jsonBody?: boolean;
 	headers?: Record<string, string>;
 }
 
@@ -77,28 +76,30 @@ function asObject(value: unknown, provider: string): Record<string, unknown> {
 	return value as Record<string, unknown>;
 }
 
-export async function postJson(options: JsonRequestOptions): Promise<Record<string, unknown>> {
-	const { url, body, provider, fetcher, signal, timeoutMs, jsonBody, headers } = options;
+function createPostRequestInit(
+	body: URLSearchParams | Record<string, unknown>,
+	signal: AbortSignal | undefined,
+	headers: Record<string, string> | undefined,
+): RequestInit {
+	const isFormBody = body instanceof URLSearchParams;
+	const serializedBody = isFormBody ? body.toString() : JSON.stringify(body);
+	const contentType = isFormBody ? "application/x-www-form-urlencoded" : "application/json";
+	return {
+		method: "POST",
+		signal,
+		headers: {
+			"content-type": contentType,
+			...(headers ?? {}),
+		},
+		body: serializedBody,
+	};
+}
+
+export async function postJson(options: PostJsonOptions): Promise<Record<string, unknown>> {
+	const { url, body, provider, fetcher, signal, timeoutMs, headers } = options;
 	const fetchImpl = getFetch(fetcher);
 	const abort = mergeAbortSignal(signal, timeoutMs);
-
-	const requestInit: RequestInit = {
-		method: "POST",
-		signal: abort.signal,
-	};
-
-	if (jsonBody) {
-		requestInit.headers = { "content-type": "application/json", ...(headers ?? {}) };
-		requestInit.body = JSON.stringify(body);
-	} else {
-		requestInit.headers = { "content-type": "application/x-www-form-urlencoded", ...(headers ?? {}) };
-		requestInit.body =
-			body instanceof URLSearchParams
-				? body.toString()
-				: new URLSearchParams(
-						Object.entries(body).filter((entry): entry is [string, string] => typeof entry[1] === "string"),
-					).toString();
-	}
+	const requestInit = createPostRequestInit(body, abort.signal, headers);
 
 	try {
 		const response = await fetchImpl(url, requestInit);
