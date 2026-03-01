@@ -1,5 +1,5 @@
 import { CaptchaServerError } from "./errors";
-import { isJsonObject, type JsonObject } from "./json";
+import type { JsonObject } from "./json";
 
 export type FetchLike = typeof fetch;
 
@@ -33,13 +33,14 @@ function mergeAbortSignal(
 	signal?: AbortSignal;
 	cleanup: () => void;
 } {
-	if (!signal && !timeoutMs) {
+	const timeout = timeoutMs && timeoutMs > 0 ? timeoutMs : undefined;
+
+	if (!signal && !timeout) {
 		return { cleanup: () => {} };
 	}
 
 	const controller = new AbortController();
-	let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
-	let detach: (() => void) | undefined;
+	const cleanupTasks: Array<() => void> = [];
 
 	if (signal) {
 		if (signal.aborted) {
@@ -47,48 +48,25 @@ function mergeAbortSignal(
 		} else {
 			const listener = () => controller.abort(signal.reason);
 			signal.addEventListener("abort", listener, { once: true });
-			detach = () => signal.removeEventListener("abort", listener);
+			cleanupTasks.push(() => signal.removeEventListener("abort", listener));
 		}
 	}
 
-	if (typeof timeoutMs === "number" && timeoutMs > 0) {
-		timeoutHandle = setTimeout(() => {
+	if (timeout) {
+		const timeoutHandle = setTimeout(() => {
 			controller.abort(new Error("Captcha verification request timed out."));
-		}, timeoutMs);
+		}, timeout);
+		cleanupTasks.push(() => clearTimeout(timeoutHandle));
 	}
 
 	return {
 		signal: controller.signal,
 		cleanup: () => {
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
+			for (const task of cleanupTasks) {
+				task();
 			}
-			detach?.();
 		},
 	};
-}
-
-function ensureJsonObject(value: unknown, provider: string): JsonObject {
-	if (!isJsonObject(value)) {
-		throw new CaptchaServerError("invalid-response", "Provider returned a non-object JSON response.", {
-			provider,
-		});
-	}
-	return value;
-}
-
-async function parseJsonObject(response: Response, provider: string): Promise<JsonObject> {
-	try {
-		return ensureJsonObject(await response.json(), provider);
-	} catch (error) {
-		if (error instanceof CaptchaServerError) {
-			throw error;
-		}
-		throw new CaptchaServerError("invalid-response", "Provider returned invalid JSON.", {
-			provider,
-			cause: error,
-		});
-	}
 }
 
 function createPostRequestInit(
@@ -125,7 +103,7 @@ export async function postJson(options: PostJsonOptions): Promise<JsonObject> {
 			});
 		}
 
-		return parseJsonObject(response, provider);
+		return (await response.json()) as JsonObject;
 	} catch (error) {
 		if (error instanceof CaptchaServerError) {
 			throw error;
