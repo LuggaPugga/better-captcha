@@ -4,11 +4,13 @@ import {
 	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
+	buildProviderFormBody,
+	finalizeProviderFailure,
 	finalizeVerification,
+	getCommonMismatchCodes,
 	getOptionalNumber,
 	getOptionalString,
 	getStringArray,
-	withFallbackErrorCodes,
 } from "../shared";
 
 const PROVIDER = "recaptcha";
@@ -49,14 +51,9 @@ export async function verifyReCaptcha(options: ReCaptchaVerifyOptions): Promise<
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
 
-	const body = new URLSearchParams({
-		secret: options.secret,
-		response: options.response,
+	const body = buildProviderFormBody(options.secret, options.response, {
+		remoteip: options.remoteip,
 	});
-
-	if (options.remoteip) {
-		body.set("remoteip", options.remoteip);
-	}
 
 	const raw = await postJson({
 		url: options.endpoint ?? DEFAULT_ENDPOINT,
@@ -71,27 +68,23 @@ export async function verifyReCaptcha(options: ReCaptchaVerifyOptions): Promise<
 	const providerErrorCodes = getStringArray(raw["error-codes"]);
 
 	if (!success) {
-		return finalizeVerification(options, {
-			success: false,
-			errorCodes: withFallbackErrorCodes<ReCaptchaErrorCode>(providerErrorCodes, "verification-failed"),
-			raw,
-		});
+		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
 	const hostname = getOptionalString(raw.hostname);
 	const action = getOptionalString(raw.action);
 	const score = getOptionalNumber(raw.score);
-	const mismatches: ReCaptchaErrorCode[] = [];
-
-	if (options.expectedHostname && hostname !== options.expectedHostname) {
-		mismatches.push("hostname-mismatch");
-	}
-	if (options.expectedAction && action !== options.expectedAction) {
-		mismatches.push("action-mismatch");
-	}
-	if (typeof options.minScore === "number" && typeof score === "number" && score < options.minScore) {
-		mismatches.push("score-too-low");
-	}
+	const mismatches = getCommonMismatchCodes<ReCaptchaErrorCode>({
+		expectedHostname: options.expectedHostname,
+		hostname,
+		hostnameMismatchCode: "hostname-mismatch",
+		expectedAction: options.expectedAction,
+		action,
+		actionMismatchCode: "action-mismatch",
+		minScore: options.minScore,
+		score,
+		scoreTooLowCode: "score-too-low",
+	});
 
 	if (mismatches.length > 0) {
 		return finalizeVerification(options, {

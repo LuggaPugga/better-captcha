@@ -5,7 +5,7 @@ import {
 	assertNonEmptyString,
 	type BaseVerifyOptions,
 	finalizeVerification,
-	getOptionalString,
+	getOptionalObjectString,
 	withFallbackErrorCodes,
 } from "../shared";
 
@@ -70,11 +70,7 @@ export async function verifyFriendlyCaptcha(
 	const success = asBoolean(raw.success, PROVIDER);
 
 	if (!success) {
-		const errorValue = raw.error;
-		const errorCode =
-			errorValue && typeof errorValue === "object"
-				? getOptionalString((errorValue as Record<string, unknown>).error_code)
-				: undefined;
+		const errorCode = getOptionalObjectString(raw.error, "error_code");
 		return finalizeVerification(options, {
 			success: false,
 			errorCodes: withFallbackErrorCodes<FriendlyCaptchaErrorCode>(errorCode ? [errorCode] : [], "verification_failed"),
