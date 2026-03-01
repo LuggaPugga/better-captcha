@@ -111,3 +111,9 @@ CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoi
 - **Lightweight**: Minimal impact on page load times
 - **Open Source**: Benefit from community contributions and transparency
 - **Customization**: Customize the widget appearance to match your application's design
+
+## Server Verification
+
+`@better-captcha/server` does not currently include a built-in CapWidget verifier.
+
+Verify tokens against your Cap.JS backend endpoint and treat the request as untrusted until your server confirms the token.

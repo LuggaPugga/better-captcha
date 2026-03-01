@@ -1,0 +1,65 @@
+{
+	"name": "@better-captcha/server",
+	"description": "Server-side CAPTCHA token verification with modular provider adapters and typed error handling.",
+	"version": "0.5.5",
+	"author": "LuggaPugga",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LuggaPugga/better-captcha.git"
+	},
+	"homepage": "https://better-captcha.dev",
+	"license": "MIT",
+	"keywords": [
+		"captcha",
+		"server",
+		"recaptcha",
+		"hcaptcha",
+		"turnstile",
+		"friendly-captcha"
+	],
+	"type": "module",
+	"main": "./dist/index.mjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
+	"sideEffects": false,
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"test": "vitest run"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
+		},
+		"./providers/*": {
+			"types": "./dist/providers/*.d.mts",
+			"default": "./dist/providers/*.mjs"
+		},
+		"./errors": {
+			"types": "./dist/errors.d.mts",
+			"default": "./dist/errors.mjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"typesVersions": {
+		"*": {
+			"providers/*": [
+				"dist/providers/*.d.mts"
+			],
+			"errors": [
+				"dist/errors.d.mts"
+			]
+		}
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"devDependencies": {
+		"tsdown": "^0.20.3",
+		"vitest": "^3.2.4"
+	}
+}

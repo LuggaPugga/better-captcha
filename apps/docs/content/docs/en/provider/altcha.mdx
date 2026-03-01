@@ -113,3 +113,9 @@ Altcha uses an `endpoint` prop instead of `sitekey` to specify the challenge URL
 - **Open Source**: Benefit from community contributions and transparency
 - **Secure Context**: Requires HTTPS connection due to cryptographic API usage
 - **Internationalization**: Supports 50+ languages with automatic language detection
+
+## Server Verification
+
+`@better-captcha/server` does not currently include a built-in Altcha verifier.
+
+Verify the Altcha payload with your own endpoint logic (for example, your challenge verification endpoint), and reject the request when verification fails.

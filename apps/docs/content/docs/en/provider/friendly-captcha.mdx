@@ -106,3 +106,21 @@ For more information, visit the [official Friendly Captcha documentation](https:
 - **Accessibility**: Fully accessible - no visual challenges that could exclude users
 - **Performance**: Minimal impact on page performance, works in background
 - **EU Hosting**: Data can be hosted in the EU for additional privacy compliance
+
+## Server Verification
+
+Use `@better-captcha/server` to verify Friendly Captcha tokens on your backend:
+
+```ts
+import { verifyFriendlyCaptcha } from "@better-captcha/server";
+
+const result = await verifyFriendlyCaptcha({
+	apiKey: process.env.FRIENDLY_CAPTCHA_API_KEY!,
+	response: tokenFromClient,
+	sitekey: process.env.FRIENDLY_CAPTCHA_SITE_KEY,
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```

@@ -1,0 +1,80 @@
+import { postJson } from "../http";
+import { readRequiredBoolean, readString, readStringArray } from "../json";
+import type { VerificationResult } from "../result";
+import {
+	assertNonEmptyString,
+	type BaseVerifyOptions,
+	buildProviderFormBody,
+	finalizeProviderFailure,
+	finalizeVerification,
+} from "../shared";
+
+const PROVIDER = "recaptcha-compatible";
+
+export type ReCaptchaCompatibleErrorCode = string;
+
+export interface ReCaptchaCompatibleSuccessData {
+	challengeTs?: string;
+	hostname?: string;
+}
+
+export type ReCaptchaCompatibleVerificationResult = VerificationResult<
+	ReCaptchaCompatibleSuccessData,
+	ReCaptchaCompatibleErrorCode
+>;
+
+export interface ReCaptchaCompatibleVerifyOptions
+	extends BaseVerifyOptions<ReCaptchaCompatibleSuccessData, ReCaptchaCompatibleErrorCode> {
+	endpoint: string;
+	secret: string;
+	remoteip?: string;
+	sitekey?: string;
+	extraBody?: Record<string, string>;
+}
+
+export async function verifyWithReCaptchaCompatibleApi(
+	provider: string,
+	options: ReCaptchaCompatibleVerifyOptions,
+): Promise<ReCaptchaCompatibleVerificationResult> {
+	assertNonEmptyString(options.endpoint, "endpoint", provider);
+	assertNonEmptyString(options.secret, "secret", provider);
+	assertNonEmptyString(options.response, "response", provider);
+
+	const body = buildProviderFormBody(options.secret, options.response, {
+		...(options.extraBody ?? {}),
+		remoteip: options.remoteip,
+		sitekey: options.sitekey,
+	});
+
+	const raw = await postJson({
+		url: options.endpoint,
+		body,
+		provider,
+		fetcher: options.fetcher,
+		signal: options.signal,
+		timeoutMs: options.timeoutMs,
+	});
+
+	const success = readRequiredBoolean(raw, "success", provider);
+	const providerErrorCodes = readStringArray(raw, "error-codes");
+
+	if (!success) {
+		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
+	}
+
+	return finalizeVerification(options, {
+		success: true,
+		data: {
+			challengeTs: readString(raw, "challenge_ts"),
+			hostname: readString(raw, "hostname"),
+		},
+		raw,
+	});
+}
+
+export function createReCaptchaCompatibleVerifier(provider: string) {
+	return (options: ReCaptchaCompatibleVerifyOptions): Promise<ReCaptchaCompatibleVerificationResult> =>
+		verifyWithReCaptchaCompatibleApi(provider, options);
+}
+
+export const verifyReCaptchaCompatible = createReCaptchaCompatibleVerifier(PROVIDER);
