@@ -49,6 +49,12 @@ await verifyTurnstile({
 });
 ```
 
+Callback errors are swallowed so telemetry hooks do not fail verification requests.
+
+## Timeouts
+
+Requests use a 5000ms timeout by default. Override with `timeoutMs` or set `timeoutMs: 0` to disable.
+
 ## Provider APIs
 
 - `turnstile` via Cloudflare Siteverify

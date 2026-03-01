@@ -17,7 +17,7 @@ export default defineConfig({
 	format: ["esm"],
 	dts: true,
 	clean: true,
-	sourcemap: true,
+	sourcemap: false,
 	minify: false,
 	treeshake: true,
 	ignoreWatch: [".turbo"],
