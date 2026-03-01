@@ -4,10 +4,11 @@ import {
 	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
+	buildProviderFormBody,
+	finalizeProviderFailure,
 	finalizeVerification,
 	getOptionalString,
 	getStringArray,
-	withFallbackErrorCodes,
 } from "../shared";
 
 const PROVIDER = "recaptcha-compatible";
@@ -41,18 +42,11 @@ export async function verifyWithReCaptchaCompatibleApi(
 	assertNonEmptyString(options.secret, "secret", provider);
 	assertNonEmptyString(options.response, "response", provider);
 
-	const body = new URLSearchParams({
-		secret: options.secret,
-		response: options.response,
+	const body = buildProviderFormBody(options.secret, options.response, {
 		...(options.extraBody ?? {}),
+		remoteip: options.remoteip,
+		sitekey: options.sitekey,
 	});
-
-	if (options.remoteip) {
-		body.set("remoteip", options.remoteip);
-	}
-	if (options.sitekey) {
-		body.set("sitekey", options.sitekey);
-	}
 
 	const raw = await postJson({
 		url: options.endpoint,
@@ -67,11 +61,7 @@ export async function verifyWithReCaptchaCompatibleApi(
 	const providerErrorCodes = getStringArray(raw["error-codes"]);
 
 	if (!success) {
-		return finalizeVerification(options, {
-			success: false,
-			errorCodes: withFallbackErrorCodes<ReCaptchaCompatibleErrorCode>(providerErrorCodes, "verification-failed"),
-			raw,
-		});
+		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
 	return finalizeVerification(options, {

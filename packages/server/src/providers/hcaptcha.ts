@@ -4,11 +4,13 @@ import {
 	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
+	buildProviderFormBody,
+	finalizeProviderFailure,
 	finalizeVerification,
+	getCommonMismatchCodes,
 	getOptionalNumber,
 	getOptionalString,
 	getStringArray,
-	withFallbackErrorCodes,
 } from "../shared";
 
 const PROVIDER = "hcaptcha";
@@ -54,17 +56,10 @@ export async function verifyHCaptcha(options: HCaptchaVerifyOptions): Promise<HC
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
 
-	const body = new URLSearchParams({
-		secret: options.secret,
-		response: options.response,
+	const body = buildProviderFormBody(options.secret, options.response, {
+		remoteip: options.remoteip,
+		sitekey: options.sitekey,
 	});
-
-	if (options.remoteip) {
-		body.set("remoteip", options.remoteip);
-	}
-	if (options.sitekey) {
-		body.set("sitekey", options.sitekey);
-	}
 
 	const raw = await postJson({
 		url: options.endpoint ?? DEFAULT_ENDPOINT,
@@ -79,27 +74,23 @@ export async function verifyHCaptcha(options: HCaptchaVerifyOptions): Promise<HC
 	const providerErrorCodes = getStringArray(raw["error-codes"]);
 
 	if (!success) {
-		return finalizeVerification(options, {
-			success: false,
-			errorCodes: withFallbackErrorCodes<HCaptchaErrorCode>(providerErrorCodes, "verification-failed"),
-			raw,
-		});
+		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
 	const hostname = getOptionalString(raw.hostname);
 	const score = getOptionalNumber(raw.score);
 	const action = getOptionalString(raw.action);
-	const mismatches: HCaptchaErrorCode[] = [];
-
-	if (options.expectedHostname && hostname !== options.expectedHostname) {
-		mismatches.push("hostname-mismatch");
-	}
-	if (options.expectedAction && action !== options.expectedAction) {
-		mismatches.push("action-mismatch");
-	}
-	if (typeof options.minScore === "number" && typeof score === "number" && score < options.minScore) {
-		mismatches.push("score-too-low");
-	}
+	const mismatches = getCommonMismatchCodes<HCaptchaErrorCode>({
+		expectedHostname: options.expectedHostname,
+		hostname,
+		hostnameMismatchCode: "hostname-mismatch",
+		expectedAction: options.expectedAction,
+		action,
+		actionMismatchCode: "action-mismatch",
+		minScore: options.minScore,
+		score,
+		scoreTooLowCode: "score-too-low",
+	});
 
 	if (mismatches.length > 0) {
 		return finalizeVerification(options, {
