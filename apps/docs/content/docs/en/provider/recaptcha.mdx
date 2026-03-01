@@ -106,3 +106,21 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
 - **Verify Server-Side**: Always verify the response token on your backend
 - **Consider UX**: For v2 invisible, ensure users understand why they're seeing a challenge
 - **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically
+
+## Server Verification
+
+Use `@better-captcha/server` to verify reCAPTCHA tokens on your backend:
+
+```ts
+import { verifyReCaptcha } from "@better-captcha/server";
+
+const result = await verifyReCaptcha({
+	secret: process.env.RECAPTCHA_SECRET_KEY!,
+	response: tokenFromClient,
+	expectedHostname: "example.com",
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```

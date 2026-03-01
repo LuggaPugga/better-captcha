@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/preact --filter=@better-captcha/react --filter=@better-captcha/vue --filter=@better-captcha/svelte --filter=@better-captcha/solidjs --filter=@better-captcha/qwik --filter=@better-captcha/lit --filter=packages/*",
+		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/server --filter=@better-captcha/preact --filter=@better-captcha/react --filter=@better-captcha/vue --filter=@better-captcha/svelte --filter=@better-captcha/solidjs --filter=@better-captcha/qwik --filter=@better-captcha/lit --filter=packages/*",
 		"build:testing": "turbo run build --filter=apps/testing/*",
 		"build:examples": "turbo run build --filter=apps/examples/*",
 		"dev:react": "turbo run dev --filter=@better-captcha/react --filter=apps/testing/react",
@@ -17,7 +17,7 @@
 		"start": "turbo run start",
 		"changeset": "changeset",
 		"ci:version": "changeset version && bun update",
-		"ci:publish": "for dir in packages/core packages/react packages/vue packages/svelte packages/solidjs packages/qwik packages/lit packages/preact; do (cd \"$dir\" && bun publish --access public || true); done && changeset tag"
+		"ci:publish": "for dir in packages/core packages/server packages/react packages/vue packages/svelte packages/solidjs packages/qwik packages/lit packages/preact; do (cd \"$dir\" && bun publish --access public || true); done && changeset tag"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.4",

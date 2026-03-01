@@ -105,3 +105,21 @@ For more information, visit the [official Captcha Fox documentation](https://doc
 - **Privacy**: Captcha Fox is designed with privacy in mind - no unnecessary tracking
 - **Analytics**: Use the built-in analytics to understand bot traffic patterns
 - **Auto Theme**: Use `theme: "auto"` to automatically match your site's color scheme
+
+## Server Verification
+
+Use `@better-captcha/server` to verify CaptchaFox tokens on your backend:
+
+```ts
+import { verifyCaptchaFox } from "@better-captcha/server";
+
+const result = await verifyCaptchaFox({
+	endpoint: "https://api.captchafox.com/siteverify",
+	secret: process.env.CAPTCHAFOX_SECRET!,
+	response: tokenFromClient,
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```

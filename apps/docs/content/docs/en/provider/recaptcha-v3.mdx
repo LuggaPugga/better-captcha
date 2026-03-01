@@ -107,3 +107,22 @@ For more information, visit the [official Google reCAPTCHA v3 documentation](htt
 - **Token Caching**: The provider automatically caches tokens for 2 minutes to reduce API calls
 - **Multiple Actions**: Use different actions for different pages/interactions to get better analytics
 
+
+## Server Verification
+
+Use `@better-captcha/server` to verify reCAPTCHA v3 tokens on your backend:
+
+```ts
+import { verifyReCaptcha } from "@better-captcha/server";
+
+const result = await verifyReCaptcha({
+	secret: process.env.RECAPTCHA_SECRET_KEY!,
+	response: tokenFromClient,
+	expectedAction: "submit",
+	minScore: 0.5,
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```
