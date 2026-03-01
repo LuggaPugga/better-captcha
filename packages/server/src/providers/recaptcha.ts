@@ -1,16 +1,13 @@
 import { postJson } from "../http";
+import { readNumber, readRequiredBoolean, readString, readStringArray } from "../json";
 import type { VerificationResult } from "../result";
 import {
-	asBoolean,
 	assertNonEmptyString,
 	type BaseVerifyOptions,
 	buildProviderFormBody,
 	finalizeProviderFailure,
 	finalizeVerification,
 	getCommonMismatchCodes,
-	getOptionalNumber,
-	getOptionalString,
-	getStringArray,
 } from "../shared";
 
 const PROVIDER = "recaptcha";
@@ -64,16 +61,16 @@ export async function verifyReCaptcha(options: ReCaptchaVerifyOptions): Promise<
 		timeoutMs: options.timeoutMs,
 	});
 
-	const success = asBoolean(raw.success, PROVIDER);
-	const providerErrorCodes = getStringArray(raw["error-codes"]);
+	const success = readRequiredBoolean(raw, "success", PROVIDER);
+	const providerErrorCodes = readStringArray(raw, "error-codes");
 
 	if (!success) {
 		return finalizeProviderFailure(options, raw, providerErrorCodes, "verification-failed");
 	}
 
-	const hostname = getOptionalString(raw.hostname);
-	const action = getOptionalString(raw.action);
-	const score = getOptionalNumber(raw.score);
+	const hostname = readString(raw, "hostname");
+	const action = readString(raw, "action");
+	const score = readNumber(raw, "score");
 	const mismatches = getCommonMismatchCodes<ReCaptchaErrorCode>({
 		expectedHostname: options.expectedHostname,
 		hostname,
@@ -97,11 +94,11 @@ export async function verifyReCaptcha(options: ReCaptchaVerifyOptions): Promise<
 	return finalizeVerification(options, {
 		success: true,
 		data: {
-			challengeTs: getOptionalString(raw.challenge_ts),
+			challengeTs: readString(raw, "challenge_ts"),
 			hostname,
 			score,
 			action,
-			apkPackageName: getOptionalString(raw.apk_package_name),
+			apkPackageName: readString(raw, "apk_package_name"),
 		},
 		raw,
 	});

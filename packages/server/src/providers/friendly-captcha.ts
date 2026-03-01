@@ -1,13 +1,7 @@
 import { postJson } from "../http";
+import { readNestedString, readRequiredBoolean } from "../json";
 import type { VerificationResult } from "../result";
-import {
-	asBoolean,
-	assertNonEmptyString,
-	type BaseVerifyOptions,
-	finalizeVerification,
-	getOptionalObjectString,
-	withFallbackErrorCodes,
-} from "../shared";
+import { assertNonEmptyString, type BaseVerifyOptions, finalizeVerification, withFallbackErrorCodes } from "../shared";
 
 const PROVIDER = "friendly-captcha";
 const DEFAULT_ENDPOINT = "https://global.frcapi.com/api/v2/captcha/siteverify";
@@ -46,7 +40,7 @@ export async function verifyFriendlyCaptcha(
 	assertNonEmptyString(options.apiKey, "apiKey", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
 
-	const payload: Record<string, unknown> = {
+	const payload: Record<string, string> = {
 		response: options.response,
 	};
 
@@ -66,10 +60,10 @@ export async function verifyFriendlyCaptcha(
 		},
 	});
 
-	const success = asBoolean(raw.success, PROVIDER);
+	const success = readRequiredBoolean(raw, "success", PROVIDER);
 
 	if (!success) {
-		const errorCode = getOptionalObjectString(raw.error, "error_code");
+		const errorCode = readNestedString(raw, "error", "error_code");
 		return finalizeVerification(options, {
 			success: false,
 			errorCodes: withFallbackErrorCodes<FriendlyCaptchaErrorCode>(errorCode ? [errorCode] : [], "verification_failed"),
