@@ -2,6 +2,8 @@ import { AltchaProvider } from "./providers/altcha";
 import { CapWidgetProvider } from "./providers/cap-widget";
 import { CaptchaFoxProvider } from "./providers/captcha-fox";
 import { FriendlyCaptchaProvider } from "./providers/friendly-captcha";
+import { GeetestProvider } from "./providers/geetest";
+import { Geetest } from "./providers/geetest/types";
 import { HCaptchaProvider } from "./providers/hcaptcha";
 import { PrivateCaptchaProvider } from "./providers/private-captcha";
 import { ProsopoProvider } from "./providers/prosopo";
@@ -114,6 +116,15 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 	},
+	{
+		name: "geetest",
+		componentName: "Geetest",
+		providerClassName: "GeetestProvider",
+		handleType: "GeetestHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"sitekey"',
+		extraTypes: [],
+	}
 ];
 
 export const PROVIDER_CLASSES = {
@@ -127,6 +138,7 @@ export const PROVIDER_CLASSES = {
 	ReCaptchaProvider,
 	ReCaptchaV3Provider,
 	TurnstileProvider,
+	GeetestProvider,
 } as const;
 
 export type { AltchaHandle } from "./providers/altcha";
@@ -139,6 +151,7 @@ export type { ProsopoHandle } from "./providers/prosopo";
 export type { ReCaptchaHandle } from "./providers/recaptcha";
 export type { ReCaptchaV3Handle } from "./providers/recaptcha-v3";
 export type { TurnstileHandle } from "./providers/turnstile";
+export type { GeetestHandle } from "./providers/geetest";
 
 export function getProviderMetadata(name: string): ProviderMetadata | undefined {
 	return PROVIDER_REGISTRY.find((provider) => provider.name === name);
