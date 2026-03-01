@@ -1,0 +1,101 @@
+---
+title: Server Verification
+description: Verify CAPTCHA tokens on your backend with @better-captcha/server.
+---
+
+## Installation
+
+```sh
+npm i @better-captcha/server
+```
+
+## Why
+
+Client-side CAPTCHA widgets only issue tokens. You must verify those tokens on your backend before trusting the request.
+
+## Quick Start
+
+```ts
+import { verifyToken } from "@better-captcha/server";
+
+export async function POST(request: Request) {
+	const body = await request.json();
+	const token = body.captchaToken;
+
+	const result = await verifyToken("turnstile", {
+		secret: process.env.TURNSTILE_SECRET_KEY!,
+		response: token,
+		expectedHostname: "example.com",
+	});
+
+	if (!result.success) {
+		return Response.json({ ok: false, errors: result.errorCodes }, { status: 400 });
+	}
+
+	return Response.json({ ok: true });
+}
+```
+
+## Verification Callbacks
+
+All server verifiers support optional `onSuccess` and `onError` callbacks:
+
+```ts
+import { verifyTurnstile } from "@better-captcha/server";
+
+await verifyTurnstile({
+	secret: process.env.TURNSTILE_SECRET_KEY!,
+	response: token,
+	onSuccess: (result) => {
+		console.log("ok", result.data.hostname);
+	},
+	onError: (result) => {
+		console.log("failed", result.errorCodes);
+	},
+});
+```
+
+## Built-in Providers
+
+| Provider | API |
+|----------|-----|
+| `turnstile` | Cloudflare Siteverify |
+| `recaptcha` | Google Siteverify |
+| `recaptcha-v3` | Google Siteverify |
+| `hcaptcha` | hCaptcha Siteverify |
+| `friendly-captcha` | Friendly Captcha Siteverify |
+| `recaptcha-compatible` | Any compatible siteverify endpoint |
+| `captcha-fox` | CaptchaFox-compatible siteverify endpoint |
+| `private-captcha` | Private Captcha-compatible siteverify endpoint |
+| `prosopo` | Prosopo-compatible siteverify endpoint |
+
+## Error Handling
+
+Provider verification failures are returned as typed results:
+
+```ts
+if (!result.success) {
+	console.log(result.errorCodes);
+}
+```
+
+Transport/runtime issues throw `CaptchaServerError`:
+
+```ts
+import { isCaptchaServerError } from "@better-captcha/server";
+
+try {
+	// ...
+} catch (error) {
+	if (isCaptchaServerError(error)) {
+		console.error(error.code, error.status, error.provider);
+	}
+}
+```
+
+## API References
+
+- [Cloudflare Turnstile Siteverify](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/)
+- [Google reCAPTCHA Verify API](https://developers.google.com/recaptcha/docs/verify)
+- [hCaptcha Siteverify API](https://docs.hcaptcha.com/)
+- [Friendly Captcha Siteverify](https://developer.friendlycaptcha.com/docs/v2/api/siteverify)

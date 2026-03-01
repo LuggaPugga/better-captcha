@@ -118,3 +118,22 @@ Test keys are designed for development and automated testing. Replace with real 
 - **Difficulty Levels**: Adjust difficulty based on your security needs vs. user experience
 - **Passive Mode**: Use passive mode for lower-risk scenarios to improve UX
 - **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically
+
+## Server Verification
+
+Use `@better-captcha/server` to verify hCaptcha tokens on your backend:
+
+```ts
+import { verifyHCaptcha } from "@better-captcha/server";
+
+const result = await verifyHCaptcha({
+	secret: process.env.HCAPTCHA_SECRET_KEY!,
+	response: tokenFromClient,
+	sitekey: process.env.HCAPTCHA_SITE_KEY,
+	expectedHostname: "example.com",
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```
