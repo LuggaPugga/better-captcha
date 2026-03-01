@@ -7,6 +7,7 @@ import {
 	buildProviderFormBody,
 	finalizeProviderFailure,
 	finalizeVerification,
+	getStringMismatchCodes,
 } from "../shared";
 
 const PROVIDER = "turnstile";
@@ -75,17 +76,23 @@ export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<
 	const action = readString(raw, "action");
 	const hostname = readString(raw, "hostname");
 	const cdata = readString(raw, "cdata");
-	const mismatches: TurnstileErrorCode[] = [];
-
-	if (options.expectedAction && action !== options.expectedAction) {
-		mismatches.push("action-mismatch");
-	}
-	if (options.expectedHostname && hostname !== options.expectedHostname) {
-		mismatches.push("hostname-mismatch");
-	}
-	if (options.expectedCData && cdata !== options.expectedCData) {
-		mismatches.push("cdata-mismatch");
-	}
+	const mismatches = getStringMismatchCodes<TurnstileErrorCode>([
+		{
+			expected: options.expectedAction,
+			actual: action,
+			mismatchCode: "action-mismatch",
+		},
+		{
+			expected: options.expectedHostname,
+			actual: hostname,
+			mismatchCode: "hostname-mismatch",
+		},
+		{
+			expected: options.expectedCData,
+			actual: cdata,
+			mismatchCode: "cdata-mismatch",
+		},
+	]);
 
 	if (mismatches.length > 0) {
 		return finalizeVerification(options, {

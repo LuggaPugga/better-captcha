@@ -18,9 +18,10 @@
 		"friendly-captcha"
 	],
 	"type": "module",
-	"main": "./dist/index.js",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/index.mjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
+	"sideEffects": false,
 	"files": [
 		"dist"
 	],
@@ -31,26 +32,26 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
 		},
 		"./providers/*": {
-			"types": "./dist/providers/*.d.ts",
-			"default": "./dist/providers/*.js"
+			"types": "./dist/providers/*.d.mts",
+			"default": "./dist/providers/*.mjs"
 		},
 		"./errors": {
-			"types": "./dist/errors.d.ts",
-			"default": "./dist/errors.js"
+			"types": "./dist/errors.d.mts",
+			"default": "./dist/errors.mjs"
 		},
 		"./package.json": "./package.json"
 	},
 	"typesVersions": {
 		"*": {
 			"providers/*": [
-				"dist/providers/*.d.ts"
+				"dist/providers/*.d.mts"
 			],
 			"errors": [
-				"dist/errors.d.ts"
+				"dist/errors.d.mts"
 			]
 		}
 	},

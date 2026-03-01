@@ -1,5 +1,5 @@
 import { CaptchaServerError } from "./errors";
-import type { JsonObject } from "./json";
+import { isJsonObject, type JsonObject } from "./json";
 
 export type FetchLike = typeof fetch;
 
@@ -8,6 +8,8 @@ export interface HttpRequestOptions {
 	signal?: AbortSignal;
 	timeoutMs?: number;
 }
+
+const DEFAULT_TIMEOUT_MS = 5_000;
 
 interface PostJsonOptions extends HttpRequestOptions {
 	url: string;
@@ -90,7 +92,8 @@ function createPostRequestInit(
 export async function postJson(options: PostJsonOptions): Promise<JsonObject> {
 	const { url, body, provider, fetcher, signal, timeoutMs, headers } = options;
 	const fetchImpl = getFetch(fetcher);
-	const abort = mergeAbortSignal(signal, timeoutMs);
+	const effectiveTimeoutMs = timeoutMs === undefined ? DEFAULT_TIMEOUT_MS : timeoutMs;
+	const abort = mergeAbortSignal(signal, effectiveTimeoutMs);
 	const requestInit = createPostRequestInit(body, abort.signal, headers);
 
 	try {
@@ -103,7 +106,23 @@ export async function postJson(options: PostJsonOptions): Promise<JsonObject> {
 			});
 		}
 
-		return (await response.json()) as JsonObject;
+		let payload: unknown;
+		try {
+			payload = await response.json();
+		} catch (error) {
+			throw new CaptchaServerError("invalid-response", "Provider returned invalid JSON.", {
+				provider,
+				cause: error,
+			});
+		}
+
+		if (!isJsonObject(payload)) {
+			throw new CaptchaServerError("invalid-response", "Provider response must be a JSON object.", {
+				provider,
+			});
+		}
+
+		return payload;
 	} catch (error) {
 		if (error instanceof CaptchaServerError) {
 			throw error;
