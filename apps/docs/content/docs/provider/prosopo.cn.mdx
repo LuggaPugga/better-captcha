@@ -1,0 +1,108 @@
+---
+title: Prosopo
+description: 注重隐私的验证码服务,具有 Web3 集成和可自定义主题
+---
+
+import { Prosopo } from "@better-captcha/react/provider/prosopo";
+
+## 关于 Prosopo
+
+Prosopo 是一个去中心化的、注重隐私的验证码服务,利用 Web3 技术通过基于区块链的验证提供机器人保护。
+
+更多信息,请访问[官方 Prosopo 文档](https://docs.prosopo.io/)。
+
+## 展示
+
+<Prosopo sitekey="no-testing-key"/>
+
+## 使用方法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { Prosopo } from "@better-captcha/react/provider/prosopo";
+
+  <Prosopo sitekey="no-testing-key" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { Prosopo } from "@better-captcha/preact/provider/prosopo";
+
+  <Prosopo sitekey="no-testing-key" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { Prosopo } from "@better-captcha/qwik/provider/prosopo";
+
+  export default component$(() => (
+    <Prosopo sitekey="no-testing-key" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { Prosopo } from "@better-captcha/solidjs/provider/prosopo";
+
+  <Prosopo sitekey="no-testing-key" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+    <Prosopo
+      sitekey="no-testing-key"
+      :options="{ theme: 'dark' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { Prosopo } from "@better-captcha/vue/provider/prosopo";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import Prosopo from "@better-captcha/svelte/provider/prosopo";
+  </script>
+
+  <Prosopo sitekey="no-testing-key" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { Prosopo } from "@better-captcha/lit/provider/prosopo";
+  ```
+
+  ```html
+  <prosopo-captcha sitekey="no-testing-key"></prosopo-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/prosopo/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/prosopo/provider.ts" name="ProsopoHandle" />
+
+## 最佳实践
+
+- **Web3 集成**: 对 dApp 和 Web3 应用程序非常理想
+- **隐私优先**: 利用区块链进行保护隐私的验证
+- **去中心化**: 没有中央机构控制验证码服务
+- **挑战类型**: 根据您的需求在无摩擦和工作量证明之间选择
+- **自动主题**: 使用 `theme: "auto"` 匹配您网站的配色方案

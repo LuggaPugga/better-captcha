@@ -1,0 +1,108 @@
+---
+title: ReCaptcha
+description: Google 的综合机器人保护和验证码服务
+---
+
+import { ReCaptchaPlayground } from "@/components/recaptcha-playground";
+
+## 关于 ReCaptcha
+
+Google reCAPTCHA 是使用最广泛的验证码服务之一,保护着数百万个网站免受垃圾邮件和滥用的侵害。它使用先进的风险分析通过各种挑战机制来区分人类用户和机器人。
+
+更多信息,请访问[官方 Google reCAPTCHA 文档](https://developers.google.com/recaptcha)。
+
+
+## 展示
+<ReCaptchaPlayground />
+
+## 使用方法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+  <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/preact/provider/recaptcha";
+
+  <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+  export default component$(() => (
+    <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+  <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptcha
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      :options="{ theme: 'dark' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+  </script>
+
+  <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+  ```
+
+  ```html
+  <recaptcha-captcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></recaptcha-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha/provider.ts" name="ReCaptchaHandle" />
+
+## 最佳实践
+
+- **选择正确的版本**: 使用 v2 进行交互式挑战,使用 v3 进行不可见的基于分数的保护
+- **优雅地处理错误**: 始终实现 `onError` 回调以处理网络故障
+- **服务器端验证**: 始终在后端验证响应令牌
+- **考虑用户体验**: 对于 v2 不可见版本,确保用户理解为什么他们会看到挑战
+- **自动主题**: 使用 `theme: "auto"` 自动匹配您网站的配色方案

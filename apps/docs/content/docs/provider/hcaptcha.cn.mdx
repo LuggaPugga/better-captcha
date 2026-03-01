@@ -1,0 +1,120 @@
+---
+title: HCaptcha
+description: 注重隐私的验证码服务,提供货币化机会
+---
+
+import { HCaptchaPlayground } from "@/components/hcaptcha-playground";
+
+## 关于 HCaptcha
+
+hCaptcha 是一个注重隐私的验证码服务,在平衡安全性和用户体验的同时保护您的网站免受机器人攻击,提供交互式和被动验证模式。
+
+更多信息,请访问[官方 hCaptcha 文档](https://docs.hcaptcha.com/)。
+
+## 展示
+<HCaptchaPlayground />
+
+## 使用方法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/react/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/preact/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { HCaptcha } from "@better-captcha/qwik/provider/hcaptcha";
+
+  export default component$(() => (
+    <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/solidjs/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+    <HCaptcha
+      sitekey="10000000-ffff-ffff-ffff-000000000001"
+      :options="{ theme: 'dark' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { HCaptcha } from "@better-captcha/vue/provider/hcaptcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import HCaptcha from "@better-captcha/svelte/provider/hcaptcha";
+  </script>
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { HCaptcha } from "@better-captcha/lit/provider/hcaptcha";
+  ```
+
+  ```html
+  <hcaptcha-captcha sitekey="10000000-ffff-ffff-ffff-000000000001"></hcaptcha-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/hcaptcha/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/hcaptcha/provider.ts" name="HCaptchaHandle" />
+
+## 测试
+
+hCaptcha 提供用于开发的测试密钥:
+
+| Type | Site Key |
+|------|----------|
+| **总是通过** | `10000000-ffff-ffff-ffff-000000000001` |
+| **总是失败** | `20000000-ffff-ffff-ffff-000000000002` |
+
+<Callout type="info">
+测试密钥专为开发和自动化测试设计。在生产环境中请替换为真实密钥。
+</Callout>
+
+## 最佳实践
+
+- **隐私合规**: hCaptcha 在设计时就考虑了隐私,默认符合 GDPR/CCPA
+- **货币化**: 考虑在您的仪表板中启用货币化,从验证码解决中获益
+- **难度级别**: 根据您的安全需求与用户体验调整难度
+- **被动模式**: 在低风险场景中使用被动模式以改善用户体验
+- **自动主题**: 使用 `theme: "auto"` 自动匹配您网站的配色方案

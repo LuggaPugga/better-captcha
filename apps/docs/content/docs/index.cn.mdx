@@ -1,0 +1,116 @@
+---
+title: 快速开始
+description: 安装、配置和扩展 better-captcha,实现生产就绪的验证码集成。
+---
+
+<Callout type="warn">
+此库目前处于早期开发阶段,尚未准备好在生产环境中使用。在提供商接口稳定之前,请预期会有重大的 API 变更。
+</Callout>
+
+## 概述
+
+`better-captcha` 为流行的验证码提供商提供了一个统一的、框架无关的接口。每个小部件都作为客户端组件提供,具有以下特点:
+
+- ✅ 按需安全加载提供商脚本
+- ✅ 公开可预测的命令式句柄
+- ✅ 在表单提交期间轻松检索令牌
+- ✅ 所有提供商共享相同的生命周期
+- ✅ 允许您在不触及 UI 的情况下切换供应商
+
+## 快速开始
+
+### 1. 为您的框架安装包
+
+| Framework | Package | Installation |
+|-----------|---------|--------------|
+| **React** | `@better-captcha/react` | `npm i @better-captcha/react` |
+| **Qwik** | `@better-captcha/qwik` | `npm i @better-captcha/qwik` |
+| **SolidJS** | `@better-captcha/solidjs` | `npm i @better-captcha/solidjs` |
+| **Vue** | `@better-captcha/vue` | `npm i @better-captcha/vue` |
+| **Svelte** | `@better-captcha/svelte` | `npm i @better-captcha/svelte` |
+| **Lit** | `@better-captcha/lit` | `npm i @better-captcha/lit` |
+
+### 2. 导入并使用提供商
+
+```tsx
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+export function ContactForm() {
+  return <ReCaptcha sitekey="your-site-key" />;
+}
+```
+
+### 3. 访问句柄以控制小部件
+
+```tsx
+import { useRef } from "react";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/react/provider/recaptcha";
+
+export function ContactForm() {
+  const captchaRef = useRef<ReCaptchaHandle>(null);
+
+  const handleSubmit = async () => {
+    const token = captchaRef.current?.getResponse();
+    // Send token to your backend for verification
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <ReCaptcha ref={captchaRef} sitekey="your-site-key" />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+## 支持的提供商
+
+| Provider | Description | Auto Theme |
+|----------|-------------|------------|
+| **[ReCaptcha](/cn/docs/provider/recaptcha)** | Google 的综合机器人保护 | Enhanced ✨ |
+| **[hCaptcha](/cn/docs/provider/hcaptcha)** | 注重隐私并支持货币化 | Enhanced ✨ |
+| **[Turnstile](/cn/docs/provider/turnstile)** | Cloudflare 的隐私优先替代方案 | Native ✅ |
+| **[Friendly Captcha](/cn/docs/provider/friendly-captcha)** | 符合 GDPR,无需用户交互 | Native ✅ |
+| **[Private Captcha](/cn/docs/provider/private-captcha)** | 自托管,完全控制 | Enhanced ✨ |
+| **[Captcha Fox](/cn/docs/provider/captcha-fox)** | 可自定义主题和挑战 | Enhanced ✨ |
+| **[Prosopo](/cn/docs/provider/prosopo)** | 集成 Web3 的机器人保护 | Enhanced ✨ |
+| **[CapWidget](/cn/docs/provider/cap-widget)** | Cap.JS 小部件库 | N/A |
+| **[Altcha](/cn/docs/provider/altcha)** | 注重隐私的工作量证明验证码 | N/A |
+
+## 主要特性
+
+### 统一的 API
+
+所有提供商共享相同的命令式句柄方法:
+
+- `render()` - 渲染验证码小部件
+- `execute()` - 触发验证码挑战
+- `reset()` - 将小部件重置为初始状态
+- `destroy()` - 清理并移除小部件
+- `getResponse()` - 获取当前响应令牌
+
+### 生命周期回调
+
+每个提供商都支持三个生命周期回调:
+
+- `onReady` - 当小部件渲染完成并准备就绪时调用
+- `onSolve` - 当挑战完成并返回令牌时调用
+- `onError` - 当发生错误时调用
+
+### 特定于框架的集成
+
+每个框架都有自己惯用的访问句柄的方式:
+
+- **React**: `useRef` hook
+- **Qwik**: `useCaptchaController` hook
+- **SolidJS**: `createCaptchaController` 函数
+- **Vue**: `useCaptcha` 组合式函数或模板引用
+- **Svelte**: `bind:this` 指令
+- **Lit**: `getHandle()` 方法
+
+## 下一步
+
+- 选择您的[框架](/cn/docs/frameworks),了解特定于框架的模式
+- 探索您选择的验证码服务的[提供商选项](/cn/docs/provider)
+- 配置[自动主题](/cn/docs/auto-theme)以支持自动深色/浅色模式
+- 自定义[脚本加载](/cn/docs/script-options)行为

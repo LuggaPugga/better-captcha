@@ -1,0 +1,130 @@
+---
+title: Private Captcha
+description: 自托管的验证码解决方案,具有完全控制权和隐私保护
+---
+
+import { PrivateCaptchaPlayground } from "@/components/private-captcha-playground";
+
+## 关于 Private Captcha
+
+Private Captcha 是一个独立的、注重隐私的验证码服务,无需跟踪用户数据即可运行。它设计为用户友好、易于访问且完全符合 GDPR。
+
+更多信息,请访问[官方 Private Captcha 网站](https://privatecaptcha.com/)。
+
+## 展示
+<PrivateCaptchaPlayground />
+
+## 使用方法
+<Callout type="info">
+    Private Captcha 只能在表单内工作。
+</Callout>
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/react/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/preact/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { PrivateCaptcha } from "@better-captcha/qwik/provider/private-captcha";
+
+  export default component$(() => (
+	  <form>
+      <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+    </form>
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/solidjs/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+	  <form>
+      <PrivateCaptcha
+        sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
+        :options="{ theme: 'light' }"
+      />
+    </form>
+  </template>
+
+  <script setup lang="ts">
+  import { PrivateCaptcha } from "@better-captcha/vue/provider/private-captcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
+  </script>
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { PrivateCaptcha } from "@better-captcha/lit/provider/private-captcha";
+  ```
+
+  ```html
+  <form>
+    <private-captcha-widget sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"></private-captcha-widget>
+  </form>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/private-captcha/index.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/private-captcha/provider.ts" name="PrivateCaptchaHandle" />
+
+## 重要说明
+
+<Callout type="warn">
+Private Captcha 只能在 `<form>` 元素内工作。请确保将组件包装在 form 标签中。
+</Callout>
+
+## 最佳实践
+
+- **表单要求**: 始终将 Private Captcha 放置在 `<form>` 元素内
+- **关注隐私**: 对于有严格隐私要求的应用程序来说非常理想
+- **自托管**: 考虑自托管以获得最大控制权和数据主权
+- **自动主题**: 使用 `theme: "auto"` 匹配您网站的配色方案
+- **可访问性**: 在设计时考虑了可访问性,提供包容性的用户体验

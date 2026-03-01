@@ -1,0 +1,142 @@
+---
+title: React
+description: 在 React 中使用 better-captcha
+icon: react
+---
+
+## 安装
+
+```npm
+npm i @better-captcha/react
+```
+
+## 基本用法
+
+```tsx
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+export default function Example() {
+  return <ReCaptcha sitekey="your-site-key" />;
+}
+```
+
+## 命令式句柄
+
+React 使用 refs 和 `useRef` 来访问命令式句柄以进行编程控制。
+
+```tsx
+import { useRef } from "react";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/react/provider/recaptcha";
+
+export default function Example() {
+  const recaptchaRef = useRef<ReCaptchaHandle>(null!);
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" ref={recaptchaRef} />
+      <button onClick={() => recaptchaRef.current.execute()}>Execute</button>
+      <button onClick={() => recaptchaRef.current.reset()}>Reset</button>
+      <button onClick={() => console.log(recaptchaRef.current.getResponse())}>Log response</button>
+    </>
+  );
+}
+```
+
+<Callout type="info">
+句柄在小部件渲染后立即可用。在此之前,会公开一个安全的无操作句柄以维护类型安全。
+</Callout>
+
+## 生命周期回调
+
+所有验证码组件都支持三个生命周期回调,用于处理小部件生命周期的不同阶段。
+
+```tsx
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+export default function Example() {
+  const handleReady = () => {
+    console.log("Captcha is ready");
+  };
+
+  const handleSolve = (token: string) => {
+    console.log("Captcha solved with token:", token);
+    // Send token to your backend for verification
+  };
+
+  const handleError = (error: Error | string) => {
+    console.error("Captcha error:", error);
+  };
+
+  return (
+    <ReCaptcha 
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      onReady={handleReady}
+      onSolve={handleSolve}
+      onError={handleError}
+    />
+  );
+}
+```
+
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onReady` | `() => void` | 当小部件渲染完成并准备好交互时调用 |
+| `onSolve` | `(token: string) => void` | 当挑战完成并返回响应令牌时调用 |
+| `onError` | `(error: Error \| string) => void` | 当初始化或求解过程中发生错误时调用 |
+
+## 手动渲染
+
+默认情况下,验证码会在挂载时自动渲染。如需更多控制,可以禁用自动渲染并手动触发。
+
+```tsx
+import { useRef } from "react";
+import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+export default function Example() {
+  const recaptchaRef = useRef(null);
+
+  return (
+    <>
+      <ReCaptcha 
+        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+        ref={recaptchaRef} 
+        autoRender={false} 
+      />
+      <button onClick={() => recaptchaRef.current.render()}>Show Captcha</button>
+    </>
+  );
+}
+```
+
+## 通用属性
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | 您的提供商网站密钥 |
+| `options` | `object` | ❌ | 特定于提供商的配置选项 |
+| `autoRender` | `boolean` | ❌ | 是否在挂载时自动渲染(默认: `true`) |
+| `scriptOptions` | `object` | ❌ | 脚本加载配置(参见[脚本选项](/cn/docs/script-options)) |
+| `onReady` | `function` | ❌ | 小部件就绪时的回调 |
+| `onSolve` | `function` | ❌ | 挑战完成时的回调 |
+| `onError` | `function` | ❌ | 发生错误时的回调 |
+
+## 句柄方法
+
+所有提供商都在句柄上实现了这些方法:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## 可用的提供商
+
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/react/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/react/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/react/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/react/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/react/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/react/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/react/provider/prosopo` |
+| **CapWidget** | `@better-captcha/react/provider/cap-widget` |
+
+请参阅[提供商文档](/cn/docs/provider)了解特定于提供商的选项和配置。

@@ -1,0 +1,107 @@
+---
+title: Captcha Fox
+description: 注重隐私的验证码服务,具有可自定义主题和多种挑战类型
+---
+
+import { CaptchaFoxPlayground } from "@/components/captcha-fox-playground";
+
+## 关于 Captcha Fox
+
+Captcha Fox 是一个现代的、注重隐私的验证码服务,提供机器人保护,具有可自定义的主题、多种挑战类型和广泛的国际化支持。
+
+更多信息,请访问[官方 Captcha Fox 文档](https://docs.captchafox.com/)。
+
+## 展示
+<CaptchaFoxPlayground />
+
+## 使用方法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { CaptchaFox } from "@better-captcha/react/provider/captcha-fox";
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { CaptchaFox } from "@better-captcha/preact/provider/captcha-fox";
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { CaptchaFox } from "@better-captcha/qwik/provider/captcha-fox";
+
+  export default component$(() => (
+    <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { CaptchaFox } from "@better-captcha/solidjs/provider/captcha-fox";
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+    <CaptchaFox
+      sitekey="your-sitekey"
+      :options="{ lang: 'en' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { CaptchaFox } from "@better-captcha/vue/provider/captcha-fox";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import CaptchaFox from "@better-captcha/svelte/provider/captcha-fox";
+  </script>
+
+  <CaptchaFox sitekey="your-sitekey" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { CaptchaFox } from "@better-captcha/lit/provider/captcha-fox";
+  ```
+
+  ```html
+  <captcha-fox-captcha sitekey="your-sitekey"></captcha-fox-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/captcha-fox/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/captcha-fox/provider.ts" name="CaptchaFoxHandle" />
+
+## 最佳实践
+
+- **定制**: 利用广泛的主题定制选项来匹配您的品牌
+- **国际化**: 使用 `lang` 选项提供本地化体验
+- **隐私**: Captcha Fox 在设计时考虑了隐私 - 无不必要的跟踪
+- **分析**: 使用内置分析了解机器人流量模式
+- **自动主题**: 使用 `theme: "auto"` 自动匹配您网站的配色方案
