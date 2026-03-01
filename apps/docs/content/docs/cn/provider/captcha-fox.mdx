@@ -1,20 +1,20 @@
 ---
 title: Captcha Fox
-description: Privacy-focused CAPTCHA service with customizable themes and multiple challenge types
+description: 注重隐私的验证码服务,具有可自定义主题和多种挑战类型
 ---
 
-import { CaptchaFoxPlayground } from "../../../src/components/captcha-fox-playground";
+import { CaptchaFoxPlayground } from "@/components/captcha-fox-playground";
 
-## About Captcha Fox
+## 关于 Captcha Fox
 
-Captcha Fox is a modern, privacy-focused CAPTCHA service that provides bot protection with customizable themes, multiple challenge types, and extensive internationalization support.
+Captcha Fox 是一个现代的、注重隐私的验证码服务,提供机器人保护,具有可自定义的主题、多种挑战类型和广泛的国际化支持。
 
-For more information, visit the [official Captcha Fox documentation](https://docs.captchafox.com/).
+更多信息,请访问[官方 Captcha Fox 文档](https://docs.captchafox.com/)。
 
-## Showcase
+## 展示
 <CaptchaFoxPlayground />
 
-## Usage
+## 使用方法
 
 <Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
@@ -88,20 +88,20 @@ For more information, visit the [official Captcha Fox documentation](https://doc
   </Tab>
 </Tabs>
 
-## Configuration
+## 配置
 
-### Provider Options
+### 提供商选项
 
 <AutoTypeTable path="../../packages/core/src/providers/captcha-fox/types.d.ts" name="RenderParameters" />
 
-### Imperative Handle
+### 命令式句柄
 
 <AutoTypeTable path="../../packages/core/src/providers/captcha-fox/provider.ts" name="CaptchaFoxHandle" />
 
-## Best Practices
+## 最佳实践
 
-- **Customization**: Take advantage of extensive theme customization options to match your brand
-- **Internationalization**: Use the `lang` option to provide localized experiences
-- **Privacy**: Captcha Fox is designed with privacy in mind - no unnecessary tracking
-- **Analytics**: Use the built-in analytics to understand bot traffic patterns
-- **Auto Theme**: Use `theme: "auto"` to automatically match your site's color scheme
+- **定制**: 利用广泛的主题定制选项来匹配您的品牌
+- **国际化**: 使用 `lang` 选项提供本地化体验
+- **隐私**: Captcha Fox 在设计时考虑了隐私 - 无不必要的跟踪
+- **分析**: 使用内置分析了解机器人流量模式
+- **自动主题**: 使用 `theme: "auto"` 自动匹配您网站的配色方案

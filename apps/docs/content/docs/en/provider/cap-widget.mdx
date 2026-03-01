@@ -1,0 +1,113 @@
+---
+title: CapWidget
+description: Cap.JS widget provider for bot protection
+---
+
+import { CapWidgetPlayground } from "@/components/cap-widget-playground";
+
+## About CapWidget
+
+CapWidget is a privacy-focused CAPTCHA solution built on the Cap.JS widget library. It provides a lightweight, client-side CAPTCHA widget for bot protection.
+
+For more information, visit the [official Cap.JS documentation](https://capjs.js.org/guide/widget.html).
+
+## Showcase
+<CapWidgetPlayground />
+
+## Usage
+
+CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoint for the CAPTCHA service.
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { CapWidget } from "@better-captcha/react/provider/cap-widget";
+
+  <CapWidget endpoint="https://example.com/api/cap" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { CapWidget } from "@better-captcha/preact/provider/cap-widget";
+
+  <CapWidget endpoint="https://example.com/api/cap" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { CapWidget } from "@better-captcha/qwik/provider/cap-widget";
+
+  export default component$(() => (
+    <CapWidget endpoint="https://example.com/api/cap" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { CapWidget } from "@better-captcha/solidjs/provider/cap-widget";
+
+  <CapWidget endpoint="https://example.com/api/cap" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <CapWidget
+      endpoint="https://example.com/api/cap"
+      :options="{}"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { CapWidget } from "@better-captcha/vue/provider/cap-widget";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import CapWidget from "@better-captcha/svelte/provider/cap-widget";
+  </script>
+
+  <CapWidget endpoint="https://example.com/api/cap" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { CapWidget } from "@better-captcha/lit/provider/cap-widget";
+  ```
+
+  ```html
+  <cap-widget-captcha endpoint="https://example.com/api/cap"></cap-widget-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Provider Options
+
+<AutoTypeTable path="../../packages/core/src/providers/cap-widget/index.ts" name="RenderParameters" />
+
+### Imperative Handle
+
+<AutoTypeTable path="../../packages/core/src/providers/cap-widget/provider.ts" name="CapWidgetHandle" />
+
+<Callout type="info">
+CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoint for the CAPTCHA service.
+</Callout>
+
+## Best Practices
+
+- **Endpoint Configuration**: Ensure your API endpoint is properly configured and accessible
+- **Client-Side**: CapWidget performs client-side verification - ensure proper server-side validation
+- **Lightweight**: Minimal impact on page load times
+- **Open Source**: Benefit from community contributions and transparency
+- **Customization**: Customize the widget appearance to match your application's design

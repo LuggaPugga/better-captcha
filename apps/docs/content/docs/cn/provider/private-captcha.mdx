@@ -1,22 +1,22 @@
 ---
 title: Private Captcha
-description: Self-hosted CAPTCHA solution with full control and privacy
+description: 自托管的验证码解决方案,具有完全控制权和隐私保护
 ---
 
-import { PrivateCaptchaPlayground } from "../../../src/components/private-captcha-playground";
+import { PrivateCaptchaPlayground } from "@/components/private-captcha-playground";
 
-## About Private Captcha
+## 关于 Private Captcha
 
-Private Captcha is an independent, privacy-focused CAPTCHA service that operates without tracking user data. It's designed to be user-friendly, accessible, and fully GDPR-compliant.
+Private Captcha 是一个独立的、注重隐私的验证码服务,无需跟踪用户数据即可运行。它设计为用户友好、易于访问且完全符合 GDPR。
 
-For more information, visit the [official Private Captcha website](https://privatecaptcha.com/).
+更多信息,请访问[官方 Private Captcha 网站](https://privatecaptcha.com/)。
 
-## Showcase
+## 展示
 <PrivateCaptchaPlayground />
 
-## Usage
+## 使用方法
 <Callout type="info">
-    Private Captcha only works inside a form.
+    Private Captcha 只能在表单内工作。
 </Callout>
 
 <Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
@@ -105,26 +105,26 @@ For more information, visit the [official Private Captcha website](https://priva
   </Tab>
 </Tabs>
 
-## Configuration
+## 配置
 
-### Provider Options
+### 提供商选项
 
 <AutoTypeTable path="../../packages/core/src/providers/private-captcha/index.ts" name="RenderParameters" />
 
-### Imperative Handle
+### 命令式句柄
 
 <AutoTypeTable path="../../packages/core/src/providers/private-captcha/provider.ts" name="PrivateCaptchaHandle" />
 
-## Important Notes
+## 重要说明
 
 <Callout type="warn">
-Private Captcha only works inside a `<form>` element. Make sure to wrap the component in a form tag.
+Private Captcha 只能在 `<form>` 元素内工作。请确保将组件包装在 form 标签中。
 </Callout>
 
-## Best Practices
+## 最佳实践
 
-- **Form Requirement**: Always place Private Captcha inside a `<form>` element
-- **Privacy Focus**: Ideal for applications with strict privacy requirements
-- **Self-Hosting**: Consider self-hosting for maximum control and data sovereignty
-- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme
-- **Accessibility**: Built with accessibility in mind for inclusive user experiences
+- **表单要求**: 始终将 Private Captcha 放置在 `<form>` 元素内
+- **关注隐私**: 对于有严格隐私要求的应用程序来说非常理想
+- **自托管**: 考虑自托管以获得最大控制权和数据主权
+- **自动主题**: 使用 `theme: "auto"` 匹配您网站的配色方案
+- **可访问性**: 在设计时考虑了可访问性,提供包容性的用户体验

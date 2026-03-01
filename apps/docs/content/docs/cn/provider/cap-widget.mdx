@@ -1,22 +1,22 @@
 ---
 title: CapWidget
-description: Cap.JS widget provider for bot protection
+description: Cap.JS 小部件提供商,用于机器人保护
 ---
 
-import { CapWidgetPlayground } from "../../../src/components/cap-widget-playground";
+import { CapWidgetPlayground } from "@/components/cap-widget-playground";
 
-## About CapWidget
+## 关于 CapWidget
 
-CapWidget is a privacy-focused CAPTCHA solution built on the Cap.JS widget library. It provides a lightweight, client-side CAPTCHA widget for bot protection.
+CapWidget 是一个基于 Cap.JS 小部件库构建的注重隐私的验证码解决方案。它为机器人保护提供了一个轻量级的客户端验证码小部件。
 
-For more information, visit the [official Cap.JS documentation](https://capjs.js.org/guide/widget.html).
+更多信息,请访问[官方 Cap.JS 文档](https://capjs.js.org/guide/widget.html)。
 
-## Showcase
+## 展示
 <CapWidgetPlayground />
 
-## Usage
+## 使用方法
 
-CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoint for the CAPTCHA service.
+CapWidget 使用 `endpoint` 属性而不是 `sitekey` 来指定验证码服务的 API 端点。
 
 <Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
@@ -90,24 +90,24 @@ CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoi
   </Tab>
 </Tabs>
 
-## Configuration
+## 配置
 
-### Provider Options
+### 提供商选项
 
 <AutoTypeTable path="../../packages/core/src/providers/cap-widget/index.ts" name="RenderParameters" />
 
-### Imperative Handle
+### 命令式句柄
 
 <AutoTypeTable path="../../packages/core/src/providers/cap-widget/provider.ts" name="CapWidgetHandle" />
 
 <Callout type="info">
-CapWidget uses an `endpoint` prop instead of `sitekey` to specify the API endpoint for the CAPTCHA service.
+CapWidget 使用 `endpoint` 属性而不是 `sitekey` 来指定验证码服务的 API 端点。
 </Callout>
 
-## Best Practices
+## 最佳实践
 
-- **Endpoint Configuration**: Ensure your API endpoint is properly configured and accessible
-- **Client-Side**: CapWidget performs client-side verification - ensure proper server-side validation
-- **Lightweight**: Minimal impact on page load times
-- **Open Source**: Benefit from community contributions and transparency
-- **Customization**: Customize the widget appearance to match your application's design
+- **端点配置**: 确保您的 API 端点配置正确且可访问
+- **客户端**: CapWidget 执行客户端验证 - 确保适当的服务器端验证
+- **轻量级**: 对页面加载时间影响最小
+- **开源**: 受益于社区贡献和透明度
+- **定制**: 自定义小部件外观以匹配您应用程序的设计

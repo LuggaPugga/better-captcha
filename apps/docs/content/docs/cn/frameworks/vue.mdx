@@ -1,0 +1,158 @@
+---
+title: Vue
+description: 在 Vue 中使用 better-captcha
+icon: vue
+---
+
+## 安装
+
+```npm
+npm i @better-captcha/vue
+```
+
+## 基本用法
+
+```vue
+<template>
+  <ReCaptcha sitekey="your-site-key" />
+</template>
+
+<script setup lang="ts">
+import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+</script>
+```
+
+## 命令式句柄
+
+Vue 使用模板引用或 `useCaptcha` 组合式函数来响应式访问命令式句柄。
+
+```vue
+<template>
+  <ReCaptcha
+    ref="recaptchaRef"
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+    @ready="onReady"
+  />
+  <button @click="execute">Execute</button>
+  <button @click="reset">Reset</button>
+  <button @click="logResponse">Log response</button>
+</template>
+
+<script setup lang="ts">
+import { useCaptcha } from "@better-captcha/vue";
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/vue/provider/recaptcha";
+
+const { captchaRef, execute, reset, getResponse } = useCaptcha<ReCaptchaHandle>();
+
+const recaptchaRef = captchaRef;
+
+const onReady = (readyHandle: ReCaptchaHandle) => {
+  console.log("Captcha ready", readyHandle);
+};
+
+const logResponse = () => {
+  console.log(getResponse());
+};
+</script>
+```
+
+<Callout type="info">
+`useCaptcha()` 组合式函数保持稳定的句柄引用,并公开诸如 `execute` 和 `reset` 之类的辅助函数。您也可以通过模板引用直接访问句柄。
+</Callout>
+
+## 生命周期回调
+
+所有验证码组件都通过 Vue 事件支持三个生命周期回调。
+
+```vue
+<template>
+  <ReCaptcha 
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+    @ready="handleReady"
+    @solve="handleSolve"
+    @error="handleError"
+  />
+</template>
+
+<script setup lang="ts">
+import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/vue/provider/recaptcha";
+
+const handleReady = (handle: ReCaptchaHandle) => {
+  console.log("Captcha is ready", handle);
+};
+
+const handleSolve = (token: string) => {
+  console.log("Captcha solved with token:", token);
+  // Send token to your backend for verification
+};
+
+const handleError = (error: Error) => {
+  console.error("Captcha error:", error);
+};
+</script>
+```
+
+| Event | Parameters | Description |
+|-------|-----------|-------------|
+| `@ready` | `(handle: Handle) => void` | 当小部件渲染完成并准备就绪时触发(接收句柄) |
+| `@solve` | `(token: string) => void` | 当挑战完成并返回响应令牌时触发 |
+| `@error` | `(error: Error) => void` | 当初始化或求解过程中发生错误时触发 |
+
+## 手动渲染
+
+默认情况下,验证码会在挂载时自动渲染。如需更多控制,可以禁用自动渲染并手动触发。
+
+```vue
+<template>
+  <ReCaptcha 
+    ref="recaptchaRef" 
+    sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+    :autoRender="false" 
+  />
+  <button @click="showCaptcha">Show Captcha</button>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+
+const recaptchaRef = ref(null);
+
+const showCaptcha = () => {
+  recaptchaRef.value?.render();
+};
+</script>
+```
+
+## 通用属性
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | 您的提供商网站密钥 |
+| `options` | `object` | ❌ | 特定于提供商的配置选项 |
+| `autoRender` | `boolean` | ❌ | 是否在挂载时自动渲染(默认: `true`) |
+| `scriptOptions` | `object` | ❌ | 脚本加载配置(参见[脚本选项](/cn/docs/script-options)) |
+| `@ready` | `event` | ❌ | 小部件就绪时的事件 |
+| `@solve` | `event` | ❌ | 挑战完成时的事件 |
+| `@error` | `event` | ❌ | 发生错误时的事件 |
+
+## 句柄方法
+
+所有提供商都在句柄上实现了这些方法:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## 可用的提供商
+
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/vue/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/vue/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/vue/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/vue/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/vue/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/vue/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/vue/provider/prosopo` |
+| **CapWidget** | `@better-captcha/vue/provider/cap-widget` |
+
+请参阅[提供商文档](/cn/docs/provider)了解特定于提供商的选项和配置。

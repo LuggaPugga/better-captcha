@@ -1,0 +1,175 @@
+---
+title: Lit
+description: 在 Lit 中使用 better-captcha
+icon: lit
+---
+
+## 安装
+
+```npm
+npm i @better-captcha/lit
+```
+
+## 基本用法
+
+```ts
+import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+
+// The component is automatically registered as a custom element
+```
+
+```html
+<recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
+```
+
+## 自定义元素名称
+
+每个提供商都注册为具有自己标签名称的自定义元素:
+
+| Provider | Element Name |
+|----------|--------------|
+| **Turnstile** | `<turnstile-captcha>` |
+| **hCaptcha** | `<hcaptcha-captcha>` |
+| **reCAPTCHA** | `<recaptcha-captcha>` |
+| **Friendly Captcha** | `<friendly-captcha>` |
+| **Private Captcha** | `<private-captcha-widget>` |
+| **Captcha Fox** | `<captcha-fox-captcha>` |
+| **Prosopo** | `<prosopo-captcha>` |
+| **CapWidget** | `<cap-widget-captcha>` |
+
+## 命令式句柄
+
+Lit Web 组件公开 `getHandle()` 方法以访问命令式句柄进行编程控制。
+
+```ts
+import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+
+const captcha = document.querySelector('recaptcha-captcha');
+const handle = captcha.getHandle();
+
+// Execute the captcha
+handle.execute();
+
+// Reset the captcha
+handle.reset();
+
+// Get the response token
+const response = handle.getResponse();
+console.log(response);
+```
+
+## 生命周期回调
+
+所有验证码组件都通过属性和自定义事件支持三个生命周期回调。
+
+### 使用属性
+
+```ts
+import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+
+const captcha = document.querySelector('recaptcha-captcha') as ReCaptcha;
+
+captcha.onReady = (handle) => {
+  console.log("Captcha is ready", handle);
+};
+
+captcha.onSolve = (token: string) => {
+  console.log("Captcha solved with token:", token);
+  // Send token to your backend for verification
+};
+
+captcha.onError = (error: Error | string) => {
+  console.error("Captcha error:", error);
+};
+```
+
+### 使用自定义事件
+
+```ts
+const captcha = document.querySelector('recaptcha-captcha');
+
+captcha.addEventListener('ready', (e) => {
+  console.log("Captcha ready", e.detail);
+});
+
+captcha.addEventListener('solve', (e) => {
+  console.log("Captcha solved", e.detail.token);
+});
+
+captcha.addEventListener('error', (e) => {
+  console.error("Captcha error", e.detail.error);
+});
+```
+
+| Callback/Event | Type | Description |
+|----------------|------|-------------|
+| `onReady` / `ready` | Property / Event | 当小部件准备就绪时调用/触发(接收句柄) |
+| `onSolve` / `solve` | Property / Event | 当挑战完成时调用/触发(接收令牌) |
+| `onError` / `error` | Property / Event | 当发生错误时调用/触发(接收错误) |
+
+## 设置选项
+
+通过属性配置简单值或通过属性配置复杂对象。
+
+```html
+<!-- Via attributes (for simple values) -->
+<recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
+```
+
+```ts
+// Via properties (for complex objects)
+const captcha = document.querySelector('recaptcha-captcha');
+captcha.options = { theme: 'dark', size: 'compact' };
+captcha.scriptOptions = { autoLoad: false, timeout: 30000 };
+```
+
+## 手动渲染
+
+默认情况下,验证码会在挂载时自动渲染。如需更多控制,可以禁用自动渲染并手动触发。
+
+```html
+<recaptcha-captcha sitekey="your-site-key" autoRender="false"></recaptcha-captcha>
+<button onclick="showCaptcha()">Show Captcha</button>
+```
+
+```ts
+const captcha = document.querySelector('recaptcha-captcha');
+const handle = captcha.getHandle();
+
+function showCaptcha() {
+  handle.render();
+}
+```
+
+## 通用属性和属性
+
+| Attribute/Property | Type | Required | Description |
+|-------------------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | 您的提供商网站密钥 |
+| `options` | `object` | ❌ | 特定于提供商的配置选项 |
+| `autoRender` | `boolean` | ❌ | 是否在挂载时自动渲染(默认: `true`) |
+| `scriptOptions` | `object` | ❌ | 脚本加载配置(参见[脚本选项](/cn/docs/script-options)) |
+| `onReady` | `function` | ❌ | 小部件就绪时的回调 |
+| `onSolve` | `function` | ❌ | 挑战完成时的回调 |
+| `onError` | `function` | ❌ | 发生错误时的回调 |
+
+## 句柄方法
+
+所有提供商都在句柄上实现了这些方法:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## 可用的提供商
+
+| Provider | Import Path | Element Name |
+|----------|-------------|--------------|
+| **ReCaptcha** | `@better-captcha/lit/provider/recaptcha` | `<recaptcha-captcha>` |
+| **HCaptcha** | `@better-captcha/lit/provider/hcaptcha` | `<hcaptcha-captcha>` |
+| **Turnstile** | `@better-captcha/lit/provider/turnstile` | `<turnstile-captcha>` |
+| **Friendly Captcha** | `@better-captcha/lit/provider/friendly-captcha` | `<friendly-captcha>` |
+| **Private Captcha** | `@better-captcha/lit/provider/private-captcha` | `<private-captcha-widget>` |
+| **Captcha Fox** | `@better-captcha/lit/provider/captcha-fox` | `<captcha-fox-captcha>` |
+| **Prosopo** | `@better-captcha/lit/provider/prosopo` | `<prosopo-captcha>` |
+| **CapWidget** | `@better-captcha/lit/provider/cap-widget` | `<cap-widget-captcha>` |
+
+请参阅[提供商文档](/cn/docs/provider)了解特定于提供商的选项和配置。

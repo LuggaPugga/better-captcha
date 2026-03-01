@@ -1,20 +1,20 @@
 ---
 title: Turnstile
-description: Cloudflare Turnstile provider for bot protection
+description: Cloudflare Turnstile 机器人保护提供商
 ---
 
-import { TurnstilePlayground } from "../../../src/components/turnstile-playground";
+import { TurnstilePlayground } from "@/components/turnstile-playground";
 
-## About Turnstile
+## 关于 Turnstile
 
-Cloudflare Turnstile is a privacy-first CAPTCHA alternative that verifies users without interactive challenges in most cases. It leverages Cloudflare's global network and threat intelligence to provide seamless bot protection.
+Cloudflare Turnstile 是一个隐私优先的验证码替代方案,在大多数情况下无需交互式挑战即可验证用户。它利用 Cloudflare 的全球网络和威胁情报提供无缝的机器人保护。
 
-For more information, visit the [official Cloudflare Turnstile documentation](https://developers.cloudflare.com/turnstile/).
+更多信息,请访问[官方 Cloudflare Turnstile 文档](https://developers.cloudflare.com/turnstile/)。
 
-## Showcase
+## 展示
 <TurnstilePlayground />
 
-## Usage
+## 使用方法
 
 <Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
@@ -88,34 +88,34 @@ For more information, visit the [official Cloudflare Turnstile documentation](ht
   </Tab>
 </Tabs>
 
-## Configuration
+## 配置
 
-### Provider Options
+### 提供商选项
 
 <AutoTypeTable path="../../packages/core/src/providers/turnstile/index.ts" name="RenderParameters" />
 
-### Imperative Handle
+### 命令式句柄
 
 <AutoTypeTable path="../../packages/core/src/providers/turnstile/provider.ts" name="TurnstileHandle" />
 
-## Testing
+## 测试
 
-Cloudflare provides test keys for development:
+Cloudflare 提供用于开发的测试密钥:
 
 | Type | Site Key |
 |------|----------|
-| **Always Passes** | `1x00000000000000000000AA` |
-| **Always Blocks** | `2x00000000000000000000AB` |
-| **Forces Interactive Challenge** | `3x00000000000000000000FF` |
+| **总是通过** | `1x00000000000000000000AA` |
+| **总是阻止** | `2x00000000000000000000AB` |
+| **强制交互式挑战** | `3x00000000000000000000FF` |
 
 <Callout type="info">
-Test keys are designed for development and automated testing. They will always behave predictably based on the type.
+测试密钥专为开发和自动化测试设计。它们将根据类型始终表现可预测。
 </Callout>
 
-## Best Practices
+## 最佳实践
 
-- **Invisible by Default**: Turnstile is designed to be invisible in most cases - no user interaction needed
-- **Native Auto Theme**: Turnstile natively supports `theme: "auto"` - no conversion needed
-- **Lightweight**: Turnstile has minimal impact on page load times
-- **Privacy-First**: No tracking or cookies, making it ideal for privacy-conscious applications
-- **Cloudflare Integration**: Works seamlessly with other Cloudflare services
+- **默认不可见**: Turnstile 在大多数情况下设计为不可见 - 无需用户交互
+- **原生自动主题**: Turnstile 原生支持 `theme: "auto"` - 无需转换
+- **轻量级**: 对页面加载时间影响最小
+- **隐私优先**: 无跟踪或 Cookie,非常适合注重隐私的应用程序
+- **Cloudflare 集成**: 与其他 Cloudflare 服务无缝配合

@@ -1,0 +1,156 @@
+---
+title: Svelte
+description: 在 Svelte 中使用 better-captcha
+icon: svelte
+---
+
+## 安装
+
+```npm
+npm i @better-captcha/svelte
+```
+
+## 基本用法
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+</script>
+
+<ReCaptcha sitekey="your-site-key" />
+```
+
+## 命令式句柄
+
+Svelte 使用 `bind:this` 通过组件引用直接访问组件方法。
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+import type { ReCaptchaHandle } from "@better-captcha/svelte/provider/recaptcha";
+
+let captchaRef: ReCaptcha | undefined;
+
+function onReady(handle: ReCaptchaHandle) {
+  console.log("Captcha ready", handle);
+}
+
+function execute() {
+  captchaRef?.execute();
+}
+
+function reset() {
+  captchaRef?.reset();
+}
+
+function logResponse() {
+  console.log(captchaRef?.getResponse());
+}
+</script>
+
+<ReCaptcha
+  bind:this={captchaRef}
+  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+  onready={onReady}
+/>
+<button onclick={execute}>Execute</button>
+<button onclick={reset}>Reset</button>
+<button onclick={logResponse}>Log response</button>
+```
+
+<Callout type="info">
+使用 `bind:this` 获取组件实例的引用,然后直接调用其方法。始终使用可选链(`?.`),因为引用最初可能是 undefined。
+</Callout>
+
+## 生命周期回调
+
+所有验证码组件都支持三个生命周期回调,用于处理小部件生命周期的不同阶段。
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+import type { ReCaptchaHandle } from "@better-captcha/svelte/provider/recaptcha";
+
+function onReady(handle: ReCaptchaHandle) {
+  console.log("Captcha is ready", handle);
+}
+
+function onSolve(token: string) {
+  console.log("Captcha solved with token:", token);
+  // Send token to your backend for verification
+}
+
+function onError(error: Error) {
+  console.error("Captcha error:", error);
+}
+</script>
+
+<ReCaptcha
+  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+  onready={onReady}
+  onSolve={onSolve}
+  onerror={onError}
+/>
+```
+
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onready` | `(handle: Handle) => void` | 当小部件渲染完成并准备就绪时调用(接收句柄) |
+| `onSolve` | `(token: string) => void` | 当挑战完成并返回响应令牌时调用 |
+| `onerror` | `(error: Error) => void` | 当初始化或求解过程中发生错误时调用 |
+
+## 手动渲染
+
+默认情况下,验证码会在挂载时自动渲染。如需更多控制,可以禁用自动渲染并手动触发。
+
+```svelte
+<script lang="ts">
+import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+
+let captchaRef: ReCaptcha | undefined;
+
+function render() {
+  captchaRef?.render();
+}
+</script>
+
+<ReCaptcha 
+  bind:this={captchaRef} 
+  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+  autoRender={false} 
+/>
+<button onclick={render}>Show Captcha</button>
+```
+
+## 通用属性
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | 您的提供商网站密钥 |
+| `options` | `object` | ❌ | 特定于提供商的配置选项 |
+| `autoRender` | `boolean` | ❌ | 是否在挂载时自动渲染(默认: `true`) |
+| `scriptOptions` | `object` | ❌ | 脚本加载配置(参见[脚本选项](/cn/docs/script-options)) |
+| `onready` | `function` | ❌ | 小部件就绪时的回调 |
+| `onSolve` | `function` | ❌ | 挑战完成时的回调 |
+| `onerror` | `function` | ❌ | 发生错误时的回调 |
+
+## 句柄方法
+
+所有提供商都在句柄上实现了这些方法:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## 可用的提供商
+
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/svelte/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/svelte/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/svelte/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/svelte/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/svelte/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/svelte/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/svelte/provider/prosopo` |
+| **CapWidget** | `@better-captcha/svelte/provider/cap-widget` |
+
+请参阅[提供商文档](/cn/docs/provider)了解特定于提供商的选项和配置。

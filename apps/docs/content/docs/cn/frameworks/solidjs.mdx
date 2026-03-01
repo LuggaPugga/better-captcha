@@ -1,0 +1,144 @@
+---
+title: SolidJS
+description: 在 SolidJS 中使用 better-captcha
+icon: solidjs
+---
+
+## 安装
+
+```npm
+npm i @better-captcha/solidjs
+```
+
+## 基本用法
+
+```tsx
+import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  return <ReCaptcha sitekey="your-site-key" />;
+}
+```
+
+## 命令式句柄
+
+SolidJS 使用 `createCaptchaController` 的控制器模式以响应式方式访问命令式句柄。
+
+```tsx
+import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  const controller = createCaptchaController<ReCaptchaHandle>();
+
+  return (
+    <>
+      <ReCaptcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" controller={controller} />
+      <button onClick={() => controller.handle()?.execute()}>Execute</button>
+      <button onClick={() => controller.handle()?.reset()}>Reset</button>
+      <button onClick={() => console.log(controller.handle()?.getResponse())}>Log response</button>
+    </>
+  );
+}
+```
+
+<Callout type="info">
+控制器的 `handle()` 函数在小部件准备就绪后返回句柄,如果尚未初始化则返回 `null`。调用方法时始终使用可选链(`?.`)。
+</Callout>
+
+## 生命周期回调
+
+所有验证码组件都支持三个生命周期回调,用于处理小部件生命周期的不同阶段。
+
+```tsx
+import { ReCaptcha, type ReCaptchaHandle, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  const controller = createCaptchaController<ReCaptchaHandle>();
+
+  const handleReady = (handle: ReCaptchaHandle) => {
+    console.log("Captcha is ready", handle);
+  };
+
+  const handleSolve = (token: string) => {
+    console.log("Captcha solved with token:", token);
+    // Send token to your backend for verification
+  };
+
+  const handleError = (error: Error) => {
+    console.error("Captcha error:", error);
+  };
+
+  return (
+    <ReCaptcha
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      controller={controller}
+      onReady={handleReady}
+      onSolve={handleSolve}
+      onError={handleError}
+    />
+  );
+}
+```
+
+| Callback | Parameters | Description |
+|----------|-----------|-------------|
+| `onReady` | `(handle: Handle) => void` | 当小部件渲染完成并准备就绪时调用(接收句柄) |
+| `onSolve` | `(token: string) => void` | 当挑战完成并返回响应令牌时调用 |
+| `onError` | `(error: Error) => void` | 当初始化或求解过程中发生错误时调用 |
+
+## 手动渲染
+
+默认情况下,验证码会在挂载时自动渲染。如需更多控制,可以禁用自动渲染并手动触发。
+
+```tsx
+import { ReCaptcha, createCaptchaController } from "@better-captcha/solidjs/provider/recaptcha";
+
+export default function Example() {
+  const controller = createCaptchaController();
+
+  return (
+    <>
+      <ReCaptcha 
+        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+        controller={controller} 
+        autoRender={false} 
+      />
+      <button onClick={async () => await controller.handle()?.render()}>Show Captcha</button>
+    </>
+  );
+}
+```
+
+## 通用属性
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `sitekey` | `string` | ✅ | 您的提供商网站密钥 |
+| `controller` | `Controller` | ❌ | 来自 `createCaptchaController()` 的控制器,用于命令式访问 |
+| `options` | `object` | ❌ | 特定于提供商的配置选项 |
+| `autoRender` | `boolean` | ❌ | 是否在挂载时自动渲染(默认: `true`) |
+| `scriptOptions` | `object` | ❌ | 脚本加载配置(参见[脚本选项](/cn/docs/script-options)) |
+| `onReady` | `function` | ❌ | 小部件就绪时的回调 |
+| `onSolve` | `function` | ❌ | 挑战完成时的回调 |
+| `onError` | `function` | ❌ | 发生错误时的回调 |
+
+## 句柄方法
+
+所有提供商都在句柄上实现了这些方法:
+
+<AutoTypeTable path="../../packages/core/src/provider.ts" name="CaptchaHandle" />
+
+## 可用的提供商
+
+| Provider | Import Path |
+|----------|-------------|
+| **ReCaptcha** | `@better-captcha/solidjs/provider/recaptcha` |
+| **HCaptcha** | `@better-captcha/solidjs/provider/hcaptcha` |
+| **Turnstile** | `@better-captcha/solidjs/provider/turnstile` |
+| **Friendly Captcha** | `@better-captcha/solidjs/provider/friendly-captcha` |
+| **Private Captcha** | `@better-captcha/solidjs/provider/private-captcha` |
+| **Captcha Fox** | `@better-captcha/solidjs/provider/captcha-fox` |
+| **Prosopo** | `@better-captcha/solidjs/provider/prosopo` |
+| **CapWidget** | `@better-captcha/solidjs/provider/cap-widget` |
+
+请参阅[提供商文档](/cn/docs/provider)了解特定于提供商的选项和配置。

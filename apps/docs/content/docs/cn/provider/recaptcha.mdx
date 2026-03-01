@@ -1,21 +1,21 @@
 ---
 title: ReCaptcha
-description: Google's comprehensive bot protection and CAPTCHA service
+description: Google 的综合机器人保护和验证码服务
 ---
 
-import { ReCaptchaPlayground } from "../../../src/components/recaptcha-playground";
+import { ReCaptchaPlayground } from "@/components/recaptcha-playground";
 
-## About ReCaptcha
+## 关于 ReCaptcha
 
-Google reCAPTCHA is one of the most widely-used CAPTCHA services, protecting millions of websites from spam and abuse. It uses advanced risk analysis to distinguish human users from bots through various challenge mechanisms.
+Google reCAPTCHA 是使用最广泛的验证码服务之一,保护着数百万个网站免受垃圾邮件和滥用的侵害。它使用先进的风险分析通过各种挑战机制来区分人类用户和机器人。
 
-For more information, visit the [official Google reCAPTCHA documentation](https://developers.google.com/recaptcha).
+更多信息,请访问[官方 Google reCAPTCHA 文档](https://developers.google.com/recaptcha)。
 
 
-## Showcase
+## 展示
 <ReCaptchaPlayground />
 
-## Usage
+## 使用方法
 
 <Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
@@ -89,20 +89,20 @@ For more information, visit the [official Google reCAPTCHA documentation](https:
   </Tab>
 </Tabs>
 
-## Configuration
+## 配置
 
-### Provider Options
+### 提供商选项
 
 <AutoTypeTable path="../../packages/core/src/providers/recaptcha/types.d.ts" name="RenderParameters" />
 
-### Imperative Handle
+### 命令式句柄
 
 <AutoTypeTable path="../../packages/core/src/providers/recaptcha/provider.ts" name="ReCaptchaHandle" />
 
-## Best Practices
+## 最佳实践
 
-- **Choose the Right Version**: Use v2 for interactive challenges, v3 for invisible score-based protection
-- **Handle Errors Gracefully**: Always implement the `onError` callback to handle network failures
-- **Verify Server-Side**: Always verify the response token on your backend
-- **Consider UX**: For v2 invisible, ensure users understand why they're seeing a challenge
-- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically
+- **选择正确的版本**: 使用 v2 进行交互式挑战,使用 v3 进行不可见的基于分数的保护
+- **优雅地处理错误**: 始终实现 `onError` 回调以处理网络故障
+- **服务器端验证**: 始终在后端验证响应令牌
+- **考虑用户体验**: 对于 v2 不可见版本,确保用户理解为什么他们会看到挑战
+- **自动主题**: 使用 `theme: "auto"` 自动匹配您网站的配色方案
