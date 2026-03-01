@@ -1,13 +1,10 @@
 import type { ReCaptchaCompatibleVerificationResult, ReCaptchaCompatibleVerifyOptions } from "./recaptcha-compatible";
-import { verifyWithReCaptchaCompatibleApi } from "./recaptcha-compatible";
+import { createReCaptchaCompatibleVerifier } from "./recaptcha-compatible";
 
 const PROVIDER = "captcha-fox";
 
 export type CaptchaFoxErrorCode = string;
 export type CaptchaFoxVerificationResult = ReCaptchaCompatibleVerificationResult;
+export type CaptchaFoxVerifyOptions = ReCaptchaCompatibleVerifyOptions;
 
-export interface CaptchaFoxVerifyOptions extends ReCaptchaCompatibleVerifyOptions {}
-
-export async function verifyCaptchaFox(options: CaptchaFoxVerifyOptions): Promise<CaptchaFoxVerificationResult> {
-	return verifyWithReCaptchaCompatibleApi(PROVIDER, options);
-}
+export const verifyCaptchaFox = createReCaptchaCompatibleVerifier(PROVIDER);

@@ -74,8 +74,15 @@ export async function verifyWithReCaptchaCompatibleApi(
 	});
 }
 
+export function createReCaptchaCompatibleVerifier(provider: string) {
+	return (options: ReCaptchaCompatibleVerifyOptions): Promise<ReCaptchaCompatibleVerificationResult> =>
+		verifyWithReCaptchaCompatibleApi(provider, options);
+}
+
+const verifyDefaultReCaptchaCompatible = createReCaptchaCompatibleVerifier(PROVIDER);
+
 export async function verifyReCaptchaCompatible(
 	options: ReCaptchaCompatibleVerifyOptions,
 ): Promise<ReCaptchaCompatibleVerificationResult> {
-	return verifyWithReCaptchaCompatibleApi(PROVIDER, options);
+	return verifyDefaultReCaptchaCompatible(options);
 }
