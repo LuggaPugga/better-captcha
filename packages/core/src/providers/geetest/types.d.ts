@@ -182,35 +182,35 @@ export declare namespace Geetest {
     apiServers?: string[];
 
     /**
-     * 验证码弹窗的宽度（此参数设置后，验证码弹窗将不会自动根据网页内容宽度调整）
+     * The width of the captcha popup dialog. (After this parameter is set, the captcha popup will not automatically adjust its width based on the webpage content width)
      */
     nextWidth?: string;
 
     /**
-     * 结合风控融合，指定验证形式
+     * Combined with risk control fusion to specify the verification form
      */
     riskType?: string;
 
     /**
-     * 隐藏bind展现形式下的验证成功弹窗 (注：仅product参数值为bind情况下生效)
+     * Hide the verification success popup in bind display mode (Note: This only takes effect when the product parameter value is bind)
      */
     hideSuccess?: boolean;
 
     /**
-     * 宕机模式处理函数,默认为极验的宕机，设置了此函数代表想自定义宕机逻辑（不会再执行默认的宕机模式）
+     * Offline mode handling function. By default, it uses GeeTest's offline mode. Setting this function means you want to customize the offline logic (the default offline mode will not be executed again).
      * @returns void
      */
     offlineCb?: () => void;
 
     /**
-     * 初始化验证码之前的错误捕获
-     * @param error 
-     * @returns 
+     * Error capture before initialization of the captcha
+     * @param error The error information
+     * @returns void
      */
     onError?: (error: string) => void;
 
     /**
-     * 客户端信息，例如用户账号、用户手机号、用户名等		
+     * Client information, such as user account, user phone number, username, etc.
      */
     userInfo?: string;
 	}
