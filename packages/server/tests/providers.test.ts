@@ -373,11 +373,76 @@ describe("result callbacks", () => {
 		expect(onError).toHaveBeenCalledWith(result);
 		expect(onSuccess).not.toHaveBeenCalled();
 	});
+
+	it("does not throw when onSuccess callback throws", async () => {
+		mockFetchJson({
+			success: true,
+			hostname: "example.com",
+			action: "submit",
+			score: 0.9,
+		});
+
+		const result = await verifyReCaptcha({
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+			onSuccess: () => {
+				throw new Error("callback failure");
+			},
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("does not throw when onError callback throws", async () => {
+		mockFetchJson({
+			success: false,
+			"error-codes": ["timeout-or-duplicate"],
+		});
+
+		const result = await verifyReCaptcha({
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+			onError: () => {
+				throw new Error("callback failure");
+			},
+		});
+
+		expect(result.success).toBe(false);
+	});
 });
 
 describe("error handling", () => {
 	it("throws CaptchaServerError for non-object JSON responses", async () => {
 		mockFetchJson([]);
+
+		await expect(
+			verifyTurnstile({
+				secret: KEYS.turnstileSecret,
+				response: TOKENS.turnstile,
+			}),
+		).rejects.toMatchObject({ code: "invalid-response" });
+	});
+
+	it("throws CaptchaServerError for null JSON responses", async () => {
+		mockFetchJson(null);
+
+		await expect(
+			verifyTurnstile({
+				secret: KEYS.turnstileSecret,
+				response: TOKENS.turnstile,
+			}),
+		).rejects.toMatchObject({ code: "invalid-response" });
+	});
+
+	it("throws CaptchaServerError for invalid JSON payloads", async () => {
+		vi.spyOn(globalThis, "fetch").mockResolvedValue(
+			new Response("not-json", {
+				status: 200,
+				headers: {
+					"content-type": "application/json",
+				},
+			}),
+		);
 
 		await expect(
 			verifyTurnstile({

@@ -57,15 +57,36 @@ export function getCommonMismatchCodes<TCode extends string>(options: {
 	score?: number;
 	scoreTooLowCode: TCode;
 }): TCode[] {
-	const mismatches: TCode[] = [];
-	if (options.expectedHostname && options.hostname !== options.expectedHostname) {
-		mismatches.push(options.hostnameMismatchCode);
-	}
-	if (options.expectedAction && options.action !== options.expectedAction) {
-		mismatches.push(options.actionMismatchCode);
-	}
+	const mismatches = getStringMismatchCodes<TCode>([
+		{
+			expected: options.expectedHostname,
+			actual: options.hostname,
+			mismatchCode: options.hostnameMismatchCode,
+		},
+		{
+			expected: options.expectedAction,
+			actual: options.action,
+			mismatchCode: options.actionMismatchCode,
+		},
+	]);
 	if (typeof options.minScore === "number" && typeof options.score === "number" && options.score < options.minScore) {
 		mismatches.push(options.scoreTooLowCode);
+	}
+	return mismatches;
+}
+
+export function getStringMismatchCodes<TCode extends string>(
+	checks: ReadonlyArray<{
+		expected?: string;
+		actual?: string;
+		mismatchCode: TCode;
+	}>,
+): TCode[] {
+	const mismatches: TCode[] = [];
+	for (const check of checks) {
+		if (check.expected && check.actual !== check.expected) {
+			mismatches.push(check.mismatchCode);
+		}
 	}
 	return mismatches;
 }
@@ -83,14 +104,25 @@ export function finalizeProviderFailure<TData, TCode extends string>(
 	});
 }
 
+async function invokeCallback<T>(callback: ((result: T) => MaybePromise<void>) | undefined, result: T): Promise<void> {
+	if (!callback) {
+		return;
+	}
+
+	try {
+		await callback(result);
+	} catch {}
+}
+
 export async function finalizeVerification<TData, TCode extends string>(
 	options: VerificationCallbacks<TData, TCode>,
 	result: VerificationResult<TData, TCode>,
 ): Promise<VerificationResult<TData, TCode>> {
 	if (result.success) {
-		await options.onSuccess?.(result);
+		await invokeCallback(options.onSuccess, result);
 	} else {
-		await options.onError?.(result);
+		await invokeCallback(options.onError, result);
 	}
+
 	return result;
 }
