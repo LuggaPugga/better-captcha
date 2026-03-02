@@ -13,8 +13,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     getNpmDownloads(),
     params.then(({ lang }) => getHomeMeta(lang)),
   ]);
-
-  console.log(meta);
   
   return (
     <main className="flex flex-1 flex-col max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
