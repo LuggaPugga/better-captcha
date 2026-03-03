@@ -58,6 +58,11 @@
 	"peerDependencies": {
 		"typescript": "^5.0.0"
 	},
+	"peerDependenciesMeta": {
+		"typescript": {
+			"optional": true
+		}
+	},
 	"devDependencies": {
 		"tsdown": "^0.20.3",
 		"vitest": "^3.2.4"

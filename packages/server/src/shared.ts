@@ -7,6 +7,7 @@ type MaybePromise<T> = T | Promise<T>;
 export interface VerificationCallbacks<TData, TCode extends string> {
 	onSuccess?: (result: VerificationSuccess<TData>) => MaybePromise<void>;
 	onError?: (result: VerificationFailure<TCode>) => MaybePromise<void>;
+	onCallbackError?: (error: unknown) => MaybePromise<void>;
 }
 
 export interface BaseVerifyOptions<TData = JsonObject, TCode extends string = string>
@@ -104,14 +105,22 @@ export function finalizeProviderFailure<TData, TCode extends string>(
 	});
 }
 
-async function invokeCallback<T>(callback: ((result: T) => MaybePromise<void>) | undefined, result: T): Promise<void> {
+async function invokeCallback<T>(
+	callback: ((result: T) => MaybePromise<void>) | undefined,
+	result: T,
+	onCallbackError?: (error: unknown) => MaybePromise<void>,
+): Promise<void> {
 	if (!callback) {
 		return;
 	}
 
 	try {
 		await callback(result);
-	} catch {}
+	} catch (error) {
+		try {
+			await onCallbackError?.(error);
+		} catch {}
+	}
 }
 
 export async function finalizeVerification<TData, TCode extends string>(
@@ -119,9 +128,9 @@ export async function finalizeVerification<TData, TCode extends string>(
 	result: VerificationResult<TData, TCode>,
 ): Promise<VerificationResult<TData, TCode>> {
 	if (result.success) {
-		await invokeCallback(options.onSuccess, result);
+		await invokeCallback(options.onSuccess, result, options.onCallbackError);
 	} else {
-		await invokeCallback(options.onError, result);
+		await invokeCallback(options.onError, result, options.onCallbackError);
 	}
 
 	return result;
