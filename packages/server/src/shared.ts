@@ -70,7 +70,7 @@ export function getCommonMismatchCodes<TCode extends string>(options: {
 			mismatchCode: options.actionMismatchCode,
 		},
 	]);
-	if (typeof options.minScore === "number" && typeof options.score === "number" && options.score < options.minScore) {
+	if (typeof options.minScore === "number" && (typeof options.score !== "number" || options.score < options.minScore)) {
 		mismatches.push(options.scoreTooLowCode);
 	}
 	return mismatches;
@@ -85,7 +85,7 @@ export function getStringMismatchCodes<TCode extends string>(
 ): TCode[] {
 	const mismatches: TCode[] = [];
 	for (const check of checks) {
-		if (check.expected && check.actual !== check.expected) {
+		if (check.expected !== undefined && check.actual !== check.expected) {
 			mismatches.push(check.mismatchCode);
 		}
 	}

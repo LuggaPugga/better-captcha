@@ -39,6 +39,9 @@ export async function verifyFriendlyCaptcha(
 ): Promise<FriendlyCaptchaVerificationResult> {
 	assertNonEmptyString(options.apiKey, "apiKey", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
+	if (options.endpoint !== undefined) {
+		assertNonEmptyString(options.endpoint, "endpoint", PROVIDER);
+	}
 
 	const payload: Record<string, string> = {
 		response: options.response,
