@@ -41,31 +41,26 @@ function mergeAbortSignal(
 		return { cleanup: () => {} };
 	}
 
-	const controller = new AbortController();
-	const cleanupTasks: Array<() => void> = [];
+	const signals: AbortSignal[] = [];
 
 	if (signal) {
-		if (signal.aborted) {
-			controller.abort(signal.reason);
-		} else {
-			const listener = () => controller.abort(signal.reason);
-			signal.addEventListener("abort", listener, { once: true });
-			cleanupTasks.push(() => signal.removeEventListener("abort", listener));
-		}
+		signals.push(signal);
 	}
 
+	let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
 	if (timeout) {
-		const timeoutHandle = setTimeout(() => {
+		const controller = new AbortController();
+		timeoutHandle = setTimeout(() => {
 			controller.abort(new Error("Captcha verification request timed out."));
 		}, timeout);
-		cleanupTasks.push(() => clearTimeout(timeoutHandle));
+		signals.push(controller.signal);
 	}
 
 	return {
-		signal: controller.signal,
+		signal: signals.length === 1 ? signals[0] : AbortSignal.any(signals),
 		cleanup: () => {
-			for (const task of cleanupTasks) {
-				task();
+			if (timeoutHandle !== undefined) {
+				clearTimeout(timeoutHandle);
 			}
 		},
 	};

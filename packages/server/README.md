@@ -8,10 +8,16 @@ Server-side CAPTCHA token verification with modular provider adapters and typed 
 ## Installation
 
 ```sh
-bun install @better-captcha/server
+npm install @better-captcha/server
 ```
 ```sh
-npm install @better-captcha/server
+pnpm add @better-captcha/server
+```
+```sh
+yarn add @better-captcha/server
+```
+```sh
+bun add @better-captcha/server
 ```
 
 ## Quick Start

@@ -327,6 +327,86 @@ describe("verifyToken", () => {
 
 		expect(result.success).toBe(true);
 	});
+
+	it("dispatches turnstile", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyToken("turnstile", {
+			secret: KEYS.turnstileSecret,
+			response: TOKENS.turnstile,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches recaptcha", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyToken("recaptcha", {
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches hcaptcha", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyToken("hcaptcha", {
+			secret: KEYS.hcaptchaSecret,
+			response: TOKENS.hcaptchaPass,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches friendly-captcha", async () => {
+		mockFetchJson({ success: true });
+
+		const result = await verifyToken("friendly-captcha", {
+			apiKey: KEYS.privateCaptchaApiKey,
+			response: TOKENS.friendlyCaptcha,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches recaptcha-compatible", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyToken("recaptcha-compatible", {
+			endpoint: "https://example.com/siteverify",
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches private-captcha", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyToken("private-captcha", {
+			endpoint: "https://api.privatecaptcha.com/verify",
+			secret: KEYS.privateCaptchaApiKey,
+			response: TOKENS.privateCaptcha,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches prosopo", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyToken("prosopo", {
+			endpoint: "https://api.prosopo.io/siteverify",
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+		});
+
+		expect(result.success).toBe(true);
+	});
 });
 
 describe("result callbacks", () => {
@@ -408,6 +488,54 @@ describe("result callbacks", () => {
 		});
 
 		expect(result.success).toBe(false);
+	});
+
+	it("calls onCallbackError when onSuccess throws", async () => {
+		mockFetchJson({
+			success: true,
+			hostname: "example.com",
+			action: "submit",
+			score: 0.9,
+		});
+
+		const callbackError = new Error("callback failure");
+		const onCallbackError = vi.fn();
+
+		const result = await verifyReCaptcha({
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+			onSuccess: () => {
+				throw callbackError;
+			},
+			onCallbackError,
+		});
+
+		expect(result.success).toBe(true);
+		expect(onCallbackError).toHaveBeenCalledTimes(1);
+		expect(onCallbackError).toHaveBeenCalledWith(callbackError);
+	});
+
+	it("calls onCallbackError when onError throws", async () => {
+		mockFetchJson({
+			success: false,
+			"error-codes": ["timeout-or-duplicate"],
+		});
+
+		const callbackError = new Error("callback failure");
+		const onCallbackError = vi.fn();
+
+		const result = await verifyReCaptcha({
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+			onError: () => {
+				throw callbackError;
+			},
+			onCallbackError,
+		});
+
+		expect(result.success).toBe(false);
+		expect(onCallbackError).toHaveBeenCalledTimes(1);
+		expect(onCallbackError).toHaveBeenCalledWith(callbackError);
 	});
 });
 
