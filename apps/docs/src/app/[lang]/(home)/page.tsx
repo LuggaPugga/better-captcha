@@ -8,10 +8,11 @@ import { getHomeMeta } from "@/lib/utils";
 export const revalidate = 3600;
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
   const [githubStars, npmDownloads, meta] = await Promise.all([
     getGithubStars(), 
     getNpmDownloads(),
-    params.then(({ lang }) => getHomeMeta(lang)),
+    getHomeMeta(lang),
   ]);
   
   return (
@@ -29,7 +30,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
               <Link
-                href="/docs"
+                href={`/${lang}/docs`}
             className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 {meta.hero_button_started}
@@ -73,42 +74,42 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </p>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
           <Link
-            href="/docs/frameworks/react"
+            href={`/${lang}/docs/frameworks/react`}
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiReact className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">{meta.framework_react}</span>
           </Link>
           <Link
-            href="/docs/frameworks/solidjs"
+            href={`/${lang}/docs/frameworks/solidjs`}
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiSolid className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">{meta.framework_solid}</span>
           </Link>
           <Link
-            href="/docs/frameworks/vue"
+            href={`/${lang}/docs/frameworks/vue`}
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiVuedotjs className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">{meta.framework_vue}</span>
           </Link>
           <Link
-            href="/docs/frameworks/svelte"
+            href={`/${lang}/docs/frameworks/svelte`}
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiSvelte className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">{meta.framework_svelte}</span>
           </Link>
           <Link
-            href="/docs/frameworks/qwik"
+            href={`/${lang}/docs/frameworks/qwik`}
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiQwik className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
             <span className="text-sm font-medium">{meta.framework_qwik}</span>
           </Link>
           <Link
-            href="/docs/frameworks/lit"
+            href={`/${lang}/docs/frameworks/lit`}
             className="flex flex-col items-center p-5 border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <SiLit className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
@@ -187,7 +188,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             {meta.cta_description}
           </p>
           <Link
-            href="/docs"
+            href={`/${lang}/docs`}
             className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-8 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             {meta.cta_button}
