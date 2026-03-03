@@ -51,6 +51,9 @@ export interface TurnstileVerifyOptions extends BaseVerifyOptions<TurnstileSucce
 export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<TurnstileVerificationResult> {
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
+	if (options.endpoint !== undefined) {
+		assertNonEmptyString(options.endpoint, "endpoint", PROVIDER);
+	}
 
 	const body = buildProviderFormBody(options.secret, options.response, {
 		remoteip: options.remoteip,

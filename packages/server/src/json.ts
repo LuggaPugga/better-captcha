@@ -26,7 +26,7 @@ export function readBoolean(object: JsonObject, key: string): boolean | undefine
 export function readRequiredBoolean(object: JsonObject, key: string, provider: string): boolean {
 	const value = readBoolean(object, key);
 	if (value === undefined) {
-		throw new CaptchaServerError("invalid-response", "Provider response is missing a boolean success field.", {
+		throw new CaptchaServerError("invalid-response", `Provider response is missing a boolean '${key}' field.`, {
 			provider,
 		});
 	}
