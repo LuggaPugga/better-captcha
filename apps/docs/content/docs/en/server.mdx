@@ -36,6 +36,23 @@ export async function POST(request: Request) {
 }
 ```
 
+## Generic Verification
+
+Use `verifyCaptcha` for a single-object API where the provider is part of the options:
+
+```ts
+import { verifyCaptcha } from "@better-captcha/server";
+
+const result = await verifyCaptcha({
+	provider: "turnstile",
+	secret: process.env.TURNSTILE_SECRET_KEY!,
+	response: token,
+	expectedHostname: "example.com",
+});
+```
+
+The options and return type are inferred from the `provider` field — each provider surfaces its own typed options and result.
+
 ## Verification Callbacks
 
 All server verifiers support optional `onSuccess` and `onError` callbacks:
