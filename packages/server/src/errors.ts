@@ -11,7 +11,10 @@ export interface CaptchaServerErrorOptions {
 	cause?: unknown;
 }
 
+const BRAND = Symbol.for("CaptchaServerError");
+
 export class CaptchaServerError extends Error {
+	readonly [BRAND] = true;
 	readonly code: CaptchaServerErrorCode;
 	readonly provider?: string;
 	readonly status?: number;
@@ -28,5 +31,5 @@ export class CaptchaServerError extends Error {
 }
 
 export function isCaptchaServerError(value: unknown): value is CaptchaServerError {
-	return value instanceof CaptchaServerError;
+	return typeof value === "object" && value !== null && (value as Record<symbol, unknown>)[BRAND] === true;
 }

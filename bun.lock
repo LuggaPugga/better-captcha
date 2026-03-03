@@ -290,6 +290,9 @@
       "peerDependencies": {
         "typescript": "^5.0.0",
       },
+      "optionalPeers": [
+        "typescript",
+      ],
     },
     "packages/solidjs": {
       "name": "@better-captcha/solidjs",
