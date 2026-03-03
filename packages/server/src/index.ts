@@ -98,3 +98,14 @@ export async function verifyToken<TProvider extends BuiltInServerProvider>(
 	) => Promise<ProviderResult<TProvider>>;
 	return verifier(options);
 }
+
+export type VerifyCaptchaOptions<TProvider extends BuiltInServerProvider> = {
+	provider: TProvider;
+} & ProviderOptions<TProvider>;
+
+export async function verifyCaptcha<TProvider extends BuiltInServerProvider>(
+	options: VerifyCaptchaOptions<TProvider>,
+): Promise<ProviderResult<TProvider>> {
+	const { provider, ...rest } = options;
+	return verifyToken(provider, rest as unknown as ProviderOptions<TProvider>);
+}
