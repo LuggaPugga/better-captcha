@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, type MockInstance, vi } from "vitest";
 import {
 	CaptchaServerError,
+	verifyCaptcha,
 	verifyCaptchaFox,
 	verifyFriendlyCaptcha,
 	verifyHCaptcha,
@@ -406,6 +407,54 @@ describe("verifyToken", () => {
 		});
 
 		expect(result.success).toBe(true);
+	});
+});
+
+describe("verifyCaptcha", () => {
+	it("dispatches turnstile with single-object API", async () => {
+		mockFetchJson({ success: true, hostname: "example.com" });
+
+		const result = await verifyCaptcha({
+			provider: "turnstile",
+			secret: KEYS.turnstileSecret,
+			response: TOKENS.turnstile,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("dispatches friendly-captcha with single-object API", async () => {
+		mockFetchJson({ success: true });
+
+		const result = await verifyCaptcha({
+			provider: "friendly-captcha",
+			apiKey: "FCAT_myapikey",
+			response: TOKENS.friendlyCaptcha,
+		});
+
+		expect(result.success).toBe(true);
+	});
+
+	it("returns typed result for recaptcha-v3", async () => {
+		mockFetchJson({
+			success: true,
+			hostname: "example.com",
+			action: "submit",
+			score: 0.9,
+		});
+
+		const result = await verifyCaptcha({
+			provider: "recaptcha-v3",
+			secret: KEYS.recaptchaSecret,
+			response: TOKENS.turnstile,
+			expectedAction: "submit",
+			minScore: 0.5,
+		});
+
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.score).toBe(0.9);
+		}
 	});
 });
 
