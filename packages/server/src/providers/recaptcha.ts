@@ -47,6 +47,9 @@ export interface ReCaptchaVerifyOptions extends BaseVerifyOptions<ReCaptchaSucce
 export async function verifyReCaptcha(options: ReCaptchaVerifyOptions): Promise<ReCaptchaVerificationResult> {
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
+	if (options.endpoint !== undefined) {
+		assertNonEmptyString(options.endpoint, "endpoint", PROVIDER);
+	}
 
 	const body = buildProviderFormBody(options.secret, options.response, {
 		remoteip: options.remoteip,

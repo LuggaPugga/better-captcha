@@ -41,26 +41,31 @@ function mergeAbortSignal(
 		return { cleanup: () => {} };
 	}
 
-	const signals: AbortSignal[] = [];
+	const controller = new AbortController();
+	const cleanupTasks: Array<() => void> = [];
 
 	if (signal) {
-		signals.push(signal);
+		if (signal.aborted) {
+			controller.abort(signal.reason);
+		} else {
+			const listener = () => controller.abort(signal.reason);
+			signal.addEventListener("abort", listener, { once: true });
+			cleanupTasks.push(() => signal.removeEventListener("abort", listener));
+		}
 	}
 
-	let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
 	if (timeout) {
-		const controller = new AbortController();
-		timeoutHandle = setTimeout(() => {
+		const timeoutHandle = setTimeout(() => {
 			controller.abort(new Error("Captcha verification request timed out."));
 		}, timeout);
-		signals.push(controller.signal);
+		cleanupTasks.push(() => clearTimeout(timeoutHandle));
 	}
 
 	return {
-		signal: signals.length === 1 ? signals[0] : AbortSignal.any(signals),
+		signal: controller.signal,
 		cleanup: () => {
-			if (timeoutHandle !== undefined) {
-				clearTimeout(timeoutHandle);
+			for (const task of cleanupTasks) {
+				task();
 			}
 		},
 	};
@@ -89,9 +94,9 @@ export async function postJson(options: PostJsonOptions): Promise<JsonObject> {
 	const fetchImpl = getFetch(fetcher);
 	const effectiveTimeoutMs = timeoutMs === undefined ? DEFAULT_TIMEOUT_MS : timeoutMs;
 	const abort = mergeAbortSignal(signal, effectiveTimeoutMs);
-	const requestInit = createPostRequestInit(body, abort.signal, headers);
 
 	try {
+		const requestInit = createPostRequestInit(body, abort.signal, headers);
 		const response = await fetchImpl(url, requestInit);
 
 		if (!response.ok) {

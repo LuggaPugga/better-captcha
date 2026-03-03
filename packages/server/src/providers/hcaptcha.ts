@@ -52,6 +52,9 @@ export interface HCaptchaVerifyOptions extends BaseVerifyOptions<HCaptchaSuccess
 export async function verifyHCaptcha(options: HCaptchaVerifyOptions): Promise<HCaptchaVerificationResult> {
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
+	if (options.endpoint !== undefined) {
+		assertNonEmptyString(options.endpoint, "endpoint", PROVIDER);
+	}
 
 	const body = buildProviderFormBody(options.secret, options.response, {
 		remoteip: options.remoteip,
