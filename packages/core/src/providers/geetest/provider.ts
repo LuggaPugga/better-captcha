@@ -5,14 +5,11 @@ import {
   type ProviderConfig,
   type ScriptOptions,
 } from "../../provider";
-import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { loadScript } from "../../utils/load-script";
 import type { Geetest, RenderParameters } from "./types";
 
-
-const GEETEST_ONLOAD_CALLBACK = generateCallbackName("geetestOnload");
-
 export type GeetestHandle = Omit<CaptchaHandle, "getResponse"> & {
-  getResponse: (widgetId: string) => Geetest.ValidateResult | false;
+  getResponse: () => Geetest.ValidateResult | false;
 };
 
 export type GeetestCaptchaCallbacks = Omit<CaptchaCallbacks, "onSolve" | "onError"> & {
@@ -21,40 +18,32 @@ export type GeetestCaptchaCallbacks = Omit<CaptchaCallbacks, "onSolve" | "onErro
 };
 
 
-export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, GeetestHandle> {
+export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParameters, "captchaId">, GeetestHandle> {
   private widgetMap = new Map<string, Geetest.Geetest>();
   private elementMap = new Map<string, HTMLElement>();
   private widgetIdCounter = 0;
 
-  constructor(sitekey: string, scriptOptions?: ScriptOptions) {
+  constructor(captchaId: string, scriptOptions?: ScriptOptions) {
     super(
       {
         scriptUrl: "https://static.geetest.com/v4/gt4.js",
         scriptOptions,
       },
-      sitekey,
+      captchaId,
     );
   }
   
 
   async init() {
-    const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.buildScriptUrl();
+    const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
 
     if (this.config.scriptOptions?.autoLoad !== false) {
       await loadScript(scriptUrl, {
         async: true,
         defer: true,
-        callbackName: GEETEST_ONLOAD_CALLBACK,
         timeout: this.config.scriptOptions?.timeout,
       });
     }
-  }
-
-  private buildScriptUrl() {
-    const url = new URL(this.config.scriptUrl);
-    url.searchParams.set("render", "explicit");
-    url.searchParams.set("onload", GEETEST_ONLOAD_CALLBACK);
-    return url.toString();
   }
 
 	private generateWidgetId(element: HTMLElement): string {
@@ -82,7 +71,7 @@ export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParamet
 		this.elementMap.set(widgetId, element);
 
     return new Promise<string>((resolve) => {
-      window.initGeetest(renderOptions, (captcha: Geetest.Geetest) => {
+      window.initGeetest4(renderOptions, (captcha: Geetest.Geetest) => {
         this.widgetMap.set(widgetId, captcha);
 
         if (renderOptions?.product !== "bind") {

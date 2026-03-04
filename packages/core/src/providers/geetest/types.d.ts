@@ -1,6 +1,6 @@
 declare global {
 	interface Window {
-    initGeetest: Geetest.GeetestInitFn;
+    initGeetest4: Geetest.GeetestInitFn;
 	}
 }
 
@@ -154,8 +154,8 @@ export declare namespace Geetest {
     /**
      * Set the language of the verification interface. If not provided, the language set in the browser will be used by default. If the value is not in the supported list, Chinese will be used by default. Optional values are zho, eng, zho-tw, zho-hk, udm, jpn, ind, kor, rus, ara, spa, pon, por, fra, deu.
      */
-    language?: string;
-
+    language?: 'zho' | 'eng' | 'zho-tw' | 'zho-hk' | 'udm' | 'jpn' | 'ind' | 'kor' | 'rus' | 'ara' | 'spa' | 'pon' | 'por' | 'fra' | 'deu';
+    
     /**
      * The URL of the Geetest script. This is a required parameter that specifies the URL from which to load the Geetest script. The URL should point to the location of the Geetest JavaScript file provided by Geetest. For example, it could be something like "https://static.geetest.com/static/tools/gt.js". Please ensure that the URL is correct and accessible, as it is necessary for loading the Geetest functionality on your website.
      */

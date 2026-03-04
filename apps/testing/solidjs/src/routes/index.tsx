@@ -11,6 +11,7 @@ import { ProsopoTest } from "../components/prosopo-test";
 import { RecaptchaTest } from "../components/recaptcha-test";
 import { RecaptchaV3Test } from "../components/recaptcha-v3-test";
 import { TurnstileTest } from "../components/turnstile-test";
+import { GeetestTest } from "../components/geetest-test";
 
 export default clientOnly(async () => ({ default: Home }), { lazy: true });
 
@@ -28,6 +29,7 @@ export function Home() {
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
+		{ key: "geetest", name: "Geetest", path: "/geetest" },
 	];
 
 	return (
@@ -59,6 +61,7 @@ export function Home() {
 				{currentProvider() === "prosopo" && <ProsopoTest />}
 				{currentProvider() === "cap-widget" && <CapWidgetTest />}
 				{currentProvider() === "altcha" && <AltchaTest />}
+				{currentProvider() === "geetest" && <GeetestTest />}
 			</div>
 		</main>
 	);
