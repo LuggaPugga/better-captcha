@@ -1,0 +1,185 @@
+---
+title: 脚本选项
+description: 配置 Better CAPTCHA 如何加载提供商脚本,包括手动加载和自定义超时。
+---
+
+## 概述
+
+每个 Better CAPTCHA 组件都接受一个 `scriptOptions` 属性来控制提供商脚本的加载方式。这使您可以精细控制脚本加载行为、超时和手动脚本注入。
+
+## 配置选项
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `autoLoad` | `boolean` | `true` | 是否自动加载提供商脚本 |
+| `timeout` | `number` | `15000` | 等待脚本加载的最长时间(以毫秒为单位) |
+| `overrideScriptUrl` | `string` | `undefined` | 使用自定义 URL 覆盖默认脚本 URL |
+
+### 自动加载
+
+如果您希望自己注入提供商脚本,请设置 `autoLoad: false`。这在以下情况下很有用:
+
+- 您想通过自定义脚本加载器加载脚本
+- 您需要向脚本标签添加自定义属性
+- 您使用的 CSP 策略需要特定的脚本处理
+- 您想使用自己的策略优化脚本加载
+
+<Callout type="warn">
+当禁用 `autoLoad` 时,请确保在组件挂载之前或调用 `render()` 之前,提供商脚本已在全局可用。
+</Callout>
+
+### 超时
+
+如果您需要更多时间来加载脚本,可以覆盖默认的 15 秒超时。这在以下情况下很有用:
+
+- 网络连接缓慢
+- 自定义脚本主机
+- 响应时间较慢的开发环境
+
+### 覆盖脚本 URL
+
+使用 `overrideScriptUrl` 从自定义 URL 加载提供商脚本,而不是默认 URL。这在以下情况下很有用:
+
+- 使用自定义 CDN 或镜像
+- 从自托管位置加载脚本
+- 绕过网络限制
+- 使用不同的脚本版本进行测试
+
+<Callout type="info">
+  使用 `overrideScriptUrl` 时,请确保自定义 URL 指向提供商脚本的兼容版本。URL 应该是脚本文件的完整路径。
+</Callout>
+
+## 使用方法
+
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+  <ReCaptcha
+    sitekey="your-site-key"
+    scriptOptions={{ autoLoad: false, timeout: 30000 }}
+    onReady={() => console.log("ready")}
+  />;
+  ```
+  </Tab>
+
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+  export default component$(() => (
+    <ReCaptcha
+      sitekey="your-site-key"
+      scriptOptions={{ autoLoad: false, timeout: 30000 }}
+    />
+  ));
+  ```
+  </Tab>
+
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+  <ReCaptcha
+    sitekey="your-site-key"
+    scriptOptions={{ autoLoad: false, timeout: 30000 }}
+  />;
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptcha
+      sitekey="your-site-key"
+      :script-options="{ autoLoad: false, timeout: 30000 }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+  </script>
+
+  <ReCaptcha
+    sitekey="your-site-key"
+    scriptOptions={{ autoLoad: false, timeout: 30000 }}
+  />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import "@better-captcha/lit/provider/recaptcha";
+
+  const captcha = document.createElement("better-captcha-recaptcha");
+  captcha.setAttribute("sitekey", "your-site-key");
+  captcha.scriptOptions = { autoLoad: false, timeout: 30000 };
+  document.body.appendChild(captcha);
+  ```
+  </Tab>
+</Tabs>
+
+## 示例
+
+### 增加超时时间
+
+适用于较慢的网络或自定义 CDN 配置:
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{ timeout: 30000 }} // 30 seconds
+/>
+```
+
+### 手动加载脚本
+
+自己加载脚本并禁用自动加载:
+
+```html
+<!-- Add this to your HTML head -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+```
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{ autoLoad: false }}
+/>
+```
+
+### 自定义脚本 URL
+
+从自定义 URL 加载脚本:
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{
+    overrideScriptUrl: "https://custom-cdn.com/recaptcha/api.js"
+  }}
+/>
+```
+
+### 组合配置
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{
+    autoLoad: false,
+    timeout: 30000,
+    overrideScriptUrl: "https://custom-cdn.com/recaptcha/api.js"
+  }}
+/>
+```

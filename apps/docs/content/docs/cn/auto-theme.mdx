@@ -1,0 +1,122 @@
+---
+title: 自动主题
+description: 为不原生支持"自动"主题的验证码提供商自动检测主题。
+---
+
+## 概述
+
+Better CAPTCHA 会自动检测用户的系统主题偏好,并将其应用到不原生支持 `"auto"` 主题模式的验证码提供商。这确保了在浅色和深色模式之间无缝切换,无需额外配置。
+
+## 工作原理
+
+当您在选项中设置 `theme: "auto"` 时,该库会:
+
+1. 使用 `prefers-color-scheme` CSS 媒体查询检测系统主题
+2. 将其转换为 `"light"` 或 `"dark"`
+3. 将解析的主题传递给提供商
+4. 当系统主题更改时自动更新
+
+<Callout type="info">
+具有原生自动主题支持的提供商(Turnstile、Friendly Captcha)会直接传递 `"auto"` 值,无需转换。
+</Callout>
+
+<Tabs items={['React', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/react/provider/recaptcha";
+
+  <ReCaptcha 
+    sitekey="your-site-key"
+    options={{ theme: "auto" }} // Automatically detects system theme
+  />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptcha } from "@better-captcha/qwik/provider/recaptcha";
+
+  export default component$(() => (
+    <ReCaptcha 
+      sitekey="your-site-key"
+      options={{ theme: "auto" }} // Automatically detects system theme
+    />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptcha } from "@better-captcha/solidjs/provider/recaptcha";
+
+  <ReCaptcha 
+    sitekey="your-site-key"
+    options={{ theme: "auto" }} // Automatically detects system theme
+  />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptcha
+      sitekey="your-site-key"
+      :options="{ theme: 'auto' }" <!-- Automatically detects system theme -->
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { ReCaptcha } from "@better-captcha/vue/provider/recaptcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
+  </script>
+
+  <ReCaptcha 
+    sitekey="your-site-key"
+    options={{ theme: "auto" }} <!-- Automatically detects system theme -->
+  />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
+  ```
+
+  ```html
+  <recaptcha-captcha sitekey="your-site-key"></recaptcha-captcha>
+
+  <script>
+    const captcha = document.querySelector('recaptcha-captcha');
+    captcha.options = { theme: 'auto' }; // Automatically detects system theme
+  </script>
+  ```
+  </Tab>
+</Tabs>
+
+## 提供商支持
+
+| Provider | Native Support | Better CAPTCHA Enhancement | Behavior |
+|----------|----------------|---------------------------|----------|
+| **Turnstile** | ✅ 是 | 不需要 | 直接将 `"auto"` 传递给提供商 |
+| **Friendly Captcha** | ✅ 是 | 不需要 | 直接将 `"auto"` 传递给提供商 |
+| **reCAPTCHA** | ❌ 否 | ✅ 增强 | 转换为 `"light"` 或 `"dark"` |
+| **hCaptcha** | ❌ 否 | ✅ 增强 | 转换为 `"light"` 或 `"dark"` |
+| **Private Captcha** | ❌ 否 | ✅ 增强 | 转换为 `"light"` 或 `"dark"` |
+| **Captcha Fox** | ❌ 否 | ✅ 增强 | 转换为 `"light"` 或 `"dark"` |
+| **Prosopo** | ❌ 否 | ✅ 增强 | 转换为 `"light"` 或 `"dark"` |
+| **CapWidget** | ❌ 否 | ✅ 增强 | 转换为 `"light"` 或 `"dark"` |
+
+## 优势
+
+- **无缝用户体验**: 自动匹配您网站的主题
+- **无需手动检测**: 无需实现自己的主题检测逻辑
+- **响应式更新**: 自动响应系统主题更改
+- **通用 API**: 在所有提供商中使用 `theme: "auto"`,行为一致

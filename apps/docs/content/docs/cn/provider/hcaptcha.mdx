@@ -1,20 +1,20 @@
 ---
 title: HCaptcha
-description: Privacy-focused CAPTCHA service with monetization opportunities
+description: 注重隐私的验证码服务,提供货币化机会
 ---
 
-import { HCaptchaPlayground } from "../../../src/components/hcaptcha-playground";
+import { HCaptchaPlayground } from "@/components/hcaptcha-playground";
 
-## About HCaptcha
+## 关于 HCaptcha
 
-hCaptcha is a privacy-focused CAPTCHA service that protects your site from bots while offering both interactive and passive verification modes to balance security with user experience.
+hCaptcha 是一个注重隐私的验证码服务,在平衡安全性和用户体验的同时保护您的网站免受机器人攻击,提供交互式和被动验证模式。
 
-For more information, visit the [official hCaptcha documentation](https://docs.hcaptcha.com/).
+更多信息,请访问[官方 hCaptcha 文档](https://docs.hcaptcha.com/)。
 
-## Showcase
+## 展示
 <HCaptchaPlayground />
 
-## Usage
+## 使用方法
 
 <Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
   <Tab value="React">
@@ -88,33 +88,33 @@ For more information, visit the [official hCaptcha documentation](https://docs.h
   </Tab>
 </Tabs>
 
-## Configuration
+## 配置
 
-### Provider Options
+### 提供商选项
 
 <AutoTypeTable path="../../packages/core/src/providers/hcaptcha/types.d.ts" name="RenderParameters" />
 
-### Imperative Handle
+### 命令式句柄
 
 <AutoTypeTable path="../../packages/core/src/providers/hcaptcha/provider.ts" name="HCaptchaHandle" />
 
-## Testing
+## 测试
 
-hCaptcha provides test keys for development:
+hCaptcha 提供用于开发的测试密钥:
 
 | Type | Site Key |
 |------|----------|
-| **Always Passes** | `10000000-ffff-ffff-ffff-000000000001` |
-| **Always Fails** | `20000000-ffff-ffff-ffff-000000000002` |
+| **总是通过** | `10000000-ffff-ffff-ffff-000000000001` |
+| **总是失败** | `20000000-ffff-ffff-ffff-000000000002` |
 
 <Callout type="info">
-Test keys are designed for development and automated testing. Replace with real keys for production use.
+测试密钥专为开发和自动化测试设计。在生产环境中请替换为真实密钥。
 </Callout>
 
-## Best Practices
+## 最佳实践
 
-- **Privacy Compliance**: hCaptcha is designed with privacy in mind and is GDPR/CCPA compliant by default
-- **Monetization**: Consider enabling monetization in your dashboard to earn from CAPTCHA solves
-- **Difficulty Levels**: Adjust difficulty based on your security needs vs. user experience
-- **Passive Mode**: Use passive mode for lower-risk scenarios to improve UX
-- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically
+- **隐私合规**: hCaptcha 在设计时就考虑了隐私,默认符合 GDPR/CCPA
+- **货币化**: 考虑在您的仪表板中启用货币化,从验证码解决中获益
+- **难度级别**: 根据您的安全需求与用户体验调整难度
+- **被动模式**: 在低风险场景中使用被动模式以改善用户体验
+- **自动主题**: 使用 `theme: "auto"` 自动匹配您网站的配色方案

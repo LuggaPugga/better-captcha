@@ -1,0 +1,120 @@
+---
+title: HCaptcha
+description: Privacy-focused CAPTCHA service with monetization opportunities
+---
+
+import { HCaptchaPlayground } from "@/components/hcaptcha-playground";
+
+## About HCaptcha
+
+hCaptcha is a privacy-focused CAPTCHA service that protects your site from bots while offering both interactive and passive verification modes to balance security with user experience.
+
+For more information, visit the [official hCaptcha documentation](https://docs.hcaptcha.com/).
+
+## Showcase
+<HCaptchaPlayground />
+
+## Usage
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/react/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/preact/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { HCaptcha } from "@better-captcha/qwik/provider/hcaptcha";
+
+  export default component$(() => (
+    <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { HCaptcha } from "@better-captcha/solidjs/provider/hcaptcha";
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+    <HCaptcha
+      sitekey="10000000-ffff-ffff-ffff-000000000001"
+      :options="{ theme: 'dark' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { HCaptcha } from "@better-captcha/vue/provider/hcaptcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import HCaptcha from "@better-captcha/svelte/provider/hcaptcha";
+  </script>
+
+  <HCaptcha sitekey="10000000-ffff-ffff-ffff-000000000001" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { HCaptcha } from "@better-captcha/lit/provider/hcaptcha";
+  ```
+
+  ```html
+  <hcaptcha-captcha sitekey="10000000-ffff-ffff-ffff-000000000001"></hcaptcha-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Provider Options
+
+<AutoTypeTable path="../../packages/core/src/providers/hcaptcha/types.d.ts" name="RenderParameters" />
+
+### Imperative Handle
+
+<AutoTypeTable path="../../packages/core/src/providers/hcaptcha/provider.ts" name="HCaptchaHandle" />
+
+## Testing
+
+hCaptcha provides test keys for development:
+
+| Type | Site Key |
+|------|----------|
+| **Always Passes** | `10000000-ffff-ffff-ffff-000000000001` |
+| **Always Fails** | `20000000-ffff-ffff-ffff-000000000002` |
+
+<Callout type="info">
+Test keys are designed for development and automated testing. Replace with real keys for production use.
+</Callout>
+
+## Best Practices
+
+- **Privacy Compliance**: hCaptcha is designed with privacy in mind and is GDPR/CCPA compliant by default
+- **Monetization**: Consider enabling monetization in your dashboard to earn from CAPTCHA solves
+- **Difficulty Levels**: Adjust difficulty based on your security needs vs. user experience
+- **Passive Mode**: Use passive mode for lower-risk scenarios to improve UX
+- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme automatically

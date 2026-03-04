@@ -1,0 +1,108 @@
+---
+title: Friendly Captcha
+description: 注重隐私且符合 GDPR 的验证码替代方案
+---
+
+import { FriendlyCaptchaPlayground } from "@/components/friendly-captcha-playground";
+
+## 关于 Friendly Captcha
+
+Friendly Captcha 是一个注重隐私、符合 GDPR 的验证码替代方案,无需用户交互即可保护网站免受机器人攻击。它通过在后台执行加密谜题来工作,对合法用户完全不可见。
+
+更多信息,请访问[官方 Friendly Captcha 文档](https://developer.friendlycaptcha.com/docs/v2)。
+
+## 展示
+<FriendlyCaptchaPlayground />
+
+## 使用方法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { FriendlyCaptcha } from "@better-captcha/react/provider/friendly-captcha";
+
+  <FriendlyCaptcha sitekey="" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { FriendlyCaptcha } from "@better-captcha/preact/provider/friendly-captcha";
+
+  <FriendlyCaptcha sitekey="" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { FriendlyCaptcha } from "@better-captcha/qwik/provider/friendly-captcha";
+
+  export default component$(() => (
+    <FriendlyCaptcha sitekey="FCMTL-000000000000000000000" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { FriendlyCaptcha } from "@better-captcha/solidjs/provider/friendly-captcha";
+
+  <FriendlyCaptcha sitekey="" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+    <FriendlyCaptcha
+      sitekey="FCMTL-000000000000000000000"
+      :options="{ puzzleTimeout: 300 }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { FriendlyCaptcha } from "@better-captcha/vue/provider/friendly-captcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import FriendlyCaptcha from "@better-captcha/svelte/provider/friendly-captcha";
+  </script>
+
+  <FriendlyCaptcha sitekey="FCMTL-000000000000000000000" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { FriendlyCaptcha } from "@better-captcha/lit/provider/friendly-captcha";
+  ```
+
+  ```html
+  <friendly-captcha sitekey="FCMTL-000000000000000000000"></friendly-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/friendly-captcha/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/friendly-captcha/provider.ts" name="FriendlyCaptchaHandle" />
+
+## 最佳实践
+
+- **不可见的用户体验**: Friendly Captcha 完全不可见 - 用户永远不会看到挑战
+- **隐私合规**: 从一开始就考虑了 GDPR 和 CCPA 合规性
+- **原生自动主题**: 原生支持 `theme: "auto"`,实现无缝集成
+- **可访问性**: 完全可访问 - 没有可能排除用户的视觉挑战
+- **性能**: 对页面性能影响最小,在后台工作
+- **欧盟托管**: 数据可以托管在欧盟,以获得额外的隐私合规性

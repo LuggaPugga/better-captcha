@@ -1,0 +1,115 @@
+---
+title: Altcha
+description: ALTCHA 小部件提供商,用于机器人保护
+---
+
+import { AltchaPlayground } from "@/components/altcha-playground";
+
+## 关于 Altcha
+
+ALTCHA 是一个注重隐私的开源验证码解决方案,使用工作量证明挑战来验证用户,无需跟踪或 Cookie。它提供了传统验证码服务的轻量级替代方案。
+
+更多信息,请访问[官方 ALTCHA 文档](https://altcha.org/docs/widget-integration)。
+
+## 展示
+<AltchaPlayground />
+
+## 使用方法
+
+Altcha 使用 `endpoint` 属性而不是 `sitekey` 来指定验证码服务的挑战 URL 端点。
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { Altcha } from "@better-captcha/react/provider/altcha";
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { Altcha } from "@better-captcha/preact/provider/altcha";
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { Altcha } from "@better-captcha/qwik/provider/altcha";
+
+  export default component$(() => (
+    <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { Altcha } from "@better-captcha/solidjs/provider/altcha";
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <Altcha
+      endpoint="https://example.com/api/v1/challenge"
+      :options="{}"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { Altcha } from "@better-captcha/vue/provider/altcha";
+  </script>
+  ```
+  </Tab>
+  
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import Altcha from "@better-captcha/svelte/provider/altcha";
+  </script>
+
+  <Altcha endpoint="https://example.com/api/v1/challenge" options={{}} />
+  ```
+  </Tab>
+  
+  <Tab value="Lit">
+  ```ts
+  import { Altcha } from "@better-captcha/lit/provider/altcha";
+  ```
+
+  ```html
+  <altcha-captcha endpoint="https://example.com/api/v1/challenge"></altcha-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/altcha/index.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/altcha/provider.ts" name="AltchaHandle" />
+
+<Callout type="info">
+Altcha 使用 `endpoint` 属性而不是 `sitekey` 来指定验证码服务的挑战 URL 端点。使用 Sentinel 进行挑战生成时,请使用您的 Sentinel 端点 URL 配置小部件。
+</Callout>
+
+## 最佳实践
+
+- **端点配置**: 确保您的挑战端点配置正确且可访问
+- **工作量证明**: Altcha 使用客户端工作量证明计算 - 确保适当的服务器端验证
+- **轻量级**: 与其他验证码解决方案相比,打包大小最小(约 30 kB GZIP 压缩后)
+- **隐私优先**: 无跟踪、Cookie 或用户数据收集
+- **开源**: 受益于社区贡献和透明度
+- **安全上下文**: 由于使用加密 API,需要 HTTPS 连接
+- **国际化**: 支持 50 多种语言,并具有自动语言检测功能

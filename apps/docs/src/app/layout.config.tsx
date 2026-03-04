@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { i18n } from '@/lib/i18n';
 
 /**
  * Shared layout configurations
@@ -8,6 +9,7 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
  * Docs Layout: app/docs/layout.tsx
  */
 export const baseOptions: BaseLayoutProps = {
+	i18n,
 	githubUrl: "https://github.com/LuggaPugga/better-captcha",
 	nav: {
 		title: (

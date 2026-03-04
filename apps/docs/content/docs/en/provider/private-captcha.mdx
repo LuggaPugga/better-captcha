@@ -1,0 +1,130 @@
+---
+title: Private Captcha
+description: Self-hosted CAPTCHA solution with full control and privacy
+---
+
+import { PrivateCaptchaPlayground } from "@/components/private-captcha-playground";
+
+## About Private Captcha
+
+Private Captcha is an independent, privacy-focused CAPTCHA service that operates without tracking user data. It's designed to be user-friendly, accessible, and fully GDPR-compliant.
+
+For more information, visit the [official Private Captcha website](https://privatecaptcha.com/).
+
+## Showcase
+<PrivateCaptchaPlayground />
+
+## Usage
+<Callout type="info">
+    Private Captcha only works inside a form.
+</Callout>
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/react/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/preact/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { PrivateCaptcha } from "@better-captcha/qwik/provider/private-captcha";
+
+  export default component$(() => (
+	  <form>
+      <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+    </form>
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { PrivateCaptcha } from "@better-captcha/solidjs/provider/private-captcha";
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+	<template>
+	  <form>
+      <PrivateCaptcha
+        sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
+        :options="{ theme: 'light' }"
+      />
+    </form>
+  </template>
+
+  <script setup lang="ts">
+  import { PrivateCaptcha } from "@better-captcha/vue/provider/private-captcha";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
+  </script>
+
+  <form>
+    <PrivateCaptcha sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={{}} />
+  </form>
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { PrivateCaptcha } from "@better-captcha/lit/provider/private-captcha";
+  ```
+
+  ```html
+  <form>
+    <private-captcha-widget sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"></private-captcha-widget>
+  </form>
+  ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Provider Options
+
+<AutoTypeTable path="../../packages/core/src/providers/private-captcha/index.ts" name="RenderParameters" />
+
+### Imperative Handle
+
+<AutoTypeTable path="../../packages/core/src/providers/private-captcha/provider.ts" name="PrivateCaptchaHandle" />
+
+## Important Notes
+
+<Callout type="warn">
+Private Captcha only works inside a `<form>` element. Make sure to wrap the component in a form tag.
+</Callout>
+
+## Best Practices
+
+- **Form Requirement**: Always place Private Captcha inside a `<form>` element
+- **Privacy Focus**: Ideal for applications with strict privacy requirements
+- **Self-Hosting**: Consider self-hosting for maximum control and data sovereignty
+- **Auto Theme**: Use `theme: "auto"` to match your site's color scheme
+- **Accessibility**: Built with accessibility in mind for inclusive user experiences

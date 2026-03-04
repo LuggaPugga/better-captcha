@@ -3,8 +3,10 @@ import { loader } from "fumadocs-core/source";
 import { icons } from "lucide-react";
 import { createElement } from "react";
 import { docs } from 'fumadocs-mdx:collections/server';
+import { i18n } from '@/lib/i18n';
 
 export const source = loader({
+	i18n,
 	baseUrl: "/docs",
 	source: docs.toFumadocsSource(),
 	icon(icon: string | undefined) {

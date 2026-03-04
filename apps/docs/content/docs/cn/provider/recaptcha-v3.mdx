@@ -1,0 +1,108 @@
+---
+title: ReCaptcha v3
+description: Google 的不可见、基于分数的机器人保护服务
+---
+
+import { ReCaptchaV3Playground } from "@/components/recaptcha-v3-playground";
+
+## 关于 ReCaptcha v3
+
+Google reCAPTCHA v3 是一个不可见的验证码服务,在后台运行并为每个用户交互提供风险评分(0.0 到 1.0)。与 v2 不同,它不会用挑战打断用户,而是分析他们的行为来确定他们是人类还是机器人。
+
+更多信息,请访问[官方 Google reCAPTCHA v3 文档](https://developers.google.com/recaptcha/docs/v3)。
+
+## 展示
+<ReCaptchaV3Playground />
+
+## 使用方法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { ReCaptchaV3 } from "@better-captcha/react/provider/recaptcha-v3";
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { ReCaptchaV3 } from "@better-captcha/preact/provider/recaptcha-v3";
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { ReCaptchaV3 } from "@better-captcha/qwik/provider/recaptcha-v3";
+
+  export default component$(() => (
+    <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { ReCaptchaV3 } from "@better-captcha/solidjs/provider/recaptcha-v3";
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <ReCaptchaV3
+      sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+      :options="{ action: 'submit' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { ReCaptchaV3 } from "@better-captcha/vue/provider/recaptcha-v3";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import ReCaptchaV3 from "@better-captcha/svelte/provider/recaptcha-v3";
+  </script>
+
+  <ReCaptchaV3 sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={{ action: "submit" }} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { ReCaptchaV3 } from "@better-captcha/lit/provider/recaptcha-v3";
+  ```
+
+  ```html
+  <recaptcha-v3-captcha sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" .options={{ action: "submit" }}></recaptcha-v3-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供商选项
+
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha-v3/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/recaptcha-v3/provider.ts" name="ReCaptchaV3Handle" />
+
+## 最佳实践
+
+- **使用有意义的动作**: 使用描述性的动作名称(例如 "login"、"submit"、"register")来跟踪不同的用户交互
+- **服务器端验证**: 始终在后端验证响应令牌并检查分数
+- **设置分数阈值**: 决定一个接受提交的分数阈值(通常为 0.5)
+- **优雅地处理错误**: 始终实现 `onError` 回调以处理网络故障
+- **令牌缓存**: 提供商自动缓存令牌 2 分钟以减少 API 调用
+- **多个动作**: 对不同的页面/交互使用不同的动作以获得更好的分析

@@ -4,9 +4,10 @@ import { source } from "@/lib/source";
 
 export const revalidate = false;
 
-export async function GET(_req: Request, { params }: RouteContext<"/llms.mdx/[[...slug]]">) {
+export async function GET(req: Request, { params }: RouteContext<"/llms.mdx/[[...slug]]">) {
 	const { slug } = await params;
-	const page = source.getPage(slug);
+	const lang = new URL(req.url).searchParams.get("lang") ?? undefined;
+	const page = source.getPage(slug, lang);
 	if (!page) notFound();
 
 	return new Response(await getLLMText(page), {
