@@ -119,3 +119,22 @@ Test keys are designed for development and automated testing. They will always b
 - **Lightweight**: Turnstile has minimal impact on page load times
 - **Privacy-First**: No tracking or cookies, making it ideal for privacy-conscious applications
 - **Cloudflare Integration**: Works seamlessly with other Cloudflare services
+
+## Server Verification
+
+Use `@better-captcha/server` to verify Turnstile tokens on your backend:
+
+```ts
+import { verifyTurnstile } from "@better-captcha/server";
+
+const result = await verifyTurnstile({
+	secret: process.env.TURNSTILE_SECRET_KEY!,
+	response: tokenFromClient,
+	expectedHostname: "example.com",
+	expectedAction: "signup",
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```
