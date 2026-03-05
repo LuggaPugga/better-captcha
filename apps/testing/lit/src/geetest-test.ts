@@ -13,7 +13,7 @@ export class GeetestTest extends LitElement {
 
 	@state()
 	private options = {
-    language: 'eng',
+		language: "eng",
 	};
 
 	@state()
@@ -67,7 +67,7 @@ export class GeetestTest extends LitElement {
 				<button type="button" @click=${this.handleExecute}>Execute</button>
 				<button type="button" @click=${this.handleRender}>Render</button>
 				<button type="button" @click=${this.handleGetResponse}>Get Response</button>
-				${this.response ? html`<p id="captcha-response">${JSON.stringify(this.response,null,'\t')}</p>` : ""}
+				${this.response ? html`<p id="captcha-response">${JSON.stringify(this.response, null, "\t")}</p>` : ""}
 			</div>
 		`;
 	}

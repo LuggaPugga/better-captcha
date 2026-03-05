@@ -5,7 +5,7 @@ import { $, component$, useSignal } from "@builder.io/qwik";
 export const GeetestTest = component$(() => {
 	const controller = useCaptchaController<GeetestHandle>();
 	const options = useSignal<Omit<RenderParameters, "captchaId">>({
-    language: 'eng',
+		language: "eng",
 	});
 	const response = useSignal<string | null>(null);
 	const solved = useSignal<boolean>(false);
@@ -60,7 +60,7 @@ export const GeetestTest = component$(() => {
 				type="button"
 				onClick$={() => {
 					const captchaResponse = controller.value?.getResponse() || "No response";
-					response.value = JSON.stringify(captchaResponse, null, '\t');
+					response.value = JSON.stringify(captchaResponse, null, "\t");
 				}}
 			>
 				Get Response

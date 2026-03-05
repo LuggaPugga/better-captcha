@@ -3,7 +3,6 @@ import { CapWidgetProvider } from "./providers/cap-widget";
 import { CaptchaFoxProvider } from "./providers/captcha-fox";
 import { FriendlyCaptchaProvider } from "./providers/friendly-captcha";
 import { GeetestProvider } from "./providers/geetest";
-import { Geetest } from "./providers/geetest/types";
 import { HCaptchaProvider } from "./providers/hcaptcha";
 import { PrivateCaptchaProvider } from "./providers/private-captcha";
 import { ProsopoProvider } from "./providers/prosopo";
@@ -124,7 +123,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
-	}
+	},
 ];
 
 export const PROVIDER_CLASSES = {
@@ -145,13 +144,13 @@ export type { AltchaHandle } from "./providers/altcha";
 export type { CapWidgetHandle } from "./providers/cap-widget";
 export type { CaptchaFoxHandle } from "./providers/captcha-fox";
 export type { FriendlyCaptchaHandle } from "./providers/friendly-captcha";
+export type { GeetestHandle } from "./providers/geetest";
 export type { HCaptchaHandle } from "./providers/hcaptcha";
 export type { PrivateCaptchaHandle } from "./providers/private-captcha";
 export type { ProsopoHandle } from "./providers/prosopo";
 export type { ReCaptchaHandle } from "./providers/recaptcha";
 export type { ReCaptchaV3Handle } from "./providers/recaptcha-v3";
 export type { TurnstileHandle } from "./providers/turnstile";
-export type { GeetestHandle } from "./providers/geetest";
 
 export function getProviderMetadata(name: string): ProviderMetadata | undefined {
 	return PROVIDER_REGISTRY.find((provider) => provider.name === name);
