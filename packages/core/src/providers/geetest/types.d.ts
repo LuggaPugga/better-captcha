@@ -233,5 +233,4 @@ export declare namespace Geetest {
 	}
 }
 
-interface RenderParameters extends Geetest.RenderParameters {}
-export type { Geetest, RenderParameters };
+export interface RenderParameters extends Geetest.RenderParameters {}

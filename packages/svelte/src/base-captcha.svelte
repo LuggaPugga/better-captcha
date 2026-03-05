@@ -3,8 +3,10 @@
 
 	export type BaseCaptchaProps<
 		TOptions,
-		THandle extends CaptchaHandle,
-		TProvider extends Provider<ProviderConfig, TOptions, THandle>,
+		TResponse,
+		TSolve,
+		THandle extends CaptchaHandle<TResponse>,
+		TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 	> = {
 		providerClass: new (sitekeyOrEndpoint: string, scriptOptions?: ScriptOptions) => TProvider;
 		value: string;
@@ -15,19 +17,19 @@
 		autoRender?: boolean;
 		onready?: (handle: THandle) => void;
 		onerror?: (error: Error) => void;
-		onSolve?: (token: string) => void;
+		onSolve?: (token: TSolve) => void;
 	};
 </script>
 
 <script
 	lang="ts"
-	generics="TOptions, THandle extends CaptchaHandle, TProvider extends Provider<ProviderConfig, TOptions, THandle>"
+	generics="TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>, TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>"
 >
 	import { CaptchaController } from "@better-captcha/core";
 	import type { CaptchaState, WidgetId } from "@better-captcha/core";
 	import { onMount, onDestroy, untrack } from "svelte";
 
-	type Props = BaseCaptchaProps<TOptions, THandle, TProvider>;
+	type Props = BaseCaptchaProps<TOptions, TResponse, TSolve, THandle, TProvider>;
 
 	let {
 		providerClass: ProviderClass,
@@ -58,7 +60,13 @@
 			: controllerState.loading,
 	);
 
-	const controller = new CaptchaController<TOptions, THandle, TProvider>(
+	const controller = new CaptchaController<
+		TOptions,
+		TResponse,
+		TSolve,
+		THandle,
+		TProvider
+	>(
 		(id, script) => new ProviderClass(id, script),
 	);
 
@@ -75,7 +83,7 @@
 
 		controller.setCallbacks({
 			onReady: () => onready?.(controller.getHandle()),
-			onSolve: (token: string) => onSolve?.(token),
+			onSolve: (token: TSolve) => onSolve?.(token),
 			onError: (err: Error | string) => {
 				const error = err instanceof Error ? err : new Error(String(err));
 				onerror?.(error);

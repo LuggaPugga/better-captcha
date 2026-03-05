@@ -1,4 +1,4 @@
-import { Geetest, type GeetestHandle } from "@better-captcha/lit/provider/geetest";
+import { Geetest, type GeetestHandle, type GeetestSolveResponse } from "@better-captcha/lit/provider/geetest";
 import { html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
@@ -6,6 +6,7 @@ import { createRef, type Ref, ref } from "lit/directives/ref.js";
 Geetest;
 
 type GeetestCaptchaElement = LitElement & { getHandle: () => GeetestHandle };
+type GeetestResponse = ReturnType<GeetestHandle["getResponse"]>;
 
 @customElement("geetest-test")
 export class GeetestTest extends LitElement {
@@ -17,7 +18,7 @@ export class GeetestTest extends LitElement {
 	};
 
 	@state()
-	private response: ReturnType<GeetestHandle["getResponse"]> | null = null;
+	private response: GeetestResponse | null = null;
 
 	@state()
 	private solved = false;
@@ -26,7 +27,7 @@ export class GeetestTest extends LitElement {
 		return this;
 	}
 
-	private handleSolve = (token: ReturnType<GeetestHandle["getResponse"]>) => {
+	private handleSolve = (token: GeetestSolveResponse) => {
 		this.solved = true;
 		console.log("Captcha solved with token:", token);
 	};
@@ -48,7 +49,7 @@ export class GeetestTest extends LitElement {
 	}
 
 	private handleGetResponse() {
-		const captchaResponse = this.captchaRef.value?.getHandle()?.getResponse() || "No response";
+		const captchaResponse = this.captchaRef.value?.getHandle()?.getResponse() ?? false;
 		this.response = captchaResponse;
 	}
 
@@ -57,7 +58,7 @@ export class GeetestTest extends LitElement {
 			<div>
 				<geetest-captcha
 					${ref(this.captchaRef)}
-					sitekey="08649cc61c7078689263ebf78225d616"
+					sitekey="647f5ed2ed8acb4be36784e01556bb71"
 					.options=${this.options}
 					.onSolve=${this.handleSolve}
 				></geetest-captcha>

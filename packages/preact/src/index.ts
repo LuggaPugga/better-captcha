@@ -10,7 +10,7 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export type CaptchaProps<TOptions> = {
+export type CaptchaProps<TOptions, TSolve = string> = {
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
@@ -19,7 +19,7 @@ export type CaptchaProps<TOptions> = {
 	style?: CSSProperties;
 	autoRender?: boolean;
 	onReady?: () => void;
-	onSolve?: (token: string) => void;
+	onSolve?: (token: TSolve) => void;
 	onError?: (error: Error | string) => void;
 };
 

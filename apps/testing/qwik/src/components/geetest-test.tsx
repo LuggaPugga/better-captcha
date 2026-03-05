@@ -1,16 +1,21 @@
 import { useCaptchaController } from "@better-captcha/qwik";
-import { Geetest, type GeetestHandle, type RenderParameters } from "@better-captcha/qwik/provider/geetest";
+import {
+	Geetest,
+	type GeetestHandle,
+	type GeetestSolveResponse,
+	type RenderParameters,
+} from "@better-captcha/qwik/provider/geetest";
 import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const GeetestTest = component$(() => {
 	const controller = useCaptchaController<GeetestHandle>();
-	const options = useSignal<Omit<RenderParameters, "captchaId">>({
+	const options = useSignal<RenderParameters>({
 		language: "eng",
 	});
 	const response = useSignal<string | null>(null);
 	const solved = useSignal<boolean>(false);
 
-	const handleSolve$ = $((token: string) => {
+	const handleSolve$ = $((token: GeetestSolveResponse) => {
 		solved.value = true;
 		console.log("Captcha solved with token:", token);
 	});
@@ -20,7 +25,7 @@ export const GeetestTest = component$(() => {
 			<Geetest
 				controller={controller}
 				options={options.value}
-				sitekey="08649cc61c7078689263ebf78225d616"
+				sitekey="647f5ed2ed8acb4be36784e01556bb71"
 				onSolve$={handleSolve$}
 			/>
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}

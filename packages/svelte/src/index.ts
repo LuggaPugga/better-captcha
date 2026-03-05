@@ -10,7 +10,11 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export interface CaptchaProps<TOptions = unknown> {
+export interface CaptchaProps<
+	TOptions = unknown,
+	TSolve = string,
+	THandle extends CaptchaHandle<unknown> = CaptchaHandle,
+> {
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
@@ -18,21 +22,24 @@ export interface CaptchaProps<TOptions = unknown> {
 	class?: string;
 	style?: string;
 	autoRender?: boolean;
-	onready?: (handle: CaptchaHandle) => void;
+	onready?: (handle: THandle) => void;
 	onerror?: (error: Error) => void;
-	onSolve?: (token: string) => void;
+	onSolve?: (token: TSolve) => void;
 }
 
-export interface CaptchaComponentMethods {
+export interface CaptchaComponentMethods<THandle extends CaptchaHandle<unknown> = CaptchaHandle> {
 	execute(): Promise<void>;
 	reset(): void;
 	destroy(): void;
-	getResponse(): string;
+	getResponse(): ReturnType<THandle["getResponse"]> | undefined;
 	getComponentState(): import("@better-captcha/core").CaptchaState;
 	render(): Promise<void>;
 }
 
-export type CaptchaComponent<TOptions = unknown> = typeof SvelteComponent<CaptchaProps<TOptions>> &
-	CaptchaComponentMethods;
+export type CaptchaComponent<
+	TOptions = unknown,
+	TSolve = string,
+	THandle extends CaptchaHandle<unknown> = CaptchaHandle,
+> = typeof SvelteComponent<CaptchaProps<TOptions, TSolve, THandle>> & CaptchaComponentMethods<THandle>;
 
 export { type UseCaptchaReturn, useCaptcha } from "./composables/use-captcha";

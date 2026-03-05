@@ -1,2 +1,6 @@
 export { type GeetestHandle, GeetestProvider } from "./provider";
-export type { RenderParameters } from "./types";
+
+import type { Geetest, RenderParameters as GeetestInitParameters } from "./types";
+
+export type RenderParameters = Omit<GeetestInitParameters, "captchaId">;
+export type GeetestSolveResponse = Geetest.ValidateResult;

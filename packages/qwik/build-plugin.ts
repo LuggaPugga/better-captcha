@@ -289,7 +289,8 @@ function genIndexDts(): string {
 		name: "CaptchaSharedProps",
 		typeParameters: [
 			{ name: "TOptions" },
-			{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" },
+			{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" },
+			{ name: "TSolve", default: "string" },
 		],
 		type: `{
 	options?: TOptions;
@@ -297,7 +298,7 @@ function genIndexDts(): string {
 	style?: string | Record<string, string | number>;
 	onReady$?: QRL<(handle: NoSerialize<THandle>) => unknown>;
 	onError$?: QRL<(error: Error) => unknown>;
-	onSolve$?: QRL<(token: string) => void>;
+	onSolve$?: QRL<(token: TSolve) => void>;
 	controller?: { value: NoSerialize<THandle> | null } | null;
 	autoRender?: boolean;
 }`,
@@ -308,9 +309,10 @@ function genIndexDts(): string {
 		name: "CaptchaProps",
 		typeParameters: [
 			{ name: "TOptions" },
-			{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" },
+			{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" },
+			{ name: "TSolve", default: "string" },
 		],
-		type: `CaptchaSharedProps<TOptions, THandle> & {
+		type: `CaptchaSharedProps<TOptions, THandle, TSolve> & {
 	sitekey: string;
 	endpoint?: never;
 }`,
@@ -327,9 +329,10 @@ function genIndexDts(): string {
 		name: "CaptchaPropsWithEndpoint",
 		typeParameters: [
 			{ name: "TOptions" },
-			{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" },
+			{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" },
+			{ name: "TSolve", default: "string" },
 		],
-		type: `CaptchaSharedProps<TOptions, THandle> & {
+		type: `CaptchaSharedProps<TOptions, THandle, TSolve> & {
 	endpoint: string;
 	sitekey?: never;
 }`,
@@ -345,7 +348,7 @@ function genIndexDts(): string {
 	// Add CaptchaController type
 	sourceFile.addTypeAlias({
 		name: "CaptchaController",
-		typeParameters: [{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" }],
+		typeParameters: [{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" }],
 		type: "Signal<NoSerialize<THandle> | null>",
 		isExported: true,
 	});
@@ -353,7 +356,7 @@ function genIndexDts(): string {
 	// Add useCaptchaController function declaration
 	sourceFile.addFunction({
 		name: "useCaptchaController",
-		typeParameters: [{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" }],
+		typeParameters: [{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" }],
 		returnType: "CaptchaController<THandle>",
 		isExported: true,
 		docs: [
@@ -401,11 +404,14 @@ function genBaseCaptchaDts(): string {
 		name: "createCaptchaComponent",
 		typeParameters: [
 			{ name: "TOptions", default: "unknown" },
-			{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" },
+			{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" },
+			{ name: "TSolve", default: "string" },
 			{
 				name: "TProvider",
-				constraint: "Provider<ProviderConfig, TOptions, THandle>",
-				default: "Provider<ProviderConfig, TOptions, THandle>",
+				constraint:
+					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
+				default:
+					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
 			},
 		],
 		parameters: [
@@ -414,7 +420,7 @@ function genBaseCaptchaDts(): string {
 				type: "QRL<(value: string, scriptOptions?: ScriptOptions) => TProvider>",
 			},
 		],
-		returnType: "Component<CaptchaProps<TOptions, THandle>>",
+		returnType: "Component<CaptchaProps<TOptions, THandle, TSolve>>",
 		isExported: true,
 		hasDeclareKeyword: true,
 	});
@@ -423,11 +429,14 @@ function genBaseCaptchaDts(): string {
 		name: "createCaptchaComponentWithEndpoint",
 		typeParameters: [
 			{ name: "TOptions", default: "unknown" },
-			{ name: "THandle", constraint: "CaptchaHandle", default: "CaptchaHandle" },
+			{ name: "THandle", constraint: "CaptchaHandle<unknown>", default: "CaptchaHandle" },
+			{ name: "TSolve", default: "string" },
 			{
 				name: "TProvider",
-				constraint: "Provider<ProviderConfig, TOptions, THandle>",
-				default: "Provider<ProviderConfig, TOptions, THandle>",
+				constraint:
+					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
+				default:
+					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
 			},
 		],
 		parameters: [
@@ -436,7 +445,7 @@ function genBaseCaptchaDts(): string {
 				type: "QRL<(value: string, scriptOptions?: ScriptOptions) => TProvider>",
 			},
 		],
-		returnType: "Component<CaptchaPropsWithEndpoint<TOptions, THandle>>",
+		returnType: "Component<CaptchaPropsWithEndpoint<TOptions, THandle, TSolve>>",
 		isExported: true,
 		hasDeclareKeyword: true,
 	});

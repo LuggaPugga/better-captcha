@@ -10,7 +10,7 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export type CaptchaProps<TOptions> = {
+export type CaptchaProps<TOptions, TSolve = string> = {
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
@@ -20,15 +20,15 @@ export type CaptchaProps<TOptions> = {
 	autoRender?: boolean;
 };
 
-export interface CaptchaEmits<THandle extends CaptchaHandle = CaptchaHandle> {
+export interface CaptchaEmits<THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string> {
 	ready: (handle: THandle) => void;
 	error: (error: Error) => void;
-	solve: (token: string) => void;
+	solve: (token: TSolve) => void;
 }
 
-export type CaptchaComponent<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = DefineComponent<
-	CaptchaProps<TOptions>,
-	CaptchaEmits<THandle>
+export type CaptchaComponent<TOptions, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string> = DefineComponent<
+	CaptchaProps<TOptions, TSolve>,
+	CaptchaEmits<THandle, TSolve>
 >;
 
 export { type UseCaptchaReturn, useCaptcha } from "./composables/use-captcha";

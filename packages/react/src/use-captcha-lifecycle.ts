@@ -9,15 +9,23 @@ import type {
 import { CaptchaController } from "@better-captcha/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
+export function useCaptchaLifecycle<
+	TOptions = unknown,
+	TResponse = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+	TSolve = string,
+>(
+	ProviderClass: new (
+		identifier: string,
+		scriptOptions?: ScriptOptions,
+	) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 	identifier: string,
 	scriptOptions: ScriptOptions | undefined,
 	options: TOptions | undefined,
 	autoRender = true,
 	callbacks?: {
 		onReady?: (handle: THandle) => void;
-		onSolve?: (token: string) => void;
+		onSolve?: (token: TSolve) => void;
 		onError?: (error: Error) => void;
 	},
 ) {
@@ -26,9 +34,13 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 
 	const controller = useMemo(
 		() =>
-			new CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>(
-				(id, script) => new ProviderClass(id, script),
-			),
+			new CaptchaController<
+				TOptions,
+				TResponse,
+				TSolve,
+				THandle,
+				Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>
+			>((id, script) => new ProviderClass(id, script)),
 		[ProviderClass],
 	);
 
@@ -61,7 +73,7 @@ export function useCaptchaLifecycle<TOptions = unknown, THandle extends CaptchaH
 				const handle = controller.getHandle();
 				if (handle) callbacks?.onReady?.(handle);
 			},
-			onSolve: (token: string) => callbacks?.onSolve?.(token),
+			onSolve: (token: TSolve) => callbacks?.onSolve?.(token),
 			onError: (err: Error | string) => {
 				const error = err instanceof Error ? err : new Error(String(err));
 				callbacks?.onError?.(error);

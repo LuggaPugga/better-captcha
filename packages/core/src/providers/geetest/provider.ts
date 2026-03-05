@@ -8,16 +8,15 @@ import {
 import { loadScript } from "../../utils/load-script";
 import type { Geetest, RenderParameters } from "./types";
 
-export type GeetestHandle = Omit<CaptchaHandle, "getResponse"> & {
-	getResponse: () => Geetest.ValidateResult | false;
-};
+export type GeetestHandle = CaptchaHandle<Geetest.ValidateResult | false>;
 
-export type GeetestCaptchaCallbacks = Omit<CaptchaCallbacks, "onSolve" | "onError"> & {
-	onSolve(result: Geetest.ValidateResult): void;
-	onError(error: Geetest.GeetestError): void;
-};
-
-export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParameters, "captchaId">, GeetestHandle> {
+export class GeetestProvider extends Provider<
+	ProviderConfig,
+	Omit<RenderParameters, "captchaId">,
+	GeetestHandle,
+	Geetest.ValidateResult | false,
+	Geetest.ValidateResult
+> {
 	private widgetMap = new Map<string, Geetest.Geetest>();
 	private elementMap = new Map<string, HTMLElement>();
 	private widgetIdCounter = 0;
@@ -55,7 +54,7 @@ export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParamet
 	async render(
 		element: HTMLElement,
 		options?: Omit<RenderParameters, "captchaId">,
-		callbacks?: GeetestCaptchaCallbacks,
+		callbacks?: CaptchaCallbacks<Geetest.ValidateResult>,
 	) {
 		const resolvedOptions = options ? { ...options } : undefined;
 
@@ -90,7 +89,9 @@ export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParamet
 					});
 				}
 				if (callbacks?.onError) {
-					captcha.onError(callbacks.onError);
+					captcha.onError((error) => {
+						callbacks.onError?.(new Error(error.msg));
+					});
 				}
 
 				resolve(widgetId);
@@ -129,9 +130,5 @@ export class GeetestProvider extends Provider<ProviderConfig, Omit<RenderParamet
 			return false;
 		}
 		return captcha.getValidate();
-	}
-
-	getHandle(widgetId: number): GeetestHandle {
-		return this.getCommonHandle(widgetId);
 	}
 }

@@ -25,19 +25,23 @@ import { CaptchaEmits, CaptchaProps } from ".";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
+	TResponse = string,
+	TSolve = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
 	TProvider extends Provider<
 		ProviderConfig,
 		TOptions,
-		THandle
-	> = Provider<ProviderConfig, TOptions, THandle>,
+		THandle,
+		TResponse,
+		TSolve
+	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 >(
 	ProviderClass: new (
 		identifier: string,
 		scriptOptions?: ScriptOptions,
 	) => TProvider,
 	identifierProp: "sitekey" | "endpoint" = "sitekey",
-): Component<CaptchaProps<TOptions>, CaptchaEmits<THandle>> {
+): Component<CaptchaProps<TOptions, TSolve>, CaptchaEmits<THandle, TSolve>> {
 	return defineComponent({
 		name: "BetterCaptcha",
 		props: {
@@ -76,7 +80,13 @@ export function createCaptchaComponent<
 					: state.value.loading,
 			);
 
-			const controller = new CaptchaController<TOptions, THandle, TProvider>(
+			const controller = new CaptchaController<
+				TOptions,
+				TResponse,
+				TSolve,
+				THandle,
+				TProvider
+			>(
 				(id, script) => new ProviderClass(id, script),
 			);
 
@@ -94,7 +104,7 @@ export function createCaptchaComponent<
 
 				controller.setCallbacks({
 					onReady: () => emit("ready", controller.getHandle()),
-					onSolve: (token: string) => emit("solve", token),
+					onSolve: (token: TSolve) => emit("solve", token),
 					onError: (err: any) => {
 						const error = err instanceof Error ? err : new Error(String(err));
 						emit("error", error);
