@@ -4,7 +4,7 @@ import { Geetest } from "@better-captcha/react/provider/geetest";
 import { useState } from "react";
 
 export function GeetestPlayground() {
-  const [options, setOptions] = useState<Omit<RenderParameters, "captchaId">>({
+  const [options, setOptions] = useState<RenderParameters>({
     language: "eng",
   });
   const [response, setResponse] = useState<string | null>(null);
@@ -12,7 +12,7 @@ export function GeetestPlayground() {
   return (
     <div className="space-y-4">
       <Geetest
-        sitekey="08649cc61c7078689263ebf78225d616"
+        sitekey="647f5ed2ed8acb4be36784e01556bb71"
         options={options}
         onSolve={(t) => setResponse(JSON.stringify(t, null, '\t'))}
       />
@@ -26,4 +26,3 @@ export function GeetestPlayground() {
     </div>
   );
 }
-

@@ -3,7 +3,7 @@
 		<h3>Geetest Test</h3>
 		<Geetest
 			ref="captchaRef"
-			sitekey="08649cc61c7078689263ebf78225d616"
+			sitekey="647f5ed2ed8acb4be36784e01556bb71"
 			:options="options"
 			@ready="onReady"
 			@error="onError"
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Geetest, type GeetestHandle, type RenderParameters } from "@better-captcha/vue/provider/geetest";
+  import { Geetest, type GeetestHandle, type GeetestSolveResponse, type RenderParameters } from "@better-captcha/vue/provider/geetest";
 	import { ref } from "vue";
 
 	const captchaRef = ref<GeetestHandle | null>(null);
@@ -31,7 +31,7 @@
 	const error = ref<Error | null>(null);
 	const solved = ref<boolean>(false);
 
-	const options = ref<Omit<RenderParameters, "captchaId">>({
+	const options = ref<RenderParameters>({
     language: 'eng',
 	});
 
@@ -44,7 +44,7 @@
 		console.error("Captcha error:", err);
 	};
 
-	const onSolve = (token: string) => {
+	const onSolve = (token: GeetestSolveResponse) => {
 		solved.value = true;
 		console.log("Captcha solved with token:", token);
 	};
@@ -71,4 +71,3 @@
 		response.value = captchaResponse;
 	};
 </script>
-

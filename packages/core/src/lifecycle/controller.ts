@@ -14,13 +14,21 @@ import type {
  */
 export class CaptchaController<
 	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+	TResponse = string,
+	TSolve = TResponse,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
+		ProviderConfig,
+		TOptions,
+		THandle,
+		TResponse,
+		TSolve
+	>,
 > {
 	private identifier: string | undefined;
 	private options: TOptions | undefined;
 	private scriptOptions: ScriptOptions | undefined;
-	private callbacks: CaptchaCallbacks | undefined;
+	private callbacks: CaptchaCallbacks<TSolve> | undefined;
 	private hostElement: HTMLElement | null = null;
 	private container: HTMLDivElement | null = null;
 	private provider: TProvider | null = null;
@@ -61,7 +69,7 @@ export class CaptchaController<
 	/**
 	 * Set lifecycle callbacks
 	 */
-	setCallbacks(callbacks: CaptchaCallbacks | undefined): void {
+	setCallbacks(callbacks: CaptchaCallbacks<TSolve> | undefined): void {
 		this.callbacks = callbacks;
 	}
 
@@ -136,21 +144,20 @@ export class CaptchaController<
 			mountTarget = document.createElement("div");
 			this.hostElement.appendChild(mountTarget);
 
-			const callbacks: CaptchaCallbacks = {
+			const callbacks: CaptchaCallbacks<TSolve> = {
 				onReady: () => {
 					if (token === this.renderToken) {
 						this.callbacks?.onReady?.();
 					}
 				},
-				onSolve: (solveToken: string) => {
+				onSolve: (solveToken: TSolve) => {
 					if (token === this.renderToken) {
 						this.callbacks?.onSolve?.(solveToken);
 					}
 				},
 				onError: (err: Error | string) => {
 					if (token === this.renderToken) {
-						const error = err instanceof Error ? err : new Error(String(err));
-						this.callbacks?.onError?.(error);
+						this.callbacks?.onError?.(err);
 					}
 				},
 			};
@@ -229,7 +236,7 @@ export class CaptchaController<
 	/**
 	 * Get a handle for controlling the widget
 	 */
-	getHandle(): CaptchaHandle & THandle {
+	getHandle(): CaptchaHandle<TResponse> & THandle {
 		if (!this.provider || this.widgetId == null) {
 			return {
 				execute: async () => {
@@ -246,9 +253,9 @@ export class CaptchaController<
 				render: async () => {
 					await this.render();
 				},
-				getResponse: () => "",
+				getResponse: () => "" as TResponse,
 				getComponentState: () => this.state,
-			} as CaptchaHandle & THandle;
+			} as CaptchaHandle<TResponse> & THandle;
 		}
 
 		const baseHandle = this.provider.getHandle(this.widgetId);
@@ -261,6 +268,6 @@ export class CaptchaController<
 			render: async () => {
 				await this.render();
 			},
-		} as CaptchaHandle & THandle;
+		} as CaptchaHandle<TResponse> & THandle;
 	}
 }

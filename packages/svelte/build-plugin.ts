@@ -29,8 +29,10 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		handleType,
 		renderParamsType,
 		renderParamsOmit,
+		solvePayloadType,
 		identifierProp = "sitekey",
 	} = metadata;
+	const solveType = solvePayloadType ?? "string";
 	const sitekeyProp = identifierProp === "endpoint" ? "" : "sitekey: string;\n\t\t";
 	const endpointProp = identifierProp === "endpoint" ? "endpoint: string;" : "";
 
@@ -50,7 +52,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		autoRender?: boolean;
 		onready?: (handle: ${handleType}) => void;
 		onerror?: (error: Error) => void;
-		onSolve?: (token: string) => void;
+		onSolve?: (token: ${solveType}) => void;
 	}
 
 	let {
@@ -65,7 +67,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		onSolve = undefined
 	}: Props = $props();
 
-	let baseCaptchaRef: BaseCaptcha<Omit<${renderParamsType}, ${renderParamsOmit}>, ${handleType}, typeof ${providerClassName}> | undefined = $state(undefined);
+	let baseCaptchaRef: BaseCaptcha<Omit<${renderParamsType}, ${renderParamsOmit}>, ReturnType<${handleType}["getResponse"]>, ${solveType}, ${handleType}, typeof ${providerClassName}> | undefined = $state(undefined);
 
 	// Expose public methods
 	export function execute(): Promise<void> {
@@ -80,8 +82,8 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		baseCaptchaRef?.destroy();
 	}
 
-	export function getResponse(): string {
-		return baseCaptchaRef?.getResponse() ?? "";
+	export function getResponse(): ReturnType<${handleType}["getResponse"]> | undefined {
+		return baseCaptchaRef?.getResponse();
 	}
 
 	export function getComponentState(): CaptchaState {
@@ -117,11 +119,13 @@ function generateComponentDts(metadata: ProviderMetadata): string {
 		renderParamsType,
 		renderParamsOmit,
 		extraTypes,
+		solvePayloadType,
 		identifierProp = "sitekey",
 	} = metadata;
 
 	const extraTypeImports = extraTypes.length > 0 ? `,\n\t${extraTypes.join(",\n\t")}` : "";
 	const extraTypeExports = extraTypes.length > 0 ? `, ${extraTypes.join(", ")}` : "";
+	const solveType = solvePayloadType ?? "string";
 
 	const sitekeyProp = identifierProp === "endpoint" ? "" : "	sitekey: string;\n";
 	const endpointProp = identifierProp === "endpoint" ? "	endpoint: string;\n" : "";
@@ -143,7 +147,7 @@ ${sitekeyProp}${endpointProp}
 	style?: string;
 	onready?: (handle: ${handleType}) => void;
 	onerror?: (error: Error) => void;
-	onSolve?: (token: string) => void;
+	onSolve?: (token: ${solveType}) => void;
 }
 
 /**
@@ -179,7 +183,7 @@ export default class ${componentName} extends SvelteComponent<${componentName}Pr
 	execute(): Promise<void>;
 	reset(): void;
 	destroy(): void;
-	getResponse(): string;
+	getResponse(): ReturnType<${handleType}["getResponse"]> | undefined;
 	getComponentState(): CaptchaState;
 	render(): Promise<void>;
 }

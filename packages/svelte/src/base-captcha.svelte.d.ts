@@ -3,8 +3,10 @@ import { SvelteComponent } from "svelte";
 
 export interface BaseCaptchaProps<
 	TOptions,
-	THandle extends CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle>,
+	TResponse,
+	TSolve,
+	THandle extends CaptchaHandle<TResponse>,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 > {
 	providerClass: new (sitekey: string) => TProvider;
 	sitekey: string;
@@ -13,17 +15,25 @@ export interface BaseCaptchaProps<
 	style?: string;
 	onready?: (handle: THandle) => void;
 	onerror?: (error: Error) => void;
-	onSolve?: (token: string) => void;
+	onSolve?: (token: TSolve) => void;
 }
 
 export default class BaseCaptcha<
 	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
-> extends SvelteComponent<BaseCaptchaProps<TOptions, THandle, TProvider>> {
+	TResponse = string,
+	TSolve = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
+		ProviderConfig,
+		TOptions,
+		THandle,
+		TResponse,
+		TSolve
+	>,
+> extends SvelteComponent<BaseCaptchaProps<TOptions, TResponse, TSolve, THandle, TProvider>> {
 	execute(): Promise<void>;
 	reset(): void;
 	destroy(): void;
-	getResponse(): string;
+	getResponse(): ReturnType<THandle["getResponse"]> | undefined;
 	getComponentState(): CaptchaState;
 }

@@ -13,10 +13,18 @@ import type { CaptchaProps } from "./index";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+	TResponse = string,
+	TSolve = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+	TProvider extends Provider<
+		ProviderConfig,
+		TOptions,
+		THandle,
+		TResponse,
+		TSolve
+	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 >(providerFactory$: QRL<(identifier: string, scriptOptions?: ScriptOptions) => TProvider>) {
-	return component$<CaptchaProps<TOptions, THandle>>((props) => {
+	return component$<CaptchaProps<TOptions, THandle, TSolve>>((props) => {
 		const hostEl = useSignal<HTMLDivElement | null>(null);
 		const widgetId = useSignal<WidgetId | null>(null);
 		const state = useSignal<CaptchaState>({ loading: false, error: null, ready: false });
@@ -29,7 +37,17 @@ export function createCaptchaComponent<
 			autoRender.value ? state.value.loading || !state.value.ready : state.value.loading,
 		);
 
-		const controller = useSignal<NoSerialize<CaptchaController<TOptions, THandle, TProvider>> | null>(null);
+		const controller = useSignal<
+			NoSerialize<
+				CaptchaController<
+					TOptions,
+					TResponse,
+					TSolve,
+					THandle,
+					TProvider
+				>
+			> | null
+		>(null);
 
 		const cleanup$ = $(async () => {
 			const ctrl = controller.value;
@@ -53,7 +71,7 @@ export function createCaptchaComponent<
 			const provider = await providerFactory$(currentValue, props.scriptOptions);
 
 			const factory = () => provider;
-			const ctrl = new CaptchaController<TOptions, THandle, TProvider>(factory);
+			const ctrl = new CaptchaController<TOptions, TResponse, TSolve, THandle, TProvider>(factory);
 			controller.value = noSerialize(ctrl);
 
 			ctrl.onStateChange((newState: CaptchaState) => {
@@ -74,7 +92,7 @@ export function createCaptchaComponent<
 					hasEmittedReady.value = true;
 					await props.onReady$(await buildHandle$());
 				},
-				onSolve: async (token: string) => {
+				onSolve: async (token: TSolve) => {
 					if (props.onSolve$) await props.onSolve$(token);
 				},
 				onError: async (err: Error | string) => {

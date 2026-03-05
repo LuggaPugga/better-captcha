@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { GeetestHandle, RenderParameters } from "@better-captcha/svelte/provider/geetest";
+	import type { GeetestHandle, GeetestSolveResponse, RenderParameters } from "@better-captcha/svelte/provider/geetest";
 	import Geetest from "@better-captcha/svelte/provider/geetest";
 
 	let captchaRef: Geetest | undefined;
@@ -7,7 +7,7 @@
 	let error = $state<Error | null>(null);
 	let solved = $state<boolean>(false);
 
-	let options = $state<Omit<RenderParameters, "captchaId">>({
+	let options = $state<RenderParameters>({
     language: 'eng',
 	});
 
@@ -20,7 +20,7 @@
 		console.error("Captcha error:", err);
 	}
 
-	function onSolve(token: string) {
+	function onSolve(token: GeetestSolveResponse) {
 		solved = true;
 		console.log("Captcha solved with token:", token);
 	}
@@ -52,7 +52,7 @@
 	<h3>Geetest Test</h3>
 	<Geetest
 		bind:this={captchaRef}
-		sitekey="08649cc61c7078689263ebf78225d616"
+		sitekey="647f5ed2ed8acb4be36784e01556bb71"
 		{options}
 		onready={onReady}
 		onerror={onError}
@@ -75,4 +75,3 @@
 		<p style="color: red">Error: {error.message}</p>
 	{/if}
 </div>
-

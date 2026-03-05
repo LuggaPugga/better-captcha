@@ -1,10 +1,15 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
-import { Geetest, type GeetestHandle, type RenderParameters } from "@better-captcha/solidjs/provider/geetest";
+import {
+	Geetest,
+	type GeetestHandle,
+	type GeetestSolveResponse,
+	type RenderParameters,
+} from "@better-captcha/solidjs/provider/geetest";
 import { createSignal } from "solid-js";
 
 export function GeetestTest() {
 	const controller = createCaptchaController<GeetestHandle>();
-	const [options, setOptions] = createSignal<Omit<RenderParameters, "captchaId">>({
+	const [options, setOptions] = createSignal<RenderParameters>({
 		language: "eng",
 	});
 	const [response, setResponse] = createSignal<string | null>(null);
@@ -15,7 +20,7 @@ export function GeetestTest() {
 		setResponse(JSON.stringify(captchaResponse, null, "\t"));
 	};
 
-	const handleSolve = (token: string) => {
+	const handleSolve = (token: GeetestSolveResponse) => {
 		setSolved(true);
 		console.log("Captcha solved with token:", token);
 	};
@@ -24,7 +29,7 @@ export function GeetestTest() {
 		<div>
 			<Geetest
 				controller={controller}
-				sitekey="08649cc61c7078689263ebf78225d616"
+				sitekey="647f5ed2ed8acb4be36784e01556bb71"
 				options={options()}
 				onSolve={handleSolve}
 			/>

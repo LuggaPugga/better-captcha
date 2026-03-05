@@ -18,6 +18,7 @@ export interface ProviderMetadata {
 	renderParamsType: string;
 	renderParamsOmit: string;
 	extraTypes: string[];
+	solvePayloadType?: string;
 	/** The prop name to use for the identifier (default: "sitekey") */
 	identifierProp?: "sitekey" | "endpoint";
 }
@@ -121,8 +122,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		providerClassName: "GeetestProvider",
 		handleType: "GeetestHandle",
 		renderParamsType: "RenderParameters",
-		renderParamsOmit: '"sitekey"',
-		extraTypes: [],
+		renderParamsOmit: '"captchaId"',
+		extraTypes: ["GeetestSolveResponse"],
+		solvePayloadType: "GeetestSolveResponse",
 	},
 ];
 
