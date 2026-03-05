@@ -3,13 +3,13 @@ import { AltchaTest } from "./tests/altcha-test";
 import { CapWidgetTest } from "./tests/cap-widget-test";
 import { CaptchaFoxTest } from "./tests/captcha-fox-test";
 import { FriendlyCaptchaTest } from "./tests/friendly-captcha-test";
+import { GeetestTest } from "./tests/geetest-test";
 import { HCaptchaTest } from "./tests/hcaptcha-test";
 import { PrivateCaptchaTest } from "./tests/private-captcha-test";
 import { ProsopoTest } from "./tests/prosopo-test";
 import { RecaptchaTest } from "./tests/recaptcha-test";
 import { RecaptchaV3Test } from "./tests/recaptcha-v3-test";
 import { TurnstileTest } from "./tests/turnstile-test";
-import { GeetestTest } from "./tests/geetest-test";
 
 export function App() {
 	const [currentProvider, setCurrentProvider] = useState("turnstile");

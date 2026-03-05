@@ -5,13 +5,13 @@ import { AltchaTest } from "../components/altcha-test";
 import { CapWidgetTest } from "../components/cap-widget-test";
 import { CaptchaFoxTest } from "../components/captcha-fox-test";
 import { FriendlyCaptchaTest } from "../components/friendly-captcha-test";
+import { GeetestTest } from "../components/geetest-test";
 import { HCaptchaTest } from "../components/hcaptcha-test";
 import { PrivateCaptchaTest } from "../components/private-captcha-test";
 import { ProsopoTest } from "../components/prosopo-test";
 import { RecaptchaTest } from "../components/recaptcha-test";
 import { RecaptchaV3Test } from "../components/recaptcha-v3-test";
 import { TurnstileTest } from "../components/turnstile-test";
-import { GeetestTest } from "../components/geetest-test";
 
 export default clientOnly(async () => ({ default: Home }), { lazy: true });
 

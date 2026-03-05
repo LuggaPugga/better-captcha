@@ -1,9 +1,5 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
-import {
-	Geetest,
-	type GeetestHandle,
-	type RenderParameters,
-} from "@better-captcha/solidjs/provider/geetest";
+import { Geetest, type GeetestHandle, type RenderParameters } from "@better-captcha/solidjs/provider/geetest";
 import { createSignal } from "solid-js";
 
 export function GeetestTest() {
@@ -16,7 +12,7 @@ export function GeetestTest() {
 
 	const handleGetResponse = () => {
 		const captchaResponse = controller.handle()?.getResponse() || "No response";
-		setResponse(JSON.stringify(captchaResponse, null, '\t'));
+		setResponse(JSON.stringify(captchaResponse, null, "\t"));
 	};
 
 	const handleSolve = (token: string) => {
