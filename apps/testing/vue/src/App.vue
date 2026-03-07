@@ -26,6 +26,7 @@
 			<ProsopoTest v-else-if="currentProvider === 'prosopo'" />
 			<CapWidgetTest v-else-if="currentProvider === 'cap-widget'" />
 			<AltchaTest v-else-if="currentProvider === 'altcha'" />
+			<GeetestTest v-else-if="currentProvider === 'geetest'" />
 		</div>
 	</div>
 </template>
@@ -42,6 +43,7 @@
 	import RecaptchaTest from "./components/RecaptchaTest.vue";
 	import RecaptchaV3Test from "./components/RecaptchaV3Test.vue";
 	import TurnstileTest from "./components/TurnstileTest.vue";
+	import GeetestTest from "./components/GeetestTest.vue";
 
 	const currentProvider = ref("turnstile");
 
@@ -56,6 +58,7 @@
 		{ key: "prosopo", name: "Prosopo" },
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
+		{ key: "geetest", name: "Geetest" },
 	];
 </script>
 

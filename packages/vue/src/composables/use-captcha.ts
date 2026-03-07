@@ -1,7 +1,7 @@
 import type { CaptchaHandle, CaptchaState } from "@better-captcha/core";
 import { type Ref, ref, type ShallowRef, shallowRef, watch } from "vue";
 
-export function useCaptcha<THandle extends CaptchaHandle = CaptchaHandle>(): UseCaptchaReturn<THandle> {
+export function useCaptcha<TResponse = string, THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>>(): UseCaptchaReturn<TResponse, THandle> {
 	const captchaRef: ShallowRef<THandle | null> = shallowRef(null);
 	const state = ref<CaptchaState>({
 		loading: true,
@@ -27,8 +27,8 @@ export function useCaptcha<THandle extends CaptchaHandle = CaptchaHandle>(): Use
 		}
 	};
 
-	const getResponse = (): string => {
-		return captchaRef.value?.getResponse() ?? "";
+	const getResponse = (): TResponse | undefined => {
+		return captchaRef.value?.getResponse();
 	};
 
 	watch(
@@ -51,11 +51,14 @@ export function useCaptcha<THandle extends CaptchaHandle = CaptchaHandle>(): Use
 	};
 }
 
-export type UseCaptchaReturn<THandle extends CaptchaHandle = CaptchaHandle> = {
+export type UseCaptchaReturn<
+	TResponse = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+> = {
 	captchaRef: ShallowRef<THandle | null>;
 	state: Ref<CaptchaState>;
 	execute: () => Promise<void>;
 	reset: () => void;
 	destroy: () => void;
-	getResponse: () => string;
+	getResponse: () => TResponse | undefined;
 };

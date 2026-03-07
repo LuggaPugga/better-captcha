@@ -5,12 +5,20 @@ import { forwardRef, useImperativeHandle, useMemo } from "react";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 
-export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
+export function createCaptchaComponent<
+	TOptions = unknown,
+	TResponse = string,
+	TSolve = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+>(
+	ProviderClass: new (
+		identifier: string,
+		scriptOptions?: ScriptOptions,
+	) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 ) {
-	return forwardRef<THandle, CaptchaProps<TOptions>>(function CaptchaComponent(props, ref) {
+	return forwardRef<THandle, CaptchaProps<TOptions, TSolve>>(function CaptchaComponent(props, ref) {
 		const { options, scriptOptions, className, style, autoRender = true, onReady, onSolve, onError } = props;
-		const p = props as CaptchaProps<TOptions> & { sitekey?: string; endpoint?: string };
+		const p = props as CaptchaProps<TOptions, TSolve> & { sitekey?: string; endpoint?: string };
 		const identifier = p.sitekey || p.endpoint;
 		if (!identifier) {
 			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");

@@ -8,8 +8,16 @@ type CaptchaElement<THandle> = CustomElementConstructor & {
 	new (): LitElement & { getHandle: () => THandle };
 };
 
-export function createCaptchaComponent<TOptions = unknown, THandle extends CaptchaHandle = CaptchaHandle>(
-	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => Provider<ProviderConfig, TOptions, THandle>,
+export function createCaptchaComponent<
+	TOptions = unknown,
+	TResponse = string,
+	TSolve = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+>(
+	ProviderClass: new (
+		identifier: string,
+		scriptOptions?: ScriptOptions,
+	) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 	elementName: string = "better-captcha",
 ): CaptchaElement<THandle> {
 	const ProviderClassRef = ProviderClass;
@@ -21,7 +29,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		@property({ type: Object }) scriptOptions: ScriptOptions | undefined;
 		@property({ type: Boolean }) autoRender: boolean = true;
 		@property({ type: Object }) onReady?: () => void;
-		@property({ type: Object }) onSolve?: (token: string) => void;
+		@property({ type: Object }) onSolve?: (token: TSolve) => void;
 		@property({ type: Object }) onError?: (error: Error | string) => void;
 
 		@state() protected captchaState: CaptchaState = {
@@ -31,7 +39,13 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 		};
 
 		protected elementRef: Ref<HTMLDivElement> = createRef();
-		protected controller: CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>;
+		protected controller: CaptchaController<
+			TOptions,
+			TResponse,
+			TSolve,
+			THandle,
+			Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>
+		>;
 		protected initialized = false;
 
 		protected get isLoading(): boolean {
@@ -40,9 +54,13 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 
 		constructor() {
 			super();
-			this.controller = new CaptchaController<TOptions, THandle, Provider<ProviderConfig, TOptions, THandle>>(
-				(id, script) => new ProviderClassRef(id, script),
-			);
+			this.controller = new CaptchaController<
+				TOptions,
+				TResponse,
+				TSolve,
+				THandle,
+				Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>
+			>((id, script) => new ProviderClassRef(id, script));
 			this.controller.onStateChange((state) => {
 				this.captchaState = state;
 			});
@@ -93,7 +111,7 @@ export function createCaptchaComponent<TOptions = unknown, THandle extends Captc
 					this.onReady?.();
 					this.dispatchEvent(new CustomEvent("ready"));
 				},
-				onSolve: (token: string) => {
+				onSolve: (token: TSolve) => {
 					this.onSolve?.(token);
 					this.dispatchEvent(new CustomEvent("solve", { detail: { token } }));
 				},

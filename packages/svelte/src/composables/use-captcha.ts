@@ -1,7 +1,10 @@
 import type { CaptchaHandle, CaptchaState } from "@better-captcha/core";
 import { get, type Writable, writable } from "svelte/store";
 
-export function useCaptcha<THandle extends CaptchaHandle = CaptchaHandle>(): UseCaptchaReturn<THandle> {
+export function useCaptcha<
+	TResponse = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+>(): UseCaptchaReturn<TResponse, THandle> {
 	const captchaRef: Writable<THandle | null> = writable(null);
 	const state: Writable<CaptchaState> = writable({
 		loading: true,
@@ -32,9 +35,9 @@ export function useCaptcha<THandle extends CaptchaHandle = CaptchaHandle>(): Use
 		handle?.destroy();
 	};
 
-	const getResponse = (): string => {
+	const getResponse = (): TResponse | undefined => {
 		const handle = get(captchaRef);
-		return handle?.getResponse() ?? "";
+		return handle?.getResponse();
 	};
 
 	return {
@@ -47,11 +50,14 @@ export function useCaptcha<THandle extends CaptchaHandle = CaptchaHandle>(): Use
 	};
 }
 
-export type UseCaptchaReturn<THandle extends CaptchaHandle = CaptchaHandle> = {
+export type UseCaptchaReturn<
+	TResponse = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+> = {
 	captchaRef: Writable<THandle | null>;
 	state: Writable<CaptchaState>;
 	execute: () => Promise<void>;
 	reset: () => void;
 	destroy: () => void;
-	getResponse: () => string;
+	getResponse: () => TResponse | undefined;
 };

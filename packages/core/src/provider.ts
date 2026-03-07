@@ -30,7 +30,7 @@ export type WidgetId = string | number;
  * and access its current state. All providers implement this interface
  * with additional provider-specific methods.
  */
-export interface CaptchaHandle {
+export interface CaptchaHandle<TResponse = string> {
 	/**
 	 * Reset the widget to its initial state
 	 * Clears any previous responses and restarts the challenge
@@ -60,7 +60,7 @@ export interface CaptchaHandle {
 	 * Get the current response token from the widget
 	 * @returns The response string, empty if no challenge has been completed
 	 */
-	getResponse: () => string;
+	getResponse: () => TResponse;
 
 	/**
 	 * Get the current component state
@@ -82,7 +82,7 @@ export interface CaptchaState {
  * Standard callbacks for CAPTCHA lifecycle events
  * These callbacks are optional and can be used across all providers
  */
-export interface CaptchaCallbacks {
+export interface CaptchaCallbacks<TSolve = string, TError = Error | string> {
 	/**
 	 * Called when the CAPTCHA widget is successfully rendered and ready for interaction
 	 */
@@ -92,13 +92,13 @@ export interface CaptchaCallbacks {
 	 * Called when the CAPTCHA challenge is successfully solved and a token is generated
 	 * @param token - The response token from the CAPTCHA provider
 	 */
-	onSolve?: (token: string) => void;
+	onSolve?: (token: TSolve) => void;
 
 	/**
 	 * Called when an error occurs during CAPTCHA initialization or solving
 	 * @param error - The error that occurred
 	 */
-	onError?: (error: Error | string) => void;
+	onError?: (error: TError) => void;
 }
 
 /**
@@ -111,6 +111,8 @@ export abstract class Provider<
 	TConfig extends ProviderConfig,
 	TOptions = unknown,
 	TExtraHandle extends object = Record<string, never>,
+	TResponse = string,
+	TSolve = TResponse,
 > {
 	protected config: TConfig;
 	protected identifier: string;
@@ -141,7 +143,7 @@ export abstract class Provider<
 	abstract render(
 		element: HTMLElement,
 		options?: TOptions,
-		callbacks?: CaptchaCallbacks,
+		callbacks?: CaptchaCallbacks<TSolve>,
 	): WidgetId | undefined | Promise<WidgetId>;
 
 	/**
@@ -168,15 +170,15 @@ export abstract class Provider<
 	 * @param widgetId - ID of the widget to get response from
 	 * @returns CAPTCHA response token
 	 */
-	abstract getResponse(widgetId: WidgetId): string;
+	abstract getResponse(widgetId: WidgetId): TResponse;
 
 	/**
 	 * Get a handle for controlling the CAPTCHA widget
 	 * @param widgetId - ID of the widget
 	 * @returns Handle with control methods
 	 */
-	getHandle(widgetId: WidgetId): CaptchaHandle & TExtraHandle {
-		return this.getCommonHandle(widgetId) as CaptchaHandle & TExtraHandle;
+	getHandle(widgetId: WidgetId): CaptchaHandle<TResponse> & TExtraHandle {
+		return this.getCommonHandle(widgetId) as CaptchaHandle<TResponse> & TExtraHandle;
 	}
 
 	/**
@@ -184,7 +186,7 @@ export abstract class Provider<
 	 * @param widgetId - ID of the widget
 	 * @returns Handle with common control methods
 	 */
-	protected getCommonHandle(widgetId: WidgetId): CaptchaHandle {
+	protected getCommonHandle(widgetId: WidgetId): CaptchaHandle<TResponse> {
 		return {
 			reset: () => this.reset(widgetId),
 			execute: () => this.execute(widgetId),

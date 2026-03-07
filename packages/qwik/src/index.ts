@@ -16,7 +16,7 @@ export type {
  * @template TOptions - Type of options specific to the CAPTCHA provider
  * @template THandle - Type of handle returned by the CAPTCHA provider
  */
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = {
+export type CaptchaProps<TOptions, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string> = {
 	sitekey?: string;
 	endpoint?: string;
 	options?: TOptions;
@@ -25,20 +25,22 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	style?: string | Record<string, string | number>;
 	onReady$?: QRL<(handle: NoSerialize<THandle>) => unknown>;
 	onError$?: QRL<(error: Error) => void>;
-	onSolve$?: QRL<(token: string) => void>;
+	onSolve$?: QRL<(token: TSolve) => void>;
 	controller?: Signal<NoSerialize<THandle> | null>;
 	autoRender?: boolean;
 };
 
 export { createCaptchaComponent } from "./base-captcha";
 
-export type CaptchaController<THandle extends CaptchaHandle = CaptchaHandle> = Signal<NoSerialize<THandle> | null>;
+export type CaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHandle> = Signal<
+	NoSerialize<THandle> | null
+>;
 
 /**
  * Creates a controller for managing CAPTCHA component instances
  * @template THandle - Type of handle returned by the CAPTCHA provider
  * @returns A signal that can be used to control the CAPTCHA component
  */
-export function useCaptchaController<THandle extends CaptchaHandle = CaptchaHandle>(): CaptchaController<THandle> {
+export function useCaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHandle>(): CaptchaController<THandle> {
 	return useSignal<NoSerialize<THandle> | null>(null);
 }
