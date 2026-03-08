@@ -8,6 +8,7 @@ import { PrivateCaptchaProvider } from "./providers/private-captcha";
 import { ProsopoProvider } from "./providers/prosopo";
 import { ReCaptchaProvider } from "./providers/recaptcha";
 import { ReCaptchaV3Provider } from "./providers/recaptcha-v3";
+import { TSecProvider } from "./providers/t-sec";
 import { TurnstileProvider } from "./providers/turnstile";
 
 export interface ProviderMetadata {
@@ -126,6 +127,15 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		extraTypes: ["GeetestSolveResponse"],
 		solvePayloadType: "GeetestSolveResponse",
 	},
+	{
+		name: "t-sec",
+		componentName: "TSec",
+		providerClassName: "TSecProvider",
+		handleType: "TSecHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"sitekey"',
+		extraTypes: [],
+	},
 ];
 
 export const PROVIDER_CLASSES = {
@@ -140,6 +150,7 @@ export const PROVIDER_CLASSES = {
 	ReCaptchaV3Provider,
 	TurnstileProvider,
 	GeetestProvider,
+	TSecProvider,
 } as const;
 
 export type { AltchaHandle } from "./providers/altcha";
@@ -152,6 +163,7 @@ export type { PrivateCaptchaHandle } from "./providers/private-captcha";
 export type { ProsopoHandle } from "./providers/prosopo";
 export type { ReCaptchaHandle } from "./providers/recaptcha";
 export type { ReCaptchaV3Handle } from "./providers/recaptcha-v3";
+export type { TSecHandle } from "./providers/t-sec";
 export type { TurnstileHandle } from "./providers/turnstile";
 
 export function getProviderMetadata(name: string): ProviderMetadata | undefined {
