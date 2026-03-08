@@ -1,0 +1,106 @@
+---
+title: 腾讯云天御验证码（T-Sec）
+description: 腾讯云天御验证码，基于轨迹分析、特征发现、反模拟器等多重安全防御策略，为网页、APP开发者提供全面、立体的人机验证服务，保护企业在注册登录、活动秒杀、点赞发帖、数据保护等各大场景下的业务安全。
+---
+
+import { TSecPlayground } from "@/components/t-sec-playground";
+
+## 关于天御
+
+腾讯云天御验证码，基于轨迹分析、特征发现、反模拟器等多重安全防御策略，为网页、APP开发者提供全面、立体的人机验证服务，保护企业在注册登录、活动秒杀、点赞发帖、数据保护等各大场景下的业务安全。
+
+验证码服务可以帮助您解决以下业务安全问题：
+登录注册：有效防止撞库攻击、阻止注册机批量注册小号。
+活动秒杀：有效拦截刷单操作，防止自动机刷取福利券。
+点赞发帖：有效解决广告屠版、恶意灌水、刷票问题。
+数据保护：有效防止自动机、爬虫盗取网页内容和数据。
+
+更多信息请访问 [腾讯云天御官方文档](https://www.tencentcloud.com/zh/products/captcha)。
+
+## 演示
+
+<TSecPlayGround />
+
+## 用法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { TSec } from "@better-captcha/react/provider/t-sec";
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { TSec } from "@better-captcha/preact/provider/t-sec";
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { TSec } from "@better-captcha/qwik/provider/t-sec";
+
+  export default component$(() => (
+    <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { TSec } from "@better-captcha/solidjs/provider/t-sec";
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <TSec
+      sitekey="189905409"
+      :options="{ language: 'eng' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { TSec } from "@better-captcha/vue/provider/t-sec";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import { TSec } from "@better-captcha/svelte/provider/t-sec";
+  </script>
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { TSec } from "@better-captcha/lit/provider/t-sec";
+  ```
+
+  ```html
+  <t-sec-captcha sitekey="189905409" .options={{ userLanguage: "en" }}></t-sec-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供方选项
+
+<AutoTypeTable path="../../packages/core/src/providers/t-sec/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/t-sec/provider.ts" name="TSecHandle" />
