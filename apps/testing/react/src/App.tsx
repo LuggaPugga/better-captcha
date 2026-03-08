@@ -9,6 +9,7 @@ import { ProsopoTest } from "./prosopo-test";
 import { RecaptchaTest } from "./recaptcha-test";
 import { RecaptchaV3Test } from "./recaptcha-v3-test";
 import { TurnstileTest } from "./turnstile-test";
+import { TSecTest } from "./tsec-test";
 
 export function App() {
 	const [currentProvider, setCurrentProvider] = useState("turnstile");
@@ -24,6 +25,7 @@ export function App() {
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
+		{ key: "t-sec", name: "T-Sec", path: "/t-sec" },
 	];
 
 	return (
@@ -55,6 +57,7 @@ export function App() {
 				{currentProvider === "prosopo" && <ProsopoTest />}
 				{currentProvider === "cap-widget" && <CapWidgetTest />}
 				{currentProvider === "altcha" && <AltchaTest />}
+				{currentProvider === "t-sec" && <TSecTest />}
 			</div>
 		</div>
 	);

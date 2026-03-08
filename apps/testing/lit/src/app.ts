@@ -10,6 +10,7 @@ import "./private-captcha-test.js";
 import "./captcha-fox-test.js";
 import "./prosopo-test.js";
 import "./cap-widget-test.js";
+import "./tsec-test.js";
 
 @customElement("app-root")
 export class App extends LitElement {
@@ -32,6 +33,7 @@ export class App extends LitElement {
 		{ key: "prosopo", name: "Prosopo" },
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
+		{ key: "t-sec", name: "T-Sec" },
 	];
 
 	render() {
@@ -68,6 +70,7 @@ export class App extends LitElement {
 					${this.currentProvider === "prosopo" ? html`<prosopo-test></prosopo-test>` : ""}
 					${this.currentProvider === "cap-widget" ? html`<cap-widget-test></cap-widget-test>` : ""}
 					${this.currentProvider === "altcha" ? html`<altcha-test></altcha-test>` : ""}
+					${this.currentProvider === "t-sec" ? html`<tsec-test></tsec-test>` : ""}
 				</div>
 			</div>
 		`;

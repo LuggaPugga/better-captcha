@@ -26,6 +26,7 @@
 			<ProsopoTest v-else-if="currentProvider === 'prosopo'" />
 			<CapWidgetTest v-else-if="currentProvider === 'cap-widget'" />
 			<AltchaTest v-else-if="currentProvider === 'altcha'" />
+			<TSecTest v-else-if="currentProvider === 't-sec'" />
 		</div>
 	</div>
 </template>
@@ -41,6 +42,7 @@
 	import ProsopoTest from "./components/ProsopoTest.vue";
 	import RecaptchaTest from "./components/RecaptchaTest.vue";
 	import RecaptchaV3Test from "./components/RecaptchaV3Test.vue";
+	import TSecTest from "./components/TSecTest.vue";
 	import TurnstileTest from "./components/TurnstileTest.vue";
 
 	const currentProvider = ref("turnstile");
@@ -56,6 +58,7 @@
 		{ key: "prosopo", name: "Prosopo" },
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
+		{ key: "t-sec", name: "T-Sec" },
 	];
 </script>
 
