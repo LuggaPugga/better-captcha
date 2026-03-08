@@ -11,6 +11,7 @@ import "./captcha-fox-test.js";
 import "./prosopo-test.js";
 import "./cap-widget-test.js";
 import "./geetest-test.js";
+import "./tsec-test.js";
 
 @customElement("app-root")
 export class App extends LitElement {
@@ -34,6 +35,7 @@ export class App extends LitElement {
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
 		{ key: "geetest", name: "Geetest" },
+		{ key: "t-sec", name: "T-Sec" },
 	];
 
 	render() {
@@ -71,6 +73,8 @@ export class App extends LitElement {
 					${this.currentProvider === "cap-widget" ? html`<cap-widget-test></cap-widget-test>` : ""}
 					${this.currentProvider === "altcha" ? html`<altcha-test></altcha-test>` : ""}
 					${this.currentProvider === "geetest" ? html`<geetest-test></geetest-test>` : ""}
+					${this.currentProvider === "t-sec" ? html`<tsec-test></tsec-test>` : ""}
+				</div>
 			</div>
 		`;
 	}
