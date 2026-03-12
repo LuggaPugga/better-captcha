@@ -33,6 +33,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "vite build --mode lib",
+		"check-types": "tsc --noEmit",
 		"dev": "vite build --mode lib --watch",
 		"lint": "biome lint .",
 		"start": "vite --open --mode ssr",

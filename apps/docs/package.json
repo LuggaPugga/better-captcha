@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "fumadocs-mdx && next build",
+		"check-types": "tsc --noEmit",
 		"dev": "next dev --turbopack",
 		"start": "next start",
 		"postinstall": "fumadocs-mdx"

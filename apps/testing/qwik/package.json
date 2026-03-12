@@ -11,6 +11,7 @@
 		"build.client": "vite build",
 		"build.preview": "vite build --ssr src/entry.preview.tsx",
 		"build.types": "tsc --incremental --noEmit",
+		"check-types": "tsc --noEmit",
 		"deploy": "echo 'Run \"npm run qwik add\" to install a server adapter'",
 		"dev": "vite --mode ssr --port 9003",
 		"dev.debug": "node --inspect-brk ./node_modules/vite/bin/vite.js --mode ssr --force",

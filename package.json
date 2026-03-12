@@ -14,6 +14,7 @@
 		"dev:docs": "turbo run dev --filter=@better-captcha/docs",
 		"format": "biome format --write",
 		"lint": "turbo run lint",
+		"typecheck": "turbo run check-types",
 		"start": "turbo run start",
 		"changeset": "changeset",
 		"ci:version": "changeset version && bun update",

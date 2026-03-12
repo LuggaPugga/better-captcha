@@ -25,6 +25,7 @@
 	],
 	"scripts": {
 		"build": "tsdown",
+		"check-types": "tsc --noEmit",
 		"dev": "tsdown --watch"
 	},
 	"exports": {
