@@ -26,7 +26,7 @@
 	],
 	"scripts": {
 		"build": "tsdown",
-		"check-types": "tsc --noEmit",
+		"check-types": "bun tsc --noEmit && svelte-check",
 		"dev": "tsdown --watch"
 	},
 	"exports": {
