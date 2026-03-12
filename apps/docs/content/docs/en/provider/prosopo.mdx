@@ -106,3 +106,21 @@ For more information, visit the [official Prosopo documentation](https://docs.pr
 - **Decentralization**: No central authority controlling the CAPTCHA service
 - **Challenge Types**: Choose between frictionless and proof-of-work based on your needs
 - **Auto Theme**: Use `theme: "auto"` to match your site's color scheme
+
+## Server Verification
+
+Use `@better-captcha/server` to verify Prosopo tokens on your backend:
+
+```ts
+import { verifyProsopo } from "@better-captcha/server";
+
+const result = await verifyProsopo({
+	endpoint: "https://verify.prosopo.io/siteverify",
+	secret: process.env.PROSOPO_SECRET!,
+	response: tokenFromClient,
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```
