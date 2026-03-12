@@ -44,7 +44,7 @@ export function RecaptchaV3Test() {
 					const actions = ["submit", "login", "register"];
 					const currentIndex = actions.indexOf(options.action);
 					const nextIndex = (currentIndex + 1) % actions.length;
-					setOptions({ action: actions[nextIndex] });
+					setOptions({ action: actions[nextIndex] ?? "submit" });
 				}}
 			>
 				Change Action
