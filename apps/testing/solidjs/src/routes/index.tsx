@@ -10,6 +10,7 @@ import { PrivateCaptchaTest } from "../components/private-captcha-test";
 import { ProsopoTest } from "../components/prosopo-test";
 import { RecaptchaTest } from "../components/recaptcha-test";
 import { RecaptchaV3Test } from "../components/recaptcha-v3-test";
+import { TSecTest } from "../components/tsec-test";
 import { TurnstileTest } from "../components/turnstile-test";
 
 export default clientOnly(async () => ({ default: Home }), { lazy: true });
@@ -28,6 +29,7 @@ export function Home() {
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
+		{ key: "t-sec", name: "T-Sec", path: "/t-sec" },
 	];
 
 	return (
@@ -59,6 +61,7 @@ export function Home() {
 				{currentProvider() === "prosopo" && <ProsopoTest />}
 				{currentProvider() === "cap-widget" && <CapWidgetTest />}
 				{currentProvider() === "altcha" && <AltchaTest />}
+				{currentProvider() === "t-sec" && <TSecTest />}
 			</div>
 		</main>
 	);

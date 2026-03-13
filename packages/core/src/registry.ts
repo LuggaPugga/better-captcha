@@ -8,6 +8,7 @@ import { ProsopoProvider } from "./providers/prosopo";
 import { ReCaptchaProvider } from "./providers/recaptcha";
 import { ReCaptchaV3Provider } from "./providers/recaptcha-v3";
 import { TurnstileProvider } from "./providers/turnstile";
+import { TSecProvider } from "./providers/t-sec";
 
 export interface ProviderMetadata {
 	name: string;
@@ -114,6 +115,15 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 	},
+	{
+		name: "t-sec",
+		componentName: "TSec",
+		providerClassName: "TSecProvider",
+		handleType: "TSecHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"sitekey"',
+		extraTypes: [],
+	}
 ];
 
 export const PROVIDER_CLASSES = {
@@ -127,6 +137,7 @@ export const PROVIDER_CLASSES = {
 	ReCaptchaProvider,
 	ReCaptchaV3Provider,
 	TurnstileProvider,
+	TSecProvider,
 } as const;
 
 export type { AltchaHandle } from "./providers/altcha";
@@ -139,6 +150,7 @@ export type { ProsopoHandle } from "./providers/prosopo";
 export type { ReCaptchaHandle } from "./providers/recaptcha";
 export type { ReCaptchaV3Handle } from "./providers/recaptcha-v3";
 export type { TurnstileHandle } from "./providers/turnstile";
+export type { TSecHandle } from "./providers/t-sec";
 
 export function getProviderMetadata(name: string): ProviderMetadata | undefined {
 	return PROVIDER_REGISTRY.find((provider) => provider.name === name);
