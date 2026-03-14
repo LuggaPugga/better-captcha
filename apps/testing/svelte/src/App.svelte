@@ -10,6 +10,7 @@
 	import RecaptchaTest from "./components/RecaptchaTest.svelte";
 	import RecaptchaV3Test from "./components/RecaptchaV3Test.svelte";
 	import TurnstileTest from "./components/TurnstileTest.svelte";
+	import GeetestTest from "./components/GeetestTest.svelte";
 
 	const currentProvider = writable("turnstile");
 
@@ -24,6 +25,7 @@
 		{ key: "prosopo", name: "Prosopo" },
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
+		{ key: "geetest", name: "Geetest" },
 	];
 
 	function setProvider(key: string) {
@@ -64,6 +66,8 @@
 			<CapWidgetTest />
 		{:else if $currentProvider === "altcha"}
 			<AltchaTest />
+		{:else if $currentProvider === "geetest"}
+			<GeetestTest />
 		{/if}
 	</div>
 </div>

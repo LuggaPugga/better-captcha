@@ -4,6 +4,7 @@ import { AltchaTest } from "../components/altcha-test";
 import { CapWidgetTest } from "../components/cap-widget-test";
 import { CaptchaFoxTest } from "../components/captcha-fox-test";
 import { FriendlyCaptchaTest } from "../components/friendly-captcha-test";
+import { GeetestTest } from "../components/geetest-test";
 import { HCaptchaTest } from "../components/hcaptcha-test";
 import { PrivateCaptchaTest } from "../components/private-captcha-test";
 import { ProsopoTest } from "../components/prosopo-test";
@@ -25,6 +26,7 @@ export default component$(() => {
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
+		{ key: "geetest", name: "Geetest", path: "/geetest" },
 	];
 
 	return (
@@ -58,6 +60,7 @@ export default component$(() => {
 				{currentProvider.value === "prosopo" && <ProsopoTest />}
 				{currentProvider.value === "cap-widget" && <CapWidgetTest />}
 				{currentProvider.value === "altcha" && <AltchaTest />}
+				{currentProvider.value === "geetest" && <GeetestTest />}
 			</div>
 		</>
 	);
