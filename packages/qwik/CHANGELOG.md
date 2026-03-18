@@ -1,5 +1,16 @@
 # @better-captcha/qwik
 
+## 0.6.0
+
+### Minor Changes
+
+- 3e956fd: feat: add Geetest provider
+
+### Patch Changes
+
+- Updated dependencies [3e956fd]
+  - @better-captcha/core@0.6.0
+
 ## 0.5.6
 
 ### Patch Changes
