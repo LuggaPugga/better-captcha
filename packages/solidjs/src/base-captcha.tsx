@@ -34,12 +34,20 @@ const BASE_KEYS = [
 
 export function createCaptchaComponent<
 	TOptions = unknown,
-	THandle extends CaptchaHandle = CaptchaHandle,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle> = Provider<ProviderConfig, TOptions, THandle>,
+	TResponse = string,
+	TSolve = string,
+	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
+	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
+		ProviderConfig,
+		TOptions,
+		THandle,
+		TResponse,
+		TSolve
+	>,
 >(
 	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
-): (allProps: CaptchaProps<TOptions, THandle>) => JSX.Element {
-	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle>): JSX.Element {
+): (allProps: CaptchaProps<TOptions, THandle, TSolve>) => JSX.Element {
+	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle, TSolve>): JSX.Element {
 		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
 
 		const identifier = createMemo(() => props.sitekey || props.endpoint || "");
@@ -57,7 +65,7 @@ export function createCaptchaComponent<
 
 		let hasRendered = false;
 
-		const controller = new CaptchaController<TOptions, THandle, TProvider>(
+		const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle, TProvider>(
 			(id, script) => new ProviderClass(id, script),
 		);
 
@@ -82,7 +90,7 @@ export function createCaptchaComponent<
 
 			controller.setCallbacks({
 				onReady: () => props.onReady?.(controller.getHandle()),
-				onSolve: (token: string) => props.onSolve?.(token),
+				onSolve: (token: TSolve) => props.onSolve?.(token),
 				onError: (err: Error | string) => {
 					const error = err instanceof Error ? err : new Error(String(err));
 					props.onError?.(error);

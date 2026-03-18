@@ -90,6 +90,7 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 		renderParamsType,
 		renderParamsOmit,
 		extraTypes,
+		solvePayloadType,
 		identifierProp = "sitekey",
 	} = meta;
 
@@ -122,12 +123,13 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 
 	const propsTypeName = `${componentName}Props`;
 	const optionsType = `Omit<${renderParamsType}, ${renderParamsOmit}>`;
+	const solveType = solvePayloadType ?? "string";
 
 	// Build the props type based on identifier prop
 	const basePropsType =
 		config.propsStructure === "two-params"
-			? `CaptchaProps<${optionsType}, ${handleType}>`
-			: `CaptchaProps<${optionsType}>`;
+			? `CaptchaProps<${optionsType}, ${handleType}, ${solveType}>`
+			: `CaptchaProps<${optionsType}, ${solveType}>`;
 
 	// Add the appropriate identifier prop (sitekey or endpoint)
 	if (identifierProp === "endpoint") {

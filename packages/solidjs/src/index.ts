@@ -10,7 +10,7 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle> = Omit<
+export type CaptchaProps<TOptions, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string> = Omit<
 	JSX.HTMLAttributes<HTMLDivElement>,
 	"children" | "className" | "style"
 > & {
@@ -23,18 +23,20 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle = CaptchaHandle
 	autoRender?: boolean;
 	onReady?: (handle: THandle) => void;
 	onError?: (error: Error) => void;
-	onSolve?: (token: string) => void;
+	onSolve?: (token: TSolve) => void;
 	controller?: CaptchaController<THandle>;
 };
 
 export { createCaptchaComponent } from "./base-captcha";
 
-export type CaptchaController<THandle extends CaptchaHandle = CaptchaHandle> = {
+export type CaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHandle> = {
 	handle: () => THandle | null;
 	set: (handle: THandle | null) => void;
 };
 
-export function createCaptchaController<THandle extends CaptchaHandle = CaptchaHandle>(): CaptchaController<THandle> {
+export function createCaptchaController<
+	THandle extends CaptchaHandle<unknown> = CaptchaHandle,
+>(): CaptchaController<THandle> {
 	const [handle, setHandle] = createSignal<THandle | null>(null);
 
 	return {

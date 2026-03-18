@@ -1,0 +1,99 @@
+---
+title: Geetest
+description: Geetest 提供了强大的验证码解决方案，帮助你的网站抵御机器人和自动化滥用。
+---
+
+import { GeetestPlayground } from "@/components/geetest-playground";
+
+## 关于 Geetest
+
+GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人用户，防止欺诈与安全威胁。它由机器学习与 AI 驱动，在每次交互中都能提供流畅且安全的体验。
+
+更多信息请访问 [Geetest 官方文档](https://www.geetest.com/adaptive-captcha)。
+
+## 演示
+<GeetestPlayground />
+
+## 用法
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { Geetest } from "@better-captcha/react/provider/geetest";
+
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { Geetest } from "@better-captcha/preact/provider/geetest";
+
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { Geetest } from "@better-captcha/qwik/provider/geetest";
+
+  export default component$(() => (
+    <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { Geetest } from "@better-captcha/solidjs/provider/geetest";
+
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <Geetest
+      sitekey="647f5ed2ed8acb4be36784e01556bb71"
+      :options="{ language: 'eng' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { Geetest } from "@better-captcha/vue/provider/geetest";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import { Geetest } from "@better-captcha/svelte/provider/geetest";
+  </script>
+
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { Geetest } from "@better-captcha/lit/provider/geetest";
+  ```
+
+  ```html
+  <geetest-captcha sitekey="647f5ed2ed8acb4be36784e01556bb71" .options={{ language: "eng" }}></geetest-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## 配置
+
+### 提供方选项
+
+<AutoTypeTable path="../../packages/core/src/providers/geetest/types.d.ts" name="RenderParameters" />
+
+### 命令式句柄
+
+<AutoTypeTable path="../../packages/core/src/providers/geetest/provider.ts" name="GeetestHandle" />

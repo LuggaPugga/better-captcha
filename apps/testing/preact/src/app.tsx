@@ -3,6 +3,7 @@ import { AltchaTest } from "./tests/altcha-test";
 import { CapWidgetTest } from "./tests/cap-widget-test";
 import { CaptchaFoxTest } from "./tests/captcha-fox-test";
 import { FriendlyCaptchaTest } from "./tests/friendly-captcha-test";
+import { GeetestTest } from "./tests/geetest-test";
 import { HCaptchaTest } from "./tests/hcaptcha-test";
 import { PrivateCaptchaTest } from "./tests/private-captcha-test";
 import { ProsopoTest } from "./tests/prosopo-test";
@@ -24,6 +25,7 @@ export function App() {
 		{ key: "prosopo", name: "Prosopo", path: "/prosopo" },
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
+		{ key: "geetest", name: "Geetest", path: "/geetest" },
 	];
 
 	return (
@@ -55,6 +57,7 @@ export function App() {
 				{currentProvider === "prosopo" && <ProsopoTest />}
 				{currentProvider === "cap-widget" && <CapWidgetTest />}
 				{currentProvider === "altcha" && <AltchaTest />}
+				{currentProvider === "geetest" && <GeetestTest />}
 			</div>
 		</div>
 	);

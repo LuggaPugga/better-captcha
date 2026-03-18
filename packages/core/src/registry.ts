@@ -2,6 +2,7 @@ import { AltchaProvider } from "./providers/altcha";
 import { CapWidgetProvider } from "./providers/cap-widget";
 import { CaptchaFoxProvider } from "./providers/captcha-fox";
 import { FriendlyCaptchaProvider } from "./providers/friendly-captcha";
+import { GeetestProvider } from "./providers/geetest";
 import { HCaptchaProvider } from "./providers/hcaptcha";
 import { PrivateCaptchaProvider } from "./providers/private-captcha";
 import { ProsopoProvider } from "./providers/prosopo";
@@ -17,6 +18,7 @@ export interface ProviderMetadata {
 	renderParamsType: string;
 	renderParamsOmit: string;
 	extraTypes: string[];
+	solvePayloadType?: string;
 	/** The prop name to use for the identifier (default: "sitekey") */
 	identifierProp?: "sitekey" | "endpoint";
 }
@@ -114,6 +116,16 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 	},
+	{
+		name: "geetest",
+		componentName: "Geetest",
+		providerClassName: "GeetestProvider",
+		handleType: "GeetestHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: '"captchaId"',
+		extraTypes: ["GeetestSolveResponse"],
+		solvePayloadType: "GeetestSolveResponse",
+	},
 ];
 
 export const PROVIDER_CLASSES = {
@@ -127,12 +139,14 @@ export const PROVIDER_CLASSES = {
 	ReCaptchaProvider,
 	ReCaptchaV3Provider,
 	TurnstileProvider,
+	GeetestProvider,
 } as const;
 
 export type { AltchaHandle } from "./providers/altcha";
 export type { CapWidgetHandle } from "./providers/cap-widget";
 export type { CaptchaFoxHandle } from "./providers/captcha-fox";
 export type { FriendlyCaptchaHandle } from "./providers/friendly-captcha";
+export type { GeetestHandle } from "./providers/geetest";
 export type { HCaptchaHandle } from "./providers/hcaptcha";
 export type { PrivateCaptchaHandle } from "./providers/private-captcha";
 export type { ProsopoHandle } from "./providers/prosopo";
