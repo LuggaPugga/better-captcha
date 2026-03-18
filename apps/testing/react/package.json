@@ -5,9 +5,9 @@
 	"type": "module",
 	"scripts": {
 		"check-types": "tsc --noEmit",
-		"dev": "bun --hot src/index.tsx --port 9000",
-		"build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
-		"start": "NODE_ENV=production bun src/index.tsx --port 9000"
+		"dev": "vite --port 9000",
+		"build": "vite build",
+		"preview": "vite preview --port 9000"
 	},
 	"dependencies": {
 		"react": "19.2.4",
@@ -17,6 +17,8 @@
 	"devDependencies": {
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
-		"@types/bun": "latest"
+		"@vitejs/plugin-react": "6.0.1",
+		"typescript": "~5.9.3",
+		"vite": "8.0.0"
 	}
 }
