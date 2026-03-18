@@ -24,9 +24,9 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.4.7",
 		"@changesets/changelog-github": "^0.6.0",
-		"@changesets/cli": "^2.29.8",
+		"@changesets/cli": "^2.30.0",
 		"ts-morph": "^27.0.2",
-		"turbo": "^2.8.10",
+		"turbo": "^2.8.18",
 		"typescript": "5.9.3"
 	},
 	"engines": {

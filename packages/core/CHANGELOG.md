@@ -1,5 +1,11 @@
 # @better-captcha/core
 
+## 0.6.0
+
+### Minor Changes
+
+- 3e956fd: feat: add Geetest provider
+
 ## 0.5.6
 
 ## 0.5.5
