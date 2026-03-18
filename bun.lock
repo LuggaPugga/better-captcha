@@ -30,7 +30,7 @@
         "fumadocs-ui": "^16.6.16",
         "lucide-react": "^0.577.0",
         "next": "^16.1.6",
-        "onedollarstats": "^0.0.14",
+        "onedollarstats": "^0.0.15",
         "react": "19.2.4",
         "react-dom": "19.2.4",
         "shiki": "^4.0.0",
@@ -1929,7 +1929,7 @@
 
     "once": ["once@1.4.0", "", { "dependencies": { "wrappy": "1" } }, "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w=="],
 
-    "onedollarstats": ["onedollarstats@0.0.14", "", {}, "sha512-OEMSMbIGcpOt5v5M54SjhaXkJI/OvdlrwPIjhcHRBhVVsHKS1KyOBe/P7hPxnvqjCeQFur6s/S5bxi8ja4nEiQ=="],
+    "onedollarstats": ["onedollarstats@0.0.15", "", {}, "sha512-dW9kOyTxlJRZQtjHYuL/U7fUgqWCFD7f/qZEtNpfOvtdUnETRzhDaLKk7XHkeIOZKwtClanVPLJCELmuuFNqxg=="],
 
     "onetime": ["onetime@6.0.0", "", { "dependencies": { "mimic-fn": "^4.0.0" } }, "sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ=="],
 
