@@ -59,8 +59,8 @@ export class GeetestProvider extends Provider<
 		const resolvedOptions = options ? { ...options } : undefined;
 
 		const renderOptions: RenderParameters = {
-			captchaId: this.identifier,
 			...resolvedOptions,
+			captchaId: this.identifier,
 		};
 
 		const widgetId = this.generateWidgetId(element);

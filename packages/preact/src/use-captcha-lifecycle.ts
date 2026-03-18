@@ -53,6 +53,11 @@ export function useCaptchaLifecycle<
 	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
 
 	const callbacksRef = useRef(callbacks);
+
+	useEffect(() => {
+		callbacksRef.current = callbacks;
+	}, [callbacks]);
+
 	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
 
 	useEffect(() => {
