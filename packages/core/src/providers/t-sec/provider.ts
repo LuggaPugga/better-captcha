@@ -8,15 +8,14 @@ import {
 import { loadScript } from "../../utils/load-script";
 import type { GlobalTSec, RenderParameters } from "./types";
 
-export type TSecHandle = CaptchaHandle;
+export type TSecHandle = CaptchaHandle<GlobalTSec.TencentCaptchaResult | null>;
 
 export class TSecProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "sitekey">,
-	TSecHandle
-	// todo: should wait feat/geetest merged
-	// GlobalTSec.TencentCaptchaResult,
-	// GlobalTSec.TencentCaptchaResult,
+  ProviderConfig, 
+  Omit<RenderParameters, "sitekey">, 
+  TSecHandle,
+  GlobalTSec.TencentCaptchaResult | null,
+  GlobalTSec.TencentCaptchaResult
 > {
 	private widgetMap = new Map<string, GlobalTSec.TencentCaptcha>();
 	private elementMap = new Map<string, HTMLElement>();
@@ -52,7 +51,11 @@ export class TSecProvider extends Provider<
 		return `tsec-widget-${++this.widgetIdCounter}`;
 	}
 
-	render(element: HTMLElement, options?: Omit<RenderParameters, "sitekey">, callbacks?: CaptchaCallbacks) {
+	render(
+		element: HTMLElement,
+		options?: Omit<RenderParameters, "sitekey">,
+		callbacks?: CaptchaCallbacks<GlobalTSec.TencentCaptchaResult>,
+	) {
 		const renderOptions = options ?? {};
 		const widgetId = this.generateWidgetId(element);
 		if (!element.id) {
