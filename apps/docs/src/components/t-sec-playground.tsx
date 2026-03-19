@@ -3,10 +3,7 @@ import type { RenderParameters } from "@better-captcha/react/provider/t-sec";
 import { TSec } from "@better-captcha/react/provider/t-sec";
 import { useState } from "react";
 
-export function TSecPlayground() {
-  const [options, setOptions] = useState<RenderParameters>({
-    userLanguage: "en",
-  });
+export function TSecPlayground({ options }: { options: RenderParameters }) {
   const [response, setResponse] = useState<string | null>(null);
 
   return (

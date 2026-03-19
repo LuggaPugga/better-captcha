@@ -3,10 +3,7 @@ import type { RenderParameters } from "@better-captcha/react/provider/geetest";
 import { Geetest } from "@better-captcha/react/provider/geetest";
 import { useState } from "react";
 
-export function GeetestPlayground() {
-  const [options, setOptions] = useState<RenderParameters>({
-    language: "eng",
-  });
+export function GeetestPlayground({ options }: { options: RenderParameters }) {
   const [response, setResponse] = useState<string | null>(null);
 
   return (
