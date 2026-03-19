@@ -3,11 +3,11 @@ import { useRef, useState } from "preact/hooks";
 
 export function TSecTest() {
 	const tsecRef = useRef<TSecHandle>(null);
-	const [response, setResponse] = useState<string | false>(false);
+	const [response, setResponse] = useState<ReturnType<TSecHandle['getResponse']>>(null);
 	const [solved, setSolved] = useState<boolean>(false);
 
 	const handleGetResponse = () => {
-		const captchaResponse = tsecRef.current?.getResponse() ?? false;
+		const captchaResponse = tsecRef.current?.getResponse() ?? null;
 		setResponse(captchaResponse);
 	};
 

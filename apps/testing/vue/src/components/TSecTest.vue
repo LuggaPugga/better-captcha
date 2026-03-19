@@ -20,7 +20,7 @@ import { TSec, type TSecHandle, type RenderParameters} from "@better-captcha/vue
 	import { ref } from "vue";
 
 	const captchaRef = ref<TSecHandle | null>(null);
-	const response = ref<ReturnType<TSecHandle["getResponse"]> | false>(false);
+	const response = ref<ReturnType<TSecHandle["getResponse"]>>(null);
 	const error = ref<Error | null>(null);
 	const solved = ref<boolean>(false);
 
@@ -37,7 +37,7 @@ import { TSec, type TSecHandle, type RenderParameters} from "@better-captcha/vue
 		console.error("Captcha error:", err);
 	};
 
-	const onSolve = (token: string) => {
+	const onSolve = (token: ReturnType<TSecHandle['getResponse']>) => {
 		solved.value = true;
 		console.log("Captcha solved with token:", token);
 	};
@@ -48,7 +48,7 @@ import { TSec, type TSecHandle, type RenderParameters} from "@better-captcha/vue
 
 	const handleReset = () => {
 		captchaRef.value?.reset();
-		response.value = false;
+		response.value = null;
 	};
 
 	const handleExecute = async () => {
@@ -60,7 +60,7 @@ import { TSec, type TSecHandle, type RenderParameters} from "@better-captcha/vue
 	};
 
 	const handleGetResponse = () => {
-		const captchaResponse = captchaRef.value?.getResponse() ?? false;
+		const captchaResponse = captchaRef.value?.getResponse() ?? null;
 		response.value = captchaResponse;
 	};
 </script>

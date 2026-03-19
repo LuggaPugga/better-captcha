@@ -4,7 +4,7 @@
 	import { writable } from "svelte/store";
 
 	let captchaRef: TSec | undefined;
-	const response = writable<string | false>(false);
+	const response = writable<ReturnType<TSecHandle['getResponse']>>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
 
@@ -28,7 +28,7 @@
 
 	function handleReset() {
 		captchaRef?.reset();
-		response.set(false);
+		response.set(null);
 	}
 
 	async function handleExecute() {
@@ -40,7 +40,7 @@
 	}
 
 	function handleGetResponse() {
-		const captchaResponse = captchaRef?.getResponse() ?? false;
+		const captchaResponse = captchaRef?.getResponse() ?? null;
 		response.set(captchaResponse);
 	}
 </script>
