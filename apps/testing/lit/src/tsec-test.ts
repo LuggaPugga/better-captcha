@@ -12,7 +12,7 @@ export class TSecTest extends LitElement {
 	private captchaRef: Ref<TSecCaptchaElement> = createRef();
 
 	@state()
-	private response: string | false = false;
+	private response: ReturnType<TSecHandle['getResponse']> = null;
 
 	@state()
 	private solved = false;
@@ -43,7 +43,7 @@ export class TSecTest extends LitElement {
 	}
 
 	private handleGetResponse() {
-		const captchaResponse = this.captchaRef.value?.getHandle()?.getResponse() ?? false;
+		const captchaResponse = this.captchaRef.value?.getHandle()?.getResponse() ?? null;
 		this.response = captchaResponse;
 	}
 
