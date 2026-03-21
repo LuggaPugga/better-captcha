@@ -24,3 +24,4 @@ export type CaptchaProps<TOptions, TSolve = string> = {
 
 export { createCaptchaComponent } from "./base-captcha";
 export { useCaptchaLifecycle } from "./use-captcha-lifecycle";
+export { BetterCaptcha } from "./dynamic-captcha";
