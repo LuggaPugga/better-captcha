@@ -22,6 +22,7 @@ export interface ProviderMetadata {
 	solvePayloadType?: string;
 	/** The prop name to use for the identifier (default: "sitekey") */
 	identifierProp?: "sitekey" | "endpoint";
+	dynamicImport: () => Promise<any>;
 }
 
 export const PROVIDER_REGISTRY: ProviderMetadata[] = [
@@ -34,6 +35,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"element"',
 		extraTypes: [],
 		identifierProp: "endpoint",
+		dynamicImport: () => import("./providers/altcha"),
 	},
 	{
 		name: "cap-widget",
@@ -44,6 +46,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"element"',
 		extraTypes: [],
 		identifierProp: "endpoint",
+		dynamicImport: () => import("./providers/cap-widget"),
 	},
 	{
 		name: "captcha-fox",
@@ -53,6 +56,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/captcha-fox"),
 	},
 	{
 		name: "friendly-captcha",
@@ -62,6 +66,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/friendly-captcha"),
 	},
 	{
 		name: "hcaptcha",
@@ -71,6 +76,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/hcaptcha"),
 	},
 	{
 		name: "private-captcha",
@@ -80,6 +86,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/private-captcha"),
 	},
 	{
 		name: "prosopo",
@@ -89,6 +96,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"siteKey"',
 		extraTypes: ["CallbackFunction", "CaptchaType", "Theme", "WidgetApi"],
+		dynamicImport: () => import("./providers/prosopo"),
 	},
 	{
 		name: "recaptcha",
@@ -98,6 +106,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/recaptcha"),
 	},
 	{
 		name: "recaptcha-v3",
@@ -107,6 +116,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/recaptcha-v3"),
 	},
 	{
 		name: "turnstile",
@@ -116,6 +126,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
+		dynamicImport: () => import("./providers/turnstile"),
 	},
 	{
 		name: "geetest",
@@ -126,6 +137,7 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"captchaId"',
 		extraTypes: ["GeetestSolveResponse"],
 		solvePayloadType: "GeetestSolveResponse",
+		dynamicImport: () => import("./providers/geetest"),
 	},
 	{
 		name: "t-sec",
