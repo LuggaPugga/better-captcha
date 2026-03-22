@@ -10,6 +10,7 @@ import { PrivateCaptchaTest } from "../components/private-captcha-test";
 import { ProsopoTest } from "../components/prosopo-test";
 import { RecaptchaTest } from "../components/recaptcha-test";
 import { RecaptchaV3Test } from "../components/recaptcha-v3-test";
+import { TSecTest } from "../components/tsec-test";
 import { TurnstileTest } from "../components/turnstile-test";
 
 export default component$(() => {
@@ -27,6 +28,7 @@ export default component$(() => {
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
 		{ key: "geetest", name: "Geetest", path: "/geetest" },
+		{ key: "t-sec", name: "T-Sec", path: "/t-sec" },
 	];
 
 	return (
@@ -61,6 +63,7 @@ export default component$(() => {
 				{currentProvider.value === "cap-widget" && <CapWidgetTest />}
 				{currentProvider.value === "altcha" && <AltchaTest />}
 				{currentProvider.value === "geetest" && <GeetestTest />}
+				{currentProvider.value === "t-sec" && <TSecTest />}
 			</div>
 		</>
 	);

@@ -1,0 +1,106 @@
+---
+title: Tencent Cloud T-Sec Captcha
+description: Captcha provides web and app developers with comprehensive multi-dimensional human verification services through trajectory analysis, characteristic identification, anti-emulator, and other security mechanisms. It safeguards business security in various scenarios like registration and login, marketing offers, commenting/posting/polling, and data protection.
+---
+
+import { TSecPlayground } from "@/components/t-sec-playground";
+
+## About T-Sec
+
+Captcha provides web and app developers with comprehensive multi-dimensional human verification services through trajectory analysis, characteristic identification, anti-emulator, and other security mechanisms. It safeguards business security in various scenarios like registration and login, marketing offers, commenting/posting/polling, and data protection.
+
+This service helps you solve the following security problems:
+Preventing credential stuffing attacks as well as bulk registration of multiple accounts by bots.
+Preventing click farming and coupon abuse by bots in campaigns.
+Preventing ad spamming, malicious bumping, and poll fraud.
+Preventing website content and data theft by bots and crawlers.
+
+For more information, please visit the [Tencent Cloud T-Sec official documentation](https://www.tencentcloud.com/products/captcha?lang=en&pg=).
+
+## Demo
+
+<TSecPlayground options={{ userLanguage: "en" }} />
+
+## Usage
+
+<Tabs items={['React', 'Preact', 'Qwik', 'SolidJS', 'Vue', 'Svelte', 'Lit']} groupId="framework">
+  <Tab value="React">
+  ```tsx
+  import { TSec } from "@better-captcha/react/provider/t-sec";
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+
+  <Tab value="Preact">
+  ```tsx
+  import { TSec } from "@better-captcha/preact/provider/t-sec";
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+  
+  <Tab value="Qwik">
+  ```tsx
+  import { component$ } from "@builder.io/qwik";
+  import { TSec } from "@better-captcha/qwik/provider/t-sec";
+
+  export default component$(() => (
+    <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ));
+  ```
+  </Tab>
+  
+  <Tab value="SolidJS">
+  ```tsx
+  import { TSec } from "@better-captcha/solidjs/provider/t-sec";
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+
+  <Tab value="Vue">
+  ```vue
+  <template>
+    <TSec
+      sitekey="189905409"
+      :options="{ userLanguage: 'en' }"
+    />
+  </template>
+
+  <script setup lang="ts">
+  import { TSec } from "@better-captcha/vue/provider/t-sec";
+  </script>
+  ```
+  </Tab>
+
+  <Tab value="Svelte">
+  ```svelte
+  <script lang="ts">
+  import { TSec } from "@better-captcha/svelte/provider/t-sec";
+  </script>
+
+  <TSec sitekey="189905409" options={{ userLanguage: "en" }} />
+  ```
+  </Tab>
+
+  <Tab value="Lit">
+  ```ts
+  import { TSec } from "@better-captcha/lit/provider/t-sec";
+  ```
+
+  ```html
+  <t-sec-captcha sitekey="189905409" .options={{ userLanguage: "en" }}></t-sec-captcha>
+  ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+### Provider Options
+
+<AutoTypeTable path="../../packages/core/src/providers/t-sec/types.d.ts" name="RenderParameters" />
+
+### Imperative Handle
+
+<AutoTypeTable path="../../packages/core/src/providers/t-sec/provider.ts" name="TSecHandle" />

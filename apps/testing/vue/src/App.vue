@@ -27,6 +27,7 @@
 			<CapWidgetTest v-else-if="currentProvider === 'cap-widget'" />
 			<AltchaTest v-else-if="currentProvider === 'altcha'" />
 			<GeetestTest v-else-if="currentProvider === 'geetest'" />
+			<TSecTest v-else-if="currentProvider === 't-sec'" />
 		</div>
 	</div>
 </template>
@@ -42,6 +43,7 @@
 	import ProsopoTest from "./components/ProsopoTest.vue";
 	import RecaptchaTest from "./components/RecaptchaTest.vue";
 	import RecaptchaV3Test from "./components/RecaptchaV3Test.vue";
+	import TSecTest from "./components/TSecTest.vue";
 	import TurnstileTest from "./components/TurnstileTest.vue";
 	import GeetestTest from "./components/GeetestTest.vue";
 
@@ -59,6 +61,7 @@
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
 		{ key: "geetest", name: "Geetest" },
+		{ key: "t-sec", name: "T-Sec" },
 	];
 </script>
 
