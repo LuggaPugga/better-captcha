@@ -96,7 +96,7 @@ export declare namespace GlobalTSec {
 		 * Custom passthrough parameter. Business logic can use this field to pass a small amount of data,
 		 * and its content will be included in the callback object.
 		 */
-		bizState?: any;
+		bizState?: unknown;
 		/**
 		 * Enables adaptive dark mode or forces dark mode.
 		 * Enable adaptive dark mode: {"enableDarkMode": true}
