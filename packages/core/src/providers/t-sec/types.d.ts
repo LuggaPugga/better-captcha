@@ -1,6 +1,6 @@
 declare global {
 	interface Window {
-		TencentCaptcha: GlobalTSec.TencentCaptcha;
+		TencentCaptcha: typeof GlobalTSec.TencentCaptcha;
 	}
 }
 
