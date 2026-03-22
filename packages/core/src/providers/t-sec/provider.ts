@@ -93,17 +93,17 @@ export class TSecProvider extends Provider<
 
 	reset(widgetId: string) {
 		const captcha = this.widgetMap.get(widgetId);
-		captcha && captcha.reload();
+		captcha?.reload();
 	}
 
 	async execute(widgetId: string) {
 		const captcha = this.widgetMap.get(widgetId);
-		captcha && captcha.show();
+		captcha?.show();
 	}
 
 	destroy(widgetId: string) {
 		const captcha = this.widgetMap.get(widgetId);
-		captcha && captcha.destroy();
+		captcha?.destroy();
 	}
 
 	getResponse(widgetId: string): GlobalTSec.TencentCaptchaResult | null {
