@@ -65,7 +65,7 @@ export class TSecProvider extends Provider<
 
 		if (callbacks?.onReady && !renderOptions.ready) {
 			renderOptions.ready = () => {
-				callbacks.onReady!();
+				callbacks?.onReady?.();
 				return { sdkView: { width: element.offsetWidth, height: element.offsetHeight } };
 			};
 		}
