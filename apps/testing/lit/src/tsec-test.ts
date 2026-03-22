@@ -12,7 +12,7 @@ export class TSecTest extends LitElement {
 	private captchaRef: Ref<TSecCaptchaElement> = createRef();
 
 	@state()
-	private response: ReturnType<TSecHandle['getResponse']> = null;
+	private response: ReturnType<TSecHandle["getResponse"]> = null;
 
 	@state()
 	private solved = false;

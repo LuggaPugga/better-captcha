@@ -4,7 +4,7 @@ import { $, component$, useSignal } from "@builder.io/qwik";
 
 export const TSecTest = component$(() => {
 	const controller = useCaptchaController<TSecHandle>();
-	const response = useSignal<ReturnType<TSecHandle['getResponse']>>(null);
+	const response = useSignal<ReturnType<TSecHandle["getResponse"]>>(null);
 	const solved = useSignal<boolean>(false);
 
 	const handleSolve$ = $((token: string) => {

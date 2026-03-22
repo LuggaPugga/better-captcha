@@ -3,7 +3,7 @@ import { useRef, useState } from "preact/hooks";
 
 export function TSecTest() {
 	const tsecRef = useRef<TSecHandle>(null);
-	const [response, setResponse] = useState<ReturnType<TSecHandle['getResponse']>>(null);
+	const [response, setResponse] = useState<ReturnType<TSecHandle["getResponse"]>>(null);
 	const [solved, setSolved] = useState<boolean>(false);
 
 	const handleGetResponse = () => {
