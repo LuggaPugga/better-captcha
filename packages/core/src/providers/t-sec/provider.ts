@@ -102,8 +102,12 @@ export class TSecProvider extends Provider<
 	}
 
 	destroy(widgetId: string) {
-		const captcha = this.widgetMap.get(widgetId);
-		captcha?.destroy();
+    const captcha = this.widgetMap.get(widgetId);
+    if (captcha) {
+      captcha.destroy();
+      this.widgetMap.delete(widgetId);
+      this.elementMap.delete(widgetId);
+    }
 	}
 
 	getResponse(widgetId: string): GlobalTSec.TencentCaptchaResult | null {
