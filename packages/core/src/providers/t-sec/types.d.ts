@@ -50,7 +50,7 @@ export declare namespace GlobalTSec {
 		/**
 		 * Custom passthrough parameter.
 		 */
-		bisState?: any;
+		bizState?: unknown;
 	}
 
 	export type TencentCaptchaStateChangeFn = (
