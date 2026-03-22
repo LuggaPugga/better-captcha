@@ -85,7 +85,7 @@ export class TSecProvider extends Provider<
 				const captcha = new window.TencentCaptcha(element, this.identifier, onStateChange, renderOptions);
 				captcha.show();
 				this.widgetMap.set(widgetId, captcha);
-			} catch (error) {}
+			} catch (_error) {}
 
 			resolve(widgetId);
 		});
