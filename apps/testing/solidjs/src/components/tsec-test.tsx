@@ -4,7 +4,7 @@ import { createSignal } from "solid-js";
 
 export function TSecTest() {
 	const controller = createCaptchaController<TSecHandle>();
-	const [response, setResponse] = createSignal<ReturnType<TSecHandle['getResponse']>>(null);
+	const [response, setResponse] = createSignal<ReturnType<TSecHandle["getResponse"]>>(null);
 	const [solved, setSolved] = createSignal<boolean>(false);
 
 	const handleGetResponse = () => {

@@ -11,11 +11,11 @@ import type { GlobalTSec, RenderParameters } from "./types";
 export type TSecHandle = CaptchaHandle<GlobalTSec.TencentCaptchaResult | null>;
 
 export class TSecProvider extends Provider<
-  ProviderConfig, 
-  Omit<RenderParameters, "sitekey">, 
-  TSecHandle,
-  GlobalTSec.TencentCaptchaResult | null,
-  GlobalTSec.TencentCaptchaResult
+	ProviderConfig,
+	Omit<RenderParameters, "sitekey">,
+	TSecHandle,
+	GlobalTSec.TencentCaptchaResult | null,
+	GlobalTSec.TencentCaptchaResult
 > {
 	private widgetMap = new Map<string, GlobalTSec.TencentCaptcha>();
 	private elementMap = new Map<string, HTMLElement>();
