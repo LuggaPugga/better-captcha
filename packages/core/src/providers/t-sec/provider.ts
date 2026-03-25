@@ -56,7 +56,7 @@ export class TSecProvider extends Provider<
 		options?: Omit<RenderParameters, "sitekey">,
 		callbacks?: CaptchaCallbacks<GlobalTSec.TencentCaptchaResult>,
 	) {
-		const renderOptions = options ?? {};
+		const renderOptions: Omit<RenderParameters, "sitekey"> = options ? { ...options } : {};
 		const widgetId = this.generateWidgetId(element);
 		if (!element.id) {
 			element.id = widgetId;
