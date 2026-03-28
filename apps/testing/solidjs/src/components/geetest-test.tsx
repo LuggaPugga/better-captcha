@@ -9,7 +9,7 @@ import { createSignal } from "solid-js";
 
 export function GeetestTest() {
 	const controller = createCaptchaController<GeetestHandle>();
-	const [options, setOptions] = createSignal<RenderParameters>({
+	const [options, _setOptions] = createSignal<RenderParameters>({
 		language: "eng",
 	});
 	const [response, setResponse] = createSignal<string | null>(null);

@@ -4,7 +4,7 @@ import { createSignal } from "solid-js";
 
 export function CapWidgetTest() {
 	const controller = createCaptchaController<CapWidgetHandle>();
-	const [options, setOptions] = createSignal<RenderParameters>({});
+	const [options, _setOptions] = createSignal<RenderParameters>({});
 	const [response, setResponse] = createSignal<string | null>(null);
 	const [solved, setSolved] = createSignal<boolean>(false);
 
