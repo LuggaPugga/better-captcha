@@ -35,7 +35,6 @@
 		"build": "vite build --mode lib",
 		"check-types": "tsc --noEmit",
 		"dev": "vite build --mode lib --watch",
-		"lint": "biome lint .",
 		"start": "vite --open --mode ssr",
 		"qwik": "qwik"
 	},
@@ -50,7 +49,6 @@
 		"vite": "^8.0.3",
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.56.1",
-		"@biomejs/biome": "^2.0.0",
 		"ts-morph": "^27.0.2"
 	},
 	"peerDependencies": {
