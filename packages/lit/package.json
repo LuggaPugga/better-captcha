@@ -63,7 +63,6 @@
 		}
 	},
 	"peerDependencies": {
-		"typescript": "^5.0.0",
 		"lit": "^3.0.0"
 	},
 	"dependencies": {
