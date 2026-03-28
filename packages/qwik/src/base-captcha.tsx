@@ -25,13 +25,13 @@ export function createCaptchaComponent<
 	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 >(providerFactory$: QRL<(identifier: string, scriptOptions?: ScriptOptions) => TProvider>) {
 	return component$<CaptchaProps<TOptions, THandle, TSolve>>((props) => {
-		const hostEl = useSignal<HTMLDivElement | null>(null);
+		const hostEl = useSignal<HTMLDivElement>();
 		const widgetId = useSignal<WidgetId | null>(null);
 		const state = useSignal<CaptchaState>({ loading: false, error: null, ready: false });
 		const hasEmittedReady = useSignal(false);
 		const hasEmittedError = useSignal(false);
 
-		const identifier = useComputed$(() => (props as any).sitekey || (props as any).endpoint);
+		const identifier = useComputed$(() => props.sitekey || props.endpoint);
 		const autoRender = useComputed$(() => props.autoRender ?? true);
 		const isLoading = useComputed$(() =>
 			autoRender.value ? state.value.loading || !state.value.ready : state.value.loading,
@@ -161,8 +161,8 @@ export function createCaptchaComponent<
 		});
 
 		useVisibleTask$(async ({ track, cleanup }) => {
-			track(() => hostEl.value);
-			track(() => identifier.value);
+			track(hostEl);
+			track(identifier);
 			track(() => props.scriptOptions);
 
 			if (!hostEl.value) return;
@@ -189,8 +189,8 @@ export function createCaptchaComponent<
 		});
 
 		useTask$(async ({ track }) => {
-			track(() => controller.value);
-			track(() => widgetId.value);
+			track(controller);
+			track(widgetId);
 			track(() => state.value.ready);
 
 			if (!props.controller) return;
@@ -212,9 +212,7 @@ export function createCaptchaComponent<
 		return (
 			<div
 				id={elementId.value}
-				ref={(el: HTMLDivElement | null) => {
-					hostEl.value = el;
-				}}
+				ref={hostEl}
 				class={props.class}
 				style={props.style}
 				aria-live="polite"
