@@ -19,8 +19,7 @@ export function createCaptchaComponent<
 ) {
 	return forwardRef<THandle, CaptchaProps<TOptions, TSolve>>(function CaptchaComponent(props, ref) {
 		const { options, scriptOptions, className, style, autoRender = true, onReady, onSolve, onError } = props;
-		const p = props as CaptchaProps<TOptions, TSolve> & { sitekey?: string; endpoint?: string };
-		const identifier = p.sitekey || p.endpoint;
+		const identifier = props.sitekey || props.endpoint;
 
 		if (!identifier) {
 			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
@@ -39,8 +38,7 @@ export function createCaptchaComponent<
 
 		useImperativeHandle(ref, () => controller.getHandle());
 
-		const elementId =
-			widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading";
+		const elementId = widgetId != null ? `better-captcha-${widgetId}` : "better-captcha-loading";
 
 		return (
 			<div

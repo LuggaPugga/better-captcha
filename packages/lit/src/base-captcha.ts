@@ -157,8 +157,7 @@ export function createCaptchaComponent<
 
 		render() {
 			const widgetId = this.controller.getWidgetId();
-			const elementId =
-				widgetId !== null && widgetId !== undefined ? `better-captcha-${widgetId}` : "better-captcha-loading";
+			const elementId = widgetId != null ? `better-captcha-${widgetId}` : "better-captcha-loading";
 
 			return html`
 				<div
