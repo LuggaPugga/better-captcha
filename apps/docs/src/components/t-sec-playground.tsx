@@ -9,7 +9,7 @@ export function TSecPlayground({ options }: { options: RenderParameters }) {
   return (
     <div className="space-y-4">
       <TSec
-        sitekey="189905409"
+        sitekey="189910271"
         options={options}
         onSolve={(t) => setResponse(JSON.stringify(t, null, '\t'))}
       />

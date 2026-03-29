@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>T-Sec Test</h3>
-		<TSec ref="captchaRef" sitekey="189905409" :options="options" @ready="onReady" @error="onError" @solve="onSolve" />
+		<TSec ref="captchaRef" sitekey="189910271" :options="options" @ready="onReady" @error="onError" @solve="onSolve" />
 		<p v-if="solved" id="captcha-solved">Captcha Solved!</p>
 		<div style="margin-top: 10px">
 			<button type="button" @click="handleDestroy">Destroy</button>

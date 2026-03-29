@@ -14,7 +14,7 @@ export const TSecTest = component$(() => {
 
 	return (
 		<div>
-			<TSec controller={controller} sitekey="189905409" onSolve$={handleSolve$} options={{ userLanguage: "en" }} />
+			<TSec controller={controller} sitekey="189910271" onSolve$={handleSolve$} options={{ userLanguage: "en" }} />
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"

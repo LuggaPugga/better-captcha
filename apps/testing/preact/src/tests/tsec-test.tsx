@@ -18,7 +18,7 @@ export function TSecTest() {
 
 	return (
 		<div>
-			<TSec ref={tsecRef} sitekey="189905409" onSolve={handleSolve} options={{ userLanguage: "en" }} />
+			<TSec ref={tsecRef} sitekey="189910271" onSolve={handleSolve} options={{ userLanguage: "en" }} />
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => tsecRef.current?.destroy()}>
 				Destroy

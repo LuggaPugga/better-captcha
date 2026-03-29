@@ -20,7 +20,7 @@ export function TSecTest() {
 		<div>
 			<TSec
 				ref={tsecRef}
-				sitekey="189905409"
+				sitekey="189910271"
 				onSolve={handleSolve}
 				options={{ userLanguage: "en" }}
 			/>

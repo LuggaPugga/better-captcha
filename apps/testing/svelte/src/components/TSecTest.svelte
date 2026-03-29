@@ -47,7 +47,7 @@
 
 <div>
 	<h3>T-Sec Test</h3>
-	<TSec bind:this={captchaRef} sitekey="189905409" options={{ userLanguage: "en" }} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<TSec bind:this={captchaRef} sitekey="189910271" options={{ userLanguage: "en" }} onready={onReady} onerror={onError} onSolve={onSolve} />
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

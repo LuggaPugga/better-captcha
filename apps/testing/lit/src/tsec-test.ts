@@ -52,7 +52,7 @@ export class TSecTest extends LitElement {
 			<div>
 				<t-sec-captcha
 					${ref(this.captchaRef)}
-					sitekey="189905409"
+					sitekey="189910271"
 					.options=${{ userLanguage: "en" }}
 					.onSolve=${this.handleSolve}
 				></t-sec-captcha>
