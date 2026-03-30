@@ -21,7 +21,7 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   ```tsx
   import { Geetest } from "@better-captcha/react/provider/geetest";
 
-  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" />
   ```
   </Tab>
 
@@ -29,7 +29,7 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   ```tsx
   import { Geetest } from "@better-captcha/preact/provider/geetest";
 
-  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" />
   ```
   </Tab>
   
@@ -39,7 +39,7 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   import { Geetest } from "@better-captcha/qwik/provider/geetest";
 
   export default component$(() => (
-    <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+    <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" />
   ));
   ```
   </Tab>
@@ -48,7 +48,7 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   ```tsx
   import { Geetest } from "@better-captcha/solidjs/provider/geetest";
 
-  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" />
   ```
   </Tab>
 
@@ -57,7 +57,6 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   <template>
     <Geetest
       sitekey="647f5ed2ed8acb4be36784e01556bb71"
-      :options="{ language: 'eng' }"
     />
   </template>
 
@@ -73,7 +72,7 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   import { Geetest } from "@better-captcha/svelte/provider/geetest";
   </script>
 
-  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" options={{ language: "eng" }} />
+  <Geetest sitekey="647f5ed2ed8acb4be36784e01556bb71" />
   ```
   </Tab>
 
@@ -83,7 +82,7 @@ GeeTest 自适应验证码提供了智能化方案，可区分机器人与真人
   ```
 
   ```html
-  <geetest-captcha sitekey="647f5ed2ed8acb4be36784e01556bb71" .options={{ language: "eng" }}></geetest-captcha>
+  <geetest-captcha sitekey="647f5ed2ed8acb4be36784e01556bb71"></geetest-captcha>
   ```
   </Tab>
 </Tabs>

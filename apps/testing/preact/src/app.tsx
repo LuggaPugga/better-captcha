@@ -9,6 +9,7 @@ import { PrivateCaptchaTest } from "./tests/private-captcha-test";
 import { ProsopoTest } from "./tests/prosopo-test";
 import { RecaptchaTest } from "./tests/recaptcha-test";
 import { RecaptchaV3Test } from "./tests/recaptcha-v3-test";
+import { TSecTest } from "./tests/tsec-test";
 import { TurnstileTest } from "./tests/turnstile-test";
 
 export function App() {
@@ -26,6 +27,7 @@ export function App() {
 		{ key: "cap-widget", name: "CapWidget", path: "/cap-widget" },
 		{ key: "altcha", name: "Altcha", path: "/altcha" },
 		{ key: "geetest", name: "Geetest", path: "/geetest" },
+		{ key: "t-sec", name: "T-Sec", path: "/t-sec" },
 	];
 
 	return (
@@ -58,6 +60,7 @@ export function App() {
 				{currentProvider === "cap-widget" && <CapWidgetTest />}
 				{currentProvider === "altcha" && <AltchaTest />}
 				{currentProvider === "geetest" && <GeetestTest />}
+				{currentProvider === "t-sec" && <TSecTest />}
 			</div>
 		</div>
 	);

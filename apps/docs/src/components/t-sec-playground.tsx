@@ -1,19 +1,15 @@
 "use client";
-import type { RenderParameters } from "@better-captcha/react/provider/geetest";
-import { Geetest } from "@better-captcha/react/provider/geetest";
+import type { RenderParameters } from "@better-captcha/react/provider/t-sec";
+import { TSec } from "@better-captcha/react/provider/t-sec";
 import { useState } from "react";
 
-export function GeetestPlayground({
-  options = { language: "eng" },
-}: {
-  options?: RenderParameters;
-}) {
+export function TSecPlayground({ options }: { options: RenderParameters }) {
   const [response, setResponse] = useState<string | null>(null);
 
   return (
     <div className="space-y-4">
-      <Geetest
-        sitekey="647f5ed2ed8acb4be36784e01556bb71"
+      <TSec
+        sitekey="189910271"
         options={options}
         onSolve={(t) => setResponse(JSON.stringify(t, null, '\t'))}
       />

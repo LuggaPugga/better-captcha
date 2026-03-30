@@ -9,6 +9,7 @@
 	import ProsopoTest from "./components/ProsopoTest.svelte";
 	import RecaptchaTest from "./components/RecaptchaTest.svelte";
 	import RecaptchaV3Test from "./components/RecaptchaV3Test.svelte";
+	import TSecTest from "./components/TSecTest.svelte";
 	import TurnstileTest from "./components/TurnstileTest.svelte";
 	import GeetestTest from "./components/GeetestTest.svelte";
 
@@ -26,6 +27,7 @@
 		{ key: "cap-widget", name: "CapWidget" },
 		{ key: "altcha", name: "Altcha" },
 		{ key: "geetest", name: "Geetest" },
+		{ key: "t-sec", name: "T-Sec" },
 	];
 
 	function setProvider(key: string) {
@@ -68,6 +70,8 @@
 			<AltchaTest />
 		{:else if $currentProvider === "geetest"}
 			<GeetestTest />
+		{:else if $currentProvider === "t-sec"}
+			<TSecTest />
 		{/if}
 	</div>
 </div>
