@@ -1,5 +1,11 @@
 # @better-captcha/core
 
+## 0.7.0
+
+### Minor Changes
+
+- e1ef625: feat: add Tencent Cloud T-Sec Captcha Provider
+
 ## 0.6.0
 
 ### Minor Changes
