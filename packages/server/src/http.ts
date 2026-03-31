@@ -22,10 +22,11 @@ function getFetch(fetcher?: FetchLike): FetchLike {
 	if (fetcher) {
 		return fetcher;
 	}
-	if (typeof globalThis.fetch === "function") {
-		return globalThis.fetch.bind(globalThis);
+	const f = globalThis.fetch;
+	if (typeof f !== "function") {
+		throw new CaptchaServerError("invalid-runtime", "Global fetch is not available in this runtime.");
 	}
-	throw new CaptchaServerError("invalid-runtime", "Global fetch is not available in this runtime.");
+	return f.bind(globalThis);
 }
 
 function mergeAbortSignal(

@@ -7,6 +7,7 @@ import {
 	buildProviderFormBody,
 	finalizeProviderFailure,
 	finalizeVerification,
+	omitSiteverifyExtra,
 } from "../shared";
 
 const PROVIDER = "recaptcha-compatible";
@@ -40,9 +41,8 @@ export async function verifyWithReCaptchaCompatibleApi(
 	assertNonEmptyString(options.secret, "secret", provider);
 	assertNonEmptyString(options.response, "response", provider);
 
-	const { secret: _, response: __, remoteip: ___, sitekey: ____, ...safeExtraBody } = options.extraBody ?? {};
 	const body = buildProviderFormBody(options.secret, options.response, {
-		...safeExtraBody,
+		...omitSiteverifyExtra(options.extraBody),
 		remoteip: options.remoteip,
 		sitekey: options.sitekey,
 	});

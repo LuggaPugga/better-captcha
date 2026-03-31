@@ -3,6 +3,7 @@ import { readNestedString, readRequiredBoolean, readString, readStringArray } fr
 import type { VerificationResult } from "../result";
 import {
 	assertNonEmptyString,
+	assertOptionalNonEmptyString,
 	type BaseVerifyOptions,
 	buildProviderFormBody,
 	finalizeProviderFailure,
@@ -51,9 +52,7 @@ export interface TurnstileVerifyOptions extends BaseVerifyOptions<TurnstileSucce
 export async function verifyTurnstile(options: TurnstileVerifyOptions): Promise<TurnstileVerificationResult> {
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
-	if (options.endpoint !== undefined) {
-		assertNonEmptyString(options.endpoint, "endpoint", PROVIDER);
-	}
+	assertOptionalNonEmptyString(options.endpoint, "endpoint", PROVIDER);
 
 	const body = buildProviderFormBody(options.secret, options.response, {
 		remoteip: options.remoteip,

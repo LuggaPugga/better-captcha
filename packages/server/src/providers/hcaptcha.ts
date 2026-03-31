@@ -3,6 +3,7 @@ import { readBoolean, readNumber, readRequiredBoolean, readString, readStringArr
 import type { VerificationResult } from "../result";
 import {
 	assertNonEmptyString,
+	assertOptionalNonEmptyString,
 	type BaseVerifyOptions,
 	buildProviderFormBody,
 	finalizeProviderFailure,
@@ -52,9 +53,7 @@ export interface HCaptchaVerifyOptions extends BaseVerifyOptions<HCaptchaSuccess
 export async function verifyHCaptcha(options: HCaptchaVerifyOptions): Promise<HCaptchaVerificationResult> {
 	assertNonEmptyString(options.secret, "secret", PROVIDER);
 	assertNonEmptyString(options.response, "response", PROVIDER);
-	if (options.endpoint !== undefined) {
-		assertNonEmptyString(options.endpoint, "endpoint", PROVIDER);
-	}
+	assertOptionalNonEmptyString(options.endpoint, "endpoint", PROVIDER);
 
 	const body = buildProviderFormBody(options.secret, options.response, {
 		remoteip: options.remoteip,

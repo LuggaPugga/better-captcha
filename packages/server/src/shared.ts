@@ -26,6 +26,12 @@ export function assertNonEmptyString(value: unknown, field: string, provider: st
 	}
 }
 
+export function assertOptionalNonEmptyString(value: string | undefined, field: string, provider: string): void {
+	if (value !== undefined) {
+		assertNonEmptyString(value, field, provider);
+	}
+}
+
 export function withFallbackErrorCodes<TCode extends string>(codes: string[], fallback: TCode): TCode[] {
 	return (codes.length > 0 ? codes : [fallback]) as TCode[];
 }
@@ -40,11 +46,25 @@ export function buildProviderFormBody(
 		response,
 	});
 	for (const [key, value] of Object.entries(entries)) {
-		if (typeof value === "string") {
+		if (value !== undefined) {
 			body.set(key, value);
 		}
 	}
 	return body;
+}
+
+export function omitSiteverifyExtra(
+	extra: Record<string, string | undefined> | undefined,
+): Record<string, string | undefined> {
+	if (!extra) {
+		return {};
+	}
+	const copy = { ...extra };
+	delete copy.secret;
+	delete copy.response;
+	delete copy.remoteip;
+	delete copy.sitekey;
+	return copy;
 }
 
 export function getCommonMismatchCodes<TCode extends string>(options: {
@@ -83,13 +103,9 @@ export function getStringMismatchCodes<TCode extends string>(
 		mismatchCode: TCode;
 	}>,
 ): TCode[] {
-	const mismatches: TCode[] = [];
-	for (const check of checks) {
-		if (check.expected !== undefined && check.actual !== check.expected) {
-			mismatches.push(check.mismatchCode);
-		}
-	}
-	return mismatches;
+	return checks
+		.filter((check) => check.expected !== undefined && check.actual !== check.expected)
+		.map((check) => check.mismatchCode);
 }
 
 export function finalizeProviderFailure<TData, TCode extends string>(
