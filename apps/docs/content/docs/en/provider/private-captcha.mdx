@@ -128,3 +128,21 @@ Private Captcha only works inside a `<form>` element. Make sure to wrap the comp
 - **Self-Hosting**: Consider self-hosting for maximum control and data sovereignty
 - **Auto Theme**: Use `theme: "auto"` to match your site's color scheme
 - **Accessibility**: Built with accessibility in mind for inclusive user experiences
+
+## Server Verification
+
+Use `@better-captcha/server` to verify Private Captcha tokens on your backend:
+
+```ts
+import { verifyPrivateCaptcha } from "@better-captcha/server";
+
+const result = await verifyPrivateCaptcha({
+	endpoint: "https://verify.privatecaptcha.com/siteverify",
+	secret: process.env.PRIVATE_CAPTCHA_SECRET!,
+	response: tokenFromClient,
+});
+
+if (!result.success) {
+	console.error(result.errorCodes);
+}
+```

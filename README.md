@@ -18,6 +18,7 @@ Install the package for your framework:
 | Vue | `bun install @better-captcha/vue` | `npm install @better-captcha/vue` |
 | Svelte | `bun install @better-captcha/svelte` | `npm install @better-captcha/svelte` |
 | Lit | `bun install @better-captcha/lit` | `npm install @better-captcha/lit` |
+| Server | `bun install @better-captcha/server` | `npm install @better-captcha/server` |
 
 
 ## Basic usage
