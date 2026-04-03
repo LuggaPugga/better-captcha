@@ -9,7 +9,7 @@
         "@changesets/changelog-github": "^0.6.0",
         "@changesets/cli": "^2.30.0",
         "ts-morph": "^27.0.2",
-        "turbo": "^2.8.18",
+        "turbo": "^2.9.0",
         "typescript": "5.9.3",
       },
     },
@@ -124,7 +124,7 @@
         "globals": "17.4.0",
         "typescript": "^6.0.2",
         "typescript-plugin-css-modules": "5.2.0",
-        "undici": "^7.16.0",
+        "undici": "^8.0.0",
         "vite": "^8.0.3",
       },
     },
@@ -2352,7 +2352,7 @@
 
     "unctx": ["unctx@2.5.0", "https://registry.npmmirror.com/unctx/-/unctx-2.5.0.tgz", { "dependencies": { "acorn": "^8.15.0", "estree-walker": "^3.0.3", "magic-string": "^0.30.21", "unplugin": "^2.3.11" } }, "sha512-p+Rz9x0R7X+CYDkT+Xg8/GhpcShTlU8n+cf9OtOEf7zEQsNcCZO1dPKNRDqvUTaq+P32PMMkxWHwfrxkqfqAYg=="],
 
-    "undici": ["undici@7.24.6", "https://registry.npmmirror.com/undici/-/undici-7.24.6.tgz", {}, "sha512-Xi4agocCbRzt0yYMZGMA6ApD7gvtUFaxm4ZmeacWI4cZxaF6C+8I8QfofC20NAePiB/IcvZmzkJ7XPa471AEtA=="],
+    "undici": ["undici@8.0.1", "", {}, "sha512-6qdTUr+jabXmYKeYkv/+pIvO7d0bs1k9uy+5PFnXr4segNVwILH1KExhwRh3/iGa6gSLmySK3hTnSs3k7ZPnjQ=="],
 
     "undici-types": ["undici-types@7.18.2", "https://registry.npmmirror.com/undici-types/-/undici-types-7.18.2.tgz", {}, "sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w=="],
 
@@ -2521,6 +2521,8 @@
     "@better-captcha/qwik/typescript": ["typescript@6.0.2", "https://registry.npmmirror.com/typescript/-/typescript-6.0.2.tgz", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ=="],
 
     "@better-captcha/svelte/typescript": ["typescript@6.0.2", "https://registry.npmmirror.com/typescript/-/typescript-6.0.2.tgz", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ=="],
+
+    "@builder.io/qwik-city/undici": ["undici@7.24.6", "https://registry.npmmirror.com/undici/-/undici-7.24.6.tgz", {}, "sha512-Xi4agocCbRzt0yYMZGMA6ApD7gvtUFaxm4ZmeacWI4cZxaF6C+8I8QfofC20NAePiB/IcvZmzkJ7XPa471AEtA=="],
 
     "@builder.io/qwik-city/zod": ["zod@3.25.48", "https://registry.npmmirror.com/zod/-/zod-3.25.48.tgz", {}, "sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q=="],
 
