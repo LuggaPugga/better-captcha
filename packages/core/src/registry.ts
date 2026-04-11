@@ -1,3 +1,4 @@
+import type { RuntimeProviderClass } from "./provider";
 import { AltchaProvider } from "./providers/altcha";
 import { CapWidgetProvider } from "./providers/cap-widget";
 import { CaptchaFoxProvider } from "./providers/captcha-fox";
@@ -11,8 +12,8 @@ import { ReCaptchaV3Provider } from "./providers/recaptcha-v3";
 import { TSecProvider } from "./providers/t-sec";
 import { TurnstileProvider } from "./providers/turnstile";
 
-export interface ProviderMetadata {
-	name: string;
+export interface ProviderMetadataInput<TName extends string> {
+	name: TName;
 	componentName: string;
 	providerClassName: string;
 	handleType: string;
@@ -22,11 +23,15 @@ export interface ProviderMetadata {
 	solvePayloadType?: string;
 	/** The prop name to use for the identifier (default: "sitekey") */
 	identifierProp?: "sitekey" | "endpoint";
-	dynamicImport: () => Promise<any>;
+	loadProviderClass: () => Promise<RuntimeProviderClass>;
 }
 
-export const PROVIDER_REGISTRY: ProviderMetadata[] = [
-	{
+function defineProviderMetadata<TName extends string>(metadata: ProviderMetadataInput<TName>) {
+	return metadata;
+}
+
+export const PROVIDER_REGISTRY = [
+	defineProviderMetadata({
 		name: "altcha",
 		componentName: "Altcha",
 		providerClassName: "AltchaProvider",
@@ -35,9 +40,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"element"',
 		extraTypes: [],
 		identifierProp: "endpoint",
-		dynamicImport: () => import("./providers/altcha"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/altcha")).AltchaProvider,
+	}),
+	defineProviderMetadata({
 		name: "cap-widget",
 		componentName: "CapWidget",
 		providerClassName: "CapWidgetProvider",
@@ -46,9 +51,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"element"',
 		extraTypes: [],
 		identifierProp: "endpoint",
-		dynamicImport: () => import("./providers/cap-widget"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/cap-widget")).CapWidgetProvider,
+	}),
+	defineProviderMetadata({
 		name: "captcha-fox",
 		componentName: "CaptchaFox",
 		providerClassName: "CaptchaFoxProvider",
@@ -56,9 +61,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/captcha-fox"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/captcha-fox")).CaptchaFoxProvider,
+	}),
+	defineProviderMetadata({
 		name: "friendly-captcha",
 		componentName: "FriendlyCaptcha",
 		providerClassName: "FriendlyCaptchaProvider",
@@ -66,9 +71,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/friendly-captcha"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/friendly-captcha")).FriendlyCaptchaProvider,
+	}),
+	defineProviderMetadata({
 		name: "hcaptcha",
 		componentName: "HCaptcha",
 		providerClassName: "HCaptchaProvider",
@@ -76,9 +81,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/hcaptcha"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/hcaptcha")).HCaptchaProvider,
+	}),
+	defineProviderMetadata({
 		name: "private-captcha",
 		componentName: "PrivateCaptcha",
 		providerClassName: "PrivateCaptchaProvider",
@@ -86,9 +91,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/private-captcha"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/private-captcha")).PrivateCaptchaProvider,
+	}),
+	defineProviderMetadata({
 		name: "prosopo",
 		componentName: "Prosopo",
 		providerClassName: "ProsopoProvider",
@@ -96,9 +101,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"siteKey"',
 		extraTypes: ["CallbackFunction", "CaptchaType", "Theme", "WidgetApi"],
-		dynamicImport: () => import("./providers/prosopo"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/prosopo")).ProsopoProvider,
+	}),
+	defineProviderMetadata({
 		name: "recaptcha",
 		componentName: "ReCaptcha",
 		providerClassName: "ReCaptchaProvider",
@@ -106,9 +111,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/recaptcha"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/recaptcha")).ReCaptchaProvider,
+	}),
+	defineProviderMetadata({
 		name: "recaptcha-v3",
 		componentName: "ReCaptchaV3",
 		providerClassName: "ReCaptchaV3Provider",
@@ -116,9 +121,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/recaptcha-v3"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/recaptcha-v3")).ReCaptchaV3Provider,
+	}),
+	defineProviderMetadata({
 		name: "turnstile",
 		componentName: "Turnstile",
 		providerClassName: "TurnstileProvider",
@@ -126,9 +131,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
-		dynamicImport: () => import("./providers/turnstile"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/turnstile")).TurnstileProvider,
+	}),
+	defineProviderMetadata({
 		name: "geetest",
 		componentName: "Geetest",
 		providerClassName: "GeetestProvider",
@@ -137,9 +142,9 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsOmit: '"captchaId"',
 		extraTypes: ["GeetestSolveResponse"],
 		solvePayloadType: "GeetestSolveResponse",
-		dynamicImport: () => import("./providers/geetest"),
-	},
-	{
+		loadProviderClass: async () => (await import("./providers/geetest")).GeetestProvider,
+	}),
+	defineProviderMetadata({
 		name: "t-sec",
 		componentName: "TSec",
 		providerClassName: "TSecProvider",
@@ -147,8 +152,12 @@ export const PROVIDER_REGISTRY: ProviderMetadata[] = [
 		renderParamsType: "RenderParameters",
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
-	},
+		loadProviderClass: async () => (await import("./providers/t-sec")).TSecProvider,
+	}),
 ];
+
+export type ProviderMetadata = (typeof PROVIDER_REGISTRY)[number];
+export type ProviderName = ProviderMetadata["name"];
 
 export const PROVIDER_CLASSES = {
 	AltchaProvider,
@@ -182,6 +191,27 @@ export function getProviderMetadata(name: string): ProviderMetadata | undefined 
 	return PROVIDER_REGISTRY.find((provider) => provider.name === name);
 }
 
-export function getAllProviderNames(): string[] {
+export function getAllProviderNames(): ProviderName[] {
 	return PROVIDER_REGISTRY.map((provider) => provider.name);
+}
+
+export function isProviderName(name: string): name is ProviderName {
+	return PROVIDER_REGISTRY.some((provider) => provider.name === name);
+}
+
+export function loadProviderClass(name: ProviderName): Promise<RuntimeProviderClass> {
+	const provider = getProviderMetadata(name);
+	if (!provider) {
+		throw new Error(`Provider "${name}" is not registered.`);
+	}
+
+	return provider.loadProviderClass();
+}
+
+export function loadRegisteredProviderClass(name: string): Promise<RuntimeProviderClass> {
+	if (!isProviderName(name)) {
+		throw new Error(`Provider "${name}" is not registered.`);
+	}
+
+	return loadProviderClass(name);
 }
