@@ -1,43 +1,36 @@
-import { lazy, Suspense, useMemo } from "react";
-import { PROVIDER_REGISTRY } from "@better-captcha/core/src/registry";
+"use client";
 
+import type { CaptchaResponse, ProviderName, RuntimeProviderClass } from "@better-captcha/core";
+import { loadProviderClass } from "@better-captcha/core";
+import { lazy, Suspense, useMemo } from "react";
+import type { CaptchaProps } from ".";
 import { createCaptchaComponent } from "./base-captcha";
 
-import { type ProviderConfig, type Provider } from "@better-captcha/core";
-import { type CaptchaProps } from ".";
+type BetterCaptchaProps = CaptchaProps<object, CaptchaResponse> & {
+	provider: ProviderName | RuntimeProviderClass;
+};
 
-interface CaptchaComponentProps<TConfig extends ProviderConfig, TOptions = unknown, TExtraHandle extends object = Record<string, never>, TResponse = string, TSolve = TResponse> extends CaptchaProps<TOptions, TSolve> {
-  provider: string | Provider<TConfig, TOptions, TExtraHandle, TResponse, TSolve>;
+async function getDynamicCaptchaComponent(name: ProviderName) {
+	const ProviderClass = await loadProviderClass(name);
+	return createCaptchaComponent(ProviderClass);
 }
 
-async function getDynamicCaptchaComponent(name: string) {
-	const PROVIDER = PROVIDER_REGISTRY.find((p) => p.name === name);
-	if (!PROVIDER) throw new Error(`Provider "${name}" is not registered.`);
+export function BetterCaptcha({ provider, ...captchaProps }: BetterCaptchaProps) {
+	const CaptchaProviderComponent = useMemo(() => {
+		if (typeof provider === "string") {
+			return lazy(() =>
+				getDynamicCaptchaComponent(provider).then((Component) => ({
+					default: Component,
+				})),
+			);
+		}
 
-	const ProviderModule = await PROVIDER.dynamicImport();
-	return createCaptchaComponent(ProviderModule[PROVIDER.providerClassName]);
-}
+		return createCaptchaComponent(provider);
+	}, [provider]);
 
-export function BetterCaptcha<
-  TConfig extends ProviderConfig, 
-  TOptions = unknown, 
-  TExtraHandle extends object = Record<string, never>, 
-  TResponse = string, TSolve = TResponse
-> ({ 
-  provider, 
-  ...captchaProps
-}: CaptchaComponentProps<TConfig, TOptions, TExtraHandle, TResponse, TSolve>) {
-  const CaptchaProviderComponent = useMemo(() => {
-    if (typeof provider === "string") {
-      return lazy(() => getDynamicCaptchaComponent(provider).then((Component) => ({ default: Component })));
-    }
-
-    return createCaptchaComponent(provider);
-  }, [provider]);
-
-  return (
-    <Suspense>
-      <CaptchaProviderComponent {...captchaProps} />
-    </Suspense>
-  )
+	return (
+		<Suspense>
+			<CaptchaProviderComponent {...captchaProps} />
+		</Suspense>
+	);
 }
