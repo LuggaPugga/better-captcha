@@ -30,7 +30,7 @@
         "fumadocs-ui": "^16.6.17",
         "lucide-react": "^1.0.0",
         "next": "^16.2.0",
-        "onedollarstats": "^0.0.18",
+        "onedollarstats": "^0.0.19",
         "react": "19.2.5",
         "react-dom": "19.2.5",
         "shiki": "^4.0.2",
@@ -1960,7 +1960,7 @@
 
     "once": ["once@1.4.0", "https://registry.npmmirror.com/once/-/once-1.4.0.tgz", { "dependencies": { "wrappy": "1" } }, "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w=="],
 
-    "onedollarstats": ["onedollarstats@0.0.18", "", {}, "sha512-piFGVsd7Xvt2BIVMl341xJTn9xgEFpDn8713SXFE00iu8EcQGVTNMPZpRFWhphH2X4/gG4WW/DSh4KVO4iHRXQ=="],
+    "onedollarstats": ["onedollarstats@0.0.19", "", {}, "sha512-aO/EHiaKSGPnlinNBOeaOGcsw3vC/uw1tgYfj+5MIN1NBI0uutJFi2sZlRmQG6/ko+j/ZOxgo39OAHX/oi0XOw=="],
 
     "onetime": ["onetime@6.0.0", "https://registry.npmmirror.com/onetime/-/onetime-6.0.0.tgz", { "dependencies": { "mimic-fn": "^4.0.0" } }, "sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ=="],
 
