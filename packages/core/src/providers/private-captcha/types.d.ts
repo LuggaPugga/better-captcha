@@ -145,4 +145,5 @@ export declare namespace PrivateCaptcha {
 }
 
 interface RenderParameters extends PrivateCaptcha.RenderParameters {}
+
 export { PrivateCaptcha, type RenderParameters };

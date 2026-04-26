@@ -97,20 +97,20 @@ declare global {
 }
 
 export type {
-	AltchaWidget,
-	AltchaWidgetOptions,
-	AltchaWidgetState,
-	AltchaFloatingMode,
 	AltchaAutoMode,
+	AltchaCodeEvent,
 	AltchaCredentialsMode,
+	AltchaErrorEvent,
+	AltchaFloatingMode,
+	AltchaLoadEvent,
+	AltchaSentinelVerificationEvent,
 	AltchaStateChangeEvent,
 	AltchaStateChangeEventDetail,
 	AltchaVerifiedEvent,
 	AltchaVerifiedEventDetail,
-	AltchaLoadEvent,
-	AltchaErrorEvent,
-	AltchaCodeEvent,
-	AltchaSentinelVerificationEvent,
+	AltchaWidget,
+	AltchaWidgetOptions,
+	AltchaWidgetState,
 };
 
 export interface RenderParameters {

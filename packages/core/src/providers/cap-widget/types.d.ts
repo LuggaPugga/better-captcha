@@ -101,12 +101,12 @@ declare global {
 
 export {
 	Cap,
-	type CapWidget,
 	type CapConfig,
-	type CapProgressEvent,
-	type CapSolveEvent,
 	type CapErrorEvent,
+	type CapProgressEvent,
 	type CapResetEvent,
+	type CapSolveEvent,
+	type CapWidget,
 	type SolveResult,
 };
 

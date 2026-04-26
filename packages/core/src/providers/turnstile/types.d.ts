@@ -244,4 +244,5 @@ export declare namespace Turnstile {
 }
 
 interface RenderParameters extends Turnstile.RenderParameters {}
-export { Turnstile, type RenderParameters };
+
+export { type RenderParameters, Turnstile };
