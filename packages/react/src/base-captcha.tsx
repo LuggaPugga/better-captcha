@@ -16,7 +16,7 @@ export function createCaptchaComponent<
 		scriptOptions?: ScriptOptions,
 	) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 ) {
-	return forwardRef<THandle, CaptchaProps<TOptions, TSolve>>(function CaptchaComponent(props, ref) {
+	return forwardRef<THandle, CaptchaProps<TOptions, TSolve, THandle>>(function CaptchaComponent(props, ref) {
 		const { options, scriptOptions, className, style, autoRender = true, onReady, onSolve, onError } = props;
 		const identifier = props.sitekey || props.endpoint;
 		if (!identifier) {
@@ -33,7 +33,7 @@ export function createCaptchaComponent<
 			callbacks,
 		);
 
-		useImperativeHandle(ref, () => controller.getHandle());
+		useImperativeHandle(ref, () => controller.getHandle(), [controller]);
 
 		const elementId = widgetId != null ? `better-captcha-${widgetId}` : "better-captcha-loading";
 
