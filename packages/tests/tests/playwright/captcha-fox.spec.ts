@@ -1,12 +1,14 @@
 import { type BrowserContext, expect, type Page, test } from "@playwright/test";
+import { selectComponentMode } from "./utils";
 
 let context: BrowserContext;
 let page: Page;
 
-test.beforeAll(async ({ browser }) => {
+test.beforeAll(async ({ browser }, testInfo) => {
 	context = await browser.newContext();
 	page = await context.newPage();
 	await page.goto("/");
+	await selectComponentMode(page, testInfo);
 	await page.locator("button", { hasText: "Captcha Fox" }).first().click();
 });
 

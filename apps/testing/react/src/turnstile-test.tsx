@@ -1,7 +1,8 @@
 import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/react/provider/turnstile";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function TurnstileTest() {
+export function TurnstileTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<TurnstileHandle>(null);
 	const [options, setOptions] = useState((): Omit<RenderParameters, "sitekey"> => {
 		return {
@@ -24,7 +25,7 @@ export function TurnstileTest() {
 
 	return (
 		<div>
-			<Turnstile ref={turnstileRef} options={options} sitekey="1x00000000000000000000AA" onSolve={handleSolve} />
+			<RenderCaptcha mode={mode} provider="turnstile" component={Turnstile} ref={turnstileRef} options={options} sitekey="1x00000000000000000000AA" onSolve={handleSolve} />
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy

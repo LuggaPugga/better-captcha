@@ -1,7 +1,8 @@
 import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/react/provider/captcha-fox";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function CaptchaFoxTest() {
+export function CaptchaFoxTest({ mode }: { mode: CaptchaComponentMode }) {
 	const captchaFoxRef = useRef<CaptchaFoxHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -24,7 +25,7 @@ export function CaptchaFoxTest() {
 
 	return (
 		<div>
-			<CaptchaFox ref={captchaFoxRef} sitekey="sk_11111111000000001111111100000000" options={options} onSolve={handleSolve} />
+			<RenderCaptcha mode={mode} provider="captcha-fox" component={CaptchaFox} ref={captchaFoxRef} sitekey="sk_11111111000000001111111100000000" options={options} onSolve={handleSolve} />
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => captchaFoxRef.current?.destroy()}>
 				Destroy

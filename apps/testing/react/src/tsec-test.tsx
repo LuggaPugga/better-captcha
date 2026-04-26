@@ -1,7 +1,8 @@
 import { TSec, type TSecHandle } from "@better-captcha/react/provider/t-sec";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function TSecTest() {
+export function TSecTest({ mode }: { mode: CaptchaComponentMode }) {
 	const tsecRef = useRef<TSecHandle>(null);
 	const [response, setResponse] = useState<ReturnType<TSecHandle['getResponse']>>(null);
 	const [solved, setSolved] = useState<boolean>(false);
@@ -18,7 +19,7 @@ export function TSecTest() {
 
 	return (
 		<div>
-			<TSec
+			<RenderCaptcha mode={mode} provider="t-sec" component={TSec}
 				ref={tsecRef}
 				sitekey="189910271"
 				onSolve={handleSolve}
