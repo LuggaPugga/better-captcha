@@ -30,7 +30,6 @@ export function useCaptchaLifecycle<
 	},
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
-	const hasRenderedRef = useRef(false);
 
 	const controller = useMemo(
 		() =>
@@ -52,13 +51,18 @@ export function useCaptchaLifecycle<
 
 	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
 
+	const callbacksRef = useRef(callbacks);
+
+	useEffect(() => {
+		callbacksRef.current = callbacks;
+	}, [callbacks]);
+
 	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
 
 	useEffect(() => {
 		const unsubscribe = controller.onStateChange((newState) => {
 			setState(newState);
 			setWidgetId(controller.getWidgetId());
-			if (newState.ready) hasRenderedRef.current = true;
 		});
 		return unsubscribe;
 	}, [controller]);
@@ -69,32 +73,21 @@ export function useCaptchaLifecycle<
 		controller.setScriptOptions(scriptOptions);
 		controller.setOptions(options);
 		controller.setCallbacks({
-			onReady: () => {
-				const handle = controller.getHandle();
-				if (handle) callbacks?.onReady?.(handle);
-			},
-			onSolve: (token: TSolve) => callbacks?.onSolve?.(token),
+			onReady: () => callbacksRef.current?.onReady?.(controller.getHandle()),
+			onSolve: (token: TSolve) => callbacksRef.current?.onSolve?.(token),
 			onError: (err: Error | string) => {
 				const error = err instanceof Error ? err : new Error(String(err));
-				callbacks?.onError?.(error);
+				callbacksRef.current?.onError?.(error);
 			},
 		});
-	}, [controller, identifier, scriptOptions, options, callbacks]);
+		if (autoRender) {
+			void controller.render();
+		}
+	}, [controller, identifier, scriptOptions, options, autoRender]);
 
 	const renderCaptcha = useCallback(async () => {
 		await controller.render();
 	}, [controller]);
-
-	const renderKeyRef = useRef("");
-	useEffect(() => {
-		if (!autoRender) return;
-		const key = `${identifier}::${JSON.stringify(options)}::${JSON.stringify(scriptOptions)}`;
-		const shouldRender = hasRenderedRef.current || state.error || renderKeyRef.current !== key;
-		if (shouldRender) {
-			renderKeyRef.current = key;
-			void renderCaptcha();
-		}
-	}, [autoRender, identifier, options, scriptOptions, renderCaptcha, state.error]);
 
 	useEffect(() => {
 		return () => {
