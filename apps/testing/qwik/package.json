@@ -2,7 +2,7 @@
 	"name": "testing-qwik",
 	"description": "Testing Qwik",
 	"engines": {
-		"node": "^18.17.0 || ^20.3.0 || >=21.0.0"
+		"node": "^22.10.0 || >=23.0.0"
 	},
 	"private": true,
 	"type": "module",
