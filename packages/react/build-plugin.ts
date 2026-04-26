@@ -2,15 +2,14 @@ import { PROVIDER_REGISTRY } from "@better-captcha/core";
 import {
 	type FrameworkConfig,
 	generateAggregateIndexFile,
-	generateProviderModule,
 	generateProviderModuleDts,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
-const reactConfig: FrameworkConfig = {
-	baseImport: `import { createCaptchaComponent } from "../../base-captcha.js";`,
-	componentCreation: (providerClassName: string) => `createCaptchaComponent(${providerClassName})`,
+const reactDtsConfig: FrameworkConfig = {
+	baseImport: "",
+	componentCreation: () => "",
 	componentType: "ForwardRefExoticComponent",
 	componentTypeImports: '{ ForwardRefExoticComponent, RefAttributes } from "react"',
 	fileExtension: ".js",
@@ -18,19 +17,31 @@ const reactConfig: FrameworkConfig = {
 	propsStructure: "single-with-ref",
 };
 
+function generateProviderModule(provider: (typeof PROVIDER_REGISTRY)[number]) {
+	return `"use client";
+import { ${provider.providerClassName} } from "@better-captcha/core/providers/${provider.name}";
+import { createElement, forwardRef } from "react";
+import { BaseCaptcha } from "../../base-captcha.js";
+
+export const ${provider.componentName} = forwardRef(function ${provider.componentName}(props, ref) {
+\treturn createElement(BaseCaptcha, { ...props, ref, ProviderClass: ${provider.providerClassName} });
+});
+`;
+}
+
 export const unpluginFactory: UnpluginFactory<undefined> = () => {
 	return {
 		name: "better-captcha-generate-components",
 		rollup: {
 			generateBundle() {
 				for (const provider of PROVIDER_REGISTRY) {
-					const jsFiles = generateProviderModule(provider, reactConfig);
-					const dtsFiles = generateProviderModuleDts(provider, reactConfig);
+					const js = generateProviderModule(provider);
+					const dtsFiles = generateProviderModuleDts(provider, reactDtsConfig);
 
 					this.emitFile({
 						type: "asset",
 						fileName: `provider/${provider.name}/index.js`,
-						source: jsFiles.js,
+						source: js,
 					});
 
 					this.emitFile({

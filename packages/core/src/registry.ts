@@ -1,16 +1,4 @@
 import type { RuntimeProviderClass } from "./provider";
-import { AltchaProvider } from "./providers/altcha";
-import { CapWidgetProvider } from "./providers/cap-widget";
-import { CaptchaFoxProvider } from "./providers/captcha-fox";
-import { FriendlyCaptchaProvider } from "./providers/friendly-captcha";
-import { GeetestProvider } from "./providers/geetest";
-import { HCaptchaProvider } from "./providers/hcaptcha";
-import { PrivateCaptchaProvider } from "./providers/private-captcha";
-import { ProsopoProvider } from "./providers/prosopo";
-import { ReCaptchaProvider } from "./providers/recaptcha";
-import { ReCaptchaV3Provider } from "./providers/recaptcha-v3";
-import { TSecProvider } from "./providers/t-sec";
-import { TurnstileProvider } from "./providers/turnstile";
 
 export interface ProviderMetadataInput<TName extends string> {
 	name: TName;
@@ -158,21 +146,6 @@ export const PROVIDER_REGISTRY = [
 
 export type ProviderMetadata = (typeof PROVIDER_REGISTRY)[number];
 export type ProviderName = ProviderMetadata["name"];
-
-export const PROVIDER_CLASSES = {
-	AltchaProvider,
-	CapWidgetProvider,
-	CaptchaFoxProvider,
-	FriendlyCaptchaProvider,
-	HCaptchaProvider,
-	PrivateCaptchaProvider,
-	ProsopoProvider,
-	ReCaptchaProvider,
-	ReCaptchaV3Provider,
-	TurnstileProvider,
-	GeetestProvider,
-	TSecProvider,
-} as const;
 
 export type { AltchaHandle } from "./providers/altcha";
 export type { CapWidgetHandle } from "./providers/cap-widget";

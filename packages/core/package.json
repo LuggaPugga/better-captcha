@@ -37,6 +37,10 @@
 			"types": "./dist/provider.d.ts",
 			"default": "./dist/provider.js"
 		},
+		"./registry": {
+			"types": "./dist/registry.d.ts",
+			"default": "./dist/registry.js"
+		},
 		"./providers/*": {
 			"types": "./dist/providers/*/index.d.ts",
 			"default": "./dist/providers/*/index.js"
@@ -55,6 +59,9 @@
 		"*": {
 			"provider": [
 				"dist/provider.d.ts"
+			],
+			"registry": [
+				"dist/registry.d.ts"
 			],
 			"providers/*": [
 				"dist/providers/*/index.d.ts"
