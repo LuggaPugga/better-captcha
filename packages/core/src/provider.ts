@@ -101,6 +101,23 @@ export interface CaptchaCallbacks<TSolve = string, TError = Error | string> {
 	onError?: (error: TError) => void;
 }
 
+export type CaptchaResponse = string | object | false | null;
+
+export type ProviderClass<
+	TOptions = unknown,
+	TResponse = string,
+	TSolve = TResponse,
+	TExtraHandle extends object = CaptchaHandle<TResponse>,
+> = new (
+	identifier: string,
+	scriptOptions?: ScriptOptions,
+) => Provider<ProviderConfig, TOptions, TExtraHandle, TResponse, TSolve>;
+
+export type RuntimeProviderClass = new (
+	identifier: string,
+	scriptOptions?: ScriptOptions,
+) => Provider<ProviderConfig, object, CaptchaHandle<CaptchaResponse>, CaptchaResponse, never>;
+
 /**
  * Abstract base class for CAPTCHA providers
  * @template TConfig - Configuration type for the provider
