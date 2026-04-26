@@ -11,9 +11,11 @@ import { RecaptchaV3Test } from "./recaptcha-v3-test";
 import { TurnstileTest } from "./turnstile-test";
 import { GeetestTest } from "./geetest-test";
 import { TSecTest } from "./tsec-test";
+import type { CaptchaComponentMode } from "./render-captcha";
 
 export function App() {
 	const [currentProvider, setCurrentProvider] = useState("turnstile");
+	const [componentMode, setComponentMode] = useState<CaptchaComponentMode>("dedicated");
 
 	const providers = [
 		{ key: "turnstile", name: "Turnstile", path: "/turnstile" },
@@ -35,6 +37,18 @@ export function App() {
 			<h1>React Captcha Testing</h1>
 
 			<div>
+				<h2>Select Component:</h2>
+				<button
+					type="button"
+					onClick={() => setComponentMode("dedicated")}
+					style={{ margin: "5px", padding: "10px" }}
+				>
+					Dedicated Component
+				</button>
+				<button type="button" onClick={() => setComponentMode("dynamic")} style={{ margin: "5px", padding: "10px" }}>
+					Dynamic Component
+				</button>
+
 				<h2>Select Provider:</h2>
 				{providers.map((provider) => (
 					<button
@@ -49,18 +63,18 @@ export function App() {
 			</div>
 
 			<div style={{ marginTop: "20px" }}>
-				{currentProvider === "turnstile" && <TurnstileTest />}
-				{currentProvider === "hcaptcha" && <HCaptchaTest />}
-				{currentProvider === "recaptcha" && <RecaptchaTest />}
-				{currentProvider === "recaptcha-v3" && <RecaptchaV3Test />}
-				{currentProvider === "friendly-captcha" && <FriendlyCaptchaTest />}
-				{currentProvider === "private-captcha" && <PrivateCaptchaTest />}
-				{currentProvider === "captcha-fox" && <CaptchaFoxTest />}
-				{currentProvider === "prosopo" && <ProsopoTest />}
-				{currentProvider === "cap-widget" && <CapWidgetTest />}
-				{currentProvider === "altcha" && <AltchaTest />}
-				{currentProvider === "geetest" && <GeetestTest />}
-				{currentProvider === "t-sec" && <TSecTest />}
+				{currentProvider === "turnstile" && <TurnstileTest mode={componentMode} />}
+				{currentProvider === "hcaptcha" && <HCaptchaTest mode={componentMode} />}
+				{currentProvider === "recaptcha" && <RecaptchaTest mode={componentMode} />}
+				{currentProvider === "recaptcha-v3" && <RecaptchaV3Test mode={componentMode} />}
+				{currentProvider === "friendly-captcha" && <FriendlyCaptchaTest mode={componentMode} />}
+				{currentProvider === "private-captcha" && <PrivateCaptchaTest mode={componentMode} />}
+				{currentProvider === "captcha-fox" && <CaptchaFoxTest mode={componentMode} />}
+				{currentProvider === "prosopo" && <ProsopoTest mode={componentMode} />}
+				{currentProvider === "cap-widget" && <CapWidgetTest mode={componentMode} />}
+				{currentProvider === "altcha" && <AltchaTest mode={componentMode} />}
+				{currentProvider === "geetest" && <GeetestTest mode={componentMode} />}
+				{currentProvider === "t-sec" && <TSecTest mode={componentMode} />}
 			</div>
 		</div>
 	);

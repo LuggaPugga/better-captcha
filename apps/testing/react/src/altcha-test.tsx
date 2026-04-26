@@ -1,7 +1,8 @@
 import { type RenderParameters, Altcha, type AltchaHandle } from "@better-captcha/react/provider/altcha";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function AltchaTest() {
+export function AltchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const altchaRef = useRef<AltchaHandle>(null);
 	const [options, setOptions] = useState<RenderParameters>(() => {
 		return {};
@@ -21,7 +22,7 @@ export function AltchaTest() {
 
 	return (
 		<div>
-			<Altcha
+			<RenderCaptcha mode={mode} provider="altcha" component={Altcha}
 				ref={altchaRef}
 				options={options}
 				endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"

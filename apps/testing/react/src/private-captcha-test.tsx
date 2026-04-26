@@ -4,8 +4,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/react/provider/private-captcha";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function PrivateCaptchaTest() {
+export function PrivateCaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<PrivateCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -29,7 +30,7 @@ export function PrivateCaptchaTest() {
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha ref={turnstileRef} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options} onSolve={handleSolve} />
+				<RenderCaptcha mode={mode} provider="private-captcha" component={PrivateCaptcha} ref={turnstileRef} sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee" options={options} onSolve={handleSolve} />
 			</form>
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
