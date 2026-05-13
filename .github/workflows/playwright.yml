@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       matrix:
         project: [react, solidjs, vue, qwik, svelte, lit, preact] 
@@ -22,22 +23,19 @@ jobs:
       - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build Core
-        run: cd packages/core && bun run build
+        run: bun --cwd packages/core run build
 
       - name: Build package
-        run: cd packages/${{ matrix.project }} && bun run build
-
-      - name: Install package dependencies
-        run: bun install
+        run: bun --cwd packages/${{ matrix.project }} run build
 
       - name: Install Playwright Browsers
-        run: cd packages/${{ matrix.project }} && bunx playwright install --with-deps
+        run: bun --cwd packages/${{ matrix.project }}x playwright install
 
       - name: Run Playwright tests
-        run: cd packages/${{ matrix.project }} && bunx playwright test
+        run: bun --cwd packages/${{ matrix.project }}x playwright test
 
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
