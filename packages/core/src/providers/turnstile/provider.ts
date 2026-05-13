@@ -45,10 +45,10 @@ export class TurnstileProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 		if (this.config.scriptOptions?.autoLoad !== false) {
 			await loadScript(scriptUrl, {
+				scriptOptions: this.config.scriptOptions,
 				async: true,
 				defer: true,
 				callbackName: TURNSTILE_ONLOAD_CALLBACK,
-				timeout: this.config.scriptOptions?.timeout,
 			});
 		}
 	}

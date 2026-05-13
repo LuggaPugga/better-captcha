@@ -35,10 +35,10 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 		if (this.config.scriptOptions?.autoLoad !== false) {
 			const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
 			await loadScript(scriptUrl, {
+				scriptOptions: this.config.scriptOptions,
 				type: "module",
 				async: true,
 				defer: true,
-				timeout: this.config.scriptOptions?.timeout,
 			});
 		}
 

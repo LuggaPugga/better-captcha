@@ -1,3 +1,5 @@
+import type { ScriptOptions } from "../provider";
+
 export interface LoadScriptOptions {
 	callbackName?: string;
 	onCallback?: (...args: unknown[]) => void;
@@ -5,6 +7,29 @@ export interface LoadScriptOptions {
 	async?: boolean;
 	defer?: boolean;
 	type?: "module" | "text/javascript";
+	nonce?: string;
+	integrity?: string;
+	crossOrigin?: "" | "anonymous" | "use-credentials" | null;
+	referrerPolicy?: HTMLScriptElement["referrerPolicy"];
+	fetchPriority?: "high" | "low" | "auto";
+	scriptAttributes?: Record<string, string>;
+}
+
+export type LoadScriptCallOptions = LoadScriptOptions & {
+	scriptOptions?: ScriptOptions;
+};
+
+export function scriptOptionsToLoadOptions(scriptOptions?: ScriptOptions): Partial<LoadScriptOptions> {
+	if (!scriptOptions) return {};
+	const out: Partial<LoadScriptOptions> = {};
+	if (scriptOptions.timeout !== undefined) out.timeout = scriptOptions.timeout;
+	if (scriptOptions.nonce !== undefined) out.nonce = scriptOptions.nonce;
+	if (scriptOptions.integrity !== undefined) out.integrity = scriptOptions.integrity;
+	if (scriptOptions.crossOrigin !== undefined) out.crossOrigin = scriptOptions.crossOrigin;
+	if (scriptOptions.referrerPolicy !== undefined) out.referrerPolicy = scriptOptions.referrerPolicy;
+	if (scriptOptions.fetchPriority !== undefined) out.fetchPriority = scriptOptions.fetchPriority;
+	if (scriptOptions.scriptAttributes !== undefined) out.scriptAttributes = scriptOptions.scriptAttributes;
+	return out;
 }
 
 const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
@@ -45,6 +70,18 @@ export class ScriptLoader {
 			defer: options.defer ?? false,
 			type: options.type ?? "text/javascript",
 		});
+		if (options.nonce !== undefined) script.nonce = options.nonce;
+		if (options.integrity !== undefined) script.integrity = options.integrity;
+		if (options.crossOrigin !== undefined) script.crossOrigin = options.crossOrigin;
+		if (options.referrerPolicy !== undefined) script.referrerPolicy = options.referrerPolicy;
+		if (options.fetchPriority !== undefined) {
+			(script as HTMLScriptElement & { fetchPriority?: string }).fetchPriority = options.fetchPriority;
+		}
+		if (options.scriptAttributes) {
+			for (const [name, value] of Object.entries(options.scriptAttributes)) {
+				script.setAttribute(name, value);
+			}
+		}
 
 		return new Promise<void>((resolve, reject) => {
 			const timer = setTimeout(() => {
@@ -72,17 +109,20 @@ export class ScriptLoader {
 		return callback ? Promise.all([promise, callback]).then(() => undefined) : promise;
 	}
 
-	loadScript(src: string, options: LoadScriptOptions = {}): Promise<void> {
+	loadScript(src: string, options: LoadScriptCallOptions = {}): Promise<void> {
+		const { scriptOptions: so, ...rest } = options;
+		const merged: LoadScriptOptions = { ...scriptOptionsToLoadOptions(so), ...rest };
+
 		if (this.loaded.has(src) || (isBrowser && document.querySelector(`script[src="${src}"]`))) {
 			if (!this.loaded.has(src)) this.loaded.add(src);
-			options.onCallback?.();
+			merged.onCallback?.();
 			return Promise.resolve();
 		}
 
 		const existing = this.pending.get(src);
-		if (existing) return this.withCallback(existing, this.setupCallback(options));
+		if (existing) return this.withCallback(existing, this.setupCallback(merged));
 
-		const finalPromise = this.withCallback(this.createScript(src, options), this.setupCallback(options));
+		const finalPromise = this.withCallback(this.createScript(src, merged), this.setupCallback(merged));
 		this.pending.set(src, finalPromise);
 		finalPromise.finally(() => this.pending.delete(src));
 

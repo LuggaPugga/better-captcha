@@ -14,6 +14,12 @@ export interface ScriptOptions {
 	 * Defaults to undefined.
 	 */
 	overrideScriptUrl?: string;
+	nonce?: string;
+	integrity?: string;
+	crossOrigin?: "" | "anonymous" | "use-credentials" | null;
+	referrerPolicy?: HTMLScriptElement["referrerPolicy"];
+	fetchPriority?: "high" | "low" | "auto";
+	scriptAttributes?: Record<string, string>;
 }
 
 export interface ProviderConfig {

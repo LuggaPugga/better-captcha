@@ -14,15 +14,23 @@ Every Better CAPTCHA component accepts a `scriptOptions` prop to control how pro
 | `autoLoad` | `boolean` | `true` | Whether to automatically load the provider script |
 | `timeout` | `number` | `15000` | Maximum time (in milliseconds) to wait for script loading |
 | `overrideScriptUrl` | `string` | `undefined` | Override the default script URL with a custom one |
+| `nonce` | `string` | `undefined` | Value for the injected script element's `nonce` attribute (Content Security Policy) |
+| `integrity` | `string` | `undefined` | Subresource integrity hash for the injected script (`integrity` attribute) |
+| `crossOrigin` | `"" \| "anonymous" \| "use-credentials" \| null` | `undefined` | `crossOrigin` on the injected script element |
+| `referrerPolicy` | `ReferrerPolicy` | `undefined` | `referrerPolicy` on the injected script element |
+| `fetchPriority` | `"high" \| "low" \| "auto"` | `undefined` | `fetchPriority` hint on the injected script element (where supported) |
+| `scriptAttributes` | `Record<string, string>` | `undefined` | Extra attributes set on the injected script element via `setAttribute` (for example `data-*` values) |
 
 ### Auto Load
 
 Set `autoLoad: false` if you prefer to inject the provider script yourself. This is useful when:
 
 - You want to load scripts through a custom script loader
-- You need to add custom attributes to the script tag
-- You're using a CSP policy that requires specific script handling
+- You need full control over where and when the script tag is inserted in the document
+- You're using a CSP policy that requires specific script handling that cannot be satisfied by the built-in loader
 - You want to optimize script loading with your own strategy
+
+When `autoLoad` is `true` (the default), you can still pass `nonce`, `integrity`, `referrerPolicy`, and other script fields through `scriptOptions`; they are applied to the dynamically created `<script>` element.
 
 <Callout type="warn">
 When `autoLoad` is disabled, ensure the provider script is available globally before the component mounts or before calling `render()`.
@@ -48,6 +56,19 @@ Use `overrideScriptUrl` to load the provider script from a custom URL instead of
 <Callout type="info">
   When using `overrideScriptUrl`, make sure the custom URL points to a compatible version of the provider script. The URL should be the full path to the script file.
 </Callout>
+
+### Script tag attributes
+
+These options only apply when `autoLoad` is not `false`. They map to properties or attributes on the `<script>` element the library appends to `document.head`.
+
+- **`nonce`**: Required by many CSP setups that use `script-src 'nonce-…'`. Use the same nonce your server emits for other inline or dynamic scripts.
+- **`integrity`**: Use with a hash from your CSP or supply chain tooling; the URL you load must match the hash.
+- **`crossOrigin`**: Set CORS mode for the script request (for example `"anonymous"` when you need CORS-enabled error reporting).
+- **`referrerPolicy`**: Controls the `Referrer-Policy` for the script request (browser type: `ReferrerPolicy`).
+- **`fetchPriority`**: Optional priority hint (`"high"`, `"low"`, or `"auto"`).
+- **`scriptAttributes`**: Arbitrary string attributes (for example `{ "data-captcha-loader": "app" }`). Values are passed to `setAttribute`. Avoid overriding `src` unless you know the loader URL and your attributes stay consistent.
+
+If you import `loadScript` from `@better-captcha/core` directly, pass provider-level options under `scriptOptions` so they merge with per-call options (for example `loadScript(url, { scriptOptions: { nonce }, async: true })`).
 
 ## Usage
 
@@ -180,6 +201,31 @@ Load the script from a custom URL:
     autoLoad: false,
     timeout: 30000,
     overrideScriptUrl: "https://custom-cdn.com/recaptcha/api.js"
+  }}
+/>
+```
+
+### CSP nonce on the provider script
+
+Use the nonce your framework or middleware added to the request (example shows a placeholder):
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{
+    nonce: cspNonceFromRequest,
+    referrerPolicy: "strict-origin-when-cross-origin",
+  }}
+/>
+```
+
+### Extra attributes
+
+```tsx
+<ReCaptcha
+  sitekey="your-site-key"
+  scriptOptions={{
+    scriptAttributes: { "data-app": "checkout" },
   }}
 />
 ```

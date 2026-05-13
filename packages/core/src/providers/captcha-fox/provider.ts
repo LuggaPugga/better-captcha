@@ -36,10 +36,10 @@ export class CaptchaFoxProvider extends Provider<
 		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
 		if (this.config.scriptOptions?.autoLoad !== false) {
 			await loadScript(scriptUrl, {
+				scriptOptions: this.config.scriptOptions,
 				type: "module",
 				async: true,
 				defer: true,
-				timeout: this.config.scriptOptions?.timeout,
 			});
 		}
 	}

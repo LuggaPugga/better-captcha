@@ -35,10 +35,10 @@ export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters,
 
 		if (this.config.scriptOptions?.autoLoad !== false) {
 			await loadScript(scriptUrl, {
+				scriptOptions: this.config.scriptOptions,
 				async: true,
 				defer: true,
 				callbackName: HCAPTCHA_ONLOAD_CALLBACK,
-				timeout: this.config.scriptOptions?.timeout,
 			});
 		}
 	}

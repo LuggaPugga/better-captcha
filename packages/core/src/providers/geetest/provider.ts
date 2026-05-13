@@ -36,9 +36,9 @@ export class GeetestProvider extends Provider<
 
 		if (this.config.scriptOptions?.autoLoad !== false) {
 			await loadScript(scriptUrl, {
+				scriptOptions: this.config.scriptOptions,
 				async: true,
 				defer: true,
-				timeout: this.config.scriptOptions?.timeout,
 			});
 		}
 	}
