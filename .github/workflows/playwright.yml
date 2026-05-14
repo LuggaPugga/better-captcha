@@ -32,7 +32,7 @@ jobs:
         run: bun run --cwd packages/${{ matrix.project }} build
 
       - name: Install Playwright Browsers
-        run: bun --cwd packages/${{ matrix.project }} playwright install
+        run: bun --cwd packages/${{ matrix.project }} playwright install --with-deps
 
       - name: Run Playwright tests
         run: bun --cwd packages/${{ matrix.project }} playwright test
