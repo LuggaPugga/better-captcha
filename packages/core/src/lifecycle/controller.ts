@@ -34,8 +34,6 @@ export class CaptchaController<
 	private provider: TProvider | null = null;
 	private widgetId: WidgetId | null = null;
 	private renderToken = 0;
-	private isRendering = false;
-	private pendingRender = false;
 	private state: CaptchaState = {
 		loading: false,
 		error: null,
@@ -103,7 +101,12 @@ export class CaptchaController<
 	}
 
 	/**
-	 * Render the captcha widget
+	 * Render the captcha widget.
+	 *
+	 * Each call starts a new render with a fresh token. If another `render()`
+	 * is called (or `cleanup()` is invoked) before this one finishes, the
+	 * in-flight render aborts at the next checkpoint without touching shared
+	 * state, so the latest call always wins.
 	 */
 	async render(): Promise<void> {
 		if (!this.hostElement) {
@@ -117,15 +120,7 @@ export class CaptchaController<
 			return;
 		}
 
-		if (this.isRendering) {
-			this.pendingRender = true;
-			return;
-		}
-
-		this.isRendering = true;
-		this.pendingRender = false;
 		this.cleanup();
-
 		const token = ++this.renderToken;
 		this.updateState({ loading: true, error: null, ready: false });
 
@@ -134,40 +129,26 @@ export class CaptchaController<
 		try {
 			const activeProvider = this.providerFactory(this.identifier, this.scriptOptions);
 			await activeProvider.init();
-
-			// Check if render was cancelled
-			if (token !== this.renderToken) {
-				this.isRendering = false;
-				return;
-			}
+			if (token !== this.renderToken) return;
 
 			mountTarget = document.createElement("div");
 			this.hostElement.appendChild(mountTarget);
 
 			const callbacks: CaptchaCallbacks<TSolve> = {
 				onReady: () => {
-					if (token === this.renderToken) {
-						this.callbacks?.onReady?.();
-					}
+					if (token === this.renderToken) this.callbacks?.onReady?.();
 				},
 				onSolve: (solveToken: TSolve) => {
-					if (token === this.renderToken) {
-						this.callbacks?.onSolve?.(solveToken);
-					}
+					if (token === this.renderToken) this.callbacks?.onSolve?.(solveToken);
 				},
 				onError: (err: Error | string) => {
-					if (token === this.renderToken) {
-						this.callbacks?.onError?.(err);
-					}
+					if (token === this.renderToken) this.callbacks?.onError?.(err);
 				},
 			};
 
 			const id = await activeProvider.render(mountTarget, this.options, callbacks);
-
-			// Check if render was cancelled
 			if (token !== this.renderToken) {
 				mountTarget.remove();
-				this.isRendering = false;
 				return;
 			}
 
@@ -177,32 +158,23 @@ export class CaptchaController<
 			this.updateState({ loading: false, error: null, ready: true });
 		} catch (error) {
 			mountTarget?.remove();
-
-			// Check if render was cancelled
-			if (token !== this.renderToken) {
-				this.isRendering = false;
-				return;
-			}
+			if (token !== this.renderToken) return;
 
 			const err = error instanceof Error ? error : new Error(String(error));
 			console.error("[better-captcha] render:", err);
 			this.updateState({ loading: false, error: err, ready: false });
 			this.callbacks?.onError?.(err);
-		} finally {
-			this.isRendering = false;
-			if (this.pendingRender) {
-				this.pendingRender = false;
-				queueMicrotask(() => {
-					void this.render();
-				});
-			}
 		}
 	}
 
 	/**
-	 * Clean up resources and destroy the widget
+	 * Clean up resources and destroy the widget.
+	 *
+	 * Bumps the render token so any in-flight render aborts at its next
+	 * checkpoint instead of clobbering state after we've torn down.
 	 */
 	cleanup(): void {
+		this.renderToken++;
 		if (this.provider && this.widgetId != null) {
 			try {
 				this.provider.destroy(this.widgetId);
