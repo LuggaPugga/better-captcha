@@ -1,10 +1,10 @@
 import type {
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-	WidgetId,
+    CaptchaHandle,
+    CaptchaState,
+    Provider,
+    ProviderConfig,
+    ScriptOptions,
+    WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import type { NoSerialize, QRL } from "@builder.io/qwik";
@@ -205,9 +205,13 @@ export function createCaptchaComponent<
 			}
 		});
 
-		const elementId = useComputed$(() =>
-			widgetId.value != null ? `better-captcha-${widgetId.value}` : "better-captcha-loading",
-		);
+		const elementId = useSignal("better-captcha-loading");
+
+		useTask$(({ track }) => {
+			track(widgetId);
+			elementId.value =
+				widgetId.value != null ? `better-captcha-${widgetId.value}` : "better-captcha-loading";
+		});
 
 		return (
 			<div
