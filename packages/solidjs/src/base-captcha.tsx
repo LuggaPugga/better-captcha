@@ -7,17 +7,7 @@ import type {
 	WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
-import {
-	batch,
-	createEffect,
-	createMemo,
-	createSignal,
-	type JSX,
-	onCleanup,
-	onMount,
-	splitProps,
-	untrack,
-} from "solid-js";
+import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, splitProps, untrack } from "solid-js";
 import type { CaptchaProps } from "./index";
 
 const BASE_KEYS = [
@@ -63,8 +53,6 @@ export function createCaptchaComponent<
 
 		const isLoading = createMemo(() => (autoRender() ? state().loading || !state().ready : state().loading));
 
-		let hasRendered = false;
-
 		const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle, TProvider>(
 			(id, script) => new ProviderClass(id, script),
 		);
@@ -73,15 +61,20 @@ export function createCaptchaComponent<
 			batch(() => {
 				setState(newState);
 				setWidgetId(controller.getWidgetId());
-				if (newState.ready) hasRendered = true;
 			});
 		});
+
+		const renderCaptcha = async () => {
+			await controller.render();
+			setWidgetId(controller.getWidgetId());
+		};
 
 		createEffect(() => {
 			const el = elementRef();
 			const id = identifier();
 			const opts = props.options;
 			const sOpts = props.scriptOptions;
+			const shouldAutoRender = autoRender();
 
 			controller.attachHost(el ?? null);
 			controller.setIdentifier(id);
@@ -96,27 +89,10 @@ export function createCaptchaComponent<
 					props.onError?.(error);
 				},
 			});
-		});
 
-		const renderCaptcha = async () => {
-			await controller.render();
-			setWidgetId(controller.getWidgetId());
-		};
-
-		onMount(() => {
-			if (autoRender()) void renderCaptcha();
-		});
-
-		createEffect(() => {
-			identifier();
-			props.options;
-			props.scriptOptions;
-
-			untrack(() => {
-				if (autoRender() && (hasRendered || state().error)) {
-					void renderCaptcha();
-				}
-			});
+			if (shouldAutoRender) {
+				void renderCaptcha();
+			}
 		});
 
 		createEffect(() => {
