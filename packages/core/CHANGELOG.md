@@ -1,5 +1,11 @@
 # @better-captcha/core
 
+## 0.8.0
+
+### Minor Changes
+
+- e086e52: feat: allow more flexible ScriptOptions for CSP
+
 ## 0.7.0
 
 ### Minor Changes
