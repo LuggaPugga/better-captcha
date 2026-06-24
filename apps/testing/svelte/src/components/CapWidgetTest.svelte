@@ -2,8 +2,11 @@
 	import type { RenderParameters, CapWidgetHandle } from "@better-captcha/svelte/provider/cap-widget";
 	import CapWidget from "@better-captcha/svelte/provider/cap-widget";
 	import { writable } from "svelte/store";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: CapWidget | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -49,7 +52,17 @@
 
 <div>
 	<h3>CapWidget Test</h3>
-	<CapWidget bind:this={captchaRef} endpoint="https://captcha.gurl.eu.org/api/" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="cap-widget"
+		component={CapWidget}
+		bind:this={captchaRef}
+		endpoint="https://captcha.gurl.eu.org/api/"
+		{options}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

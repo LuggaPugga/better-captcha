@@ -2,8 +2,11 @@
 	import type { FriendlyCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/friendly-captcha";
 	import FriendlyCaptcha from "@better-captcha/svelte/provider/friendly-captcha";
 	import { writable } from "svelte/store";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: FriendlyCaptcha | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -58,7 +61,17 @@
 
 <div>
 	<h3>Friendly Captcha Test</h3>
-	<FriendlyCaptcha bind:this={captchaRef} sitekey="FCMGEMUD5P6765JJ" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="friendly-captcha"
+		component={FriendlyCaptcha}
+		bind:this={captchaRef}
+		sitekey="FCMGEMUD5P6765JJ"
+		{options}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

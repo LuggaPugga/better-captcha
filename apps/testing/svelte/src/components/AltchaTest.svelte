@@ -2,8 +2,11 @@
 	import type { RenderParameters, AltchaHandle } from "@better-captcha/svelte/provider/altcha";
 	import Altcha from "@better-captcha/svelte/provider/altcha";
 	import { writable } from "svelte/store";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: Altcha | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -49,7 +52,17 @@
 
 <div>
 	<h3>Altcha Test</h3>
-	<Altcha bind:this={captchaRef} endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="altcha"
+		component={Altcha}
+		bind:this={captchaRef}
+		endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"
+		{options}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

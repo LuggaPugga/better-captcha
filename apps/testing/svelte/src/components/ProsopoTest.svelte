@@ -2,8 +2,11 @@
 	import type { ProsopoHandle, RenderParameters } from "@better-captcha/svelte/provider/prosopo";
 	import Prosopo from "@better-captcha/svelte/provider/prosopo";
 	import { writable } from "svelte/store";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: Prosopo | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -59,7 +62,17 @@
 
 <div>
 	<h3>Prosopo Test</h3>
-	<Prosopo bind:this={captchaRef} sitekey="5Hxxxxxxxxxxxxxxxxxxx_xxx" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="prosopo"
+		component={Prosopo}
+		bind:this={captchaRef}
+		sitekey="5Hxxxxxxxxxxxxxxxxxxx_xxx"
+		{options}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

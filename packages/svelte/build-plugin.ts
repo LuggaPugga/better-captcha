@@ -109,7 +109,7 @@ export type { ${handleType}, ${renderParamsType}${extraTypeExports} };
 export const unpluginFactory: UnpluginFactory<undefined> = () => ({
 	name: "better-captcha-svelte",
 	rollup: {
-		generateBundle() {
+		generateBundle(_options, bundle) {
 			this.emitFile({
 				type: "asset",
 				fileName: "base-captcha.svelte",
@@ -120,6 +120,24 @@ export const unpluginFactory: UnpluginFactory<undefined> = () => ({
 				type: "asset",
 				fileName: "base-captcha.svelte.d.ts",
 				source: fs.readFileSync(path.join(__dirname, "src/base-captcha.svelte.d.ts"), "utf-8"),
+			});
+
+			this.emitFile({
+				type: "asset",
+				fileName: "better-captcha.svelte",
+				source: fs.readFileSync(path.join(__dirname, "src/better-captcha.svelte"), "utf-8"),
+			});
+
+			this.emitFile({
+				type: "asset",
+				fileName: "better-captcha.svelte.d.ts",
+				source: fs.readFileSync(path.join(__dirname, "src/better-captcha.svelte.d.ts"), "utf-8"),
+			});
+
+			this.emitFile({
+				type: "asset",
+				fileName: "better-captcha.js",
+				source: 'export { default as BetterCaptcha } from "./better-captcha.svelte";\n',
 			});
 
 			for (const provider of PROVIDER_REGISTRY) {
@@ -155,6 +173,20 @@ export const unpluginFactory: UnpluginFactory<undefined> = () => ({
 				fileName: "provider/index.d.ts",
 				source: aggregate.dts,
 			});
+
+			const indexChunk = bundle["index.js"];
+			if (indexChunk?.type === "chunk") {
+				indexChunk.code += '\nexport { BetterCaptcha } from "./better-captcha.js";\n';
+			}
+		},
+		closeBundle() {
+			const indexDtsPath = path.join(__dirname, "dist/index.d.ts");
+			if (fs.existsSync(indexDtsPath)) {
+				const content = fs.readFileSync(indexDtsPath, "utf-8");
+				if (!content.includes("BetterCaptcha")) {
+					fs.appendFileSync(indexDtsPath, '\nexport { default as BetterCaptcha } from "./better-captcha.svelte";\n');
+				}
+			}
 		},
 	},
 });

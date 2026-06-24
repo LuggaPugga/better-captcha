@@ -2,8 +2,11 @@
 	import type { CaptchaFoxHandle, RenderParameters } from "@better-captcha/svelte/provider/captcha-fox";
 	import CaptchaFox from "@better-captcha/svelte/provider/captcha-fox";
 	import { writable } from "svelte/store";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: CaptchaFox | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -62,7 +65,17 @@
 
 <div>
 	<h3>Captcha Fox Test</h3>
-	<CaptchaFox bind:this={captchaRef} sitekey="sk_11111111000000001111111100000000" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="captcha-fox"
+		component={CaptchaFox}
+		bind:this={captchaRef}
+		sitekey="sk_11111111000000001111111100000000"
+		{options}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

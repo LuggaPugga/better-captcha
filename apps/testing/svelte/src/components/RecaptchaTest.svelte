@@ -2,8 +2,11 @@
 	import type { ReCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/recaptcha";
 	import ReCaptcha from "@better-captcha/svelte/provider/recaptcha";
 	import { writable } from "svelte/store";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: ReCaptcha | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -59,7 +62,10 @@
 
 <div>
 	<h3>reCAPTCHA Test</h3>
-	<ReCaptcha
+	<RenderCaptcha
+		{mode}
+		provider="recaptcha"
+		component={ReCaptcha}
 		bind:this={captchaRef}
 		sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 		{options}

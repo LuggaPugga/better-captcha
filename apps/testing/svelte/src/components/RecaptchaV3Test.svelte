@@ -1,8 +1,11 @@
 <script lang="ts">
 	import type { ReCaptchaV3Handle, RenderParameters } from "@better-captcha/svelte/provider/recaptcha-v3";
 	import ReCaptchaV3 from "@better-captcha/svelte/provider/recaptcha-v3";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
 
-	let captchaRef: ReCaptchaV3 | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha | undefined;
 	let response = $state<string | null>(null);
 	let error = $state<Error | null>(null);
 	let solved = $state<boolean>(false);
@@ -57,7 +60,10 @@
 
 <div>
 	<h3>reCAPTCHA v3 Test</h3>
-	<ReCaptchaV3
+	<RenderCaptcha
+		{mode}
+		provider="recaptcha-v3"
+		component={ReCaptchaV3}
 		bind:this={captchaRef}
 		sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 		{options}
