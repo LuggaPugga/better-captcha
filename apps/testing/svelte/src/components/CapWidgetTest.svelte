@@ -2,11 +2,12 @@
 	import type { RenderParameters, CapWidgetHandle } from "@better-captcha/svelte/provider/cap-widget";
 	import CapWidget from "@better-captcha/svelte/provider/cap-widget";
 	import { writable } from "svelte/store";
-	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
 	let { mode }: { mode: CaptchaComponentMode } = $props();
 
-	let captchaRef: RenderCaptcha | undefined;
+	let captchaRef: RenderCaptcha<CapWidgetHandle> | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);

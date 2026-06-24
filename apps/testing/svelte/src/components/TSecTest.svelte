@@ -2,11 +2,12 @@
 	import type { TSecHandle } from "@better-captcha/svelte/provider/t-sec";
 	import TSec from "@better-captcha/svelte/provider/t-sec";
 	import { writable } from "svelte/store";
-	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
 	let { mode }: { mode: CaptchaComponentMode } = $props();
 
-	let captchaRef: RenderCaptcha | undefined;
+	let captchaRef: RenderCaptcha<TSecHandle> | undefined;
 	const response = writable<ReturnType<TSecHandle['getResponse']>>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);

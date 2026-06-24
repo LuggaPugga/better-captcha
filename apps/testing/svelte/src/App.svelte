@@ -12,7 +12,7 @@
 	import TSecTest from "./components/TSecTest.svelte";
 	import TurnstileTest from "./components/TurnstileTest.svelte";
 	import GeetestTest from "./components/GeetestTest.svelte";
-	import type { CaptchaComponentMode } from "./components/render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./components/render-captcha.types";
 
 	function getInitialComponentMode(): CaptchaComponentMode {
 		const mode = new URLSearchParams(window.location.search).get("componentMode");

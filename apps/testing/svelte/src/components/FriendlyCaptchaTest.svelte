@@ -2,11 +2,12 @@
 	import type { FriendlyCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/friendly-captcha";
 	import FriendlyCaptcha from "@better-captcha/svelte/provider/friendly-captcha";
 	import { writable } from "svelte/store";
-	import RenderCaptcha, { type CaptchaComponentMode } from "./render-captcha.svelte";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
 	let { mode }: { mode: CaptchaComponentMode } = $props();
 
-	let captchaRef: RenderCaptcha | undefined;
+	let captchaRef: RenderCaptcha<FriendlyCaptchaHandle> | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
