@@ -1,14 +1,16 @@
 import { ReCaptcha, type ReCaptchaHandle } from "@better-captcha/lit/provider/recaptcha";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 ReCaptcha;
-
-type ReCaptchaCaptchaElement = LitElement & { getHandle: () => ReCaptchaHandle };
+type ReCaptchaCaptchaElement = CaptchaRefElement<ReCaptchaHandle>;
 
 @customElement("recaptcha-test")
 export class RecaptchaTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<ReCaptchaCaptchaElement> = createRef();
 
 	@state()
@@ -63,12 +65,22 @@ export class RecaptchaTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<recaptcha-captcha
-					${ref(this.captchaRef)}
-					sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></recaptcha-captcha>
+				${renderCaptcha<string, ReCaptchaHandle>({
+					mode: this.mode,
+					provider: "recaptcha",
+					captchaRef: this.captchaRef,
+					sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<recaptcha-captcha
+							${ref(this.captchaRef)}
+							sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></recaptcha-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

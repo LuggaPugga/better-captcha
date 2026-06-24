@@ -1,14 +1,16 @@
 import { PrivateCaptcha, type PrivateCaptchaHandle } from "@better-captcha/lit/provider/private-captcha";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 PrivateCaptcha;
-
-type PrivateCaptchaCaptchaElement = LitElement & { getHandle: () => PrivateCaptchaHandle };
+type PrivateCaptchaCaptchaElement = CaptchaRefElement<PrivateCaptchaHandle>;
 
 @customElement("private-captcha-test")
 export class PrivateCaptchaTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<PrivateCaptchaCaptchaElement> = createRef();
 
 	@state()
@@ -65,12 +67,22 @@ export class PrivateCaptchaTest extends LitElement {
 		return html`
 			<div>
 				<form>
-					<private-captcha-widget
-						${ref(this.captchaRef)}
-						sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
-						.options=${this.options}
-						.onSolve=${this.handleSolve}
-					></private-captcha-widget>
+					${renderCaptcha<string, PrivateCaptchaHandle>({
+						mode: this.mode,
+						provider: "private-captcha",
+						captchaRef: this.captchaRef,
+						sitekey: "aaaaaaaabbbbccccddddeeeeeeeeeeee",
+						options: this.options,
+						onSolve: this.handleSolve,
+						dedicated: () => html`
+							<private-captcha-widget
+								${ref(this.captchaRef)}
+								sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
+								.options=${this.options}
+								.onSolve=${this.handleSolve}
+							></private-captcha-widget>
+						`,
+					})}
 				</form>
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>

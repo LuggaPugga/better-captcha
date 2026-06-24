@@ -1,15 +1,19 @@
 import { Geetest, type GeetestHandle, type GeetestSolveResponse } from "@better-captcha/lit/provider/geetest";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 Geetest;
 
-type GeetestCaptchaElement = LitElement & { getHandle: () => GeetestHandle };
 type GeetestResponse = ReturnType<GeetestHandle["getResponse"]>;
+
+type GeetestCaptchaElement = CaptchaRefElement<GeetestHandle>;
 
 @customElement("geetest-test")
 export class GeetestTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<GeetestCaptchaElement> = createRef();
 
 	@state()
@@ -56,12 +60,22 @@ export class GeetestTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<geetest-captcha
-					${ref(this.captchaRef)}
-					sitekey="647f5ed2ed8acb4be36784e01556bb71"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></geetest-captcha>
+				${renderCaptcha<GeetestSolveResponse, GeetestHandle>({
+					mode: this.mode,
+					provider: "geetest",
+					captchaRef: this.captchaRef,
+					sitekey: "647f5ed2ed8acb4be36784e01556bb71",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<geetest-captcha
+							${ref(this.captchaRef)}
+							sitekey="647f5ed2ed8acb4be36784e01556bb71"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></geetest-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

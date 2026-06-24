@@ -1,14 +1,16 @@
 import { HCaptcha, type HCaptchaHandle } from "@better-captcha/lit/provider/hcaptcha";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 HCaptcha;
-
-type HCaptchaCaptchaElement = LitElement & { getHandle: () => HCaptchaHandle };
+type HCaptchaCaptchaElement = CaptchaRefElement<HCaptchaHandle>;
 
 @customElement("hcaptcha-test")
 export class HCaptchaTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<HCaptchaCaptchaElement> = createRef();
 
 	@state()
@@ -63,12 +65,22 @@ export class HCaptchaTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<hcaptcha-captcha
-					${ref(this.captchaRef)}
-					sitekey="10000000-ffff-ffff-ffff-000000000001"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></hcaptcha-captcha>
+				${renderCaptcha<string, HCaptchaHandle>({
+					mode: this.mode,
+					provider: "hcaptcha",
+					captchaRef: this.captchaRef,
+					sitekey: "10000000-ffff-ffff-ffff-000000000001",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<hcaptcha-captcha
+							${ref(this.captchaRef)}
+							sitekey="10000000-ffff-ffff-ffff-000000000001"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></hcaptcha-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>
