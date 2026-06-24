@@ -31,6 +31,7 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle<unknown> = Capt
 };
 
 export { createCaptchaComponent } from "./base-captcha";
+export { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 
 export type CaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHandle> = Signal<
 	NoSerialize<THandle> | null
