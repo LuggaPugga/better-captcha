@@ -1,5 +1,12 @@
 # @better-captcha/lit
 
+## 0.8.0
+
+### Patch Changes
+
+- Updated dependencies [e086e52]
+  - @better-captcha/core@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes
