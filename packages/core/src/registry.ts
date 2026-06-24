@@ -180,11 +180,3 @@ export function loadProviderClass(name: ProviderName): Promise<RuntimeProviderCl
 
 	return provider.loadProviderClass();
 }
-
-export function loadRegisteredProviderClass(name: string): Promise<RuntimeProviderClass> {
-	if (!isProviderName(name)) {
-		throw new Error(`Provider "${name}" is not registered.`);
-	}
-
-	return loadProviderClass(name);
-}

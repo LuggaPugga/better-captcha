@@ -1,14 +1,5 @@
 import type { CaptchaHandle, CaptchaResponse, ScriptOptions } from "@better-captcha/core";
 
-export type {
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-	WidgetId,
-} from "@better-captcha/core";
-
 export type CaptchaProps<
 	TOptions,
 	TSolve = string,
@@ -27,5 +18,5 @@ export type CaptchaProps<
 };
 
 export { BaseCaptcha } from "./base-captcha";
-export { BetterCaptcha } from "./dynamic-captcha";
+export { BetterCaptcha } from "./better-captcha";
 export { useCaptchaLifecycle } from "./use-captcha-lifecycle";

@@ -1,7 +1,7 @@
 "use client";
 
 import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
-import { forwardRef, useImperativeHandle, useMemo } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 
@@ -44,14 +44,13 @@ export const BaseCaptcha = forwardRef<RuntimeCaptchaHandle, RuntimeBaseCaptchaPr
 		throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
 	}
 
-	const callbacks = useMemo(() => ({ onReady, onSolve, onError }), [onReady, onSolve, onError]);
 	const { elementRef, widgetId, isLoading, controller } = useCaptchaLifecycle(
 		ProviderClass,
 		identifier,
 		scriptOptions,
 		options,
 		autoRender,
-		callbacks,
+		{ onReady, onSolve, onError },
 	);
 
 	useImperativeHandle(ref, () => controller.getHandle());

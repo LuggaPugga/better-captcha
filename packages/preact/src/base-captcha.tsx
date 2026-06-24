@@ -2,7 +2,7 @@
 
 import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
 import { forwardRef } from "preact/compat";
-import { useImperativeHandle, useMemo } from "preact/hooks";
+import { useImperativeHandle } from "preact/hooks";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 
@@ -25,15 +25,13 @@ export function createCaptchaComponent<
 			throw new Error("Either 'sitekey' or 'endpoint' prop must be provided");
 		}
 
-		const callbacks = useMemo(() => ({ onReady, onSolve, onError }), [onReady, onSolve, onError]);
-
 		const { elementRef, widgetId, isLoading, controller } = useCaptchaLifecycle(
 			ProviderClass,
 			identifier,
 			scriptOptions,
 			options,
 			autoRender,
-			callbacks,
+			{ onReady, onSolve, onError },
 		);
 
 		useImperativeHandle(ref, () => controller.getHandle());

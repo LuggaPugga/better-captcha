@@ -30,6 +30,7 @@ export function useCaptchaLifecycle<
 	},
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
+	const callbacksRef = useRef(callbacks);
 
 	const controller = useMemo(
 		() =>
@@ -51,21 +52,20 @@ export function useCaptchaLifecycle<
 
 	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
 
-	const callbacksRef = useRef(callbacks);
-
 	useEffect(() => {
 		callbacksRef.current = callbacks;
 	}, [callbacks]);
 
 	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
 
-	useEffect(() => {
-		const unsubscribe = controller.onStateChange((newState) => {
-			setState(newState);
-			setWidgetId(controller.getWidgetId());
-		});
-		return unsubscribe;
-	}, [controller]);
+	useEffect(
+		() =>
+			controller.onStateChange((newState) => {
+				setState(newState);
+				setWidgetId(controller.getWidgetId());
+			}),
+		[controller],
+	);
 
 	useEffect(() => {
 		controller.attachHost(elementRef.current);
@@ -76,23 +76,19 @@ export function useCaptchaLifecycle<
 			onReady: () => callbacksRef.current?.onReady?.(controller.getHandle()),
 			onSolve: (token: TSolve) => callbacksRef.current?.onSolve?.(token),
 			onError: (err: Error | string) => {
-				const error = err instanceof Error ? err : new Error(String(err));
-				callbacksRef.current?.onError?.(error);
+				callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)));
 			},
 		});
+
 		if (autoRender) {
 			void controller.render();
 		}
 	}, [controller, identifier, scriptOptions, options, autoRender]);
 
+	useEffect(() => () => controller.cleanup(), [controller]);
+
 	const renderCaptcha = useCallback(async () => {
 		await controller.render();
-	}, [controller]);
-
-	useEffect(() => {
-		return () => {
-			controller.cleanup();
-		};
 	}, [controller]);
 
 	return { elementRef, state, widgetId, isLoading, renderCaptcha, controller };

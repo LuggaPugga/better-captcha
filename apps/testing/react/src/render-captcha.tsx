@@ -1,12 +1,12 @@
-import type { ComponentProps, ComponentType } from "react";
+import type { ProviderName } from "@better-captcha/core";
 import { BetterCaptcha } from "@better-captcha/react";
 
 export type CaptchaComponentMode = "dedicated" | "dynamic";
 
 type RenderCaptchaProps = {
 	mode: CaptchaComponentMode;
-	provider: ComponentProps<typeof BetterCaptcha>["provider"];
-	component: ComponentType<any>;
+	provider: ProviderName;
+	component: React.ComponentType<any>;
 } & Record<string, unknown>;
 
 export function RenderCaptcha({ mode, provider, component: Component, ...props }: RenderCaptchaProps) {

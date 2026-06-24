@@ -221,7 +221,9 @@ export class CaptchaController<
 						this.provider.reset(this.widgetId);
 					}
 				},
-				destroy: () => {},
+				destroy: () => {
+					this.cleanup();
+				},
 				render: async () => {
 					await this.render();
 				},
