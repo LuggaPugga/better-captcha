@@ -7,7 +7,6 @@ let page: Page;
 test.beforeAll(async ({ browser }, testInfo) => {
 	context = await browser.newContext();
 	page = await context.newPage();
-	await page.goto("/");
 	await selectComponentMode(page, testInfo);
 	await page.locator("button", { hasText: "Captcha Fox" }).first().click();
 });

@@ -13,9 +13,14 @@ import { GeetestTest } from "./geetest-test";
 import { TSecTest } from "./tsec-test";
 import type { CaptchaComponentMode } from "./render-captcha";
 
+function getInitialComponentMode(): CaptchaComponentMode {
+	const mode = new URLSearchParams(window.location.search).get("componentMode");
+	return mode === "dynamic" ? "dynamic" : "dedicated";
+}
+
 export function App() {
 	const [currentProvider, setCurrentProvider] = useState("turnstile");
-	const [componentMode, setComponentMode] = useState<CaptchaComponentMode>("dedicated");
+	const [componentMode, setComponentMode] = useState<CaptchaComponentMode>(getInitialComponentMode);
 
 	const providers = [
 		{ key: "turnstile", name: "Turnstile", path: "/turnstile" },

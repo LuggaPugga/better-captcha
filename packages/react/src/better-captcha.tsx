@@ -14,7 +14,10 @@ export const BetterCaptcha = forwardRef<CaptchaHandle<CaptchaResponse>, BetterCa
 	{ provider, ...props },
 	ref,
 ) {
-	const [ProviderClass, setProviderClass] = useState<RuntimeProviderClass | null>(null);
+	const [loadedProvider, setLoadedProvider] = useState<{
+		provider: ProviderName;
+		ProviderClass: RuntimeProviderClass;
+	} | null>(null);
 	const onErrorRef = useRef(props.onError);
 
 	useEffect(() => {
@@ -23,16 +26,20 @@ export const BetterCaptcha = forwardRef<CaptchaHandle<CaptchaResponse>, BetterCa
 
 	useEffect(() => {
 		if (typeof provider !== "string") {
-			setProviderClass(null);
+			setLoadedProvider(null);
+			return;
+		}
+
+		if (loadedProvider?.provider === provider) {
 			return;
 		}
 
 		let cancelled = false;
-		setProviderClass(null);
+		setLoadedProvider(null);
 
 		void loadProviderClass(provider).then(
-			(loadedProviderClass) => {
-				if (!cancelled) setProviderClass(loadedProviderClass);
+			(ProviderClass) => {
+				if (!cancelled) setLoadedProvider({ provider, ProviderClass });
 			},
 			(error: unknown) => {
 				if (cancelled) return;
@@ -44,11 +51,13 @@ export const BetterCaptcha = forwardRef<CaptchaHandle<CaptchaResponse>, BetterCa
 		return () => {
 			cancelled = true;
 		};
-	}, [provider]);
+	}, [provider, loadedProvider?.provider]);
 
 	if (typeof provider !== "string") {
 		return <BaseCaptcha ref={ref} ProviderClass={provider} {...props} />;
 	}
+
+	const ProviderClass = loadedProvider?.provider === provider ? loadedProvider.ProviderClass : null;
 
 	if (!ProviderClass) {
 		return (
