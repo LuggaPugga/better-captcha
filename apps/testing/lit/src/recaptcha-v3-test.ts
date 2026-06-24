@@ -1,14 +1,16 @@
 import { ReCaptchaV3, type ReCaptchaV3Handle } from "@better-captcha/lit/provider/recaptcha-v3";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 ReCaptchaV3;
-
-type ReCaptchaV3CaptchaElement = LitElement & { getHandle: () => ReCaptchaV3Handle };
+type ReCaptchaV3CaptchaElement = CaptchaRefElement<ReCaptchaV3Handle>;
 
 @customElement("recaptcha-v3-test")
 export class RecaptchaV3Test extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<ReCaptchaV3CaptchaElement> = createRef();
 
 	@state()
@@ -62,12 +64,22 @@ export class RecaptchaV3Test extends LitElement {
 	render() {
 		return html`
 			<div>
-				<recaptcha-v3-captcha
-					${ref(this.captchaRef)}
-					sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></recaptcha-v3-captcha>
+				${renderCaptcha<string, ReCaptchaV3Handle>({
+					mode: this.mode,
+					provider: "recaptcha-v3",
+					captchaRef: this.captchaRef,
+					sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<recaptcha-v3-captcha
+							${ref(this.captchaRef)}
+							sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></recaptcha-v3-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

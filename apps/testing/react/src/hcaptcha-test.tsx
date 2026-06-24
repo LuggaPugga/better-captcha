@@ -1,7 +1,8 @@
 import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/react/provider/hcaptcha";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function HCaptchaTest() {
+export function HCaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<HCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -24,7 +25,7 @@ export function HCaptchaTest() {
 
 	return (
 		<div>
-			<HCaptcha ref={turnstileRef} sitekey="10000000-ffff-ffff-ffff-000000000001" options={options} onSolve={handleSolve} />
+			<RenderCaptcha mode={mode} provider="hcaptcha" component={HCaptcha} ref={turnstileRef} sitekey="10000000-ffff-ffff-ffff-000000000001" options={options} onSolve={handleSolve} />
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy

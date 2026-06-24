@@ -12,14 +12,11 @@ import {
 	computed,
 	defineComponent,
 	h,
-	nextTick,
 	onBeforeUnmount,
-	onMounted,
 	type PropType,
 	ref,
 	type StyleValue,
 	watch,
-	watchEffect,
 } from "vue";
 import { CaptchaEmits, CaptchaProps } from ".";
 
@@ -68,7 +65,6 @@ export function createCaptchaComponent<
 				ready: false,
 			});
 			const widgetId = ref<WidgetId | null>(null);
-			let hasRendered = false;
 
 			const identifier = computed(() =>
 				identifierProp === "endpoint" ? props.endpoint : props.sitekey,
@@ -93,46 +89,36 @@ export function createCaptchaComponent<
 			const unsubscribeState = controller.onStateChange((newState) => {
 				state.value = newState;
 				widgetId.value = controller.getWidgetId();
-				if (newState.ready) hasRendered = true;
 			});
 
-			watchEffect(() => {
-				controller.attachHost(elementRef.value ?? null);
-				controller.setIdentifier(identifier.value);
-				controller.setScriptOptions(props.scriptOptions);
-				controller.setOptions(props.options as TOptions);
+			watch(
+				[elementRef, identifier, () => props.options, () => props.scriptOptions, () => props.autoRender],
+				() => {
+					controller.attachHost(elementRef.value ?? null);
+					controller.setIdentifier(identifier.value);
+					controller.setScriptOptions(props.scriptOptions);
+					controller.setOptions(props.options as TOptions);
 
-				controller.setCallbacks({
-					onReady: () => emit("ready", controller.getHandle()),
-					onSolve: (token: TSolve) => emit("solve", token),
-					onError: (err: any) => {
-						const error = err instanceof Error ? err : new Error(String(err));
-						emit("error", error);
-					},
-				});
-			});
+					controller.setCallbacks({
+						onReady: () => emit("ready", controller.getHandle()),
+						onSolve: (token: TSolve) => emit("solve", token),
+						onError: (err: any) => {
+							const error = err instanceof Error ? err : new Error(String(err));
+							emit("error", error);
+						},
+					});
+
+					if (props.autoRender) {
+						void controller.render();
+					}
+				},
+				{ deep: true, flush: "post" },
+			);
 
 			const renderCaptcha = async () => {
-				if (!elementRef.value || !identifier.value) return;
 				await controller.render();
 				widgetId.value = controller.getWidgetId();
 			};
-
-			watch(
-				[identifier, () => props.options, () => props.scriptOptions],
-				() => {
-					if (props.autoRender && (hasRendered || state.value.error)) {
-						void renderCaptcha();
-					}
-				},
-				{ deep: true },
-			);
-
-			onMounted(() => {
-				if (props.autoRender) {
-					nextTick(() => void renderCaptcha());
-				}
-			});
 
 			onBeforeUnmount(() => {
 				controller.cleanup();

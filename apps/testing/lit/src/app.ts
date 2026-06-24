@@ -13,10 +13,18 @@ import "./cap-widget-test.js";
 import "./geetest-test.js";
 import "./tsec-test.js";
 
+function getInitialComponentMode(): "dedicated" | "dynamic" {
+	const mode = new URLSearchParams(window.location.search).get("componentMode");
+	return mode === "dynamic" ? "dynamic" : "dedicated";
+}
+
 @customElement("app-root")
 export class App extends LitElement {
 	@state()
 	private currentProvider = "turnstile";
+
+	@state()
+	private componentMode: "dedicated" | "dynamic" = getInitialComponentMode();
 
 	// Disable shadow DOM for compatibility with captcha providers
 	protected createRenderRoot() {
@@ -44,6 +52,26 @@ export class App extends LitElement {
 				<h1>Lit Captcha Testing</h1>
 
 				<div class="provider-buttons">
+					<h2>Select Component:</h2>
+					<button
+						type="button"
+						@click=${() => {
+							this.componentMode = "dedicated";
+						}}
+						style="margin: 5px; padding: 10px;"
+					>
+						Dedicated Component
+					</button>
+					<button
+						type="button"
+						@click=${() => {
+							this.componentMode = "dynamic";
+						}}
+						style="margin: 5px; padding: 10px;"
+					>
+						Dynamic Component
+					</button>
+
 					<h2>Select Provider:</h2>
 					${this.providers.map(
 						(provider) => html`
@@ -62,18 +90,18 @@ export class App extends LitElement {
 				</div>
 
 				<div class="test-container">
-					${this.currentProvider === "turnstile" ? html`<turnstile-test></turnstile-test>` : ""}
-					${this.currentProvider === "hcaptcha" ? html`<hcaptcha-test></hcaptcha-test>` : ""}
-					${this.currentProvider === "recaptcha" ? html`<recaptcha-test></recaptcha-test>` : ""}
-					${this.currentProvider === "recaptcha-v3" ? html`<recaptcha-v3-test></recaptcha-v3-test>` : ""}
-					${this.currentProvider === "friendly-captcha" ? html`<friendly-captcha-test></friendly-captcha-test>` : ""}
-					${this.currentProvider === "private-captcha" ? html`<private-captcha-test></private-captcha-test>` : ""}
-					${this.currentProvider === "captcha-fox" ? html`<captcha-fox-test></captcha-fox-test>` : ""}
-					${this.currentProvider === "prosopo" ? html`<prosopo-test></prosopo-test>` : ""}
-					${this.currentProvider === "cap-widget" ? html`<cap-widget-test></cap-widget-test>` : ""}
-					${this.currentProvider === "altcha" ? html`<altcha-test></altcha-test>` : ""}
-					${this.currentProvider === "geetest" ? html`<geetest-test></geetest-test>` : ""}
-					${this.currentProvider === "t-sec" ? html`<tsec-test></tsec-test>` : ""}
+					${this.currentProvider === "turnstile" ? html`<turnstile-test .mode=${this.componentMode}></turnstile-test>` : ""}
+					${this.currentProvider === "hcaptcha" ? html`<hcaptcha-test .mode=${this.componentMode}></hcaptcha-test>` : ""}
+					${this.currentProvider === "recaptcha" ? html`<recaptcha-test .mode=${this.componentMode}></recaptcha-test>` : ""}
+					${this.currentProvider === "recaptcha-v3" ? html`<recaptcha-v3-test .mode=${this.componentMode}></recaptcha-v3-test>` : ""}
+					${this.currentProvider === "friendly-captcha" ? html`<friendly-captcha-test .mode=${this.componentMode}></friendly-captcha-test>` : ""}
+					${this.currentProvider === "private-captcha" ? html`<private-captcha-test .mode=${this.componentMode}></private-captcha-test>` : ""}
+					${this.currentProvider === "captcha-fox" ? html`<captcha-fox-test .mode=${this.componentMode}></captcha-fox-test>` : ""}
+					${this.currentProvider === "prosopo" ? html`<prosopo-test .mode=${this.componentMode}></prosopo-test>` : ""}
+					${this.currentProvider === "cap-widget" ? html`<cap-widget-test .mode=${this.componentMode}></cap-widget-test>` : ""}
+					${this.currentProvider === "altcha" ? html`<altcha-test .mode=${this.componentMode}></altcha-test>` : ""}
+					${this.currentProvider === "geetest" ? html`<geetest-test .mode=${this.componentMode}></geetest-test>` : ""}
+					${this.currentProvider === "t-sec" ? html`<tsec-test .mode=${this.componentMode}></tsec-test>` : ""}
 				</div>
 			</div>
 		`;

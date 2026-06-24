@@ -113,14 +113,19 @@ export class ScriptLoader {
 		const { scriptOptions: so, ...rest } = options;
 		const merged: LoadScriptOptions = { ...scriptOptionsToLoadOptions(so), ...rest };
 
-		if (this.loaded.has(src) || (isBrowser && document.querySelector(`script[src="${src}"]`))) {
-			if (!this.loaded.has(src)) this.loaded.add(src);
+		if (this.loaded.has(src)) {
 			merged.onCallback?.();
 			return Promise.resolve();
 		}
 
 		const existing = this.pending.get(src);
 		if (existing) return this.withCallback(existing, this.setupCallback(merged));
+
+		if (isBrowser && document.querySelector(`script[src="${src}"]`)) {
+			this.loaded.add(src);
+			merged.onCallback?.();
+			return Promise.resolve();
+		}
 
 		const finalPromise = this.withCallback(this.createScript(src, merged), this.setupCallback(merged));
 		this.pending.set(src, finalPromise);

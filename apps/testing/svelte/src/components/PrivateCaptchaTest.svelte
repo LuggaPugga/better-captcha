@@ -2,8 +2,12 @@
 	import type { PrivateCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/private-captcha";
 	import PrivateCaptcha from "@better-captcha/svelte/provider/private-captcha";
 	import { writable } from "svelte/store";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
-	let captchaRef: PrivateCaptcha | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha<PrivateCaptchaHandle> | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -60,7 +64,10 @@
 <div>
 	<h3>Private Captcha Test</h3>
 	<form>
-		<PrivateCaptcha
+		<RenderCaptcha
+			{mode}
+			provider="private-captcha"
+			component={PrivateCaptcha}
 			bind:this={captchaRef}
 			sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
 			{options}

@@ -8,6 +8,8 @@ type CaptchaElement<THandle> = CustomElementConstructor & {
 	new (): LitElement & { getHandle: () => THandle };
 };
 
+const SYNC_PROPS = new Set(["sitekey", "endpoint", "options", "scriptOptions", "autoRender"]);
+
 export function createCaptchaComponent<
 	TOptions = unknown,
 	TResponse = string,
@@ -46,7 +48,6 @@ export function createCaptchaComponent<
 			THandle,
 			Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>
 		>;
-		protected initialized = false;
 
 		protected get isLoading(): boolean {
 			return this.autoRender ? this.captchaState.loading || !this.captchaState.ready : this.captchaState.loading;
@@ -77,24 +78,12 @@ export function createCaptchaComponent<
 		async connectedCallback() {
 			super.connectedCallback();
 			await this.updateComplete;
-			const value = this.getValue();
-			if (!this.initialized && this.elementRef.value && value) {
-				this.configureController();
-				if (this.autoRender) {
-					void this.controller.render();
-				}
-				this.initialized = true;
-			}
+			this.syncAndRender();
 		}
 
 		disconnectedCallback() {
 			super.disconnectedCallback();
-			this.cleanup();
-		}
-
-		protected cleanup() {
 			this.controller.cleanup();
-			this.initialized = false;
 		}
 
 		protected configureController(): boolean {
@@ -123,32 +112,16 @@ export function createCaptchaComponent<
 			return true;
 		}
 
-		protected async initializeCaptcha() {
+		protected syncAndRender() {
 			if (!this.configureController()) return;
-			await this.controller.render();
+			if (this.autoRender) {
+				void this.controller.render();
+			}
 		}
 
 		updated(changedProperties: Map<string, unknown>) {
-			const value = this.getValue();
-			const identifierChanged = changedProperties.has("sitekey") || changedProperties.has("endpoint");
-			if (this.initialized && identifierChanged && value && this.autoRender) {
-				this.cleanup();
-				void this.initializeCaptcha();
-				this.initialized = true;
-			} else if (
-				this.initialized &&
-				changedProperties.has("options") &&
-				changedProperties.get("options") !== undefined &&
-				this.autoRender
-			) {
-				this.cleanup();
-				void this.initializeCaptcha();
-				this.initialized = true;
-			} else if (this.initialized && changedProperties.has("scriptOptions") && this.autoRender) {
-				this.cleanup();
-				void this.initializeCaptcha();
-				this.initialized = true;
-			}
+			if (![...changedProperties.keys()].some((key) => SYNC_PROPS.has(key))) return;
+			this.syncAndRender();
 		}
 
 		getHandle(): THandle {

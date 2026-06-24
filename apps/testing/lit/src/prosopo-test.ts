@@ -1,14 +1,16 @@
 import { Prosopo, type ProsopoHandle } from "@better-captcha/lit/provider/prosopo";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 Prosopo;
-
-type ProsopoCaptchaElement = LitElement & { getHandle: () => ProsopoHandle };
+type ProsopoCaptchaElement = CaptchaRefElement<ProsopoHandle>;
 
 @customElement("prosopo-test")
 export class ProsopoTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<ProsopoCaptchaElement> = createRef();
 
 	@state()
@@ -71,12 +73,22 @@ export class ProsopoTest extends LitElement {
 
 		return html`
 			<div>
-				<prosopo-captcha
-					${ref(this.captchaRef)}
-					sitekey="no_test_site_key"
-					.options=${options}
-					.onSolve=${this.handleSolve}
-				></prosopo-captcha>
+				${renderCaptcha<string, ProsopoHandle>({
+					mode: this.mode,
+					provider: "prosopo",
+					captchaRef: this.captchaRef,
+					sitekey: "no_test_site_key",
+					options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<prosopo-captcha
+							${ref(this.captchaRef)}
+							sitekey="no_test_site_key"
+							.options=${options}
+							.onSolve=${this.handleSolve}
+						></prosopo-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleGetResponse}>Get Response</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

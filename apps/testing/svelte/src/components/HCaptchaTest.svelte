@@ -2,8 +2,12 @@
 	import type { HCaptchaHandle, RenderParameters } from "@better-captcha/svelte/provider/hcaptcha";
 	import HCaptcha from "@better-captcha/svelte/provider/hcaptcha";
 	import { writable } from "svelte/store";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
-	let captchaRef: HCaptcha | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha<HCaptchaHandle> | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -60,14 +64,16 @@
 
 <div>
 	<h3>hCaptcha Test</h3>
-	<HCaptcha
+	<RenderCaptcha
+		{mode}
+		provider="hcaptcha"
+		component={HCaptcha}
 		bind:this={captchaRef}
 		sitekey="10000000-ffff-ffff-ffff-000000000001"
 		{options}
 		onready={onReady}
 		onerror={onError}
 		onSolve={onSolve}
-		
 	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>

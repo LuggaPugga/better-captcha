@@ -1,8 +1,12 @@
 <script lang="ts">
 	import type { GeetestHandle, GeetestSolveResponse, RenderParameters } from "@better-captcha/svelte/provider/geetest";
 	import Geetest from "@better-captcha/svelte/provider/geetest";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
-	let captchaRef: Geetest | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha<GeetestHandle, GeetestSolveResponse> | undefined;
 	let response = $state<string | null>(null);
 	let error = $state<Error | null>(null);
 	let solved = $state<boolean>(false);
@@ -50,7 +54,10 @@
 
 <div>
 	<h3>Geetest Test</h3>
-	<Geetest
+	<RenderCaptcha
+		{mode}
+		provider="geetest"
+		component={Geetest}
 		bind:this={captchaRef}
 		sitekey="647f5ed2ed8acb4be36784e01556bb71"
 		{options}

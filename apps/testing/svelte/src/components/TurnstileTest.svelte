@@ -2,8 +2,12 @@
 	import type { RenderParameters, TurnstileHandle } from "@better-captcha/svelte/provider/turnstile";
 	import Turnstile from "@better-captcha/svelte/provider/turnstile";
 	import { writable } from "svelte/store";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
-	let captchaRef: Turnstile | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha<TurnstileHandle> | undefined;
 	const response = writable<string | null>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -59,7 +63,17 @@
 
 <div>
 	<h3>Turnstile Test</h3>
-	<Turnstile bind:this={captchaRef} sitekey="1x00000000000000000000AA" {options} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="turnstile"
+		component={Turnstile}
+		bind:this={captchaRef}
+		sitekey="1x00000000000000000000AA"
+		{options}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}
