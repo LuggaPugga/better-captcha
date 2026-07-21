@@ -104,12 +104,12 @@ exports.${meta.componentName} = createCaptchaComponent($((identifier, scriptOpti
 function genProviderAggregateModuleCjs(): string {
 	return `${PROVIDER_REGISTRY.map(
 		({ name, componentName }) =>
-			`const { ${componentName} } = require("./${name}/index.qwik.cjs");\nexports.${componentName} = ${componentName};`,
+			`const { ${componentName} } = require("./${name}/index.qwik.cjs");\nexports.${componentName} = ${componentName};`
 	).join("\n")}\n`;
 }
 
 function genIndexDts(): string {
-return `import type { CaptchaHandle, CaptchaResponse, ProviderName } from "@better-captcha/core";
+	return `import type { CaptchaHandle, CaptchaResponse, ProviderName } from "@better-captcha/core";
 import type { Component, NoSerialize, QRL, Signal } from "@builder.io/qwik";
 export type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, ProviderName, ScriptOptions, WidgetId } from "@better-captcha/core";
 
@@ -145,8 +145,10 @@ export declare function useCaptchaController<THandle extends CaptchaHandle<unkno
 }
 
 function genBaseCaptchaDts(): string {
-	const generics = '<TOptions = unknown, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string, TProvider extends Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve> = Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>>';
-	const factory = 'providerFactory$: QRL<(value: string, scriptOptions?: ScriptOptions) => TProvider | Promise<TProvider>>';
+	const generics =
+		'<TOptions = unknown, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string, TProvider extends Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve> = Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>>';
+	const factory =
+		"providerFactory$: QRL<(value: string, scriptOptions?: ScriptOptions) => TProvider | Promise<TProvider>>";
 	return `import type { CaptchaHandle, Provider, ScriptOptions } from "@better-captcha/core";
 import type { Component, QRL } from "@builder.io/qwik";
 import type { CaptchaProps, CaptchaPropsWithEndpoint } from "./index";
