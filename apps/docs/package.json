@@ -24,7 +24,7 @@
 		"lucide-react": "^1.17.0",
 		"next": "^16.2.7",
 		"onedollarstats": "^0.0.23",
-		"react": "19.2.7",
+		"react": "19.2.8",
 		"react-dom": "19.2.7",
 		"shiki": "^4.0.2",
 		"tailwind-merge": "^3.5.0",
