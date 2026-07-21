@@ -25,7 +25,7 @@
 		"next": "^16.2.7",
 		"onedollarstats": "^0.0.23",
 		"react": "19.2.7",
-		"react-dom": "19.2.7",
+		"react-dom": "19.2.8",
 		"shiki": "^4.0.2",
 		"tailwind-merge": "^3.5.0",
 		"ts-morph": "^28.0.0"
