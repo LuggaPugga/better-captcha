@@ -18,5 +18,5 @@ export type CaptchaProps<
 };
 
 export { BaseCaptcha } from "./base-captcha";
-export { BetterCaptcha } from "./better-captcha";
+export { BetterCaptcha, type BetterCaptchaProps } from "./better-captcha";
 export { useCaptchaLifecycle } from "./use-captcha-lifecycle";

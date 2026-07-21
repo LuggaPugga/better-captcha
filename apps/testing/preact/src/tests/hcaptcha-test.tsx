@@ -1,7 +1,8 @@
 import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/preact/provider/hcaptcha";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function HCaptchaTest() {
+export function HCaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<HCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -24,7 +25,10 @@ export function HCaptchaTest() {
 
 	return (
 		<div>
-			<HCaptcha
+			<RenderCaptcha
+				mode={mode}
+				provider="hcaptcha"
+				component={HCaptcha}
 				ref={turnstileRef}
 				sitekey="10000000-ffff-ffff-ffff-000000000001"
 				options={options}

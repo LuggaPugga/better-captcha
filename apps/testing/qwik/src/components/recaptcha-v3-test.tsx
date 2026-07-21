@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { ReCaptchaV3, type ReCaptchaV3Handle, type RenderParameters } from "@better-captcha/qwik/provider/recaptcha-v3";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const RecaptchaV3Test = component$(() => {
+export const RecaptchaV3Test = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<ReCaptchaV3Handle>();
 	const options = useSignal<RenderParameters>({
 		action: "submit",
@@ -17,7 +18,10 @@ export const RecaptchaV3Test = component$(() => {
 
 	return (
 		<div>
-			<ReCaptchaV3
+			<RenderCaptcha
+				mode={mode}
+				provider="recaptcha-v3"
+				component={ReCaptchaV3}
 				controller={controller}
 				options={options.value}
 				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"

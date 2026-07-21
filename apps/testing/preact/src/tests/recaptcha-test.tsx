@@ -1,7 +1,8 @@
 import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/preact/provider/recaptcha";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function RecaptchaTest() {
+export function RecaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const recaptchaRef = useRef<ReCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -24,7 +25,10 @@ export function RecaptchaTest() {
 
 	return (
 		<div>
-			<ReCaptcha
+			<RenderCaptcha
+				mode={mode}
+				provider="recaptcha"
+				component={ReCaptcha}
 				ref={recaptchaRef}
 				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 				options={options}

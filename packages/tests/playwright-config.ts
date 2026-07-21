@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices, type PlaywrightTestConfig } from "@playwright/test";
 
 const sharedTestDir = fileURLToPath(new URL("./tests/playwright", import.meta.url));
 
@@ -46,3 +46,14 @@ export const createPlaywrightConfig = ({ baseURL, command }: PlaywrightConfigOpt
 	});
 
 export const playwrightTestDir = sharedTestDir;
+
+export function withComponentModes(config: PlaywrightTestConfig): PlaywrightTestConfig {
+	config.projects = (config.projects ?? []).flatMap((project) =>
+		(["dedicated", "dynamic"] as const).map((componentMode) => ({
+			...project,
+			name: `${project.name}-${componentMode}`,
+			metadata: { ...project.metadata, componentMode },
+		})),
+	);
+	return config;
+}

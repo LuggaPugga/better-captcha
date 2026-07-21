@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { Altcha, type AltchaHandle, type RenderParameters } from "@better-captcha/qwik/provider/altcha";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const AltchaTest = component$(() => {
+export const AltchaTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<AltchaHandle>();
 	const options = useSignal<RenderParameters>({});
 	const response = useSignal<string | null>(null);
@@ -15,7 +16,10 @@ export const AltchaTest = component$(() => {
 
 	return (
 		<div>
-			<Altcha
+			<RenderCaptcha
+				mode={mode}
+				provider="altcha"
+				component={Altcha}
 				controller={controller}
 				options={options.value}
 				endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"

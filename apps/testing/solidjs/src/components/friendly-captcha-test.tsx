@@ -5,8 +5,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/solidjs/provider/friendly-captcha";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function FriendlyCaptchaTest() {
+export function FriendlyCaptchaTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<FriendlyCaptchaHandle>();
 	const [options, setOptions] = createSignal<Omit<RenderParameters, "sitekey" | "element">>({
 		theme: "light",
@@ -27,7 +28,10 @@ export function FriendlyCaptchaTest() {
 
 	return (
 		<div>
-			<FriendlyCaptcha
+			<RenderCaptcha
+				mode={props.mode}
+				provider="friendly-captcha"
+				component={FriendlyCaptcha}
 				controller={controller}
 				sitekey="FC-00000000-0000-0000-0000-000000000000"
 				options={options()}

@@ -23,5 +23,6 @@ export type CaptchaProps<TOptions, TSolve = string> = {
 	onError?: (error: Error | string) => void;
 };
 
-export { createCaptchaComponent } from "./base-captcha";
+export { BaseCaptcha, createCaptchaComponent } from "./base-captcha";
+export { BetterCaptcha, type BetterCaptchaProps } from "./better-captcha";
 export { useCaptchaLifecycle } from "./use-captcha-lifecycle";

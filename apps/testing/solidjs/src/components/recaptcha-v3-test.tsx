@@ -5,8 +5,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/solidjs/provider/recaptcha-v3";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function RecaptchaV3Test() {
+export function RecaptchaV3Test(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<ReCaptchaV3Handle>();
 	const [options, setOptions] = createSignal<RenderParameters>({
 		action: "submit",
@@ -26,7 +27,10 @@ export function RecaptchaV3Test() {
 
 	return (
 		<div>
-			<ReCaptchaV3
+			<RenderCaptcha
+				mode={props.mode}
+				provider="recaptcha-v3"
+				component={ReCaptchaV3}
 				controller={controller}
 				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 				options={options()}

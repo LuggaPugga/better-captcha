@@ -2,7 +2,8 @@
 
 import type { CaptchaHandle, CaptchaResponse, ProviderName, RuntimeProviderClass } from "@better-captcha/core";
 import { loadProviderClass } from "@better-captcha/core";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef } from "preact/compat";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { BaseCaptcha } from "./base-captcha";
 import type { CaptchaProps } from "./index";
 
@@ -19,24 +20,18 @@ export const BetterCaptcha = forwardRef<CaptchaHandle<CaptchaResponse>, BetterCa
 		ProviderClass: RuntimeProviderClass;
 	} | null>(null);
 	const onErrorRef = useRef(props.onError);
-
-	useEffect(() => {
-		onErrorRef.current = props.onError;
-	}, [props.onError]);
+	onErrorRef.current = props.onError;
 
 	useEffect(() => {
 		if (typeof provider !== "string") return;
 
 		let cancelled = false;
-
 		void loadProviderClass(provider).then(
 			(ProviderClass) => {
 				if (!cancelled) setLoadedProvider({ name: provider, ProviderClass });
 			},
 			(error: unknown) => {
-				if (cancelled) return;
-				const err = error instanceof Error ? error : new Error(String(error));
-				onErrorRef.current?.(err);
+				if (!cancelled) onErrorRef.current?.(error instanceof Error ? error : new Error(String(error)));
 			},
 		);
 

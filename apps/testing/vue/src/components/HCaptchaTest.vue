@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>hCaptcha Test</h3>
-		<HCaptcha
+		<RenderCaptcha :mode="mode" provider="hcaptcha" :component="HCaptcha"
 			ref="captchaRef"
 			sitekey="10000000-ffff-ffff-ffff-000000000001"
 			:options="options"
@@ -26,6 +26,8 @@
 <script setup lang="ts">
 	import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/vue/provider/hcaptcha";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<HCaptchaHandle | null>(null);
 	const response = ref<string | null>(null);

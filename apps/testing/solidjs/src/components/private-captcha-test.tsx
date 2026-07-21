@@ -5,8 +5,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/solidjs/provider/private-captcha";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function PrivateCaptchaTest() {
+export function PrivateCaptchaTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<PrivateCaptchaHandle>();
 	const [options, setOptions] = createSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -28,7 +29,10 @@ export function PrivateCaptchaTest() {
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha
+				<RenderCaptcha
+					mode={props.mode}
+					provider="private-captcha"
+					component={PrivateCaptcha}
 					controller={controller}
 					sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
 					options={options()}

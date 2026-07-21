@@ -15,6 +15,7 @@
 		"dev:docs": "turbo run dev --filter=@better-captcha/docs",
 		"format": "biome format --write",
 		"lint": "turbo run lint",
+		"test:playwright": "turbo run test:playwright --filter=@better-captcha/react --filter=@better-captcha/preact --filter=@better-captcha/vue --filter=@better-captcha/svelte --filter=@better-captcha/solidjs --filter=@better-captcha/qwik --filter=@better-captcha/lit",
 		"typecheck": "turbo run check-types",
 		"start": "turbo run start",
 		"changeset": "changeset",

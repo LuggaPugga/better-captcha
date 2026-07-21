@@ -32,4 +32,5 @@ export type CaptchaComponent<TOptions, THandle extends CaptchaHandle<unknown> = 
 >;
 
 export { type UseCaptchaReturn, useCaptcha } from "./composables/use-captcha";
+export { BetterCaptcha } from "./better-captcha";
 export { createCaptchaComponent } from "./create-captcha-component";

@@ -184,7 +184,10 @@ export function generateProviderModuleDts(meta: ProviderMetadata, config: Framew
 	};
 }
 
-export function generateProviderAggregateModule(providers: ProviderMetadata[], prefix: string): GeneratedFiles {
+export function generateProviderAggregateModule(
+	providers: readonly ProviderMetadata[],
+	prefix: string,
+): GeneratedFiles {
 	const project = createProject();
 	const sourceFile = project.createSourceFile("aggregate.ts", "", { overwrite: true });
 
@@ -205,14 +208,14 @@ export function generateProviderAggregateModule(providers: ProviderMetadata[], p
 }
 
 export function generateProviderAggregateModuleDts(
-	providers: ProviderMetadata[],
+	providers: readonly ProviderMetadata[],
 	fileExtension: string = ".js",
 ): GeneratedFiles {
 	return generateAggregateIndexFile(providers, fileExtension);
 }
 
 export function generateAggregateIndexFile(
-	providers: ProviderMetadata[],
+	providers: readonly ProviderMetadata[],
 	fileExtension: string = ".js",
 ): GeneratedFiles {
 	const project = createProject();

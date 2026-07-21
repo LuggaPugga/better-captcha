@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>T-Sec Test</h3>
-		<TSec ref="captchaRef" sitekey="189910271" :options="options" @ready="onReady" @error="onError" @solve="onSolve" />
+		<RenderCaptcha :mode="mode" provider="t-sec" :component="TSec" ref="captchaRef" sitekey="189910271" :options="options" @ready="onReady" @error="onError" @solve="onSolve" />
 		<p v-if="solved" id="captcha-solved">Captcha Solved!</p>
 		<div style="margin-top: 10px">
 			<button type="button" @click="handleDestroy">Destroy</button>
@@ -17,7 +17,9 @@
 
 <script setup lang="ts">
 import { TSec, type TSecHandle, type RenderParameters} from "@better-captcha/vue/provider/t-sec";
-	import { ref } from "vue";
+import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<TSecHandle | null>(null);
 	const response = ref<ReturnType<TSecHandle["getResponse"]>>(null);

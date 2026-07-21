@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { TSec, type TSecHandle } from "@better-captcha/solidjs/provider/t-sec";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function TSecTest() {
+export function TSecTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<TSecHandle>();
 	const [response, setResponse] = createSignal<ReturnType<TSecHandle["getResponse"]>>(null);
 	const [solved, setSolved] = createSignal<boolean>(false);
@@ -19,7 +20,15 @@ export function TSecTest() {
 
 	return (
 		<div>
-			<TSec controller={controller} sitekey="189910271" onSolve={handleSolve} options={{ userLanguage: "en" }} />
+			<RenderCaptcha
+				mode={props.mode}
+				provider="t-sec"
+				component={TSec}
+				controller={controller}
+				sitekey="189910271"
+				onSolve={handleSolve}
+				options={{ userLanguage: "en" }}
+			/>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy

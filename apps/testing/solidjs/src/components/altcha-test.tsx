@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { Altcha, type AltchaHandle, type RenderParameters } from "@better-captcha/solidjs/provider/altcha";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function AltchaTest() {
+export function AltchaTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<AltchaHandle>();
 	const [options, _setOptions] = createSignal<RenderParameters>({});
 	const [response, setResponse] = createSignal<string | null>(null);
@@ -20,7 +21,10 @@ export function AltchaTest() {
 
 	return (
 		<div>
-			<Altcha
+			<RenderCaptcha
+				mode={props.mode}
+				provider="altcha"
+				component={Altcha}
 				controller={controller}
 				options={options()}
 				endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"

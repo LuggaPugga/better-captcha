@@ -26,7 +26,7 @@
 		"dist"
 	],
 	"engines": {
-		"node": "^20.3.0 || >=21.0.0"
+		"node": "^18.17.0 || ^20.3.0 || >=21.0.0"
 	},
 	"private": false,
 	"sideEffects": false,
@@ -36,7 +36,8 @@
 		"check-types": "tsc --noEmit",
 		"dev": "vite build --mode lib --watch",
 		"start": "vite --open --mode ssr",
-		"qwik": "qwik"
+		"qwik": "qwik",
+		"test:playwright": "playwright test"
 	},
 	"dependencies": {
 		"@better-captcha/core": "workspace:^"

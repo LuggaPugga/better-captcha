@@ -4,8 +4,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/preact/provider/friendly-captcha";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function FriendlyCaptchaTest() {
+export function FriendlyCaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<FriendlyCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey" | "element"> => ({
@@ -28,7 +29,10 @@ export function FriendlyCaptchaTest() {
 
 	return (
 		<div>
-			<FriendlyCaptcha
+			<RenderCaptcha
+				mode={mode}
+				provider="friendly-captcha"
+				component={FriendlyCaptcha}
 				ref={turnstileRef}
 				sitekey="FC-00000000-0000-0000-0000-000000000000"
 				options={options}

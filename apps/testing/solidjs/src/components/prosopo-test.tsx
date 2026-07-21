@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { Prosopo, type ProsopoHandle } from "@better-captcha/solidjs/provider/prosopo";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function ProsopoTest() {
+export function ProsopoTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<ProsopoHandle>();
 	const [response, setResponse] = createSignal<string>("");
 	const [theme, setTheme] = createSignal<"light" | "dark" | "auto">("light");
@@ -23,16 +24,19 @@ export function ProsopoTest() {
 			<h2>Prosopo Test</h2>
 
 			<div>
-				<Prosopo
+				<RenderCaptcha
+					mode={props.mode}
+					provider="prosopo"
+					component={Prosopo}
 					controller={controller}
 					sitekey="no_test_site_key"
 					options={{
 						theme: theme(),
-						callback: (response) => {
+						callback: (response: string) => {
 							console.log("Prosopo CAPTCHA verified:", response);
 							setResponse(response);
 						},
-						"error-callback": (error) => {
+						"error-callback": (error: unknown) => {
 							console.error("Prosopo CAPTCHA error:", error);
 						},
 					}}

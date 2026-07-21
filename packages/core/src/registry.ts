@@ -1,7 +1,7 @@
 import type { RuntimeProviderClass } from "./provider";
 
-export interface ProviderMetadataInput<TName extends string> {
-	name: TName;
+export interface ProviderMetadata {
+	name: string;
 	componentName: string;
 	providerClassName: string;
 	handleType: string;
@@ -14,12 +14,12 @@ export interface ProviderMetadataInput<TName extends string> {
 	loadProviderClass: () => Promise<RuntimeProviderClass>;
 }
 
-function defineProviderMetadata<TName extends string>(metadata: ProviderMetadataInput<TName>) {
-	return metadata;
+function defineProviderRegistry<const T extends readonly ProviderMetadata[]>(...providers: T): T {
+	return providers;
 }
 
-export const PROVIDER_REGISTRY = [
-	defineProviderMetadata({
+export const PROVIDER_REGISTRY = defineProviderRegistry(
+	{
 		name: "altcha",
 		componentName: "Altcha",
 		providerClassName: "AltchaProvider",
@@ -29,8 +29,8 @@ export const PROVIDER_REGISTRY = [
 		extraTypes: [],
 		identifierProp: "endpoint",
 		loadProviderClass: async () => (await import("./providers/altcha")).AltchaProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "cap-widget",
 		componentName: "CapWidget",
 		providerClassName: "CapWidgetProvider",
@@ -40,8 +40,8 @@ export const PROVIDER_REGISTRY = [
 		extraTypes: [],
 		identifierProp: "endpoint",
 		loadProviderClass: async () => (await import("./providers/cap-widget")).CapWidgetProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "captcha-fox",
 		componentName: "CaptchaFox",
 		providerClassName: "CaptchaFoxProvider",
@@ -50,8 +50,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/captcha-fox")).CaptchaFoxProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "friendly-captcha",
 		componentName: "FriendlyCaptcha",
 		providerClassName: "FriendlyCaptchaProvider",
@@ -60,8 +60,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/friendly-captcha")).FriendlyCaptchaProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "hcaptcha",
 		componentName: "HCaptcha",
 		providerClassName: "HCaptchaProvider",
@@ -70,8 +70,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/hcaptcha")).HCaptchaProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "private-captcha",
 		componentName: "PrivateCaptcha",
 		providerClassName: "PrivateCaptchaProvider",
@@ -80,8 +80,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/private-captcha")).PrivateCaptchaProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "prosopo",
 		componentName: "Prosopo",
 		providerClassName: "ProsopoProvider",
@@ -90,8 +90,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"siteKey"',
 		extraTypes: ["CallbackFunction", "CaptchaType", "Theme", "WidgetApi"],
 		loadProviderClass: async () => (await import("./providers/prosopo")).ProsopoProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "recaptcha",
 		componentName: "ReCaptcha",
 		providerClassName: "ReCaptchaProvider",
@@ -100,8 +100,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/recaptcha")).ReCaptchaProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "recaptcha-v3",
 		componentName: "ReCaptchaV3",
 		providerClassName: "ReCaptchaV3Provider",
@@ -110,8 +110,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"element" | "sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/recaptcha-v3")).ReCaptchaV3Provider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "turnstile",
 		componentName: "Turnstile",
 		providerClassName: "TurnstileProvider",
@@ -120,8 +120,8 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/turnstile")).TurnstileProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "geetest",
 		componentName: "Geetest",
 		providerClassName: "GeetestProvider",
@@ -131,8 +131,8 @@ export const PROVIDER_REGISTRY = [
 		extraTypes: ["GeetestSolveResponse"],
 		solvePayloadType: "GeetestSolveResponse",
 		loadProviderClass: async () => (await import("./providers/geetest")).GeetestProvider,
-	}),
-	defineProviderMetadata({
+	},
+	{
 		name: "t-sec",
 		componentName: "TSec",
 		providerClassName: "TSecProvider",
@@ -141,11 +141,14 @@ export const PROVIDER_REGISTRY = [
 		renderParamsOmit: '"sitekey"',
 		extraTypes: [],
 		loadProviderClass: async () => (await import("./providers/t-sec")).TSecProvider,
-	}),
-];
+	},
+);
 
-export type ProviderMetadata = (typeof PROVIDER_REGISTRY)[number];
-export type ProviderName = ProviderMetadata["name"];
+export type ProviderName = (typeof PROVIDER_REGISTRY)[number]["name"];
+
+const PROVIDERS_BY_NAME: ReadonlyMap<string, ProviderMetadata> = new Map(
+	PROVIDER_REGISTRY.map((provider) => [provider.name, provider]),
+);
 
 export type { AltchaHandle } from "./providers/altcha";
 export type { CapWidgetHandle } from "./providers/cap-widget";
@@ -161,7 +164,7 @@ export type { TSecHandle } from "./providers/t-sec";
 export type { TurnstileHandle } from "./providers/turnstile";
 
 export function getProviderMetadata(name: string): ProviderMetadata | undefined {
-	return PROVIDER_REGISTRY.find((provider) => provider.name === name);
+	return PROVIDERS_BY_NAME.get(name);
 }
 
 export function getAllProviderNames(): ProviderName[] {
@@ -169,7 +172,7 @@ export function getAllProviderNames(): ProviderName[] {
 }
 
 export function isProviderName(name: string): name is ProviderName {
-	return PROVIDER_REGISTRY.some((provider) => provider.name === name);
+	return PROVIDERS_BY_NAME.has(name);
 }
 
 export function loadProviderClass(name: ProviderName): Promise<RuntimeProviderClass> {

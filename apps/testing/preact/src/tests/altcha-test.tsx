@@ -1,7 +1,8 @@
 import { Altcha, type AltchaHandle, type RenderParameters } from "@better-captcha/preact/provider/altcha";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function AltchaTest() {
+export function AltchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const altchaRef = useRef<AltchaHandle>(null);
 	const [options] = useState<RenderParameters>(() => {
 		return {};
@@ -21,7 +22,10 @@ export function AltchaTest() {
 
 	return (
 		<div>
-			<Altcha
+			<RenderCaptcha
+				mode={mode}
+				provider="altcha"
+				component={Altcha}
 				ref={altchaRef}
 				options={options}
 				endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"

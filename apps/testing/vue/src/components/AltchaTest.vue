@@ -1,7 +1,7 @@
 <template>
 	<div>
 	<h3>Altcha Test</h3>
-		<Altcha
+		<RenderCaptcha :mode="mode" provider="altcha" :component="Altcha"
 			ref="captchaRef"
 			endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"
 			:options="options"
@@ -24,7 +24,9 @@
 
 <script setup lang="ts">
 	import { type RenderParameters, Altcha, type AltchaHandle } from "@better-captcha/vue/provider/altcha";
-import { ref } from "vue";
+	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<AltchaHandle | null>(null);
 	const response = ref<string | null>(null);

@@ -120,8 +120,8 @@ export class CaptchaController<
 			return;
 		}
 
-		this.cleanup();
-		const token = ++this.renderToken;
+		this.teardown();
+		const token = this.renderToken;
 		this.updateState({ loading: true, error: null, ready: false });
 
 		let mountTarget: HTMLDivElement | null = null;
@@ -148,6 +148,13 @@ export class CaptchaController<
 
 			const id = await activeProvider.render(mountTarget, this.options, callbacks);
 			if (token !== this.renderToken) {
+				if (id != null) {
+					try {
+						activeProvider.destroy(id);
+					} catch (error) {
+						console.warn("[better-captcha] cancelled render cleanup:", error);
+					}
+				}
 				mountTarget.remove();
 				return;
 			}
@@ -174,6 +181,10 @@ export class CaptchaController<
 	 * checkpoint instead of clobbering state after we've torn down.
 	 */
 	cleanup(): void {
+		this.teardown();
+	}
+
+	private teardown(): void {
 		this.renderToken++;
 		if (this.provider && this.widgetId != null) {
 			try {
@@ -212,12 +223,12 @@ export class CaptchaController<
 		if (!this.provider || this.widgetId == null) {
 			return {
 				execute: async () => {
-					if (this.provider && this.widgetId) {
+					if (this.provider && this.widgetId != null) {
 						await this.provider.execute(this.widgetId);
 					}
 				},
 				reset: () => {
-					if (this.provider && this.widgetId) {
+					if (this.provider && this.widgetId != null) {
 						this.provider.reset(this.widgetId);
 					}
 				},

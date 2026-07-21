@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>Friendly Captcha Test</h3>
-		<FriendlyCaptcha
+		<RenderCaptcha :mode="mode" provider="friendly-captcha" :component="FriendlyCaptcha"
 			ref="captchaRef"
 			sitekey="FC-00000000-0000-0000-0000-000000000000"
 			:options="options"
@@ -30,6 +30,8 @@
 		type RenderParameters,
 	} from "@better-captcha/vue/provider/friendly-captcha";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<FriendlyCaptchaHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -85,4 +87,3 @@
 		options.value = { ...options.value, theme: themes[nextIndex] };
 	};
 </script>
-

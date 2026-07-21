@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/solidjs/provider/turnstile";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function TurnstileTest() {
+export function TurnstileTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<TurnstileHandle>();
 	const [options, setOptions] = createSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -23,7 +24,15 @@ export function TurnstileTest() {
 
 	return (
 		<div>
-			<Turnstile controller={controller} options={options()} sitekey="1x00000000000000000000AA" onSolve={handleSolve} />
+			<RenderCaptcha
+				mode={props.mode}
+				provider="turnstile"
+				component={Turnstile}
+				controller={controller}
+				options={options()}
+				sitekey="1x00000000000000000000AA"
+				onSolve={handleSolve}
+			/>
 			{solved() && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => controller.handle()?.destroy()}>
 				Destroy

@@ -1,4 +1,5 @@
 import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+import type { QRL } from "@builder.io/qwik";
 import { component$ } from "@builder.io/qwik";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
@@ -16,7 +17,7 @@ export function createCaptchaComponent<
 		TSolve
 	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
 >(
-	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
+	providerFactory$: QRL<(identifier: string, scriptOptions?: ScriptOptions) => TProvider | Promise<TProvider>>,
 ) {
 	return component$<CaptchaProps<TOptions, THandle, TSolve>>((props) => {
 		const identifier = props.sitekey || props.endpoint;
@@ -30,20 +31,7 @@ export function createCaptchaComponent<
 			TSolve,
 			THandle,
 			TProvider
-		>(
-			ProviderClass,
-			props.sitekey,
-			props.endpoint,
-			props.scriptOptions,
-			props.options,
-			props.autoRender,
-			{
-				onReady$: props.onReady$,
-				onError$: props.onError$,
-				onSolve$: props.onSolve$,
-			},
-			props.controller,
-		);
+		>(providerFactory$, props);
 
 		return (
 			<div

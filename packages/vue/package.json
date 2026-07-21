@@ -28,7 +28,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"check-types": "tsc --noEmit",
-		"dev": "tsdown --watch"
+		"dev": "tsdown --watch",
+		"test:playwright": "playwright test"
 	},
 	"exports": {
 		".": {

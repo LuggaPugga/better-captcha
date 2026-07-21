@@ -1,7 +1,8 @@
 import { Prosopo, type ProsopoHandle } from "@better-captcha/preact/provider/prosopo";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function ProsopoTest() {
+export function ProsopoTest({ mode }: { mode: CaptchaComponentMode }) {
 	const captchaRef = useRef<ProsopoHandle>(null);
 	const [response, setResponse] = useState<string>("");
 	const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
@@ -22,7 +23,10 @@ export function ProsopoTest() {
 			<h2>Prosopo Test</h2>
 
 			<div>
-				<Prosopo
+				<RenderCaptcha
+					mode={mode}
+					provider="prosopo"
+					component={Prosopo}
 					ref={captchaRef}
 					sitekey="no_test_site_key"
 					options={{

@@ -1,7 +1,8 @@
 import { CapWidget, type CapWidgetHandle, type RenderParameters } from "@better-captcha/preact/provider/cap-widget";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function CapWidgetTest() {
+export function CapWidgetTest({ mode }: { mode: CaptchaComponentMode }) {
 	const capWidgetRef = useRef<CapWidgetHandle>(null);
 	const [options] = useState<RenderParameters>(() => {
 		return {};
@@ -21,7 +22,10 @@ export function CapWidgetTest() {
 
 	return (
 		<div>
-			<CapWidget
+			<RenderCaptcha
+				mode={mode}
+				provider="cap-widget"
+				component={CapWidget}
 				ref={capWidgetRef}
 				options={options}
 				endpoint="https://captcha.gurl.eu.org/api/"

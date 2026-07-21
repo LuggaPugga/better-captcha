@@ -8,6 +8,7 @@ export default defineConfig({
 		input: {
 			index: "src/index.ts",
 			"base-captcha": "src/base-captcha.tsx",
+			"better-captcha": "src/better-captcha.tsx",
 			"provider/index": "@better-captcha/solidjs/provider",
 			...Object.fromEntries(
 				PROVIDER_REGISTRY.map((p) => [`provider/${p.name}/index`, `@better-captcha/solidjs/provider/${p.name}`]),

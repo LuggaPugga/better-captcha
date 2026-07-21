@@ -5,8 +5,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/qwik/provider/friendly-captcha";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const FriendlyCaptchaTest = component$(() => {
+export const FriendlyCaptchaTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<FriendlyCaptchaHandle>();
 	const options = useSignal<Omit<RenderParameters, "sitekey" | "element">>({
 		theme: "light",
@@ -22,7 +23,10 @@ export const FriendlyCaptchaTest = component$(() => {
 
 	return (
 		<div>
-			<FriendlyCaptcha
+			<RenderCaptcha
+				mode={mode}
+				provider="friendly-captcha"
+				component={FriendlyCaptcha}
 				controller={controller}
 				options={options.value}
 				sitekey="FC-00000000-0000-0000-0000-000000000000"

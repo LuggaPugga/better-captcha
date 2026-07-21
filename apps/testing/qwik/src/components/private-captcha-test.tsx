@@ -5,8 +5,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/qwik/provider/private-captcha";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const PrivateCaptchaTest = component$(() => {
+export const PrivateCaptchaTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<PrivateCaptchaHandle>();
 	const options = useSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -22,7 +23,10 @@ export const PrivateCaptchaTest = component$(() => {
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha
+				<RenderCaptcha
+					mode={mode}
+					provider="private-captcha"
+					component={PrivateCaptcha}
 					controller={controller}
 					options={options.value}
 					sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"

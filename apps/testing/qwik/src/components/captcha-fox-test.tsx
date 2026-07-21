@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/qwik/provider/captcha-fox";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const CaptchaFoxTest = component$(() => {
+export const CaptchaFoxTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<CaptchaFoxHandle>();
 	const options = useSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -18,7 +19,10 @@ export const CaptchaFoxTest = component$(() => {
 
 	return (
 		<div>
-			<CaptchaFox
+			<RenderCaptcha
+				mode={mode}
+				provider="captcha-fox"
+				component={CaptchaFox}
 				controller={controller}
 				options={options.value}
 				sitekey="sk_11111111000000001111111100000000"

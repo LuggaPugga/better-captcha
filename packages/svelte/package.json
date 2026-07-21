@@ -27,7 +27,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"check-types": "bun tsc --noEmit && svelte-check",
-		"dev": "tsdown --watch"
+		"dev": "tsdown --watch",
+		"test:playwright": "playwright test"
 	},
 	"exports": {
 		".": {
