@@ -66,8 +66,8 @@ export function createCaptchaComponent<
 			});
 			const widgetId = ref<WidgetId | null>(null);
 
-			const identifier = computed(() =>
-				identifierProp === "endpoint" ? props.endpoint : props.sitekey,
+			const identifier = computed(
+				() => props[identifierProp] ?? props.sitekey ?? props.endpoint,
 			);
 
 			const isLoading = computed(() =>
