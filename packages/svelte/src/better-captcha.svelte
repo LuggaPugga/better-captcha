@@ -20,7 +20,7 @@
 	type DynamicProviderClass = new (
 		sitekeyOrEndpoint: string,
 		scriptOptions?: ScriptOptions,
-	) => Provider<ProviderConfig, Record<string, unknown>, CaptchaHandle<string>, string, string>;
+	) => Provider<Record<string, unknown>, CaptchaHandle<string>, string, string>;
 
 	let {
 		provider,

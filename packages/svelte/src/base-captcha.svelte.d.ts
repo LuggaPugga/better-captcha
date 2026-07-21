@@ -6,7 +6,7 @@ export interface BaseCaptchaProps<
 	TResponse,
 	TSolve,
 	THandle extends CaptchaHandle<TResponse>,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve>,
 > {
 	providerClass: new (sitekeyOrEndpoint: string, scriptOptions?: ScriptOptions) => TProvider;
 	value: string;
@@ -25,9 +25,8 @@ export default class BaseCaptcha<
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
-		ProviderConfig,
-		TOptions,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<
+	TOptions,
 		THandle,
 		TResponse,
 		TSolve

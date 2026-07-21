@@ -1,11 +1,4 @@
-import type {
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-	WidgetId,
-} from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ScriptOptions, WidgetId } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, splitProps, untrack } from "solid-js";
 import type { CaptchaProps } from "./index";
@@ -27,13 +20,7 @@ export function createCaptchaComponent<
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
-		ProviderConfig,
-		TOptions,
-		THandle,
-		TResponse,
-		TSolve
-	>,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<TOptions, THandle, TResponse, TSolve>,
 >(
 	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
 ): (allProps: CaptchaProps<TOptions, THandle, TSolve>) => JSX.Element {
@@ -53,7 +40,7 @@ export function createCaptchaComponent<
 
 		const isLoading = createMemo(() => (autoRender() ? state().loading || !state().ready : state().loading));
 
-		const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle, TProvider>(
+		const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle>(
 			(id, script) => new ProviderClass(id, script),
 		);
 

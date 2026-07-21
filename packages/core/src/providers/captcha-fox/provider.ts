@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { RenderParameters, WidgetApi } from "./types";
@@ -17,11 +11,7 @@ declare global {
 
 export type CaptchaFoxHandle = CaptchaHandle;
 
-export class CaptchaFoxProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "element" | "sitekey">,
-	CaptchaFoxHandle
-> {
+export class CaptchaFoxProvider extends Provider<Omit<RenderParameters, "element" | "sitekey">, CaptchaFoxHandle> {
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{

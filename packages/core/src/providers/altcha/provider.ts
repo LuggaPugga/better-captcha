@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type {
 	AltchaErrorEvent,
@@ -17,7 +11,7 @@ import type {
 
 export type AltchaHandle = CaptchaHandle;
 
-export class AltchaProvider extends Provider<ProviderConfig, Omit<RenderParameters, "element">, AltchaHandle> {
+export class AltchaProvider extends Provider<Omit<RenderParameters, "element">, AltchaHandle> {
 	private widgetMap = new Map<string, AltchaWidget>();
 	private responseMap = new Map<string, string>();
 

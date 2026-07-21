@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { HCaptcha, RenderParameters } from "./types";
@@ -19,7 +13,7 @@ const HCAPTCHA_ONLOAD_CALLBACK = generateCallbackName("hcaptchaOnload");
 
 export type HCaptchaHandle = CaptchaHandle;
 
-export class HCaptchaProvider extends Provider<ProviderConfig, RenderParameters, HCaptchaHandle> {
+export class HCaptchaProvider extends Provider<RenderParameters, HCaptchaHandle> {
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{

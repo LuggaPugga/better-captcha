@@ -1,12 +1,4 @@
-import type {
-	CaptchaCallbacks,
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-	WidgetId,
-} from "../provider";
+import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ScriptOptions, WidgetId } from "../provider";
 
 /**
  * Framework-agnostic controller for managing CAPTCHA lifecycle
@@ -17,13 +9,6 @@ export class CaptchaController<
 	TResponse = string,
 	TSolve = TResponse,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
-		ProviderConfig,
-		TOptions,
-		THandle,
-		TResponse,
-		TSolve
-	>,
 > {
 	private identifier: string | undefined;
 	private options: TOptions | undefined;
@@ -31,7 +16,7 @@ export class CaptchaController<
 	private callbacks: CaptchaCallbacks<TSolve> | undefined;
 	private hostElement: HTMLElement | null = null;
 	private container: HTMLDivElement | null = null;
-	private provider: TProvider | null = null;
+	private provider: Provider<TOptions, THandle, TResponse, TSolve> | null = null;
 	private widgetId: WidgetId | null = null;
 	private renderToken = 0;
 	private state: CaptchaState = {
@@ -41,7 +26,12 @@ export class CaptchaController<
 	};
 	private stateChangeListeners: Set<(state: CaptchaState) => void> = new Set();
 
-	constructor(private providerFactory: (identifier: string, scriptOptions?: ScriptOptions) => TProvider) {}
+	constructor(
+		private providerFactory: (
+			identifier: string,
+			scriptOptions?: ScriptOptions,
+		) => Provider<TOptions, THandle, TResponse, TSolve>,
+	) {}
 
 	/**
 	 * Set the identifier (sitekey or endpoint)

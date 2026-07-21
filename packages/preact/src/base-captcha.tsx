@@ -1,6 +1,6 @@
 "use client";
 
-import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+import type { CaptchaHandle, Provider, ScriptOptions } from "@better-captcha/core";
 import { forwardRef } from "preact/compat";
 import { useImperativeHandle } from "preact/hooks";
 import type { CaptchaProps } from "./index";
@@ -11,10 +11,7 @@ export type CaptchaProviderClass<
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-> = new (
-	identifier: string,
-	scriptOptions?: ScriptOptions,
-) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>;
+> = new (identifier: string, scriptOptions?: ScriptOptions) => Provider<TOptions, THandle, TResponse, TSolve>;
 
 export type BaseCaptchaProps<
 	TOptions = unknown,

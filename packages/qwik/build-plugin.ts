@@ -310,9 +310,9 @@ function genBaseCaptchaDts(): string {
 			{
 				name: "TProvider",
 				constraint:
-					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
+					'Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
 				default:
-					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
+					'Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
 			},
 		],
 		parameters: [
@@ -335,9 +335,9 @@ function genBaseCaptchaDts(): string {
 			{
 				name: "TProvider",
 				constraint:
-					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
+					'Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
 				default:
-					'Provider<ProviderConfig, TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
+					'Provider<TOptions, THandle, ReturnType<THandle["getResponse"]>, TSolve>',
 			},
 		],
 		parameters: [

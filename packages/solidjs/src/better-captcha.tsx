@@ -2,7 +2,6 @@ import type {
 	CaptchaHandle,
 	CaptchaResponse,
 	Provider,
-	ProviderConfig,
 	ProviderName,
 	RuntimeProviderClass,
 	ScriptOptions,
@@ -25,7 +24,7 @@ type DynamicHandle = CaptchaHandle<CaptchaResponse>;
 type DynamicProviderClass = new (
 	identifier: string,
 	scriptOptions?: ScriptOptions,
-) => Provider<ProviderConfig, Record<string, unknown>, DynamicHandle, CaptchaResponse, CaptchaResponse>;
+) => Provider<Record<string, unknown>, DynamicHandle, CaptchaResponse, CaptchaResponse>;
 
 export function BetterCaptcha(allProps: BetterCaptchaProps): JSX.Element {
 	const [props, divProps] = splitProps(allProps, ["provider", "onError", "class", "style"]);

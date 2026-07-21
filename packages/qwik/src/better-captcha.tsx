@@ -13,7 +13,6 @@ import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
 
 type DynamicHandle = CaptchaHandle<CaptchaResponse>;
 type DynamicProvider = Provider<
-	ProviderConfig,
 	Record<string, unknown>,
 	DynamicHandle,
 	CaptchaResponse,

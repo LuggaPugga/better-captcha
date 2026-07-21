@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { generateCallbackName, loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { ReCaptcha, RenderParameters } from "./types";
@@ -19,7 +13,7 @@ const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
 export type ReCaptchaHandle = CaptchaHandle;
 
-export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, ReCaptchaHandle> {
+export class ReCaptchaProvider extends Provider<Omit<RenderParameters, "sitekey">, ReCaptchaHandle> {
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{

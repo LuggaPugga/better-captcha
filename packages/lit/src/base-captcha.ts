@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ScriptOptions } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import { html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
@@ -9,7 +9,6 @@ type CaptchaElement<THandle> = CustomElementConstructor & {
 };
 
 type CaptchaProvider<TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>> = Provider<
-	ProviderConfig,
 	TOptions,
 	THandle,
 	TResponse,
@@ -45,13 +44,7 @@ export abstract class CaptchaElementBase<
 	};
 
 	protected elementRef: Ref<HTMLDivElement> = createRef();
-	protected controller: CaptchaController<
-		TOptions,
-		TResponse,
-		TSolve,
-		THandle,
-		CaptchaProvider<TOptions, TResponse, TSolve, THandle>
-	> | null = null;
+	protected controller: CaptchaController<TOptions, TResponse, TSolve, THandle> | null = null;
 
 	private unsubscribeState: (() => void) | null = null;
 

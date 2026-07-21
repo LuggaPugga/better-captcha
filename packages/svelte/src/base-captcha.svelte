@@ -6,7 +6,7 @@
 		TResponse,
 		TSolve,
 		THandle extends CaptchaHandle<TResponse>,
-		TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+		TProvider extends Provider<TOptions, THandle, TResponse, TSolve>,
 	> = {
 		providerClass: new (sitekeyOrEndpoint: string, scriptOptions?: ScriptOptions) => TProvider;
 		value: string;
@@ -23,7 +23,7 @@
 
 <script
 	lang="ts"
-	generics="TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>, TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>"
+	generics="TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>, TProvider extends Provider<TOptions, THandle, TResponse, TSolve>"
 >
 	import { CaptchaController } from "@better-captcha/core";
 	import type { CaptchaState, WidgetId } from "@better-captcha/core";
@@ -63,8 +63,7 @@
 		TOptions,
 		TResponse,
 		TSolve,
-		THandle,
-		TProvider
+		THandle
 	>(
 		(id, script) => new ProviderClass(id, script),
 	);

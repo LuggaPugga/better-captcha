@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type { ReCaptcha } from "../recaptcha/types";
 import type { RenderParameters } from "./types";
@@ -22,7 +16,7 @@ interface TokenCache {
 	timestamp: number;
 }
 
-export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParameters, ReCaptchaV3Handle> {
+export class ReCaptchaV3Provider extends Provider<RenderParameters, ReCaptchaV3Handle> {
 	private tokenCache = new Map<string, TokenCache>();
 	private readonly TOKEN_CACHE_DURATION = 2 * 60 * 1000;
 

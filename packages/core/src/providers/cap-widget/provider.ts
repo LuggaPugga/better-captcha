@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type {
@@ -18,7 +12,7 @@ import type {
 
 export type CapWidgetHandle = CaptchaHandle;
 
-export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParameters, "element">, CapWidgetHandle> {
+export class CapWidgetProvider extends Provider<Omit<RenderParameters, "element">, CapWidgetHandle> {
 	private widgetMap = new Map<string, CapWidget>();
 
 	constructor(endpoint: string, scriptOptions?: ScriptOptions) {

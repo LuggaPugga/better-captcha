@@ -114,15 +114,12 @@ export type ProviderClass<
 	TResponse = string,
 	TSolve = TResponse,
 	TExtraHandle extends object = CaptchaHandle<TResponse>,
-> = new (
-	identifier: string,
-	scriptOptions?: ScriptOptions,
-) => Provider<ProviderConfig, TOptions, TExtraHandle, TResponse, TSolve>;
+> = new (identifier: string, scriptOptions?: ScriptOptions) => Provider<TOptions, TExtraHandle, TResponse, TSolve>;
 
 export type RuntimeProviderClass = new (
 	identifier: string,
 	scriptOptions?: ScriptOptions,
-) => Provider<ProviderConfig, object, CaptchaHandle<CaptchaResponse>, CaptchaResponse, never>;
+) => Provider<object, CaptchaHandle<CaptchaResponse>, CaptchaResponse, never>;
 
 /**
  * Abstract base class for CAPTCHA providers
@@ -131,13 +128,12 @@ export type RuntimeProviderClass = new (
  * @template TExtraHandle - Additional methods for the handle
  */
 export abstract class Provider<
-	TConfig extends ProviderConfig,
 	TOptions = unknown,
 	TExtraHandle extends object = Record<string, never>,
 	TResponse = string,
 	TSolve = TResponse,
 > {
-	protected config: TConfig;
+	protected config: ProviderConfig;
 	protected identifier: string;
 
 	/**
@@ -145,7 +141,7 @@ export abstract class Provider<
 	 * @param config - Provider configuration
 	 * @param identifier - Identifier for the CAPTCHA service (sitekey, endpoint, etc.)
 	 */
-	constructor(config: TConfig, identifier: string) {
+	constructor(config: ProviderConfig, identifier: string) {
 		this.config = config;
 		this.identifier = identifier;
 	}

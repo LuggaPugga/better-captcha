@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type { FrcaptchaGlobal, FriendlyCaptchaSDK, RenderParameters } from "./types";
 
@@ -19,7 +13,6 @@ export type FriendlyCaptchaHandle = CaptchaHandle & {
 };
 
 export class FriendlyCaptchaProvider extends Provider<
-	ProviderConfig,
 	Omit<RenderParameters, "element" | "sitekey">,
 	FriendlyCaptchaHandle
 > {

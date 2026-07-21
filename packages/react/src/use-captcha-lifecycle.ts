@@ -1,11 +1,4 @@
-import type {
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-	WidgetId,
-} from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ScriptOptions, WidgetId } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -18,7 +11,7 @@ export function useCaptchaLifecycle<
 	ProviderClass: new (
 		identifier: string,
 		scriptOptions?: ScriptOptions,
-	) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	) => Provider<TOptions, THandle, TResponse, TSolve>,
 	identifier: string,
 	scriptOptions: ScriptOptions | undefined,
 	options: TOptions | undefined,
@@ -33,14 +26,7 @@ export function useCaptchaLifecycle<
 	const callbacksRef = useRef(callbacks);
 
 	const controller = useMemo(
-		() =>
-			new CaptchaController<
-				TOptions,
-				TResponse,
-				TSolve,
-				THandle,
-				Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>
-			>((id, script) => new ProviderClass(id, script)),
+		() => new CaptchaController<TOptions, TResponse, TSolve, THandle>((id, script) => new ProviderClass(id, script)),
 		[ProviderClass],
 	);
 

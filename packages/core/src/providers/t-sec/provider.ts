@@ -1,17 +1,10 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type { GlobalTSec, RenderParameters } from "./types";
 
 export type TSecHandle = CaptchaHandle<GlobalTSec.TencentCaptchaResult | null>;
 
 export class TSecProvider extends Provider<
-	ProviderConfig,
 	Omit<RenderParameters, "sitekey">,
 	TSecHandle,
 	GlobalTSec.TencentCaptchaResult | null,

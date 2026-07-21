@@ -24,7 +24,6 @@ import { createCaptchaComponent } from "./create-captcha-component";
 
 type DynamicHandle = CaptchaHandle<CaptchaResponse>;
 type DynamicProvider = Provider<
-	ProviderConfig,
 	Record<string, unknown>,
 	DynamicHandle,
 	CaptchaResponse,

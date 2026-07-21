@@ -1,6 +1,6 @@
 "use client";
 
-import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+import type { CaptchaHandle, Provider, ScriptOptions } from "@better-captcha/core";
 import { forwardRef, useImperativeHandle } from "react";
 import type { CaptchaProps } from "./index";
 import { useCaptchaLifecycle } from "./use-captcha-lifecycle";
@@ -10,10 +10,7 @@ export type CaptchaProviderClass<
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-> = new (
-	identifier: string,
-	scriptOptions?: ScriptOptions,
-) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>;
+> = new (identifier: string, scriptOptions?: ScriptOptions) => Provider<TOptions, THandle, TResponse, TSolve>;
 
 export type BaseCaptchaProps<
 	TOptions = unknown,

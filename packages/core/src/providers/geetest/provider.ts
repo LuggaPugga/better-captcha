@@ -1,17 +1,10 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import type { Geetest, RenderParameters } from "./types";
 
 export type GeetestHandle = CaptchaHandle<Geetest.ValidateResult | false>;
 
 export class GeetestProvider extends Provider<
-	ProviderConfig,
 	Omit<RenderParameters, "captchaId">,
 	GeetestHandle,
 	Geetest.ValidateResult | false,

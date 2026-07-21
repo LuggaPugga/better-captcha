@@ -26,12 +26,11 @@ export function createCaptchaComponent<
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
 	TProvider extends Provider<
-		ProviderConfig,
-		TOptions,
+	TOptions,
 		THandle,
 		TResponse,
 		TSolve
-	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	> = Provider<TOptions, THandle, TResponse, TSolve>,
 >(
 	ProviderClass: new (
 		identifier: string,
@@ -80,8 +79,7 @@ export function createCaptchaComponent<
 				TOptions,
 				TResponse,
 				TSolve,
-				THandle,
-				TProvider
+				THandle
 			>(
 				(id, script) => new ProviderClass(id, script),
 			);

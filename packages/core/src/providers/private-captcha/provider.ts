@@ -1,10 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { PrivateCaptcha, RenderParameters } from "./types";
@@ -21,11 +15,7 @@ export type PrivateCaptchaHandle = CaptchaHandle & {
 	updateStyles: () => void;
 };
 
-export class PrivateCaptchaProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "sitekey">,
-	PrivateCaptchaHandle
-> {
+export class PrivateCaptchaProvider extends Provider<Omit<RenderParameters, "sitekey">, PrivateCaptchaHandle> {
 	private widgetMap = new Map<string, PrivateCaptcha.CaptchaWidget>();
 	private callbackMap = new Map<string, string[]>();
 	private elementMap = new Map<string, HTMLElement>();

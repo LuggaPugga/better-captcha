@@ -16,13 +16,12 @@ export function useCaptchaLifecycle<
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<
-		ProviderConfig,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<
 		TOptions,
 		THandle,
 		TResponse,
 		TSolve
-	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	>,
 >(
 	providerFactory$: QRL<(identifier: string, scriptOptions?: ScriptOptions) => TProvider | Promise<TProvider>>,
 	props: CaptchaProps<TOptions, THandle, TSolve> & { provider?: unknown },
@@ -31,7 +30,7 @@ export function useCaptchaLifecycle<
 	const widgetId = useSignal<WidgetId | null>(null);
 	const state = useSignal<CaptchaState>({ loading: false, error: null, ready: false });
 	const controllerRef = useSignal<
-		NoSerialize<CaptchaController<TOptions, TResponse, TSolve, THandle, TProvider>>
+		NoSerialize<CaptchaController<TOptions, TResponse, TSolve, THandle>>
 	>();
 
 	const identifier = useComputed$(() => props.sitekey || props.endpoint || "");
@@ -67,7 +66,7 @@ export function useCaptchaLifecycle<
 			const provider = await providerFactory$(id, props.scriptOptions);
 			if (cancelled) return;
 
-			const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle, TProvider>(
+			const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle>(
 				() => provider,
 			);
 			controllerRef.value = noSerialize(controller);
