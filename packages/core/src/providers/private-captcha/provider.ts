@@ -1,5 +1,4 @@
 import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
-import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { PrivateCaptcha, RenderParameters } from "./types";
 
@@ -32,15 +31,7 @@ export class PrivateCaptchaProvider extends Provider<Omit<RenderParameters, "sit
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.buildScriptUrl();
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true }, this.buildScriptUrl());
 	}
 
 	private buildScriptUrl() {

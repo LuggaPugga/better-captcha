@@ -21,15 +21,8 @@ export type LoadScriptCallOptions = LoadScriptOptions & {
 
 export function scriptOptionsToLoadOptions(scriptOptions?: ScriptOptions): Partial<LoadScriptOptions> {
 	if (!scriptOptions) return {};
-	const out: Partial<LoadScriptOptions> = {};
-	if (scriptOptions.timeout !== undefined) out.timeout = scriptOptions.timeout;
-	if (scriptOptions.nonce !== undefined) out.nonce = scriptOptions.nonce;
-	if (scriptOptions.integrity !== undefined) out.integrity = scriptOptions.integrity;
-	if (scriptOptions.crossOrigin !== undefined) out.crossOrigin = scriptOptions.crossOrigin;
-	if (scriptOptions.referrerPolicy !== undefined) out.referrerPolicy = scriptOptions.referrerPolicy;
-	if (scriptOptions.fetchPriority !== undefined) out.fetchPriority = scriptOptions.fetchPriority;
-	if (scriptOptions.scriptAttributes !== undefined) out.scriptAttributes = scriptOptions.scriptAttributes;
-	return out;
+	const { autoLoad: _autoLoad, overrideScriptUrl: _overrideScriptUrl, ...loadOptions } = scriptOptions;
+	return loadOptions;
 }
 
 const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
@@ -129,7 +122,8 @@ export class ScriptLoader {
 
 		const finalPromise = this.withCallback(this.createScript(src, merged), this.setupCallback(merged));
 		this.pending.set(src, finalPromise);
-		finalPromise.finally(() => this.pending.delete(src));
+		const clearPending = () => this.pending.delete(src);
+		void finalPromise.then(clearPending, clearPending);
 
 		return finalPromise;
 	}

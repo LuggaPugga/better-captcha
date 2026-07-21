@@ -6,6 +6,7 @@ import {
 	generateProviderAggregateModule,
 	generateProviderModule,
 	generateProviderModuleDts,
+	type ProviderModuleConfig,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import { createUnplugin } from "unplugin";
 
@@ -17,12 +18,11 @@ function toPosix(p: string): string {
 	return p.split(path.sep).join("/");
 }
 
-const solidjsConfig: FrameworkConfig = {
+const solidjsConfig: FrameworkConfig & ProviderModuleConfig = {
 	baseImport: `import { createCaptchaComponent } from "${BASE_SPEC}";`,
 	componentCreation: (providerClassName: string) => `createCaptchaComponent(${providerClassName})`,
 	componentType: "Component",
 	componentTypeImports: '{ Component } from "solid-js"',
-	fileExtension: ".js",
 	propsStructure: "two-params",
 };
 
@@ -58,9 +58,8 @@ export const unplugin = createUnplugin(() => {
 				const name = id.slice(PROVIDER_SPEC_PREFIX.length);
 				const meta = PROVIDER_REGISTRY.find((p) => p.name === name);
 				if (!meta) return { code: "export {}", map: null };
-				const files = generateProviderModule(meta, solidjsConfig);
 				return {
-					code: files.js,
+					code: generateProviderModule(meta, solidjsConfig),
 					map: null,
 				};
 			}
@@ -85,7 +84,7 @@ export const dtsEmitterPlugin = createUnplugin(() => {
 					});
 				}
 
-				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY, solidjsConfig.fileExtension);
+				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY);
 				this.emitFile({
 					type: "asset",
 					fileName: "provider/index.d.ts",

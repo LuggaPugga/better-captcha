@@ -1,5 +1,5 @@
 import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
-import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { generateCallbackName } from "../../utils/load-script";
 import type { RenderParameters, Turnstile } from "./types";
 
 declare global {
@@ -37,14 +37,7 @@ export class TurnstileProvider extends Provider<Omit<RenderParameters, "sitekey"
 			scriptUrl = this.buildScriptUrl();
 		}
 
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-				callbackName: TURNSTILE_ONLOAD_CALLBACK,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true, callbackName: TURNSTILE_ONLOAD_CALLBACK }, scriptUrl);
 	}
 
 	private buildScriptUrl() {

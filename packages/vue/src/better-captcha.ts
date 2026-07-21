@@ -3,7 +3,6 @@ import type {
 	CaptchaResponse,
 	CaptchaState,
 	Provider,
-	ProviderConfig,
 	ProviderName,
 	RuntimeProviderClass,
 	ScriptOptions,

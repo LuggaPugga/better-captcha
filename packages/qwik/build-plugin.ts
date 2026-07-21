@@ -18,12 +18,8 @@ function toPosix(p: string): string {
 }
 
 const qwikConfig: FrameworkConfig = {
-	baseImport: `import { createCaptchaComponent } from "${BASE_SPEC}";`,
-	componentCreation: (providerClassName: string) =>
-		`createCaptchaComponent($((identifier: string, scriptOptions?: import("@better-captcha/core").ScriptOptions) => new ${providerClassName}(identifier, scriptOptions)))`,
 	componentType: "Component",
 	componentTypeImports: '{ Component } from "@builder.io/qwik"',
-	fileExtension: ".js",
 	propsStructure: "two-params",
 };
 

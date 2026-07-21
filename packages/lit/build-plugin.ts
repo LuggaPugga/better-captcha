@@ -1,5 +1,5 @@
 import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
-import { generateAggregateIndexFile } from "@better-captcha/core/utils/build-plugin-utils";
+import { generateProviderAssets } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
@@ -39,36 +39,12 @@ export const unpluginFactory: UnpluginFactory<undefined> = () => {
 		name: "better-captcha-generate-components",
 		rollup: {
 			generateBundle() {
-				for (const provider of PROVIDER_REGISTRY) {
-					const js = generateComponent(provider);
-					const dts = generateComponentDts(provider);
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.js`,
-						source: js,
-					});
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.d.ts`,
-						source: dts,
-					});
+				for (const asset of generateProviderAssets(PROVIDER_REGISTRY, (provider) => ({
+					js: generateComponent(provider),
+					dts: generateComponentDts(provider),
+				}))) {
+					this.emitFile({ type: "asset", ...asset });
 				}
-
-				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY, ".js");
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.js",
-					source: aggregateFiles.js,
-				});
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.d.ts",
-					source: aggregateFiles.dts,
-				});
 			},
 		},
 	};

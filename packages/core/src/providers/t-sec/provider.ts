@@ -1,5 +1,4 @@
 import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
-import { loadScript } from "../../utils/load-script";
 import type { GlobalTSec, RenderParameters } from "./types";
 
 export type TSecHandle = CaptchaHandle<GlobalTSec.TencentCaptchaResult | null>;
@@ -25,15 +24,7 @@ export class TSecProvider extends Provider<
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true });
 	}
 
 	private generateWidgetId(element: HTMLElement): string {
@@ -106,9 +97,5 @@ export class TSecProvider extends Provider<
 	getResponse(widgetId: string): GlobalTSec.TencentCaptchaResult | null {
 		const captcha = this.widgetMap.get(widgetId);
 		return captcha ? captcha.getTicket() : null;
-	}
-
-	getHandle(widgetId: string): TSecHandle {
-		return this.getCommonHandle(widgetId);
 	}
 }

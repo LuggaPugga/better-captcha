@@ -2,9 +2,8 @@ import type {
 	CaptchaHandle,
 	CaptchaState,
 	Provider,
-	ProviderConfig,
 	ScriptOptions,
-	WidgetId
+	WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import {
@@ -18,24 +17,21 @@ import {
 	type StyleValue,
 	watch,
 } from "vue";
-import { CaptchaEmits, CaptchaProps } from ".";
+import type { CaptchaEmits, CaptchaProps } from ".";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<
-	TOptions,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<
+		TOptions,
 		THandle,
 		TResponse,
 		TSolve
-	> = Provider<TOptions, THandle, TResponse, TSolve>,
+	>,
 >(
-	ProviderClass: new (
-		identifier: string,
-		scriptOptions?: ScriptOptions,
-	) => TProvider,
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
 	identifierProp: "sitekey" | "endpoint" = "sitekey",
 ): Component<CaptchaProps<TOptions, TSolve>, CaptchaEmits<THandle, TSolve>> {
 	return defineComponent({
@@ -65,22 +61,11 @@ export function createCaptchaComponent<
 			});
 			const widgetId = ref<WidgetId | null>(null);
 
-			const identifier = computed(
-				() => props[identifierProp] ?? props.sitekey ?? props.endpoint,
-			);
+			const identifier = computed(() => props[identifierProp] ?? props.sitekey ?? props.endpoint);
 
-			const isLoading = computed(() =>
-				props.autoRender
-					? state.value.loading || !state.value.ready
-					: state.value.loading,
-			);
+			const isLoading = computed(() => state.value.loading || (props.autoRender && !state.value.ready));
 
-			const controller = new CaptchaController<
-				TOptions,
-				TResponse,
-				TSolve,
-				THandle
-			>(
+			const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle>(
 				(id, script) => new ProviderClass(id, script),
 			);
 
@@ -100,7 +85,7 @@ export function createCaptchaComponent<
 					controller.setCallbacks({
 						onReady: () => emit("ready", controller.getHandle()),
 						onSolve: (token: TSolve) => emit("solve", token),
-						onError: (err: any) => {
+						onError: (err: Error | string) => {
 							const error = err instanceof Error ? err : new Error(String(err));
 							emit("error", error);
 						},

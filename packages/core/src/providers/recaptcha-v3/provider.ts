@@ -1,5 +1,4 @@
 import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
-import { loadScript } from "../../utils/load-script";
 import type { ReCaptcha } from "../recaptcha/types";
 import type { RenderParameters } from "./types";
 
@@ -31,15 +30,7 @@ export class ReCaptchaV3Provider extends Provider<RenderParameters, ReCaptchaV3H
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.buildScriptUrl();
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true }, this.buildScriptUrl());
 	}
 
 	private buildScriptUrl() {
@@ -148,9 +139,5 @@ export class ReCaptchaV3Provider extends Provider<RenderParameters, ReCaptchaV3H
 		}
 
 		return cached.token;
-	}
-
-	getHandle(widgetId: string): ReCaptchaV3Handle {
-		return this.getCommonHandle(widgetId);
 	}
 }

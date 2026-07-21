@@ -42,7 +42,7 @@ export function useCaptchaLifecycle<
 		callbacksRef.current = callbacks;
 	}, [callbacks]);
 
-	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
+	const isLoading = state.loading || (autoRender && !state.ready);
 
 	useEffect(
 		() =>

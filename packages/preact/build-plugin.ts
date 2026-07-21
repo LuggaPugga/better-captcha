@@ -1,19 +1,19 @@
 import { PROVIDER_REGISTRY } from "@better-captcha/core";
 import {
 	type FrameworkConfig,
-	generateAggregateIndexFile,
+	generateProviderAssets,
 	generateProviderModule,
 	generateProviderModuleDts,
+	type ProviderModuleConfig,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
-const preactConfig: FrameworkConfig = {
+const preactConfig: FrameworkConfig & ProviderModuleConfig = {
 	baseImport: `import { createCaptchaComponent } from "../../base-captcha.js";`,
 	componentCreation: (providerClassName: string) => `createCaptchaComponent(${providerClassName})`,
 	componentType: "FunctionComponent",
 	componentTypeImports: '{ Ref, FunctionComponent } from "preact"',
-	fileExtension: ".js",
 	propsStructure: "single-with-ref",
 	refType: "{ ref?: Ref<{handle}> }",
 };
@@ -23,36 +23,12 @@ export const unpluginFactory: UnpluginFactory<undefined> = () => {
 		name: "better-captcha-generate-components",
 		rollup: {
 			generateBundle() {
-				for (const provider of PROVIDER_REGISTRY) {
-					const jsFiles = generateProviderModule(provider, preactConfig);
-					const dtsFiles = generateProviderModuleDts(provider, preactConfig);
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.js`,
-						source: jsFiles.js,
-					});
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.d.ts`,
-						source: dtsFiles.dts,
-					});
+				for (const asset of generateProviderAssets(PROVIDER_REGISTRY, (provider) => ({
+					js: generateProviderModule(provider, preactConfig),
+					dts: generateProviderModuleDts(provider, preactConfig).dts,
+				}))) {
+					this.emitFile({ type: "asset", ...asset });
 				}
-
-				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY, ".js");
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.js",
-					source: aggregateFiles.js,
-				});
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.d.ts",
-					source: aggregateFiles.dts,
-				});
 			},
 		},
 	};

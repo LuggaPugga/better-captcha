@@ -1,3 +1,5 @@
+import { type LoadScriptOptions, loadScript } from "./utils/load-script";
+
 export interface ScriptOptions {
 	/**
 	 * When false, the provider will not load the remote script automatically.
@@ -144,6 +146,18 @@ export abstract class Provider<
 	constructor(config: ProviderConfig, identifier: string) {
 		this.config = config;
 		this.identifier = identifier;
+	}
+
+	protected async loadProviderScript(
+		options: LoadScriptOptions = {},
+		defaultUrl = this.config.scriptUrl,
+	): Promise<void> {
+		if (this.config.scriptOptions?.autoLoad === false) return;
+
+		await loadScript(this.config.scriptOptions?.overrideScriptUrl ?? defaultUrl, {
+			...options,
+			scriptOptions: this.config.scriptOptions,
+		});
 	}
 
 	/**

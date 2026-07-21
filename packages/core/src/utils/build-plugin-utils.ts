@@ -1,12 +1,14 @@
 import type { ProviderMetadata } from "../registry.js";
 
-export interface FrameworkConfig {
+export interface ProviderModuleConfig {
 	baseImport: string;
 	componentCreation: (providerClassName: string) => string;
+	useClientDirective?: boolean;
+}
+
+export interface FrameworkConfig {
 	componentType: string;
 	componentTypeImports?: string;
-	fileExtension: string;
-	useClientDirective?: boolean;
 	propsStructure?: "single-with-ref" | "two-params";
 	refType?: string;
 }
@@ -16,21 +18,23 @@ export interface GeneratedFiles {
 	dts: string;
 }
 
+export interface GeneratedAsset {
+	fileName: string;
+	source: string;
+}
+
 function lines(...values: Array<string | false | undefined>): string {
 	return `${values.filter(Boolean).join("\n")}\n`;
 }
 
-export function generateProviderModule(meta: ProviderMetadata, config: FrameworkConfig): GeneratedFiles {
+export function generateProviderModule(meta: ProviderMetadata, config: ProviderModuleConfig): string {
 	const { componentName, providerClassName, name } = meta;
-	return {
-		js: lines(
-			config.useClientDirective && '"use client";',
-			config.baseImport,
-			`import { ${providerClassName} } from "@better-captcha/core/providers/${name}";`,
-			`export const ${componentName} = ${config.componentCreation(providerClassName)};`,
-		),
-		dts: `export declare const ${componentName}: any;\n`,
-	};
+	return lines(
+		config.useClientDirective && '"use client";',
+		config.baseImport,
+		`import { ${providerClassName} } from "@better-captcha/core/providers/${name}";`,
+		`export const ${componentName} = ${config.componentCreation(providerClassName)};`,
+	);
 }
 
 export function generateProviderModuleDts(meta: ProviderMetadata, config: FrameworkConfig): GeneratedFiles {
@@ -102,4 +106,25 @@ export function generateAggregateIndexFile(
 	);
 
 	return { js, dts };
+}
+
+export function generateProviderAssets(
+	providers: readonly ProviderMetadata[],
+	generate: (provider: ProviderMetadata) => GeneratedFiles,
+): GeneratedAsset[] {
+	const assets = providers.flatMap((provider) => {
+		const files = generate(provider);
+		const directory = `provider/${provider.name}`;
+		return [
+			{ fileName: `${directory}/index.js`, source: files.js },
+			{ fileName: `${directory}/index.d.ts`, source: files.dts },
+		];
+	});
+	const aggregate = generateAggregateIndexFile(providers);
+
+	return [
+		...assets,
+		{ fileName: "provider/index.js", source: aggregate.js },
+		{ fileName: "provider/index.d.ts", source: aggregate.dts },
+	];
 }

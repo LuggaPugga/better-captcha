@@ -75,7 +75,7 @@ export interface FriendlyCaptchaSDK {
 	 */
 	addEventListener<K extends keyof WidgetEventMap>(
 		eventName: K,
-		listener: (this: HTMLElement, ev: WidgetEventMap[K]) => any,
+		listener: (this: HTMLElement, ev: WidgetEventMap[K]) => void,
 		options?: boolean | AddEventListenerOptions,
 	): void;
 
@@ -87,7 +87,7 @@ export interface FriendlyCaptchaSDK {
 	 */
 	removeEventListener<K extends keyof WidgetEventMap>(
 		eventName: K,
-		listener: (this: HTMLElement, ev: WidgetEventMap[K]) => any,
+		listener: (this: HTMLElement, ev: WidgetEventMap[K]) => void,
 		options?: boolean | EventListenerOptions,
 	): void;
 
@@ -199,7 +199,7 @@ export interface FrcaptchaGlobal {
 	 * @private
 	 * Internal property for tracking agent state (e.g., associated store).
 	 */
-	agentState: Map<string, any>; // Consider refining 'any' if details of agent state are known
+	agentState: Map<string, unknown>;
 
 	/**
 	 * @private
@@ -211,13 +211,13 @@ export interface FrcaptchaGlobal {
 	 * @private
 	 * Internal bus for communication between frames.
 	 */
-	bus: any; // Complex internal, may not need full typing unless extending it
+	bus: unknown;
 
 	/**
 	 * @private
 	 * Internal signals object for collecting user behavior metrics.
 	 */
-	signals: any; // Complex internal, may not need full typing unless extending it
+	signals: unknown;
 
 	/**
 	 * @private
@@ -229,5 +229,8 @@ export interface FrcaptchaGlobal {
 	 * @private
 	 * Internal promise related to the 'attached' state.
 	 */
-	_attached: { promise: Promise<FriendlyCaptchaSDK[]>; resolve: Function };
+	_attached: {
+		promise: Promise<FriendlyCaptchaSDK[]>;
+		resolve: (widgets: FriendlyCaptchaSDK[]) => void;
+	};
 }

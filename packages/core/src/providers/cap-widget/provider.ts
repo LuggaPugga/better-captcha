@@ -1,5 +1,4 @@
 import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
-import { loadScript } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type {
 	CapErrorEvent,
@@ -26,15 +25,7 @@ export class CapWidgetProvider extends Provider<Omit<RenderParameters, "element"
 	}
 
 	async init() {
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				type: "module",
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ type: "module", async: true, defer: true });
 
 		if (typeof window !== "undefined" && customElements) {
 			await customElements.whenDefined("cap-widget");
@@ -171,9 +162,5 @@ export class CapWidgetProvider extends Provider<Omit<RenderParameters, "element"
 	getResponse(widgetId: string): string {
 		const widget = this.widgetMap.get(widgetId);
 		return widget?.token ?? "";
-	}
-
-	getHandle(widgetId: string): CapWidgetHandle {
-		return this.getCommonHandle(widgetId);
 	}
 }
