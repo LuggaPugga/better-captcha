@@ -139,7 +139,7 @@
       "devDependencies": {
         "@types/react": "^19",
         "@types/react-dom": "^19",
-        "@vitejs/plugin-react": "6.0.3",
+        "@vitejs/plugin-react": "6.0.5",
         "typescript": "^6.0.2",
         "vite": "^8.0.3",
       },
@@ -1082,7 +1082,7 @@
 
     "@vinxi/server-components": ["@vinxi/server-components@0.5.1", "https://registry.npmmirror.com/@vinxi/server-components/-/server-components-0.5.1.tgz", { "dependencies": { "@vinxi/plugin-directives": "0.5.1", "acorn": "^8.10.0", "acorn-loose": "^8.3.0", "acorn-typescript": "^1.4.3", "astring": "^1.8.6", "magicast": "^0.2.10", "recast": "^0.23.4" }, "peerDependencies": { "vinxi": "^0.5.5" } }, "sha512-0BsG95qac3dkhfdRZxqzqYWJE4NvPL7ILlV43B6K6ho1etXWB2e5b0IxsUAUbyqpqiXM7mSRivojuXjb2G4OsQ=="],
 
-    "@vitejs/plugin-react": ["@vitejs/plugin-react@6.0.3", "", { "dependencies": { "@rolldown/pluginutils": "^1.0.1" }, "peerDependencies": { "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0", "babel-plugin-react-compiler": "^1.0.0", "vite": "^8.0.0" }, "optionalPeers": ["@rolldown/plugin-babel", "babel-plugin-react-compiler"] }, "sha512-vmFvco5/QuC2f9Oj+wTk0+9XeDFkHxSamwZKYc7MxYwKICfvUvlMhqKI0VuICPltGqh1neqBKDvO4kes1ya8vg=="],
+    "@vitejs/plugin-react": ["@vitejs/plugin-react@6.0.5", "", { "dependencies": { "@rolldown/pluginutils": "^1.0.1" }, "peerDependencies": { "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0", "babel-plugin-react-compiler": "^1.0.0", "vite": "^8.0.0" }, "optionalPeers": ["@rolldown/plugin-babel", "babel-plugin-react-compiler"] }, "sha512-BOVzne/NL162sMdResB25mUv+vWMF5NoAjNf09TeGlE7ZpszZWSD3winycicLJw72yeVsoCn/2kOhEuCvEShMA=="],
 
     "@vitejs/plugin-vue": ["@vitejs/plugin-vue@6.0.5", "https://registry.npmmirror.com/@vitejs/plugin-vue/-/plugin-vue-6.0.5.tgz", { "dependencies": { "@rolldown/pluginutils": "1.0.0-rc.2" }, "peerDependencies": { "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0", "vue": "^3.2.25" } }, "sha512-bL3AxKuQySfk1iGcBsQnoRVexTPJq0Z/ixFVM8OhVJAP6ZXXXLtM7NFKWhLl30Kg7uTBqIaPXbh+nuQCuBDedg=="],
 
