@@ -11,10 +11,10 @@
 		"strict": true,
 		"noEmit": true,
 		"skipLibCheck": true,
-		"types": ["@solidjs/start/env"],
 		"isolatedModules": true,
 		"paths": {
 			"~/*": ["./src/*"]
 		}
-	}
+	},
+	"include": ["src"]
 }

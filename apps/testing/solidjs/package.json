@@ -4,21 +4,16 @@
 	"private": true,
 	"scripts": {
 		"check-types": "tsc --noEmit",
-		"dev": "vite dev --port 9001",
+		"dev": "vite --port 9001",
 		"build": "vite build",
-		"start": "vite preview --port 9001"
+		"preview": "vite preview --port 9001"
 	},
 	"dependencies": {
-		"@solidjs/meta": "^0.29.4",
-		"@solidjs/router": "^1.0.0",
-		"@solidjs/start": "^2.0.0",
 		"solid-js": "^1.9.14",
 		"@better-captcha/solidjs": "workspace:*"
 	},
-	"engines": {
-		"node": ">=24"
-	},
 	"devDependencies": {
-		"vite": "^8.2.1"
+		"vite": "^8.2.1",
+		"vite-plugin-solid": "^2.11.13"
 	}
 }
