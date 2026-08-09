@@ -115,6 +115,8 @@ export class CaptchaController<
 		this.updateState({ loading: true, error: null, ready: false });
 
 		let mountTarget: HTMLDivElement | null = null;
+		let readyBeforeCommit = false;
+		let committed = false;
 
 		try {
 			const activeProvider = this.providerFactory(this.identifier, this.scriptOptions);
@@ -126,7 +128,12 @@ export class CaptchaController<
 
 			const callbacks: CaptchaCallbacks<TSolve> = {
 				onReady: () => {
-					if (token === this.renderToken) this.callbacks?.onReady?.();
+					if (token !== this.renderToken) return;
+					if (committed) {
+						this.callbacks?.onReady?.();
+					} else {
+						readyBeforeCommit = true;
+					}
 				},
 				onSolve: (solveToken: TSolve) => {
 					if (token === this.renderToken) this.callbacks?.onSolve?.(solveToken);
@@ -152,7 +159,9 @@ export class CaptchaController<
 			this.provider = activeProvider;
 			this.container = mountTarget;
 			this.widgetId = id ?? null;
+			committed = true;
 			this.updateState({ loading: false, error: null, ready: true });
+			if (readyBeforeCommit) this.callbacks?.onReady?.();
 		} catch (error) {
 			mountTarget?.remove();
 			if (token !== this.renderToken) return;

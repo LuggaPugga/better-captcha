@@ -34,7 +34,8 @@ export function BetterCaptcha(allProps: BetterCaptchaProps): JSX.Element {
 	);
 	const ProviderClass = createMemo(() => {
 		if (typeof props.provider !== "string") return props.provider;
-		return loadedProvider.loading ? undefined : loadedProvider();
+		if (loadedProvider.loading || loadedProvider.error) return undefined;
+		return loadedProvider();
 	});
 	const Component = createMemo(() => {
 		const activeProvider = ProviderClass();
