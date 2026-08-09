@@ -1,12 +1,15 @@
 import { type BrowserContext, expect, type Page, test } from "@playwright/test";
+import { selectComponentMode } from "./utils";
 
 let context: BrowserContext;
 let page: Page;
 
-test.beforeAll(async ({ browser }) => {
+test.describe.configure({ mode: "serial" });
+
+test.beforeAll(async ({ browser }, testInfo) => {
 	context = await browser.newContext();
 	page = await context.newPage();
-	await page.goto("/");
+	await selectComponentMode(page, testInfo);
 	await page.locator("button", { hasText: "Private Captcha" }).first().click();
 });
 
@@ -50,9 +53,7 @@ test("widget has response", async () => {
 });
 
 test("widget can be reset", async () => {
-	const before = await page.locator('[id^="better-captcha-private-captcha"]');
 	await page.locator("button", { hasText: "Reset" }).first().click();
-	await expect(before !== page.locator('[id^="better-captcha-private-captcha"]')).toBe(true);
 	await expect(page.locator('[id^="better-captcha-private-captcha"]')).toHaveCount(1);
 });
 
@@ -60,7 +61,6 @@ test("widget can change theme", async () => {
 	const themes = ["light", "dark", "auto"];
 
 	for (let i = 0; i < themes.length; i++) {
-		const widgetBefore = page.locator('[id^="better-captcha-private-captcha"]').first();
 		await page.locator("button", { hasText: "Change Theme" }).first().click();
 
 		await page.waitForTimeout(100);
@@ -69,8 +69,6 @@ test("widget can change theme", async () => {
 
 		await expect(page.locator('[id^="better-captcha-private-captcha"]')).toHaveCount(1);
 		await expect(widgetAfter).toBeVisible();
-
-		expect(widgetBefore).not.toBe(widgetAfter);
 	}
 });
 

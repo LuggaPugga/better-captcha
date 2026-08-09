@@ -16,5 +16,4 @@ export default defineConfig({
 	clean: true,
 	outDir: "./dist",
 	ignoreWatch: [".turbo"],
-	external: ["ts-morph"],
 });

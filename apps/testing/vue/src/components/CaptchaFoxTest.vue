@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>Captcha Fox Test</h3>
-		<CaptchaFox
+		<RenderCaptcha :mode="mode" provider="captcha-fox" :component="CaptchaFox"
 			ref="captchaRef"
 			sitekey="sk_11111111000000001111111100000000"
 			:options="options"
@@ -26,6 +26,8 @@
 <script setup lang="ts">
 	import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/vue/provider/captcha-fox";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<CaptchaFoxHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -82,4 +84,3 @@
 		options.value = { ...options.value, theme: themes[nextIndex] };
 	};
 </script>
-

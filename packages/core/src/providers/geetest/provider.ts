@@ -1,17 +1,9 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import type { Geetest, RenderParameters } from "./types";
 
 export type GeetestHandle = CaptchaHandle<Geetest.ValidateResult | false>;
 
 export class GeetestProvider extends Provider<
-	ProviderConfig,
 	Omit<RenderParameters, "captchaId">,
 	GeetestHandle,
 	Geetest.ValidateResult | false,
@@ -32,15 +24,7 @@ export class GeetestProvider extends Provider<
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true });
 	}
 
 	private generateWidgetId(element: HTMLElement): string {

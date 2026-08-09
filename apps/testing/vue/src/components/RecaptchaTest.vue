@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>reCAPTCHA Test</h3>
-		<ReCaptcha
+		<RenderCaptcha :mode="mode" provider="recaptcha" :component="ReCaptcha"
 			ref="captchaRef"
 			sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 			:options="options"
@@ -26,6 +26,8 @@
 <script setup lang="ts">
 	import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/vue/provider/recaptcha";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<ReCaptchaHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -80,4 +82,3 @@
 		options.value = { ...options.value, theme: themes[nextIndex] };
 	};
 </script>
-

@@ -1,15 +1,16 @@
 import { Turnstile, type TurnstileHandle } from "@better-captcha/lit/provider/turnstile";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
-// Ensure the component is registered
 Turnstile;
-
-type TurnstileCaptchaElement = LitElement & { getHandle: () => TurnstileHandle };
+type TurnstileCaptchaElement = CaptchaRefElement<TurnstileHandle>;
 
 @customElement("turnstile-test")
 export class TurnstileTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<TurnstileCaptchaElement> = createRef();
 
 	@state()
@@ -64,12 +65,22 @@ export class TurnstileTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<turnstile-captcha
-					${ref(this.captchaRef)}
-					sitekey="1x00000000000000000000AA"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></turnstile-captcha>
+				${renderCaptcha<string, TurnstileHandle>({
+					mode: this.mode,
+					provider: "turnstile",
+					captchaRef: this.captchaRef,
+					sitekey: "1x00000000000000000000AA",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<turnstile-captcha
+							${ref(this.captchaRef)}
+							sitekey="1x00000000000000000000AA"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></turnstile-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

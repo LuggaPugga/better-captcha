@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/qwik/provider/turnstile";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const TurnstileTest = component$(() => {
+export const TurnstileTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<TurnstileHandle>();
 	const options = useSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -18,7 +19,10 @@ export const TurnstileTest = component$(() => {
 
 	return (
 		<div>
-			<Turnstile
+			<RenderCaptcha
+				mode={mode}
+				provider="turnstile"
+				component={Turnstile}
 				controller={controller}
 				options={options.value}
 				sitekey="1x00000000000000000000AA"

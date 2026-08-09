@@ -4,6 +4,7 @@ import { rollupPlugin } from "./build-plugin.ts";
 export default defineConfig({
 	entry: [
 		"src/index.ts",
+		"src/better-captcha.ts",
 		"src/create-captcha-component.ts",
 		"src/composables/use-captcha.ts",
 	],

@@ -4,8 +4,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/preact/provider/private-captcha";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function PrivateCaptchaTest() {
+export function PrivateCaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<PrivateCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -29,7 +30,10 @@ export function PrivateCaptchaTest() {
 	return (
 		<div>
 			<form>
-				<PrivateCaptcha
+				<RenderCaptcha
+					mode={mode}
+					provider="private-captcha"
+					component={PrivateCaptcha}
 					ref={turnstileRef}
 					sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
 					options={options}

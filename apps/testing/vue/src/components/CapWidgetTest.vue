@@ -1,7 +1,7 @@
 <template>
 	<div>
 	<h3>CapWidget Test</h3>
-		<CapWidget
+		<RenderCaptcha :mode="mode" provider="cap-widget" :component="CapWidget"
 			ref="captchaRef"
 			endpoint="https://captcha.gurl.eu.org/api/"
 			:options="options"
@@ -24,7 +24,9 @@
 
 <script setup lang="ts">
 	import { type RenderParameters, CapWidget, type CapWidgetHandle } from "@better-captcha/vue/provider/cap-widget";
-import { ref } from "vue";
+	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<CapWidgetHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -69,4 +71,3 @@ import { ref } from "vue";
 		response.value = captchaResponse;
 	};
 </script>
-

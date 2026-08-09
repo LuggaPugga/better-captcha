@@ -27,7 +27,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"check-types": "tsc --noEmit",
-		"dev": "tsdown --watch"
+		"dev": "tsdown --watch",
+		"test:playwright": "playwright test"
 	},
 	"exports": {
 		".": {
@@ -75,7 +76,6 @@
 		"playwright": "^1.56.1",
 		"rolldown-plugin-solid": "^0.2.1",
 		"solid-js": "^1.9.9",
-		"ts-morph": "^28.0.0",
 		"tsdown": "^0.22.0",
 		"unplugin": "^3.0.0"
 	}

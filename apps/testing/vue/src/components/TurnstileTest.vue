@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>Turnstile Test</h3>
-		<Turnstile
+		<RenderCaptcha :mode="mode" provider="turnstile" :component="Turnstile"
 			ref="captchaRef"
 			sitekey="1x00000000000000000000AA"
 			:options="options"
@@ -26,6 +26,8 @@
 <script setup lang="ts">
 	import { type RenderParameters, Turnstile, type TurnstileHandle } from "@better-captcha/vue/provider/turnstile";
 import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<TurnstileHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -80,4 +82,3 @@ import { ref } from "vue";
 		options.value = { ...options.value, theme: themes[nextIndex] };
 	};
 </script>
-

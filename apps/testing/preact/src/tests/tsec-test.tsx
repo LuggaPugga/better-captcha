@@ -1,7 +1,8 @@
 import { TSec, type TSecHandle } from "@better-captcha/preact/provider/t-sec";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function TSecTest() {
+export function TSecTest({ mode }: { mode: CaptchaComponentMode }) {
 	const tsecRef = useRef<TSecHandle>(null);
 	const [response, setResponse] = useState<ReturnType<TSecHandle["getResponse"]>>(null);
 	const [solved, setSolved] = useState<boolean>(false);
@@ -18,7 +19,15 @@ export function TSecTest() {
 
 	return (
 		<div>
-			<TSec ref={tsecRef} sitekey="189910271" onSolve={handleSolve} options={{ userLanguage: "en" }} />
+			<RenderCaptcha
+				mode={mode}
+				provider="t-sec"
+				component={TSec}
+				ref={tsecRef}
+				sitekey="189910271"
+				onSolve={handleSolve}
+				options={{ userLanguage: "en" }}
+			/>
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => tsecRef.current?.destroy()}>
 				Destroy

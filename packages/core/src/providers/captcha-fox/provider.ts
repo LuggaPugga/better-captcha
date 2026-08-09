@@ -1,11 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { getSystemTheme } from "../../utils/theme";
 import type { RenderParameters, WidgetApi } from "./types";
 
@@ -17,11 +10,7 @@ declare global {
 
 export type CaptchaFoxHandle = CaptchaHandle;
 
-export class CaptchaFoxProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "element" | "sitekey">,
-	CaptchaFoxHandle
-> {
+export class CaptchaFoxProvider extends Provider<Omit<RenderParameters, "element" | "sitekey">, CaptchaFoxHandle> {
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{
@@ -33,15 +22,7 @@ export class CaptchaFoxProvider extends Provider<
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				type: "module",
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ type: "module", async: true, defer: true });
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">, callbacks?: CaptchaCallbacks) {
@@ -82,11 +63,5 @@ export class CaptchaFoxProvider extends Provider<
 
 	getResponse(widgetId: string): string {
 		return window.captchafox?.getResponse(widgetId) ?? "";
-	}
-
-	getHandle(widgetId: string): CaptchaFoxHandle {
-		return {
-			...this.getCommonHandle(widgetId),
-		};
 	}
 }

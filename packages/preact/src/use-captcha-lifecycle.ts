@@ -1,11 +1,4 @@
-import type {
-	CaptchaHandle,
-	CaptchaState,
-	Provider,
-	ProviderConfig,
-	ScriptOptions,
-	WidgetId,
-} from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ScriptOptions, WidgetId } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 
@@ -18,7 +11,7 @@ export function useCaptchaLifecycle<
 	ProviderClass: new (
 		identifier: string,
 		scriptOptions?: ScriptOptions,
-	) => Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	) => Provider<TOptions, THandle, TResponse, TSolve>,
 	identifier: string,
 	scriptOptions: ScriptOptions | undefined,
 	options: TOptions | undefined,
@@ -30,17 +23,10 @@ export function useCaptchaLifecycle<
 	},
 ) {
 	const elementRef = useRef<HTMLDivElement>(null);
-	const hasRenderedRef = useRef(false);
+	const callbacksRef = useRef(callbacks);
 
 	const controller = useMemo(
-		() =>
-			new CaptchaController<
-				TOptions,
-				TResponse,
-				TSolve,
-				THandle,
-				Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>
-			>((id, script) => new ProviderClass(id, script)),
+		() => new CaptchaController<TOptions, TResponse, TSolve, THandle>((id, script) => new ProviderClass(id, script)),
 		[ProviderClass],
 	);
 
@@ -52,22 +38,20 @@ export function useCaptchaLifecycle<
 
 	const [widgetId, setWidgetId] = useState<WidgetId | null>(null);
 
-	const callbacksRef = useRef(callbacks);
-
 	useEffect(() => {
 		callbacksRef.current = callbacks;
 	}, [callbacks]);
 
-	const isLoading = autoRender ? state.loading || !state.ready : state.loading;
+	const isLoading = state.loading || (autoRender && !state.ready);
 
-	useEffect(() => {
-		const unsubscribe = controller.onStateChange((newState) => {
-			setState(newState);
-			setWidgetId(controller.getWidgetId());
-			if (newState.ready) hasRenderedRef.current = true;
-		});
-		return unsubscribe;
-	}, [controller]);
+	useEffect(
+		() =>
+			controller.onStateChange((newState) => {
+				setState(newState);
+				setWidgetId(controller.getWidgetId());
+			}),
+		[controller],
+	);
 
 	useEffect(() => {
 		controller.attachHost(elementRef.current);
@@ -78,31 +62,19 @@ export function useCaptchaLifecycle<
 			onReady: () => callbacksRef.current?.onReady?.(controller.getHandle()),
 			onSolve: (token: TSolve) => callbacksRef.current?.onSolve?.(token),
 			onError: (err: Error | string) => {
-				const error = err instanceof Error ? err : new Error(String(err));
-				callbacksRef.current?.onError?.(error);
+				callbacksRef.current?.onError?.(err instanceof Error ? err : new Error(String(err)));
 			},
 		});
-	}, [controller, identifier, scriptOptions, options]);
+
+		if (autoRender) {
+			void controller.render();
+		}
+	}, [controller, identifier, scriptOptions, options, autoRender]);
+
+	useEffect(() => () => controller.cleanup(), [controller]);
 
 	const renderCaptcha = useCallback(async () => {
 		await controller.render();
-	}, [controller]);
-
-	const renderKeyRef = useRef("");
-	useEffect(() => {
-		if (!autoRender) return;
-		const key = `${identifier}::${JSON.stringify(options)}::${JSON.stringify(scriptOptions)}`;
-		const shouldRender = !hasRenderedRef.current || state.error || renderKeyRef.current !== key;
-		if (shouldRender) {
-			renderKeyRef.current = key;
-			void renderCaptcha();
-		}
-	}, [autoRender, identifier, options, scriptOptions, renderCaptcha, state.error]);
-
-	useEffect(() => {
-		return () => {
-			controller.cleanup();
-		};
 	}, [controller]);
 
 	return { elementRef, state, widgetId, isLoading, renderCaptcha, controller };

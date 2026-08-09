@@ -5,8 +5,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/preact/provider/geetest";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function GeetestTest() {
+export function GeetestTest({ mode }: { mode: CaptchaComponentMode }) {
 	const geetestRef = useRef<GeetestHandle>(null);
 	const options: RenderParameters = {
 		language: "eng",
@@ -26,7 +27,15 @@ export function GeetestTest() {
 
 	return (
 		<div>
-			<Geetest ref={geetestRef} sitekey="647f5ed2ed8acb4be36784e01556bb71" options={options} onSolve={handleSolve} />
+			<RenderCaptcha
+				mode={mode}
+				provider="geetest"
+				component={Geetest}
+				ref={geetestRef}
+				sitekey="647f5ed2ed8acb4be36784e01556bb71"
+				options={options}
+				onSolve={handleSolve}
+			/>
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => geetestRef.current?.destroy()}>
 				Destroy

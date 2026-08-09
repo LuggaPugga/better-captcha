@@ -27,7 +27,8 @@
 	"scripts": {
 		"build": "tsdown",
 		"check-types": "tsc --noEmit",
-		"dev": "tsdown --watch"
+		"dev": "tsdown --watch",
+		"test:playwright": "playwright test"
 	},
 	"exports": {
 		".": {
@@ -75,7 +76,6 @@
 		"@types/node": "25.7.0",
 		"@types/react": "^18.0.0 || ^19.0.0",
 		"playwright": "^1.56.0",
-		"ts-morph": "^28.0.0",
 		"tsdown": "^0.22.0",
 		"unplugin": "^3.0.0"
 	}

@@ -4,8 +4,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/react/provider/friendly-captcha";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function FriendlyCaptchaTest() {
+export function FriendlyCaptchaTest({ mode }: { mode: CaptchaComponentMode }) {
 	const turnstileRef = useRef<FriendlyCaptchaHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey" | "element"> => ({
@@ -28,7 +29,7 @@ export function FriendlyCaptchaTest() {
 
 	return (
 		<div>
-			<FriendlyCaptcha ref={turnstileRef} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} onSolve={handleSolve} />
+			<RenderCaptcha mode={mode} provider="friendly-captcha" component={FriendlyCaptcha} ref={turnstileRef} sitekey="FC-00000000-0000-0000-0000-000000000000" options={options} onSolve={handleSolve} />
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => turnstileRef.current?.destroy()}>
 				Destroy

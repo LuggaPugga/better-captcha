@@ -1,14 +1,16 @@
 import { CaptchaFox, type CaptchaFoxHandle } from "@better-captcha/lit/provider/captcha-fox";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 CaptchaFox;
-
-type CaptchaFoxCaptchaElement = LitElement & { getHandle: () => CaptchaFoxHandle };
+type CaptchaFoxCaptchaElement = CaptchaRefElement<CaptchaFoxHandle>;
 
 @customElement("captcha-fox-test")
 export class CaptchaFoxTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<CaptchaFoxCaptchaElement> = createRef();
 
 	@state()
@@ -63,12 +65,22 @@ export class CaptchaFoxTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<captcha-fox-captcha
-					${ref(this.captchaRef)}
-					sitekey="sk_11111111000000001111111100000000"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></captcha-fox-captcha>
+				${renderCaptcha<string, CaptchaFoxHandle>({
+					mode: this.mode,
+					provider: "captcha-fox",
+					captchaRef: this.captchaRef,
+					sitekey: "sk_11111111000000001111111100000000",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<captcha-fox-captcha
+							${ref(this.captchaRef)}
+							sitekey="sk_11111111000000001111111100000000"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></captcha-fox-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

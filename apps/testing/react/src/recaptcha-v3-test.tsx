@@ -1,7 +1,8 @@
 import { ReCaptchaV3, type ReCaptchaV3Handle, type RenderParameters } from "@better-captcha/react/provider/recaptcha-v3";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function RecaptchaV3Test() {
+export function RecaptchaV3Test({ mode }: { mode: CaptchaComponentMode }) {
 	const recaptchaRef = useRef<ReCaptchaV3Handle>(null);
 	const [options, setOptions] = useState<RenderParameters>({
 		action: "submit",
@@ -21,7 +22,7 @@ export function RecaptchaV3Test() {
 
 	return (
 		<div>
-			<ReCaptchaV3 ref={recaptchaRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} onSolve={handleSolve} />
+			<RenderCaptcha mode={mode} provider="recaptcha-v3" component={ReCaptchaV3} ref={recaptchaRef} sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" options={options} onSolve={handleSolve} />
 			{solved && <p id="captcha-solved">Captcha Solved!</p>}
 			<button type="button" onClick={() => recaptchaRef.current?.destroy()}>
 				Destroy

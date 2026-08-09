@@ -1,12 +1,15 @@
 import { type BrowserContext, expect, type Page, test } from "@playwright/test";
+import { selectComponentMode } from "./utils";
 
 let context: BrowserContext;
 let page: Page;
 
-test.beforeAll(async ({ browser }) => {
+test.describe.configure({ mode: "serial" });
+
+test.beforeAll(async ({ browser }, testInfo) => {
 	context = await browser.newContext();
 	page = await context.newPage();
-	await page.goto("/");
+	await selectComponentMode(page, testInfo);
 	await page.locator("button", { hasText: "Turnstile" }).first().click();
 });
 
@@ -38,9 +41,7 @@ test("widget has response", async () => {
 });
 
 test("widget can be reset", async () => {
-	const before = page.locator('[id^="better-captcha-cf-chl"]');
 	await page.locator("button", { hasText: "Reset" }).first().click();
-	await expect(before !== page.locator('[id^="better-captcha-cf-chl"]')).toBe(true);
 	await expect(page.locator('[id^="better-captcha-cf-chl"]')).toHaveCount(1);
 });
 

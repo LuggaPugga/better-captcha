@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/qwik/provider/hcaptcha";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const HCaptchaTest = component$(() => {
+export const HCaptchaTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<HCaptchaHandle>();
 	const options = useSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -18,7 +19,10 @@ export const HCaptchaTest = component$(() => {
 
 	return (
 		<div>
-			<HCaptcha
+			<RenderCaptcha
+				mode={mode}
+				provider="hcaptcha"
+				component={HCaptcha}
 				controller={controller}
 				options={options.value}
 				sitekey="10000000-ffff-ffff-ffff-000000000001"

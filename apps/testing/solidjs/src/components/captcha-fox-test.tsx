@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/solidjs/provider/captcha-fox";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function CaptchaFoxTest() {
+export function CaptchaFoxTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<CaptchaFoxHandle>();
 	const [options, setOptions] = createSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -23,7 +24,10 @@ export function CaptchaFoxTest() {
 
 	return (
 		<div>
-			<CaptchaFox
+			<RenderCaptcha
+				mode={props.mode}
+				provider="captcha-fox"
+				component={CaptchaFox}
 				controller={controller}
 				sitekey="sk_11111111000000001111111100000000"
 				options={options()}

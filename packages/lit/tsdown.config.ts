@@ -2,7 +2,7 @@ import { defineConfig } from "tsdown";
 import { rollupPlugin } from "./build-plugin.ts";
 
 export default defineConfig({
-	entry: ["src/index.ts", "src/base-captcha.ts"],
+	entry: ["src/index.ts", "src/base-captcha.ts", "src/better-captcha.ts"],
 	platform: "browser",
 	format: ["esm"],
 	dts: true,

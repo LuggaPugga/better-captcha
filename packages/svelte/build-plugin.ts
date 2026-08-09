@@ -1,28 +1,14 @@
 import fs from "node:fs";
-import * as path from "node:path";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
-import { ModuleKind, Project, ScriptTarget } from "ts-morph";
+import { generateAggregateIndexFile } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-function createProject(): Project {
-	return new Project({
-		useInMemoryFileSystem: true,
-		compilerOptions: {
-			target: ScriptTarget.ESNext,
-			module: ModuleKind.ESNext,
-			declaration: true,
-			esModuleInterop: true,
-			skipLibCheck: true,
-		},
-	});
-}
-
-function generateSvelteComponent(metadata: ProviderMetadata): string {
+function generateProviderComponent(meta: ProviderMetadata): string {
 	const {
 		name,
 		providerClassName,
@@ -31,10 +17,12 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		renderParamsOmit,
 		solvePayloadType,
 		identifierProp = "sitekey",
-	} = metadata;
+	} = meta;
 	const solveType = solvePayloadType ?? "string";
-	const sitekeyProp = identifierProp === "endpoint" ? "" : "sitekey: string;\n\t\t";
-	const endpointProp = identifierProp === "endpoint" ? "endpoint: string;" : "";
+	const identifierPropDef = identifierProp === "endpoint" ? "endpoint: string;" : "sitekey: string;";
+	const identifierBinding = identifierProp === "endpoint" ? "value={endpoint}" : "value={sitekey}";
+	const propsDestructure =
+		identifierProp === "endpoint" ? "{ endpoint, ...rest }: Props" : "{ sitekey, ...rest }: Props";
 
 	return `<script lang="ts">
 	import BaseCaptcha from "../../base-captcha.svelte";
@@ -43,8 +31,7 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 	import type { CaptchaState, ScriptOptions } from "@better-captcha/core";
 
 	interface Props {
-		${sitekeyProp}
-		${endpointProp}
+		${identifierPropDef}
 		options?: Omit<${renderParamsType}, ${renderParamsOmit}>;
 		scriptOptions?: ScriptOptions;
 		class?: string;
@@ -55,63 +42,28 @@ function generateSvelteComponent(metadata: ProviderMetadata): string {
 		onSolve?: (token: ${solveType}) => void;
 	}
 
-	let {
-		${identifierProp === "endpoint" ? "endpoint," : "sitekey,"}
-		options = undefined,
-		scriptOptions = undefined,
-		class: className = undefined,
-		style = undefined,
-		autoRender = true,
-		onready = undefined,
-		onerror = undefined,
-		onSolve = undefined
-	}: Props = $props();
+	let ${propsDestructure} = $props();
+	let captcha = $state();
 
-	let baseCaptchaRef: BaseCaptcha<Omit<${renderParamsType}, ${renderParamsOmit}>, ReturnType<${handleType}["getResponse"]>, ${solveType}, ${handleType}, typeof ${providerClassName}> | undefined = $state(undefined);
-
-	// Expose public methods
-	export function execute(): Promise<void> {
-		return baseCaptchaRef?.execute() ?? Promise.resolve();
-	}
-
-	export function reset(): void {
-		baseCaptchaRef?.reset();
-	}
-
-	export function destroy(): void {
-		baseCaptchaRef?.destroy();
-	}
-
-	export function getResponse(): ReturnType<${handleType}["getResponse"]> | undefined {
-		return baseCaptchaRef?.getResponse();
-	}
-
-	export function getComponentState(): CaptchaState {
-		return baseCaptchaRef?.getComponentState() ?? { loading: false, error: null, ready: false };
-	}
-
-	export function render(): Promise<void> {
-		return baseCaptchaRef?.render() ?? Promise.resolve();
-	}
+	export const execute = () => captcha?.execute() ?? Promise.resolve();
+	export const reset = () => captcha?.reset();
+	export const destroy = () => captcha?.destroy();
+	export const getResponse = () => captcha?.getResponse();
+	export const getComponentState = (): CaptchaState =>
+		captcha?.getComponentState() ?? { loading: false, error: null, ready: false };
+	export const render = () => captcha?.render() ?? Promise.resolve();
 </script>
 
-<BaseCaptcha
-	bind:this={baseCaptchaRef}
-	providerClass={${providerClassName}}
-	value={${identifierProp === "endpoint" ? "endpoint" : "sitekey"}}
-	{options}
-	{scriptOptions}
-	class={className}
-	{style}
-	{autoRender}
-	{onready}
-	{onerror}
-	{onSolve}
-/>
+<BaseCaptcha bind:this={captcha} providerClass={${providerClassName}} ${identifierBinding} {...rest} />
 `;
 }
 
-function generateComponentDts(metadata: ProviderMetadata): string {
+function generateProviderIndexJs(meta: ProviderMetadata): string {
+	const { componentName } = meta;
+	return `export { default, default as ${componentName} } from "./${componentName}.svelte";\n`;
+}
+
+function generateProviderDts(meta: ProviderMetadata): string {
 	const {
 		name,
 		componentName,
@@ -121,65 +73,26 @@ function generateComponentDts(metadata: ProviderMetadata): string {
 		extraTypes,
 		solvePayloadType,
 		identifierProp = "sitekey",
-	} = metadata;
+	} = meta;
 
 	const extraTypeImports = extraTypes.length > 0 ? `,\n\t${extraTypes.join(",\n\t")}` : "";
 	const extraTypeExports = extraTypes.length > 0 ? `, ${extraTypes.join(", ")}` : "";
 	const solveType = solvePayloadType ?? "string";
+	const optionsType = `Omit<${renderParamsType}, ${renderParamsOmit}>`;
+	const basePropsType = `CaptchaProps<${optionsType}, ${solveType}, ${handleType}>`;
+	const propsType =
+		identifierProp === "endpoint"
+			? `Omit<${basePropsType}, "sitekey" | "endpoint"> & { endpoint: string }`
+			: `Omit<${basePropsType}, "sitekey" | "endpoint"> & { sitekey: string }`;
 
-	const sitekeyProp = identifierProp === "endpoint" ? "" : "	sitekey: string;\n";
-	const endpointProp = identifierProp === "endpoint" ? "	endpoint: string;\n" : "";
+	return `import type { SvelteComponent } from "svelte";
+import type { CaptchaProps, CaptchaComponentMethods } from "../../index.js";
+import type { CaptchaState } from "@better-captcha/core";
+import type { ${handleType}, ${renderParamsType}${extraTypeImports} } from "@better-captcha/core/providers/${name}";
 
-	return `// Auto-generated from @better-captcha/core
-// Do not edit this file directly
-import type { SvelteComponent } from "svelte";
-import type { CaptchaState, ScriptOptions } from "@better-captcha/core";
-import type {
-	${handleType},
-	${renderParamsType}${extraTypeImports},
-} from "@better-captcha/core/providers/${name}";
+type ${componentName}Props = ${propsType};
 
-export interface ${componentName}Props {
-${sitekeyProp}${endpointProp}
-	options?: Omit<${renderParamsType}, ${renderParamsOmit}>;
-	scriptOptions?: ScriptOptions;
-	class?: string;
-	style?: string;
-	onready?: (handle: ${handleType}) => void;
-	onerror?: (error: Error) => void;
-	onSolve?: (token: ${solveType}) => void;
-}
-
-/**
- * ${componentName} component for Svelte 5
- * 
- * @example
- * \`\`\`svelte
- * <script lang="ts">
- *   import ${componentName} from '@better-captcha/svelte/provider/${name}';
- *   import type { ${handleType} } from '@better-captcha/svelte/provider/${name}';
- * 
- *   let captchaRef: ${componentName} | undefined;
- * 
- *   function onReady(handle: ${handleType}) {
- *     console.log('CAPTCHA ready!', handle);
- *   }
- * 
- *   function onError(error: Error) {
- *     console.error('CAPTCHA error:', error);
- *   }
- * </script>
- * 
- * <${componentName}
- *   bind:this={captchaRef}
- *   sitekey="your-site-key"
- *   options={{ theme: 'light' }}
- *   onready={onReady}
- *   onerror={onError}
- * />
- * \`\`\`
- */
-export default class ${componentName} extends SvelteComponent<${componentName}Props> {
+declare class ${componentName} extends SvelteComponent<${componentName}Props> implements CaptchaComponentMethods<${handleType}> {
 	execute(): Promise<void>;
 	reset(): void;
 	destroy(): void;
@@ -188,158 +101,95 @@ export default class ${componentName} extends SvelteComponent<${componentName}Pr
 	render(): Promise<void>;
 }
 
+export default ${componentName};
 export type { ${handleType}, ${renderParamsType}${extraTypeExports} };
 `;
 }
 
-function generateComponentIndexJs(metadata: ProviderMetadata): string {
-	const { componentName } = metadata;
-
-	const project = createProject();
-	const sourceFile = project.createSourceFile("index.ts", "", { overwrite: true });
-
-	sourceFile.addImportDeclaration({
-		defaultImport: `${componentName}Component`,
-		moduleSpecifier: `./${componentName}.svelte`,
-	});
-
-	sourceFile.addExportDeclaration({
-		namedExports: [{ name: `${componentName}Component`, alias: componentName }],
-	});
-
-	sourceFile.addStatements(`export default ${componentName}Component;`);
-
-	const emitResult = project.emitToMemory();
-	const files = emitResult.getFiles();
-	return files.find((f) => f.filePath.endsWith(".js"))?.text || "";
-}
-
-function generateAggregateIndexJs(providers: ProviderMetadata[]): string {
-	const project = createProject();
-	const sourceFile = project.createSourceFile("aggregate.ts", "", { overwrite: true });
-
-	for (const { name, componentName } of providers) {
-		sourceFile.addExportDeclaration({
-			namedExports: [componentName],
-			moduleSpecifier: `./${name}/index.js`,
-		});
-	}
-
-	const emitResult = project.emitToMemory();
-	const files = emitResult.getFiles();
-	return files.find((f) => f.filePath.endsWith(".js"))?.text || "";
-}
-
-function generateAggregateIndexDts(providers: ProviderMetadata[]): string {
-	const project = createProject();
-	const sourceFile = project.createSourceFile("aggregate.ts", "", { overwrite: true });
-
-	for (const { name, componentName, handleType, renderParamsType, extraTypes } of providers) {
-		sourceFile.addExportDeclaration({
-			namedExports: [{ name: "default", alias: componentName }],
-			moduleSpecifier: `./${name}/index.js`,
-		});
-
-		sourceFile.addExportDeclaration({
-			namedExports: [handleType],
-			moduleSpecifier: `./${name}/index.js`,
-			isTypeOnly: true,
-		});
-
-		sourceFile.addExportDeclaration({
-			namedExports: [{ name: renderParamsType, alias: `${componentName}${renderParamsType}` }],
-			moduleSpecifier: `./${name}/index.js`,
-			isTypeOnly: true,
-		});
-
-		for (const extraType of extraTypes) {
-			sourceFile.addExportDeclaration({
-				namedExports: [{ name: extraType, alias: `${componentName}${extraType}` }],
-				moduleSpecifier: `./${name}/index.js`,
-				isTypeOnly: true,
+export const unpluginFactory: UnpluginFactory<undefined> = () => ({
+	name: "better-captcha-svelte",
+	rollup: {
+		generateBundle(_options, bundle) {
+			this.emitFile({
+				type: "asset",
+				fileName: "base-captcha.svelte",
+				source: fs.readFileSync(path.join(__dirname, "src/base-captcha.svelte"), "utf-8"),
 			});
-		}
-	}
 
-	const emitResult = project.emitToMemory();
-	const files = emitResult.getFiles();
-	return files.find((f) => f.filePath.endsWith(".d.ts"))?.text || "";
-}
+			this.emitFile({
+				type: "asset",
+				fileName: "base-captcha.svelte.d.ts",
+				source: fs.readFileSync(path.join(__dirname, "src/base-captcha.svelte.d.ts"), "utf-8"),
+			});
 
-export const unpluginFactory: UnpluginFactory<undefined> = () => {
-	const VIRTUAL_ID = "virtual:better-captcha-providers";
-	const RESOLVED_VIRTUAL_ID = "\0better-captcha-providers";
+			this.emitFile({
+				type: "asset",
+				fileName: "better-captcha.svelte",
+				source: fs.readFileSync(path.join(__dirname, "src/better-captcha.svelte"), "utf-8"),
+			});
 
-	return {
-		name: "better-captcha-generate-components",
-		rollup: {
-			resolveId(id) {
-				return id === VIRTUAL_ID ? RESOLVED_VIRTUAL_ID : null;
-			},
-			load(id) {
-				if (id === RESOLVED_VIRTUAL_ID) {
-					return ["// Auto-generated virtual module", 'export * from "./provider/index.js";'].join("\n");
-				}
-				return null;
-			},
-			generateBundle() {
-				// Copy base-captcha.svelte and its types to dist
-				const baseCaptchaPath = path.join(__dirname, "src/base-captcha.svelte");
-				const baseCaptchaDtsPath = path.join(__dirname, "src/base-captcha.svelte.d.ts");
-				const baseCaptchaContent = fs.readFileSync(baseCaptchaPath, "utf-8");
-				const baseCaptchaDtsContent = fs.readFileSync(baseCaptchaDtsPath, "utf-8");
+			this.emitFile({
+				type: "asset",
+				fileName: "better-captcha.svelte.d.ts",
+				source: fs.readFileSync(path.join(__dirname, "src/better-captcha.svelte.d.ts"), "utf-8"),
+			});
 
+			this.emitFile({
+				type: "asset",
+				fileName: "better-captcha.js",
+				source: 'export { default as BetterCaptcha } from "./better-captcha.svelte";\n',
+			});
+
+			for (const provider of PROVIDER_REGISTRY) {
 				this.emitFile({
 					type: "asset",
-					fileName: "base-captcha.svelte",
-					source: baseCaptchaContent,
+					fileName: `provider/${provider.name}/${provider.componentName}.svelte`,
+					source: generateProviderComponent(provider),
 				});
 
 				this.emitFile({
 					type: "asset",
-					fileName: "base-captcha.svelte.d.ts",
-					source: baseCaptchaDtsContent,
-				});
-
-				for (const provider of PROVIDER_REGISTRY) {
-					// Generate .svelte component file
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/${provider.componentName}.svelte`,
-						source: generateSvelteComponent(provider),
-					});
-
-					// Generate index.js for the provider
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.js`,
-						source: generateComponentIndexJs(provider),
-					});
-
-					// Generate index.d.ts for the provider
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.d.ts`,
-						source: generateComponentDts(provider),
-					});
-				}
-
-				// Generate aggregate index files
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.js",
-					source: generateAggregateIndexJs(PROVIDER_REGISTRY),
+					fileName: `provider/${provider.name}/index.js`,
+					source: generateProviderIndexJs(provider),
 				});
 
 				this.emitFile({
 					type: "asset",
-					fileName: "provider/index.d.ts",
-					source: generateAggregateIndexDts(PROVIDER_REGISTRY),
+					fileName: `provider/${provider.name}/index.d.ts`,
+					source: generateProviderDts(provider),
 				});
-			},
+			}
+
+			const aggregate = generateAggregateIndexFile(PROVIDER_REGISTRY, ".js");
+
+			this.emitFile({
+				type: "asset",
+				fileName: "provider/index.js",
+				source: aggregate.js,
+			});
+
+			this.emitFile({
+				type: "asset",
+				fileName: "provider/index.d.ts",
+				source: aggregate.dts,
+			});
+
+			const indexChunk = bundle["index.js"];
+			if (indexChunk?.type === "chunk") {
+				indexChunk.code += '\nexport { BetterCaptcha } from "./better-captcha.js";\n';
+			}
 		},
-	};
-};
+		closeBundle() {
+			const indexDtsPath = path.join(__dirname, "dist/index.d.ts");
+			if (fs.existsSync(indexDtsPath)) {
+				const content = fs.readFileSync(indexDtsPath, "utf-8");
+				if (!content.includes("BetterCaptcha")) {
+					fs.appendFileSync(indexDtsPath, '\nexport { default as BetterCaptcha } from "./better-captcha.svelte";\n');
+				}
+			}
+		},
+	},
+});
 
 export const unplugin = createUnplugin(unpluginFactory);
 export default unplugin;

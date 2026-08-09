@@ -1,11 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import type {
 	AltchaErrorEvent,
 	AltchaLoadEvent,
@@ -17,7 +10,7 @@ import type {
 
 export type AltchaHandle = CaptchaHandle;
 
-export class AltchaProvider extends Provider<ProviderConfig, Omit<RenderParameters, "element">, AltchaHandle> {
+export class AltchaProvider extends Provider<Omit<RenderParameters, "element">, AltchaHandle> {
 	private widgetMap = new Map<string, AltchaWidget>();
 	private responseMap = new Map<string, string>();
 
@@ -32,15 +25,7 @@ export class AltchaProvider extends Provider<ProviderConfig, Omit<RenderParamete
 	}
 
 	async init() {
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				type: "module",
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ type: "module", async: true, defer: true });
 
 		if (typeof window !== "undefined" && customElements) {
 			await customElements.whenDefined("altcha-widget");
@@ -187,9 +172,5 @@ export class AltchaProvider extends Provider<ProviderConfig, Omit<RenderParamete
 
 	getResponse(widgetId: string): string {
 		return this.responseMap.get(widgetId) ?? "";
-	}
-
-	getHandle(widgetId: string): AltchaHandle {
-		return this.getCommonHandle(widgetId);
 	}
 }

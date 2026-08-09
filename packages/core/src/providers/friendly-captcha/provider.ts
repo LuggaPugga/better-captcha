@@ -1,11 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import type { FrcaptchaGlobal, FriendlyCaptchaSDK, RenderParameters } from "./types";
 
 declare global {
@@ -19,7 +12,6 @@ export type FriendlyCaptchaHandle = CaptchaHandle & {
 };
 
 export class FriendlyCaptchaProvider extends Provider<
-	ProviderConfig,
 	Omit<RenderParameters, "element" | "sitekey">,
 	FriendlyCaptchaHandle
 > {
@@ -34,15 +26,7 @@ export class FriendlyCaptchaProvider extends Provider<
 	}
 
 	async init() {
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				type: "module",
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ type: "module", async: true, defer: true });
 	}
 
 	render(element: HTMLElement, options?: Omit<RenderParameters, "element" | "sitekey">, callbacks?: CaptchaCallbacks) {

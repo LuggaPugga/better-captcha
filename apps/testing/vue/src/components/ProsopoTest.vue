@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>Prosopo Test</h3>
-		<Prosopo
+		<RenderCaptcha :mode="mode" provider="prosopo" :component="Prosopo"
 			ref="captchaRef"
 			sitekey="test-sitekey"
 			:options="options"
@@ -26,6 +26,8 @@
 <script setup lang="ts">
 	import { Prosopo, type ProsopoHandle, type RenderParameters } from "@better-captcha/vue/provider/prosopo";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<ProsopoHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -81,4 +83,3 @@
 		options.value = { ...options.value, theme: themes[nextIndex] };
 	};
 </script>
-

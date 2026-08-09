@@ -19,22 +19,33 @@ export const createPlaywrightConfig = ({ baseURL, command }: PlaywrightConfigOpt
 		},
 		projects: [
 			{
-				name: "chromium",
+				name: "chromium-dedicated",
+				metadata: { componentMode: "dedicated" },
 				use: {
 					...devices["Desktop Chrome"],
 				},
 			},
 			{
-				name: "firefox",
+				name: "firefox-dedicated",
+				metadata: { componentMode: "dedicated" },
 				use: {
 					...devices["Desktop Firefox"],
 				},
 			},
 			{
-				name: "webkit",
+				name: "webkit-dedicated",
+				metadata: { componentMode: "dedicated" },
 				testIgnore: ["captcha-fox.spec.ts"],
 				use: {
 					...devices["Desktop Safari"],
+				},
+			},
+			{
+				// Provider behavior already has full browser coverage above.
+				name: "chromium-dynamic",
+				metadata: { componentMode: "dynamic" },
+				use: {
+					...devices["Desktop Chrome"],
 				},
 			},
 		],

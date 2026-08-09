@@ -1,58 +1,14 @@
 import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
-import { generateAggregateIndexFile, type GeneratedFiles } from "@better-captcha/core/utils/build-plugin-utils";
-import { Project, ScriptTarget, ModuleKind, VariableDeclarationKind } from "ts-morph";
+import { generateProviderAssets } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
-function createProject(): Project {
-	return new Project({
-		useInMemoryFileSystem: true,
-		compilerOptions: {
-			target: ScriptTarget.ESNext,
-			module: ModuleKind.ESNext,
-			declaration: true,
-			esModuleInterop: true,
-			skipLibCheck: true,
-		},
-	});
-}
-
-function generateComponentFiles(metadata: ProviderMetadata): GeneratedFiles {
+function generateComponent(metadata: ProviderMetadata): string {
 	const { name, componentName, providerClassName, identifierProp = "sitekey" } = metadata;
-
-	const project = createProject();
-	const sourceFile = project.createSourceFile("component.ts", "", { overwrite: true });
-
-	sourceFile.addImportDeclaration({
-		namedImports: ["createCaptchaComponent"],
-		moduleSpecifier: "../../create-captcha-component.js",
-	});
-
-	sourceFile.addImportDeclaration({
-		namedImports: [providerClassName],
-		moduleSpecifier: `@better-captcha/core/providers/${name}`,
-	});
-
-	const initializer = `createCaptchaComponent(${providerClassName}, "${identifierProp}")`;
-
-	sourceFile.addVariableStatement({
-		declarationKind: VariableDeclarationKind.Const,
-		isExported: true,
-		declarations: [
-			{
-				name: componentName,
-				initializer,
-			},
-		],
-	});
-
-	const emitResult = project.emitToMemory();
-	const files = emitResult.getFiles();
-
-	return {
-		js: files.find((f) => f.filePath.endsWith(".js"))?.text || "",
-		dts: files.find((f) => f.filePath.endsWith(".d.ts"))?.text || "",
-	};
+	return `import { createCaptchaComponent } from "../../create-captcha-component.js";
+import { ${providerClassName} } from "@better-captcha/core/providers/${name}";
+export const ${componentName} = createCaptchaComponent(${providerClassName}, "${identifierProp}");
+`;
 }
 
 function generateComponentDts(metadata: ProviderMetadata): string {
@@ -106,36 +62,12 @@ export const unpluginFactory: UnpluginFactory<undefined> = () => {
 				return null;
 			},
 			generateBundle() {
-				for (const provider of PROVIDER_REGISTRY) {
-					const jsFiles = generateComponentFiles(provider);
-					const dts = generateComponentDts(provider);
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.js`,
-						source: jsFiles.js,
-					});
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.d.ts`,
-						source: dts,
-					});
+				for (const asset of generateProviderAssets(PROVIDER_REGISTRY, (provider) => ({
+					js: generateComponent(provider),
+					dts: generateComponentDts(provider),
+				}))) {
+					this.emitFile({ type: "asset", ...asset });
 				}
-
-				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY, ".js");
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.js",
-					source: aggregateFiles.js,
-				});
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.d.ts",
-					source: aggregateFiles.dts,
-				});
 			},
 		},
 	};

@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { TSec, type TSecHandle } from "@better-captcha/qwik/provider/t-sec";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const TSecTest = component$(() => {
+export const TSecTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<TSecHandle>();
 	const response = useSignal<ReturnType<TSecHandle["getResponse"]>>(null);
 	const solved = useSignal<boolean>(false);
@@ -14,7 +15,15 @@ export const TSecTest = component$(() => {
 
 	return (
 		<div>
-			<TSec controller={controller} sitekey="189910271" onSolve$={handleSolve$} options={{ userLanguage: "en" }} />
+			<RenderCaptcha
+				mode={mode}
+				provider="t-sec"
+				component={TSec}
+				controller={controller}
+				sitekey="189910271"
+				onSolve$={handleSolve$}
+				options={{ userLanguage: "en" }}
+			/>
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"

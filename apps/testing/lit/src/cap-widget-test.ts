@@ -1,15 +1,16 @@
 import { CapWidget, type CapWidgetHandle } from "@better-captcha/lit/provider/cap-widget";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
-// Ensure the component is registered
 CapWidget;
-
-type CapWidgetCaptchaElement = LitElement & { getHandle: () => CapWidgetHandle };
+type CapWidgetCaptchaElement = CaptchaRefElement<CapWidgetHandle>;
 
 @customElement("cap-widget-test")
 export class CapWidgetTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<CapWidgetCaptchaElement> = createRef();
 
 	@state()
@@ -54,12 +55,22 @@ export class CapWidgetTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<cap-widget-captcha
-					${ref(this.captchaRef)}
-					endpoint="https://captcha.gurl.eu.org/api/"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></cap-widget-captcha>
+				${renderCaptcha<string, CapWidgetHandle>({
+					mode: this.mode,
+					provider: "cap-widget",
+					captchaRef: this.captchaRef,
+					endpoint: "https://captcha.gurl.eu.org/api/",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<cap-widget-captcha
+							${ref(this.captchaRef)}
+							endpoint="https://captcha.gurl.eu.org/api/"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></cap-widget-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

@@ -1,7 +1,8 @@
 import { Geetest, type GeetestHandle, type GeetestSolveResponse } from "@better-captcha/react/provider/geetest";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function GeetestTest() {
+export function GeetestTest({ mode }: { mode: CaptchaComponentMode }) {
 	const geetestRef = useRef<GeetestHandle>(null);
 	const [response, setResponse] = useState<ReturnType<GeetestHandle["getResponse"]> | null>(null);
 	const [solved, setSolved] = useState<boolean>(false);
@@ -18,7 +19,7 @@ export function GeetestTest() {
 
 	return (
 		<div>
-			<Geetest
+			<RenderCaptcha mode={mode} provider="geetest" component={Geetest}
 				ref={geetestRef}
 				sitekey="647f5ed2ed8acb4be36784e01556bb71"
 				onSolve={handleSolve}

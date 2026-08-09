@@ -1,58 +1,41 @@
-import { PROVIDER_REGISTRY } from "@better-captcha/core";
+import { PROVIDER_REGISTRY, type ProviderMetadata } from "@better-captcha/core";
 import {
 	type FrameworkConfig,
-	generateAggregateIndexFile,
-	generateProviderModule,
+	generateProviderAssets,
 	generateProviderModuleDts,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import type { UnpluginFactory } from "unplugin";
 import { createUnplugin } from "unplugin";
 
-const reactConfig: FrameworkConfig = {
-	baseImport: `import { createCaptchaComponent } from "../../base-captcha.js";`,
-	componentCreation: (providerClassName: string) => `createCaptchaComponent(${providerClassName})`,
+const reactDtsConfig: FrameworkConfig = {
 	componentType: "ForwardRefExoticComponent",
 	componentTypeImports: '{ ForwardRefExoticComponent, RefAttributes } from "react"',
-	fileExtension: ".js",
-	useClientDirective: true,
 	propsStructure: "single-with-ref",
 };
+
+function generateProviderModule(provider: ProviderMetadata) {
+	return `"use client";
+import { ${provider.providerClassName} } from "@better-captcha/core/providers/${provider.name}";
+import { createElement, forwardRef } from "react";
+import { BaseCaptcha } from "../../base-captcha.js";
+
+export const ${provider.componentName} = forwardRef(function ${provider.componentName}(props, ref) {
+\treturn createElement(BaseCaptcha, { ...props, ref, ProviderClass: ${provider.providerClassName} });
+});
+`;
+}
 
 export const unpluginFactory: UnpluginFactory<undefined> = () => {
 	return {
 		name: "better-captcha-generate-components",
 		rollup: {
 			generateBundle() {
-				for (const provider of PROVIDER_REGISTRY) {
-					const jsFiles = generateProviderModule(provider, reactConfig);
-					const dtsFiles = generateProviderModuleDts(provider, reactConfig);
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.js`,
-						source: jsFiles.js,
-					});
-
-					this.emitFile({
-						type: "asset",
-						fileName: `provider/${provider.name}/index.d.ts`,
-						source: dtsFiles.dts,
-					});
+				for (const asset of generateProviderAssets(PROVIDER_REGISTRY, (provider) => ({
+					js: generateProviderModule(provider),
+					dts: generateProviderModuleDts(provider, reactDtsConfig).dts,
+				}))) {
+					this.emitFile({ type: "asset", ...asset });
 				}
-
-				const aggregateFiles = generateAggregateIndexFile(PROVIDER_REGISTRY, ".js");
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.js",
-					source: aggregateFiles.js,
-				});
-
-				this.emitFile({
-					type: "asset",
-					fileName: "provider/index.d.ts",
-					source: aggregateFiles.dts,
-				});
 			},
 		},
 	};

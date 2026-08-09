@@ -1,14 +1,17 @@
 import { TSec, type TSecHandle } from "@better-captcha/lit/provider/t-sec";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 TSec;
 
-type TSecCaptchaElement = LitElement & { getHandle: () => TSecHandle };
+type TSecCaptchaElement = CaptchaRefElement<TSecHandle>;
 
 @customElement("tsec-test")
 export class TSecTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<TSecCaptchaElement> = createRef();
 
 	@state()
@@ -50,12 +53,22 @@ export class TSecTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<t-sec-captcha
-					${ref(this.captchaRef)}
-					sitekey="189910271"
-					.options=${{ userLanguage: "en" }}
-					.onSolve=${this.handleSolve}
-				></t-sec-captcha>
+				${renderCaptcha<string, TSecHandle>({
+					mode: this.mode,
+					provider: "t-sec",
+					captchaRef: this.captchaRef,
+					sitekey: "189910271",
+					options: { userLanguage: "en" },
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<t-sec-captcha
+							${ref(this.captchaRef)}
+							sitekey="189910271"
+							.options=${{ userLanguage: "en" }}
+							.onSolve=${this.handleSolve}
+						></t-sec-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

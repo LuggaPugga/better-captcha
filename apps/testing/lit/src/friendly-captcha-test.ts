@@ -1,14 +1,16 @@
 import { FriendlyCaptcha, type FriendlyCaptchaHandle } from "@better-captcha/lit/provider/friendly-captcha";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 FriendlyCaptcha;
-
-type FriendlyCaptchaCaptchaElement = LitElement & { getHandle: () => FriendlyCaptchaHandle };
+type FriendlyCaptchaCaptchaElement = CaptchaRefElement<FriendlyCaptchaHandle>;
 
 @customElement("friendly-captcha-test")
 export class FriendlyCaptchaTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<FriendlyCaptchaCaptchaElement> = createRef();
 
 	@state()
@@ -63,12 +65,22 @@ export class FriendlyCaptchaTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<friendly-captcha
-					${ref(this.captchaRef)}
-					sitekey="FC-00000000-0000-0000-0000-000000000000"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></friendly-captcha>
+				${renderCaptcha<string, FriendlyCaptchaHandle>({
+					mode: this.mode,
+					provider: "friendly-captcha",
+					captchaRef: this.captchaRef,
+					sitekey: "FC-00000000-0000-0000-0000-000000000000",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<friendly-captcha
+							${ref(this.captchaRef)}
+							sitekey="FC-00000000-0000-0000-0000-000000000000"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></friendly-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

@@ -1,11 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { getSystemTheme } from "../../utils/theme";
 import type { PrivateCaptcha, RenderParameters } from "./types";
 
@@ -21,11 +14,7 @@ export type PrivateCaptchaHandle = CaptchaHandle & {
 	updateStyles: () => void;
 };
 
-export class PrivateCaptchaProvider extends Provider<
-	ProviderConfig,
-	Omit<RenderParameters, "sitekey">,
-	PrivateCaptchaHandle
-> {
+export class PrivateCaptchaProvider extends Provider<Omit<RenderParameters, "sitekey">, PrivateCaptchaHandle> {
 	private widgetMap = new Map<string, PrivateCaptcha.CaptchaWidget>();
 	private callbackMap = new Map<string, string[]>();
 	private elementMap = new Map<string, HTMLElement>();
@@ -42,15 +31,7 @@ export class PrivateCaptchaProvider extends Provider<
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.buildScriptUrl();
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true }, this.buildScriptUrl());
 	}
 
 	private buildScriptUrl() {

@@ -2,7 +2,7 @@
 	<div>
 		<h3>Private Captcha Test</h3>
         <form>
-		<PrivateCaptcha
+		<RenderCaptcha :mode="mode" provider="private-captcha" :component="PrivateCaptcha"
 			ref="captchaRef"
 			sitekey="aaaaaaaabbbbccccddddeeeeeeeeeeee"
 			:options="options"
@@ -32,6 +32,8 @@
 		type RenderParameters,
 	} from "@better-captcha/vue/provider/private-captcha";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<PrivateCaptchaHandle | null>(null);
 	const response = ref<string | null>(null);
@@ -87,4 +89,3 @@
 		options.value = { ...options.value, theme: themes[nextIndex] };
 	};
 </script>
-

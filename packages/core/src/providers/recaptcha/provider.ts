@@ -1,11 +1,5 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { generateCallbackName, loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
+import { generateCallbackName } from "../../utils/load-script";
 import { getSystemTheme } from "../../utils/theme";
 import type { ReCaptcha, RenderParameters } from "./types";
 
@@ -19,7 +13,7 @@ const RECAPTCHA_ONLOAD_CALLBACK = generateCallbackName("recaptchaOnload");
 
 export type ReCaptchaHandle = CaptchaHandle;
 
-export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParameters, "sitekey">, ReCaptchaHandle> {
+export class ReCaptchaProvider extends Provider<Omit<RenderParameters, "sitekey">, ReCaptchaHandle> {
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
 		super(
 			{
@@ -31,16 +25,10 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.buildScriptUrl();
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-				callbackName: RECAPTCHA_ONLOAD_CALLBACK,
-			});
-		}
+		await this.loadProviderScript(
+			{ async: true, defer: true, callbackName: RECAPTCHA_ONLOAD_CALLBACK },
+			this.buildScriptUrl(),
+		);
 	}
 
 	private buildScriptUrl() {
@@ -97,9 +85,5 @@ export class ReCaptchaProvider extends Provider<ProviderConfig, Omit<RenderParam
 
 	getResponse(widgetId: number): string {
 		return window.grecaptcha.getResponse(widgetId);
-	}
-
-	getHandle(widgetId: number): ReCaptchaHandle {
-		return this.getCommonHandle(widgetId);
 	}
 }

@@ -1,3 +1,5 @@
+import { type LoadScriptOptions, loadScript } from "./utils/load-script";
+
 export interface ScriptOptions {
 	/**
 	 * When false, the provider will not load the remote script automatically.
@@ -107,6 +109,20 @@ export interface CaptchaCallbacks<TSolve = string, TError = Error | string> {
 	onError?: (error: TError) => void;
 }
 
+export type CaptchaResponse = string | object | false | null;
+
+export type ProviderClass<
+	TOptions = unknown,
+	TResponse = string,
+	TSolve = TResponse,
+	TExtraHandle extends object = CaptchaHandle<TResponse>,
+> = new (identifier: string, scriptOptions?: ScriptOptions) => Provider<TOptions, TExtraHandle, TResponse, TSolve>;
+
+export type RuntimeProviderClass = new (
+	identifier: string,
+	scriptOptions?: ScriptOptions,
+) => Provider<object, CaptchaHandle<CaptchaResponse>, CaptchaResponse, never>;
+
 /**
  * Abstract base class for CAPTCHA providers
  * @template TConfig - Configuration type for the provider
@@ -114,13 +130,12 @@ export interface CaptchaCallbacks<TSolve = string, TError = Error | string> {
  * @template TExtraHandle - Additional methods for the handle
  */
 export abstract class Provider<
-	TConfig extends ProviderConfig,
 	TOptions = unknown,
 	TExtraHandle extends object = Record<string, never>,
 	TResponse = string,
 	TSolve = TResponse,
 > {
-	protected config: TConfig;
+	protected config: ProviderConfig;
 	protected identifier: string;
 
 	/**
@@ -128,9 +143,21 @@ export abstract class Provider<
 	 * @param config - Provider configuration
 	 * @param identifier - Identifier for the CAPTCHA service (sitekey, endpoint, etc.)
 	 */
-	constructor(config: TConfig, identifier: string) {
+	constructor(config: ProviderConfig, identifier: string) {
 		this.config = config;
 		this.identifier = identifier;
+	}
+
+	protected async loadProviderScript(
+		options: LoadScriptOptions = {},
+		defaultUrl = this.config.scriptUrl,
+	): Promise<void> {
+		if (this.config.scriptOptions?.autoLoad === false) return;
+
+		await loadScript(this.config.scriptOptions?.overrideScriptUrl ?? defaultUrl, {
+			...options,
+			scriptOptions: this.config.scriptOptions,
+		});
 	}
 
 	/**

@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks";
+import type { CaptchaComponentMode } from "./render-captcha";
 import { AltchaTest } from "./tests/altcha-test";
 import { CapWidgetTest } from "./tests/cap-widget-test";
 import { CaptchaFoxTest } from "./tests/captcha-fox-test";
@@ -12,8 +13,13 @@ import { RecaptchaV3Test } from "./tests/recaptcha-v3-test";
 import { TSecTest } from "./tests/tsec-test";
 import { TurnstileTest } from "./tests/turnstile-test";
 
+function getInitialComponentMode(): CaptchaComponentMode {
+	return new URLSearchParams(window.location.search).get("componentMode") === "dynamic" ? "dynamic" : "dedicated";
+}
+
 export function App() {
 	const [currentProvider, setCurrentProvider] = useState("turnstile");
+	const [componentMode, setComponentMode] = useState<CaptchaComponentMode>(getInitialComponentMode);
 
 	const providers = [
 		{ key: "turnstile", name: "Turnstile", path: "/turnstile" },
@@ -35,6 +41,13 @@ export function App() {
 			<h1>Preact Captcha Testing</h1>
 
 			<div>
+				<h2>Select Component:</h2>
+				<button type="button" onClick={() => setComponentMode("dedicated")}>
+					Dedicated Component
+				</button>
+				<button type="button" onClick={() => setComponentMode("dynamic")}>
+					Dynamic Component
+				</button>
 				<h2>Select Provider:</h2>
 				{providers.map((provider) => (
 					<button
@@ -49,18 +62,18 @@ export function App() {
 			</div>
 
 			<div style={{ marginTop: "20px" }}>
-				{currentProvider === "turnstile" && <TurnstileTest />}
-				{currentProvider === "hcaptcha" && <HCaptchaTest />}
-				{currentProvider === "recaptcha" && <RecaptchaTest />}
-				{currentProvider === "recaptcha-v3" && <RecaptchaV3Test />}
-				{currentProvider === "friendly-captcha" && <FriendlyCaptchaTest />}
-				{currentProvider === "private-captcha" && <PrivateCaptchaTest />}
-				{currentProvider === "captcha-fox" && <CaptchaFoxTest />}
-				{currentProvider === "prosopo" && <ProsopoTest />}
-				{currentProvider === "cap-widget" && <CapWidgetTest />}
-				{currentProvider === "altcha" && <AltchaTest />}
-				{currentProvider === "geetest" && <GeetestTest />}
-				{currentProvider === "t-sec" && <TSecTest />}
+				{currentProvider === "turnstile" && <TurnstileTest mode={componentMode} />}
+				{currentProvider === "hcaptcha" && <HCaptchaTest mode={componentMode} />}
+				{currentProvider === "recaptcha" && <RecaptchaTest mode={componentMode} />}
+				{currentProvider === "recaptcha-v3" && <RecaptchaV3Test mode={componentMode} />}
+				{currentProvider === "friendly-captcha" && <FriendlyCaptchaTest mode={componentMode} />}
+				{currentProvider === "private-captcha" && <PrivateCaptchaTest mode={componentMode} />}
+				{currentProvider === "captcha-fox" && <CaptchaFoxTest mode={componentMode} />}
+				{currentProvider === "prosopo" && <ProsopoTest mode={componentMode} />}
+				{currentProvider === "cap-widget" && <CapWidgetTest mode={componentMode} />}
+				{currentProvider === "altcha" && <AltchaTest mode={componentMode} />}
+				{currentProvider === "geetest" && <GeetestTest mode={componentMode} />}
+				{currentProvider === "t-sec" && <TSecTest mode={componentMode} />}
 			</div>
 		</div>
 	);

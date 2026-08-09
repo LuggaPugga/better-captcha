@@ -2,9 +2,8 @@ import type {
 	CaptchaHandle,
 	CaptchaState,
 	Provider,
-	ProviderConfig,
 	ScriptOptions,
-	WidgetId
+	WidgetId,
 } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
 import {
@@ -12,34 +11,27 @@ import {
 	computed,
 	defineComponent,
 	h,
-	nextTick,
 	onBeforeUnmount,
-	onMounted,
 	type PropType,
 	ref,
 	type StyleValue,
 	watch,
-	watchEffect,
 } from "vue";
-import { CaptchaEmits, CaptchaProps } from ".";
+import type { CaptchaEmits, CaptchaProps } from ".";
 
 export function createCaptchaComponent<
 	TOptions = unknown,
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<
-		ProviderConfig,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<
 		TOptions,
 		THandle,
 		TResponse,
 		TSolve
-	> = Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	>,
 >(
-	ProviderClass: new (
-		identifier: string,
-		scriptOptions?: ScriptOptions,
-	) => TProvider,
+	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
 	identifierProp: "sitekey" | "endpoint" = "sitekey",
 ): Component<CaptchaProps<TOptions, TSolve>, CaptchaEmits<THandle, TSolve>> {
 	return defineComponent({
@@ -68,71 +60,48 @@ export function createCaptchaComponent<
 				ready: false,
 			});
 			const widgetId = ref<WidgetId | null>(null);
-			let hasRendered = false;
 
-			const identifier = computed(() =>
-				identifierProp === "endpoint" ? props.endpoint : props.sitekey,
-			);
+			const identifier = computed(() => props[identifierProp] ?? props.sitekey ?? props.endpoint);
 
-			const isLoading = computed(() =>
-				props.autoRender
-					? state.value.loading || !state.value.ready
-					: state.value.loading,
-			);
+			const isLoading = computed(() => state.value.loading || (props.autoRender && !state.value.ready));
 
-			const controller = new CaptchaController<
-				TOptions,
-				TResponse,
-				TSolve,
-				THandle,
-				TProvider
-			>(
+			const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle>(
 				(id, script) => new ProviderClass(id, script),
 			);
 
 			const unsubscribeState = controller.onStateChange((newState) => {
 				state.value = newState;
 				widgetId.value = controller.getWidgetId();
-				if (newState.ready) hasRendered = true;
 			});
 
-			watchEffect(() => {
-				controller.attachHost(elementRef.value ?? null);
-				controller.setIdentifier(identifier.value);
-				controller.setScriptOptions(props.scriptOptions);
-				controller.setOptions(props.options as TOptions);
+			watch(
+				[elementRef, identifier, () => props.options, () => props.scriptOptions, () => props.autoRender],
+				() => {
+					controller.attachHost(elementRef.value ?? null);
+					controller.setIdentifier(identifier.value);
+					controller.setScriptOptions(props.scriptOptions);
+					controller.setOptions(props.options as TOptions);
 
-				controller.setCallbacks({
-					onReady: () => emit("ready", controller.getHandle()),
-					onSolve: (token: TSolve) => emit("solve", token),
-					onError: (err: any) => {
-						const error = err instanceof Error ? err : new Error(String(err));
-						emit("error", error);
-					},
-				});
-			});
+					controller.setCallbacks({
+						onReady: () => emit("ready", controller.getHandle()),
+						onSolve: (token: TSolve) => emit("solve", token),
+						onError: (err: Error | string) => {
+							const error = err instanceof Error ? err : new Error(String(err));
+							emit("error", error);
+						},
+					});
+
+					if (props.autoRender) {
+						void controller.render();
+					}
+				},
+				{ deep: true, flush: "post" },
+			);
 
 			const renderCaptcha = async () => {
-				if (!elementRef.value || !identifier.value) return;
 				await controller.render();
 				widgetId.value = controller.getWidgetId();
 			};
-
-			watch(
-				[identifier, () => props.options, () => props.scriptOptions],
-				() => {
-					if (props.autoRender && (hasRendered || state.value.error)) {
-						void renderCaptcha();
-					}
-				},
-				{ deep: true },
-			);
-
-			onMounted(() => {
-				if (props.autoRender) {
-					nextTick(() => void renderCaptcha());
-				}
-			});
 
 			onBeforeUnmount(() => {
 				controller.cleanup();

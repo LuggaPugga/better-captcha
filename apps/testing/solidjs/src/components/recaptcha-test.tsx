@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { ReCaptcha, type ReCaptchaHandle, type RenderParameters } from "@better-captcha/solidjs/provider/recaptcha";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function RecaptchaTest() {
+export function RecaptchaTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<ReCaptchaHandle>();
 	const [options, setOptions] = createSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -23,7 +24,10 @@ export function RecaptchaTest() {
 
 	return (
 		<div>
-			<ReCaptcha
+			<RenderCaptcha
+				mode={props.mode}
+				provider="recaptcha"
+				component={ReCaptcha}
 				controller={controller}
 				sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 				options={options()}

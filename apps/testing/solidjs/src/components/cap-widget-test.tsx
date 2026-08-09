@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { CapWidget, type CapWidgetHandle, type RenderParameters } from "@better-captcha/solidjs/provider/cap-widget";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function CapWidgetTest() {
+export function CapWidgetTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<CapWidgetHandle>();
 	const [options, _setOptions] = createSignal<RenderParameters>({});
 	const [response, setResponse] = createSignal<string | null>(null);
@@ -20,7 +21,10 @@ export function CapWidgetTest() {
 
 	return (
 		<div>
-			<CapWidget
+			<RenderCaptcha
+				mode={props.mode}
+				provider="cap-widget"
+				component={CapWidget}
 				controller={controller}
 				options={options()}
 				endpoint="https://captcha.gurl.eu.org/api/"

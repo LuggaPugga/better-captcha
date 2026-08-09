@@ -6,7 +6,7 @@
 		TResponse,
 		TSolve,
 		THandle extends CaptchaHandle<TResponse>,
-		TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+		TProvider extends Provider<TOptions, THandle, TResponse, TSolve>,
 	> = {
 		providerClass: new (sitekeyOrEndpoint: string, scriptOptions?: ScriptOptions) => TProvider;
 		value: string;
@@ -23,11 +23,11 @@
 
 <script
 	lang="ts"
-	generics="TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>, TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>"
+	generics="TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>, TProvider extends Provider<TOptions, THandle, TResponse, TSolve>"
 >
 	import { CaptchaController } from "@better-captcha/core";
 	import type { CaptchaState, WidgetId } from "@better-captcha/core";
-	import { onMount, onDestroy, untrack } from "svelte";
+	import { onDestroy } from "svelte";
 
 	type Props = BaseCaptchaProps<TOptions, TResponse, TSolve, THandle, TProvider>;
 
@@ -46,7 +46,6 @@
 
 	let elementRef = $state<HTMLDivElement>();
 	let widgetId = $state<WidgetId | null>(null);
-	let hasRendered = $state(false);
 
 	let controllerState = $state<CaptchaState>({
 		loading: false,
@@ -64,8 +63,7 @@
 		TOptions,
 		TResponse,
 		TSolve,
-		THandle,
-		TProvider
+		THandle
 	>(
 		(id, script) => new ProviderClass(id, script),
 	);
@@ -89,28 +87,15 @@
 				onerror?.(error);
 			},
 		});
+
+		if (autoRender) {
+			void controller.render();
+		}
 	});
 
 	async function renderCaptcha(): Promise<void> {
 		await controller.render();
-		if (controllerState.ready) {
-			hasRendered = true;
-		}
 	}
-
-	$effect(() => {
-		const _trigger = [value, options, scriptOptions];
-
-		untrack(() => {
-			if (autoRender && (hasRendered || controllerState.error)) {
-				renderCaptcha();
-			}
-		});
-	});
-
-	onMount(() => {
-		if (autoRender) void renderCaptcha();
-	});
 
 	onDestroy(() => {
 		controller.cleanup();
@@ -119,12 +104,7 @@
 
 	export const execute = () => controller.getHandle().execute();
 	export const reset = () => controller.getHandle().reset();
-	export const destroy = () => {
-		if (controller.getWidgetId() != null) {
-			controller.cleanup();
-			hasRendered = false;
-		}
-	};
+	export const destroy = () => controller.cleanup();
 	export const getResponse = () => controller.getHandle().getResponse();
 	export const getComponentState = () => controllerState;
 	export const render = () => renderCaptcha();

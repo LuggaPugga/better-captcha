@@ -1,11 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import type { ReCaptcha } from "../recaptcha/types";
 import type { RenderParameters } from "./types";
 
@@ -22,7 +15,7 @@ interface TokenCache {
 	timestamp: number;
 }
 
-export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParameters, ReCaptchaV3Handle> {
+export class ReCaptchaV3Provider extends Provider<RenderParameters, ReCaptchaV3Handle> {
 	private tokenCache = new Map<string, TokenCache>();
 	private readonly TOKEN_CACHE_DURATION = 2 * 60 * 1000;
 
@@ -37,15 +30,7 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 	}
 
 	async init() {
-		const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.buildScriptUrl();
-
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ async: true, defer: true }, this.buildScriptUrl());
 	}
 
 	private buildScriptUrl() {
@@ -154,9 +139,5 @@ export class ReCaptchaV3Provider extends Provider<ProviderConfig, RenderParamete
 		}
 
 		return cached.token;
-	}
-
-	getHandle(widgetId: string): ReCaptchaV3Handle {
-		return this.getCommonHandle(widgetId);
 	}
 }

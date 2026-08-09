@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig } from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
 import { SvelteComponent } from "svelte";
 
 export interface BaseCaptchaProps<
@@ -6,13 +6,15 @@ export interface BaseCaptchaProps<
 	TResponse,
 	TSolve,
 	THandle extends CaptchaHandle<TResponse>,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve>,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve>,
 > {
-	providerClass: new (sitekey: string) => TProvider;
-	sitekey: string;
+	providerClass: new (sitekeyOrEndpoint: string, scriptOptions?: ScriptOptions) => TProvider;
+	value: string;
 	options?: TOptions;
+	scriptOptions?: ScriptOptions;
 	class?: string;
 	style?: string;
+	autoRender?: boolean;
 	onready?: (handle: THandle) => void;
 	onerror?: (error: Error) => void;
 	onSolve?: (token: TSolve) => void;
@@ -23,9 +25,8 @@ export default class BaseCaptcha<
 	TResponse = string,
 	TSolve = string,
 	THandle extends CaptchaHandle<TResponse> = CaptchaHandle<TResponse>,
-	TProvider extends Provider<ProviderConfig, TOptions, THandle, TResponse, TSolve> = Provider<
-		ProviderConfig,
-		TOptions,
+	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<
+	TOptions,
 		THandle,
 		TResponse,
 		TSolve
@@ -36,4 +37,5 @@ export default class BaseCaptcha<
 	destroy(): void;
 	getResponse(): ReturnType<THandle["getResponse"]> | undefined;
 	getComponentState(): CaptchaState;
+	render(): Promise<void>;
 }

@@ -1,7 +1,8 @@
 import { CaptchaFox, type CaptchaFoxHandle, type RenderParameters } from "@better-captcha/preact/provider/captcha-fox";
 import { useRef, useState } from "preact/hooks";
+import { type CaptchaComponentMode, RenderCaptcha } from "../render-captcha";
 
-export function CaptchaFoxTest() {
+export function CaptchaFoxTest({ mode }: { mode: CaptchaComponentMode }) {
 	const captchaFoxRef = useRef<CaptchaFoxHandle>(null);
 	const [options, setOptions] = useState(
 		(): Omit<RenderParameters, "sitekey"> => ({
@@ -24,7 +25,10 @@ export function CaptchaFoxTest() {
 
 	return (
 		<div>
-			<CaptchaFox
+			<RenderCaptcha
+				mode={mode}
+				provider="captcha-fox"
+				component={CaptchaFox}
 				ref={captchaFoxRef}
 				sitekey="sk_11111111000000001111111100000000"
 				options={options}

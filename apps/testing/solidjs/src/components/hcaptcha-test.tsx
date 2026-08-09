@@ -1,8 +1,9 @@
 import { createCaptchaController } from "@better-captcha/solidjs";
 import { HCaptcha, type HCaptchaHandle, type RenderParameters } from "@better-captcha/solidjs/provider/hcaptcha";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function HCaptchaTest() {
+export function HCaptchaTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<HCaptchaHandle>();
 	const [options, setOptions] = createSignal<Omit<RenderParameters, "sitekey">>({
 		theme: "light",
@@ -23,7 +24,10 @@ export function HCaptchaTest() {
 
 	return (
 		<div>
-			<HCaptcha
+			<RenderCaptcha
+				mode={props.mode}
+				provider="hcaptcha"
+				component={HCaptcha}
 				controller={controller}
 				sitekey="10000000-ffff-ffff-ffff-000000000001"
 				options={options()}

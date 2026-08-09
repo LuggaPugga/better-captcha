@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { CapWidget, type CapWidgetHandle, type RenderParameters } from "@better-captcha/qwik/provider/cap-widget";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const CapWidgetTest = component$(() => {
+export const CapWidgetTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<CapWidgetHandle>();
 	const options = useSignal<RenderParameters>({});
 	const response = useSignal<string | null>(null);
@@ -15,7 +16,10 @@ export const CapWidgetTest = component$(() => {
 
 	return (
 		<div>
-			<CapWidget
+			<RenderCaptcha
+				mode={mode}
+				provider="cap-widget"
+				component={CapWidget}
 				controller={controller}
 				options={options.value}
 				endpoint="https://captcha.gurl.eu.org/api/"

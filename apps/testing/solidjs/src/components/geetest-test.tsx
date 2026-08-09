@@ -6,8 +6,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/solidjs/provider/geetest";
 import { createSignal } from "solid-js";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export function GeetestTest() {
+export function GeetestTest(props: { mode: CaptchaComponentMode }) {
 	const controller = createCaptchaController<GeetestHandle>();
 	const [options, _setOptions] = createSignal<RenderParameters>({
 		language: "eng",
@@ -27,7 +28,10 @@ export function GeetestTest() {
 
 	return (
 		<div>
-			<Geetest
+			<RenderCaptcha
+				mode={props.mode}
+				provider="geetest"
+				component={Geetest}
 				controller={controller}
 				sitekey="647f5ed2ed8acb4be36784e01556bb71"
 				options={options()}

@@ -1,11 +1,4 @@
-import {
-	type CaptchaCallbacks,
-	type CaptchaHandle,
-	Provider,
-	type ProviderConfig,
-	type ScriptOptions,
-} from "../../provider";
-import { loadScript } from "../../utils/load-script";
+import { type CaptchaCallbacks, type CaptchaHandle, Provider, type ScriptOptions } from "../../provider";
 import { getSystemTheme } from "../../utils/theme";
 import type {
 	CapErrorEvent,
@@ -18,7 +11,7 @@ import type {
 
 export type CapWidgetHandle = CaptchaHandle;
 
-export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParameters, "element">, CapWidgetHandle> {
+export class CapWidgetProvider extends Provider<Omit<RenderParameters, "element">, CapWidgetHandle> {
 	private widgetMap = new Map<string, CapWidget>();
 
 	constructor(endpoint: string, scriptOptions?: ScriptOptions) {
@@ -32,15 +25,7 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 	}
 
 	async init() {
-		if (this.config.scriptOptions?.autoLoad !== false) {
-			const scriptUrl = this.config.scriptOptions?.overrideScriptUrl ?? this.config.scriptUrl;
-			await loadScript(scriptUrl, {
-				scriptOptions: this.config.scriptOptions,
-				type: "module",
-				async: true,
-				defer: true,
-			});
-		}
+		await this.loadProviderScript({ type: "module", async: true, defer: true });
 
 		if (typeof window !== "undefined" && customElements) {
 			await customElements.whenDefined("cap-widget");
@@ -177,9 +162,5 @@ export class CapWidgetProvider extends Provider<ProviderConfig, Omit<RenderParam
 	getResponse(widgetId: string): string {
 		const widget = this.widgetMap.get(widgetId);
 		return widget?.token ?? "";
-	}
-
-	getHandle(widgetId: string): CapWidgetHandle {
-		return this.getCommonHandle(widgetId);
 	}
 }

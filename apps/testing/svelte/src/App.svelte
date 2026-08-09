@@ -12,8 +12,15 @@
 	import TSecTest from "./components/TSecTest.svelte";
 	import TurnstileTest from "./components/TurnstileTest.svelte";
 	import GeetestTest from "./components/GeetestTest.svelte";
+	import type { CaptchaComponentMode } from "./components/render-captcha.types";
+
+	function getInitialComponentMode(): CaptchaComponentMode {
+		const mode = new URLSearchParams(window.location.search).get("componentMode");
+		return mode === "dynamic" ? "dynamic" : "dedicated";
+	}
 
 	const currentProvider = writable("turnstile");
+	let componentMode = $state<CaptchaComponentMode>(getInitialComponentMode());
 
 	const providers = [
 		{ key: "turnstile", name: "Turnstile" },
@@ -39,6 +46,14 @@
 	<h1>Svelte Captcha Testing</h1>
 
 	<div>
+		<h2>Select Component:</h2>
+		<button type="button" onclick={() => (componentMode = "dedicated")} style="margin: 5px; padding: 10px;">
+			Dedicated Component
+		</button>
+		<button type="button" onclick={() => (componentMode = "dynamic")} style="margin: 5px; padding: 10px;">
+			Dynamic Component
+		</button>
+
 		<h2>Select Provider:</h2>
 		{#each providers as provider}
 			<button type="button" onclick={() => setProvider(provider.key)} style="margin: 5px; padding: 10px;">
@@ -49,29 +64,29 @@
 
 	<div style="margin-top: 20px">
 		{#if $currentProvider === "turnstile"}
-			<TurnstileTest />
+			<TurnstileTest mode={componentMode} />
 		{:else if $currentProvider === "hcaptcha"}
-			<HCaptchaTest />
+			<HCaptchaTest mode={componentMode} />
 		{:else if $currentProvider === "recaptcha"}
-			<RecaptchaTest />
+			<RecaptchaTest mode={componentMode} />
 		{:else if $currentProvider === "recaptcha-v3"}
-			<RecaptchaV3Test />
+			<RecaptchaV3Test mode={componentMode} />
 		{:else if $currentProvider === "friendly-captcha"}
-			<FriendlyCaptchaTest />
+			<FriendlyCaptchaTest mode={componentMode} />
 		{:else if $currentProvider === "private-captcha"}
-			<PrivateCaptchaTest />
+			<PrivateCaptchaTest mode={componentMode} />
 		{:else if $currentProvider === "captcha-fox"}
-			<CaptchaFoxTest />
+			<CaptchaFoxTest mode={componentMode} />
 		{:else if $currentProvider === "prosopo"}
-			<ProsopoTest />
+			<ProsopoTest mode={componentMode} />
 		{:else if $currentProvider === "cap-widget"}
-			<CapWidgetTest />
+			<CapWidgetTest mode={componentMode} />
 		{:else if $currentProvider === "altcha"}
-			<AltchaTest />
+			<AltchaTest mode={componentMode} />
 		{:else if $currentProvider === "geetest"}
-			<GeetestTest />
+			<GeetestTest mode={componentMode} />
 		{:else if $currentProvider === "t-sec"}
-			<TSecTest />
+			<TSecTest mode={componentMode} />
 		{/if}
 	</div>
 </div>

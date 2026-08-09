@@ -1,0 +1,119 @@
+---
+title: Dynamic provider selection
+description: Select and lazy-load a CAPTCHA provider at runtime with BetterCaptcha.
+---
+
+Use the `BetterCaptcha` component when the provider is chosen at runtime, for example from tenant configuration, a feature flag, or a fallback strategy. Pass a provider name through the `provider` prop; the matching provider implementation is loaded only when the component needs it.
+
+```tsx
+import { BetterCaptcha } from "@better-captcha/react";
+
+export function RuntimeCaptcha({ provider = "turnstile" }) {
+  return (
+    <BetterCaptcha
+      provider={provider}
+      sitekey="your-site-key"
+      options={{ theme: "auto" }}
+      onSolve={(token) => console.log(token)}
+    />
+  );
+}
+```
+
+<Callout type="info">
+Use a provider-specific component when the provider is known at build time. It provides provider-specific option, response, and handle types. `BetterCaptcha` intentionally uses shared runtime types because those types can change when `provider` changes.
+</Callout>
+
+## Supported provider names
+
+The `provider` prop accepts:
+
+- `altcha`
+- `cap-widget`
+- `captcha-fox`
+- `friendly-captcha`
+- `geetest`
+- `hcaptcha`
+- `private-captcha`
+- `prosopo`
+- `recaptcha`
+- `recaptcha-v3`
+- `t-sec`
+- `turnstile`
+
+Use `endpoint` instead of `sitekey` for Altcha and CapWidget.
+
+## Framework examples
+
+### React and Preact
+
+```tsx
+import { BetterCaptcha } from "@better-captcha/react";
+// Preact: import { BetterCaptcha } from "@better-captcha/preact";
+
+<BetterCaptcha provider="turnstile" sitekey="your-site-key" />;
+```
+
+Use a ref to access the shared `CaptchaHandle` methods: `render`, `execute`, `reset`, `destroy`, `getResponse`, and `getComponentState`.
+
+### Vue
+
+```vue
+<script setup lang="ts">
+import { BetterCaptcha } from "@better-captcha/vue";
+</script>
+
+<template>
+  <BetterCaptcha provider="turnstile" sitekey="your-site-key" @solve="onSolve" />
+</template>
+```
+
+### Svelte
+
+```svelte
+<script lang="ts">
+import { BetterCaptcha } from "@better-captcha/svelte";
+</script>
+
+<BetterCaptcha provider="turnstile" sitekey="your-site-key" onSolve={onSolve} />
+```
+
+### SolidJS
+
+```tsx
+import { BetterCaptcha } from "@better-captcha/solidjs";
+
+<BetterCaptcha provider="turnstile" sitekey="your-site-key" />;
+```
+
+### Qwik
+
+```tsx
+import { BetterCaptcha } from "@better-captcha/qwik";
+
+<BetterCaptcha provider="turnstile" sitekey="your-site-key" onSolve$={onSolve$} />;
+```
+
+Qwik accepts registered provider names. This keeps the provider choice serializable across server rendering and client resumption.
+
+### Lit
+
+Importing `BetterCaptcha` registers the `<better-captcha>` custom element.
+
+```ts
+import { BetterCaptcha } from "@better-captcha/lit";
+```
+
+```html
+<better-captcha provider="turnstile" sitekey="your-site-key"></better-captcha>
+```
+
+Set object and callback properties from JavaScript or a Lit property binding rather than HTML attributes. Call `element.getHandle()` after the widget is ready to access the shared handle.
+
+## Runtime changes and loading state
+
+Changing `provider`, `sitekey`, `endpoint`, `options`, or `scriptOptions` destroys the current widget and renders a fresh one. In-flight provider loads and renders are cancelled so an older request cannot replace the latest selection.
+
+While a provider module is loading, the component renders an accessible placeholder with `id="better-captcha-loading"` and `aria-busy="true"`. Loading failures are reported through the framework's normal error callback or event.
+
+`autoRender` defaults to `true`. Set it to `false` and call `render()` on the handle when the widget should be created manually.

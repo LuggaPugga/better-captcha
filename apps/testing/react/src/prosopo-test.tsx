@@ -1,7 +1,8 @@
-import { Prosopo, type ProsopoHandle } from "@better-captcha/react/provider/prosopo";
+import { type CallbackFunction, Prosopo, type ProsopoHandle } from "@better-captcha/react/provider/prosopo";
 import { useRef, useState } from "react";
+import { RenderCaptcha, type CaptchaComponentMode } from "./render-captcha";
 
-export function ProsopoTest() {
+export function ProsopoTest({ mode }: { mode: CaptchaComponentMode }) {
 	const captchaRef = useRef<ProsopoHandle>(null);
 	const [response, setResponse] = useState<string>("");
 	const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
@@ -22,18 +23,18 @@ export function ProsopoTest() {
 			<h2>Prosopo Test</h2>
 
 			<div>
-				<Prosopo
+				<RenderCaptcha mode={mode} provider="prosopo" component={Prosopo}
 					ref={captchaRef}
 					sitekey="no_test_site_key"
 					options={{
 						theme,
-						callback: (response) => {
+						callback: ((response) => {
 							console.log("Prosopo CAPTCHA verified:", response);
 							setResponse(response);
-						},
-						"error-callback": (error) => {
+						}) satisfies CallbackFunction,
+						"error-callback": ((error) => {
 							console.error("Prosopo CAPTCHA error:", error);
-						},
+						}) satisfies CallbackFunction,
 					}}
 					onSolve={handleSolve}
 				/>

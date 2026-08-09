@@ -1,14 +1,16 @@
 import { Altcha, type AltchaHandle } from "@better-captcha/lit/provider/altcha";
 import { html, LitElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, type Ref, ref } from "lit/directives/ref.js";
+import { type CaptchaComponentMode, type CaptchaRefElement, renderCaptcha } from "./render-captcha.js";
 
 Altcha;
-
-type AltchaCaptchaElement = LitElement & { getHandle: () => AltchaHandle };
+type AltchaCaptchaElement = CaptchaRefElement<AltchaHandle>;
 
 @customElement("altcha-test")
 export class AltchaTest extends LitElement {
+	@property({ type: String }) mode: CaptchaComponentMode = "dedicated";
+
 	private captchaRef: Ref<AltchaCaptchaElement> = createRef();
 
 	@state()
@@ -53,12 +55,22 @@ export class AltchaTest extends LitElement {
 	render() {
 		return html`
 			<div>
-				<altcha-captcha
-					${ref(this.captchaRef)}
-					endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"
-					.options=${this.options}
-					.onSolve=${this.handleSolve}
-				></altcha-captcha>
+				${renderCaptcha<string, AltchaHandle>({
+					mode: this.mode,
+					provider: "altcha",
+					captchaRef: this.captchaRef,
+					endpoint: "https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9",
+					options: this.options,
+					onSolve: this.handleSolve,
+					dedicated: () => html`
+						<altcha-captcha
+							${ref(this.captchaRef)}
+							endpoint="https://eu.altcha.org/api/v1/challenge?apiKey=ckey_c82e4cb6f2f34eb0a99fb3fbc4c9"
+							.options=${this.options}
+							.onSolve=${this.handleSolve}
+						></altcha-captcha>
+					`,
+				})}
 				${this.solved ? html`<p id="captcha-solved">Captcha Solved!</p>` : ""}
 				<button type="button" @click=${this.handleDestroy}>Destroy</button>
 				<button type="button" @click=${this.handleReset}>Reset</button>

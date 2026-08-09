@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>Geetest Test</h3>
-		<Geetest
+		<RenderCaptcha :mode="mode" provider="geetest" :component="Geetest"
 			ref="captchaRef"
 			sitekey="647f5ed2ed8acb4be36784e01556bb71"
 			:options="options"
@@ -25,6 +25,8 @@
 <script setup lang="ts">
   import { Geetest, type GeetestHandle, type GeetestSolveResponse, type RenderParameters } from "@better-captcha/vue/provider/geetest";
 	import { ref } from "vue";
+	import RenderCaptcha, { type CaptchaComponentMode } from "./RenderCaptcha.vue";
+	defineProps<{ mode: CaptchaComponentMode }>();
 
 	const captchaRef = ref<GeetestHandle | null>(null);
 	const response = ref<ReturnType<GeetestHandle["getResponse"]> | string | null>(false);

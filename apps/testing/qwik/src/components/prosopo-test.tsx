@@ -1,8 +1,9 @@
 import { useCaptchaController } from "@better-captcha/qwik";
 import { Prosopo, type ProsopoHandle, type RenderParameters } from "@better-captcha/qwik/provider/prosopo";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const ProsopoTest = component$(() => {
+export const ProsopoTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<ProsopoHandle>();
 	const options = useSignal<Omit<RenderParameters, "siteKey">>({
 		theme: "light",
@@ -23,7 +24,15 @@ export const ProsopoTest = component$(() => {
 
 	return (
 		<div>
-			<Prosopo controller={controller} options={options.value} sitekey="no_test_site_key" onSolve$={handleSolve$} />
+			<RenderCaptcha
+				mode={mode}
+				provider="prosopo"
+				component={Prosopo}
+				controller={controller}
+				options={options.value}
+				sitekey="no_test_site_key"
+				onSolve$={handleSolve$}
+			/>
 			{solved.value && <p id="captcha-solved">Captcha Solved!</p>}
 			<button
 				type="button"

@@ -12,7 +12,7 @@ export type {
 
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string> = Omit<
 	JSX.HTMLAttributes<HTMLDivElement>,
-	"children" | "className" | "style"
+	"children" | "className" | "style" | "onError"
 > & {
 	sitekey?: string;
 	endpoint?: string;
@@ -28,6 +28,7 @@ export type CaptchaProps<TOptions, THandle extends CaptchaHandle<unknown> = Capt
 };
 
 export { createCaptchaComponent } from "./base-captcha";
+export { BetterCaptcha, type BetterCaptchaProps } from "./better-captcha";
 
 export type CaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHandle> = {
 	handle: () => THandle | null;

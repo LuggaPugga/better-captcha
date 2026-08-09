@@ -2,8 +2,12 @@
 	import type { TSecHandle } from "@better-captcha/svelte/provider/t-sec";
 	import TSec from "@better-captcha/svelte/provider/t-sec";
 	import { writable } from "svelte/store";
+	import RenderCaptcha from "./render-captcha.svelte";
+	import type { CaptchaComponentMode } from "./render-captcha.types";
 
-	let captchaRef: TSec | undefined;
+	let { mode }: { mode: CaptchaComponentMode } = $props();
+
+	let captchaRef: RenderCaptcha<TSecHandle> | undefined;
 	const response = writable<ReturnType<TSecHandle['getResponse']>>(null);
 	const error = writable<Error | null>(null);
 	const solved = writable<boolean>(false);
@@ -47,7 +51,17 @@
 
 <div>
 	<h3>T-Sec Test</h3>
-	<TSec bind:this={captchaRef} sitekey="189910271" options={{ userLanguage: "en" }} onready={onReady} onerror={onError} onSolve={onSolve} />
+	<RenderCaptcha
+		{mode}
+		provider="t-sec"
+		component={TSec}
+		bind:this={captchaRef}
+		sitekey="189910271"
+		options={{ userLanguage: "en" }}
+		onready={onReady}
+		onerror={onError}
+		onSolve={onSolve}
+	/>
 	{#if $solved}
 		<p id="captcha-solved">Captcha Solved!</p>
 	{/if}

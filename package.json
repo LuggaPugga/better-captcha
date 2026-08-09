@@ -14,7 +14,8 @@
 		"dev:lit": "turbo run dev --filter=@better-captcha/lit --filter=lit-testing",
 		"dev:docs": "turbo run dev --filter=@better-captcha/docs",
 		"format": "biome format --write",
-		"lint": "turbo run lint",
+		"lint": "biome check .",
+		"test:playwright": "turbo run test:playwright --filter=@better-captcha/react --filter=@better-captcha/preact --filter=@better-captcha/vue --filter=@better-captcha/svelte --filter=@better-captcha/solidjs --filter=@better-captcha/qwik --filter=@better-captcha/lit",
 		"typecheck": "turbo run check-types",
 		"start": "turbo run start",
 		"changeset": "changeset",
@@ -25,7 +26,6 @@
 		"@biomejs/biome": "2.5.1",
 		"@changesets/changelog-github": "^0.7.0",
 		"@changesets/cli": "^2.31.0",
-		"ts-morph": "^28.0.0",
 		"turbo": "^2.9.12",
 		"typescript": "^6.0.3"
 	},

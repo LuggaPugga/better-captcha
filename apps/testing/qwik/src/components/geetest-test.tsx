@@ -6,8 +6,9 @@ import {
 	type RenderParameters,
 } from "@better-captcha/qwik/provider/geetest";
 import { $, component$, useSignal } from "@builder.io/qwik";
+import { type CaptchaComponentMode, RenderCaptcha } from "./render-captcha";
 
-export const GeetestTest = component$(() => {
+export const GeetestTest = component$<{ mode: CaptchaComponentMode }>(({ mode }) => {
 	const controller = useCaptchaController<GeetestHandle>();
 	const options = useSignal<RenderParameters>({
 		language: "eng",
@@ -22,7 +23,10 @@ export const GeetestTest = component$(() => {
 
 	return (
 		<div>
-			<Geetest
+			<RenderCaptcha
+				mode={mode}
+				provider="geetest"
+				component={Geetest}
 				controller={controller}
 				options={options.value}
 				sitekey="647f5ed2ed8acb4be36784e01556bb71"
