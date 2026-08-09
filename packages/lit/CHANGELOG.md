@@ -1,5 +1,17 @@
 # @better-captcha/lit
 
+## 0.8.0
+
+### Minor Changes
+
+- fd9ecdd: Add lazy-loaded runtime provider selection through the new `BetterCaptcha` component in every supported framework.
+
+### Patch Changes
+
+- Updated dependencies [fd9ecdd]
+- Updated dependencies [e086e52]
+  - @better-captcha/core@0.8.0
+
 ## 0.7.0
 
 ### Patch Changes

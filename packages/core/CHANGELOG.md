@@ -1,5 +1,12 @@
 # @better-captcha/core
 
+## 0.8.0
+
+### Minor Changes
+
+- fd9ecdd: Add lazy-loaded runtime provider selection through the new `BetterCaptcha` component in every supported framework.
+- e086e52: feat: allow more flexible ScriptOptions for CSP
+
 ## 0.7.0
 
 ### Minor Changes
