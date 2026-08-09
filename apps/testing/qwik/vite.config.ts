@@ -8,8 +8,5 @@ import { qwikCity } from "@builder.io/qwik-city/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	resolve: {
-		tsconfigPaths: true,
-	},
 	plugins: [qwikCity(), qwikVite()],
 });
