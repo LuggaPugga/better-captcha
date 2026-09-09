@@ -72,7 +72,7 @@
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.62.1",
 		"@types/bun": "1.4.0",
-		"@types/node": "26.2.0",
+		"@types/node": "26.5.1",
 		"playwright": "^1.62.1",
 		"tsdown": "^0.22.14",
 		"unplugin": "^3.3.0"
