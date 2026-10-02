@@ -78,6 +78,6 @@
 		"svelte-check": "^4.7.6",
 		"tsdown": "^0.23.0",
 		"unplugin": "^3.4.0",
-		"typescript": "~6.0.3"
+		"typescript": "~7.0.0"
 	}
 }
