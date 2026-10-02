@@ -67,12 +67,12 @@ export class CapWidgetProvider extends Provider<Omit<RenderParameters, "element"
 
 		const callbackMap: Record<
 			string,
-			{ event: string; handler?: (event: CapSolveEvent | CapProgressEvent | CapResetEvent | CapErrorEvent) => void }
+			{ handler?: (event: CapSolveEvent | CapProgressEvent | CapResetEvent | CapErrorEvent) => void }
 		> = {
-			onsolve: { event: "solve" },
-			onprogress: { event: "progress" },
-			onreset: { event: "reset" },
-			onerror: { event: "error" },
+			onsolve: {},
+			onprogress: {},
+			onreset: {},
+			onerror: {},
 		};
 
 		if (options) {

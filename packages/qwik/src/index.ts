@@ -11,11 +11,6 @@ export type {
 	WidgetId,
 } from "@better-captcha/core";
 
-/**
- * Props for CAPTCHA components
- * @template TOptions - Type of options specific to the CAPTCHA provider
- * @template THandle - Type of handle returned by the CAPTCHA provider
- */
 export type CaptchaProps<TOptions, THandle extends CaptchaHandle<unknown> = CaptchaHandle, TSolve = string> = {
 	sitekey?: string;
 	endpoint?: string;
@@ -38,11 +33,7 @@ export type CaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHa
 	NoSerialize<THandle> | null
 >;
 
-/**
- * Creates a controller for managing CAPTCHA component instances
- * @template THandle - Type of handle returned by the CAPTCHA provider
- * @returns A signal that can be used to control the CAPTCHA component
- */
+/** Create a signal for the component's imperative handle. */
 export function useCaptchaController<THandle extends CaptchaHandle<unknown> = CaptchaHandle>(): CaptchaController<THandle> {
 	return useSignal<NoSerialize<THandle> | null>(null);
 }

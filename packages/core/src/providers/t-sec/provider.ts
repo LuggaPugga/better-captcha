@@ -10,7 +10,6 @@ export class TSecProvider extends Provider<
 	GlobalTSec.TencentCaptchaResult
 > {
 	private widgetMap = new Map<string, GlobalTSec.TencentCaptcha>();
-	private elementMap = new Map<string, HTMLElement>();
 	private widgetIdCounter = 0;
 
 	constructor(sitekey: string, scriptOptions?: ScriptOptions) {
@@ -45,7 +44,6 @@ export class TSecProvider extends Provider<
 		if (!element.id) {
 			element.id = widgetId;
 		}
-		this.elementMap.set(widgetId, element);
 
 		if (callbacks?.onReady && !renderOptions.ready) {
 			renderOptions.ready = () => {
@@ -90,7 +88,6 @@ export class TSecProvider extends Provider<
 		if (captcha) {
 			captcha.destroy();
 			this.widgetMap.delete(widgetId);
-			this.elementMap.delete(widgetId);
 		}
 	}
 

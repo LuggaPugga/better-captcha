@@ -1,5 +1,5 @@
 <script module lang="ts">
-	import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+	import type { CaptchaHandle, Provider, ScriptOptions } from "@better-captcha/core";
 
 	export type BaseCaptchaProps<
 		TOptions,

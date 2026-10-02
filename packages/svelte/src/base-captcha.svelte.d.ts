@@ -1,4 +1,4 @@
-import type { CaptchaHandle, CaptchaState, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+import type { CaptchaHandle, CaptchaState, Provider, ScriptOptions } from "@better-captcha/core";
 import { SvelteComponent } from "svelte";
 
 export interface BaseCaptchaProps<

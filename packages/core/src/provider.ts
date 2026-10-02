@@ -1,20 +1,11 @@
 import { type LoadScriptOptions, loadScript } from "./utils/load-script";
 
 export interface ScriptOptions {
-	/**
-	 * When false, the provider will not load the remote script automatically.
-	 * Defaults to true.
-	 */
+	/** When false, skip automatic script loading. Defaults to true. */
 	autoLoad?: boolean;
-	/**
-	 * Custom timeout (in milliseconds) for script loading.
-	 * Defaults to 15000ms when not provided.
-	 */
+	/** Script loading timeout in milliseconds. Defaults to 15000. */
 	timeout?: number;
-	/**
-	 * Override the default script URL with a custom one.
-	 * Defaults to undefined.
-	 */
+	/** Custom script URL. */
 	overrideScriptUrl?: string;
 	nonce?: string;
 	integrity?: string;
@@ -31,81 +22,37 @@ export interface ProviderConfig {
 
 export type WidgetId = string | number;
 
-/**
- * Imperative handle interface for CAPTCHA components
- *
- * Provides methods to programmatically control the CAPTCHA widget
- * and access its current state. All providers implement this interface
- * with additional provider-specific methods.
- */
+/** Common widget controls, extended by provider-specific handles. */
 export interface CaptchaHandle<TResponse = string> {
-	/**
-	 * Reset the widget to its initial state
-	 * Clears any previous responses and restarts the challenge
-	 */
+	/** Reset the widget and clear its response. */
 	reset: () => void;
 
-	/**
-	 * Programmatically trigger the challenge
-	 * @returns Promise that resolves when execution is complete
-	 */
+	/** Trigger the challenge. */
 	execute: () => Promise<void>;
 
-	/**
-	 * Destroy the widget and clean up resources
-	 * Removes the widget from the DOM and clears any event listeners
-	 */
+	/** Destroy the widget and release its resources. */
 	destroy: () => void;
 
-	/**
-	 * Render the captcha widget
-	 * Useful when autoRender is disabled or after destroying the widget
-	 * @returns Promise that resolves when rendering is complete
-	 */
+	/** Render manually when autoRender is disabled or after destroy(). */
 	render: () => Promise<void>;
 
-	/**
-	 * Get the current response token from the widget
-	 * @returns The response string, empty if no challenge has been completed
-	 */
+	/** Get the provider response; its empty value depends on the provider. */
 	getResponse: () => TResponse;
 
-	/**
-	 * Get the current component state
-	 * @returns Object containing loading, error, and ready states
-	 */
 	getComponentState: () => CaptchaState;
 }
 
-/**
- * Current state of the CAPTCHA component
- */
 export interface CaptchaState {
 	loading: boolean;
 	error: Error | null;
 	ready: boolean;
 }
 
-/**
- * Standard callbacks for CAPTCHA lifecycle events
- * These callbacks are optional and can be used across all providers
- */
 export interface CaptchaCallbacks<TSolve = string, TError = Error | string> {
-	/**
-	 * Called when the CAPTCHA widget is successfully rendered and ready for interaction
-	 */
 	onReady?: () => void;
 
-	/**
-	 * Called when the CAPTCHA challenge is successfully solved and a token is generated
-	 * @param token - The response token from the CAPTCHA provider
-	 */
 	onSolve?: (token: TSolve) => void;
 
-	/**
-	 * Called when an error occurs during CAPTCHA initialization or solving
-	 * @param error - The error that occurred
-	 */
 	onError?: (error: TError) => void;
 }
 
@@ -123,12 +70,6 @@ export type RuntimeProviderClass = new (
 	scriptOptions?: ScriptOptions,
 ) => Provider<object, CaptchaHandle<CaptchaResponse>, CaptchaResponse, never>;
 
-/**
- * Abstract base class for CAPTCHA providers
- * @template TConfig - Configuration type for the provider
- * @template TOptions - Options type for rendering
- * @template TExtraHandle - Additional methods for the handle
- */
 export abstract class Provider<
 	TOptions = unknown,
 	TExtraHandle extends object = Record<string, never>,
@@ -138,11 +79,6 @@ export abstract class Provider<
 	protected config: ProviderConfig;
 	protected identifier: string;
 
-	/**
-	 * Create a new provider instance
-	 * @param config - Provider configuration
-	 * @param identifier - Identifier for the CAPTCHA service (sitekey, endpoint, etc.)
-	 */
 	constructor(config: ProviderConfig, identifier: string) {
 		this.config = config;
 		this.identifier = identifier;
@@ -160,65 +96,29 @@ export abstract class Provider<
 		});
 	}
 
-	/**
-	 * Initialize the provider (load scripts, etc.)
-	 * @returns Promise that resolves when initialization is complete
-	 */
+	/** Initialize the provider and load its scripts. */
 	abstract init(): Promise<void>;
 
-	/**
-	 * Render the CAPTCHA widget in the specified element
-	 * @param element - DOM element to render the widget in
-	 * @param options - Provider-specific rendering options
-	 * @param callbacks - Optional callbacks for lifecycle events
-	 * @returns Widget ID or promise resolving to widget ID
-	 */
+	/** Render into the element and return the widget ID. */
 	abstract render(
 		element: HTMLElement,
 		options?: TOptions,
 		callbacks?: CaptchaCallbacks<TSolve>,
 	): WidgetId | undefined | Promise<WidgetId>;
 
-	/**
-	 * Reset the CAPTCHA widget to its initial state
-	 * @param widgetId - ID of the widget to reset
-	 */
 	abstract reset(widgetId: WidgetId): void;
 
-	/**
-	 * Programmatically execute the CAPTCHA challenge
-	 * @param widgetId - ID of the widget to execute
-	 * @returns Promise that resolves when execution is complete
-	 */
 	abstract execute(widgetId: WidgetId): Promise<void>;
 
-	/**
-	 * Destroy the CAPTCHA widget and clean up resources
-	 * @param widgetId - ID of the widget to destroy
-	 */
 	abstract destroy(widgetId: WidgetId): void;
 
-	/**
-	 * Get the current CAPTCHA response token
-	 * @param widgetId - ID of the widget to get response from
-	 * @returns CAPTCHA response token
-	 */
 	abstract getResponse(widgetId: WidgetId): TResponse;
 
-	/**
-	 * Get a handle for controlling the CAPTCHA widget
-	 * @param widgetId - ID of the widget
-	 * @returns Handle with control methods
-	 */
 	getHandle(widgetId: WidgetId): CaptchaHandle<TResponse> & TExtraHandle {
 		return this.getCommonHandle(widgetId) as CaptchaHandle<TResponse> & TExtraHandle;
 	}
 
-	/**
-	 * Get the common handle methods for a widget
-	 * @param widgetId - ID of the widget
-	 * @returns Handle with common control methods
-	 */
+	/** Common methods used by provider-specific handles. */
 	protected getCommonHandle(widgetId: WidgetId): CaptchaHandle<TResponse> {
 		return {
 			reset: () => this.reset(widgetId),

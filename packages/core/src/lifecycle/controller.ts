@@ -1,9 +1,5 @@
 import type { CaptchaCallbacks, CaptchaHandle, CaptchaState, Provider, ScriptOptions, WidgetId } from "../provider";
 
-/**
- * Framework-agnostic controller for managing CAPTCHA lifecycle
- * Handles rendering, cleanup, state management, and provider instance lifecycle
- */
 export class CaptchaController<
 	TOptions = unknown,
 	TResponse = string,
@@ -33,56 +29,34 @@ export class CaptchaController<
 		) => Provider<TOptions, THandle, TResponse, TSolve>,
 	) {}
 
-	/**
-	 * Set the identifier (sitekey or endpoint)
-	 */
 	setIdentifier(identifier: string | undefined): void {
 		this.identifier = identifier;
 	}
 
-	/**
-	 * Set render options
-	 */
 	setOptions(options: TOptions | undefined): void {
 		this.options = options;
 	}
 
-	/**
-	 * Set script options
-	 */
 	setScriptOptions(scriptOptions: ScriptOptions | undefined): void {
 		this.scriptOptions = scriptOptions;
 	}
 
-	/**
-	 * Set lifecycle callbacks
-	 */
 	setCallbacks(callbacks: CaptchaCallbacks<TSolve> | undefined): void {
 		this.callbacks = callbacks;
 	}
 
-	/**
-	 * Subscribe to state changes
-	 */
 	onStateChange(listener: (state: CaptchaState) => void): () => void {
 		this.stateChangeListeners.add(listener);
-		// Immediately call with current state
 		listener(this.state);
 		return () => {
 			this.stateChangeListeners.delete(listener);
 		};
 	}
 
-	/**
-	 * Attach the host element where the captcha will be rendered
-	 */
 	attachHost(element: HTMLElement | null): void {
 		this.hostElement = element;
 	}
 
-	/**
-	 * Update internal state and notify listeners
-	 */
 	private updateState(newState: CaptchaState): void {
 		this.state = newState;
 		for (const listener of this.stateChangeListeners) {
@@ -90,14 +64,7 @@ export class CaptchaController<
 		}
 	}
 
-	/**
-	 * Render the captcha widget.
-	 *
-	 * Each call starts a new render with a fresh token. If another `render()`
-	 * is called (or `cleanup()` is invoked) before this one finishes, the
-	 * in-flight render aborts at the next checkpoint without touching shared
-	 * state, so the latest call always wins.
-	 */
+	/** A newer render or cleanup invalidates this render at each async checkpoint. */
 	async render(): Promise<void> {
 		if (!this.hostElement) {
 			return;
@@ -173,12 +140,7 @@ export class CaptchaController<
 		}
 	}
 
-	/**
-	 * Clean up resources and destroy the widget.
-	 *
-	 * Bumps the render token so any in-flight render aborts at its next
-	 * checkpoint instead of clobbering state after we've torn down.
-	 */
+	/** Invalidates pending renders before destroying the current widget. */
 	cleanup(): void {
 		this.teardown();
 	}
@@ -192,32 +154,21 @@ export class CaptchaController<
 				console.warn("[better-captcha] cleanup:", error);
 			}
 		}
-		if (this.container) {
-			this.container.remove();
-		}
+		this.container?.remove();
 		this.provider = null;
 		this.container = null;
 		this.widgetId = null;
 		this.updateState({ loading: false, error: null, ready: false });
 	}
 
-	/**
-	 * Get the current widget ID
-	 */
 	getWidgetId(): WidgetId | null {
 		return this.widgetId;
 	}
 
-	/**
-	 * Get the current state
-	 */
 	getState(): CaptchaState {
 		return this.state;
 	}
 
-	/**
-	 * Get a handle for controlling the widget
-	 */
 	getHandle(): CaptchaHandle<TResponse> & THandle {
 		if (!this.provider || this.widgetId == null) {
 			return {

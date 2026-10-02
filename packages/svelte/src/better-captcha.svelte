@@ -4,7 +4,6 @@
 		CaptchaResponse,
 		CaptchaState,
 		Provider,
-		ProviderConfig,
 		ProviderName,
 		RuntimeProviderClass,
 		ScriptOptions,

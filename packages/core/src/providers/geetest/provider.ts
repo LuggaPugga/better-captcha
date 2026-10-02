@@ -40,10 +40,8 @@ export class GeetestProvider extends Provider<
 		options?: Omit<RenderParameters, "captchaId">,
 		callbacks?: CaptchaCallbacks<Geetest.ValidateResult>,
 	) {
-		const resolvedOptions = options ? { ...options } : undefined;
-
 		const renderOptions: RenderParameters = {
-			...resolvedOptions,
+			...options,
 			captchaId: this.identifier,
 		};
 

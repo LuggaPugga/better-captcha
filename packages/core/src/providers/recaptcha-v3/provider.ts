@@ -39,22 +39,12 @@ export class ReCaptchaV3Provider extends Provider<RenderParameters, ReCaptchaV3H
 		return url.toString();
 	}
 
-	private validateToken(token: unknown): string {
+	private async executeToken(action: string): Promise<string> {
+		const token = await window.grecaptcha.execute(this.identifier, { action });
 		if (!token || typeof token !== "string" || token.trim() === "") {
 			throw new Error("reCAPTCHA v3 returned an invalid token");
 		}
 		return token;
-	}
-
-	private async executeToken(action: string): Promise<string> {
-		const token = await window.grecaptcha.execute(this.identifier, {
-			action,
-		});
-		return this.validateToken(token);
-	}
-
-	private isTokenValid(cached: TokenCache | undefined, now: number): cached is TokenCache {
-		return !!cached && now - cached.timestamp < this.TOKEN_CACHE_DURATION && !!cached.token;
 	}
 
 	async render(_element: HTMLElement, options?: RenderParameters, callbacks?: CaptchaCallbacks): Promise<string> {
@@ -66,7 +56,7 @@ export class ReCaptchaV3Provider extends Provider<RenderParameters, ReCaptchaV3H
 		const cached = this.tokenCache.get(cacheKey);
 		const now = Date.now();
 
-		if (this.isTokenValid(cached, now)) {
+		if (cached && now - cached.timestamp < this.TOKEN_CACHE_DURATION && cached.token) {
 			if (callbacks?.onReady) {
 				queueMicrotask(() => callbacks.onReady?.());
 			}

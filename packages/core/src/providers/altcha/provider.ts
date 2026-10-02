@@ -36,42 +36,16 @@ export class AltchaProvider extends Provider<Omit<RenderParameters, "element">, 
 		const widget = document.createElement("altcha-widget") as AltchaWidget;
 		widget.setAttribute("challengeurl", this.identifier);
 
-		const attributeMap: Record<string, string> = {
-			auto: "auto",
-			credentials: "credentials",
-			delay: "delay",
-			disableautofocus: "disableautofocus",
-			expire: "expire",
-			floating: "floating",
-			floatinganchor: "floatinganchor",
-			floatingoffset: "floatingoffset",
-			floatingpersist: "floatingpersist",
-			hidefooter: "hidefooter",
-			hidelogo: "hidelogo",
-			language: "language",
-			maxnumber: "maxnumber",
-			name: "name",
-			overlay: "overlay",
-			overlaycontent: "overlaycontent",
-			strings: "strings",
-			refetchonexpire: "refetchonexpire",
-			workers: "workers",
-			workerurl: "workerurl",
-			debug: "debug",
-			test: "test",
-		};
-
 		const callbackMap: Record<
 			string,
 			{
-				event: string;
 				handler?: (event: AltchaStateChangeEvent | AltchaVerifiedEvent | AltchaLoadEvent | AltchaErrorEvent) => void;
 			}
 		> = {
-			onstatechange: { event: "statechange" },
-			onverified: { event: "verified" },
-			onload: { event: "load" },
-			onerror: { event: "error" },
+			onstatechange: {},
+			onverified: {},
+			onload: {},
+			onerror: {},
 		};
 
 		if (options) {
@@ -90,13 +64,12 @@ export class AltchaProvider extends Provider<Omit<RenderParameters, "element">, 
 					continue;
 				}
 
-				const attributeName = attributeMap[key] || key;
 				if (typeof value === "boolean") {
 					if (value) {
-						widget.setAttribute(attributeName, "");
+						widget.setAttribute(key, "");
 					}
 				} else {
-					widget.setAttribute(attributeName, String(value));
+					widget.setAttribute(key, String(value));
 				}
 			}
 		}

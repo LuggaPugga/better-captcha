@@ -1,4 +1,4 @@
-import type { CaptchaHandle, Provider, ProviderConfig, ScriptOptions } from "@better-captcha/core";
+import type { CaptchaHandle, Provider, ScriptOptions } from "@better-captcha/core";
 import type { QRL } from "@builder.io/qwik";
 import { component$ } from "@builder.io/qwik";
 import type { CaptchaProps } from "./index";

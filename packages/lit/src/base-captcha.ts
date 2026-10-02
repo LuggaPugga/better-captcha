@@ -8,17 +8,10 @@ type CaptchaElement<THandle> = CustomElementConstructor & {
 	new (): LitElement & { getHandle: () => THandle };
 };
 
-type CaptchaProvider<TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>> = Provider<
-	TOptions,
-	THandle,
-	TResponse,
-	TSolve
->;
-
 export type CaptchaProviderClass<TOptions, TResponse, TSolve, THandle extends CaptchaHandle<TResponse>> = new (
 	identifier: string,
 	scriptOptions?: ScriptOptions,
-) => CaptchaProvider<TOptions, TResponse, TSolve, THandle>;
+) => Provider<TOptions, THandle, TResponse, TSolve>;
 
 const SYNC_PROPS = new Set(["sitekey", "endpoint", "options", "scriptOptions", "autoRender"]);
 

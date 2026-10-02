@@ -4,7 +4,6 @@ import {
 	type FrameworkConfig,
 	generateProviderAggregateModule,
 	generateProviderModuleDts,
-	type GeneratedFiles,
 	generateAggregateIndexFile,
 } from "@better-captcha/core/utils/build-plugin-utils";
 import { createUnplugin } from "unplugin";
@@ -34,20 +33,6 @@ export const ${meta.componentName} = createCaptchaComponent(
 `;
 }
 
-function genProviderModuleDts(meta: ProviderMetadata): GeneratedFiles {
-	return generateProviderModuleDts(meta, qwikConfig);
-}
-
-function genProviderAggregateModule(): string {
-	const files = generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX);
-	return files.js;
-}
-
-function genProviderAggregateModuleDts(): string {
-	const files = generateAggregateIndexFile(PROVIDER_REGISTRY, ".qwik.mjs");
-	return files.dts;
-}
-
 export const unplugin = createUnplugin(() => {
 	const baseAbs = toPosix(path.resolve(process.cwd(), "src/base-captcha.tsx"));
 
@@ -71,7 +56,7 @@ export const unplugin = createUnplugin(() => {
 			}
 			if (id === PROVIDER_AGG_SPEC) {
 				return {
-					code: genProviderAggregateModule(),
+					code: generateProviderAggregateModule(PROVIDER_REGISTRY, PROVIDER_SPEC_PREFIX).js,
 					map: null,
 				};
 			}
@@ -186,7 +171,7 @@ export const dtsEmitterPlugin = createUnplugin(() => {
 					source: genProviderModuleCjs(provider),
 				});
 
-				const dtsFiles = genProviderModuleDts(provider);
+				const dtsFiles = generateProviderModuleDts(provider, qwikConfig);
 				this.emitFile({
 					type: "asset",
 					fileName: `provider/${provider.name}/index.d.ts`,
@@ -209,7 +194,7 @@ export const dtsEmitterPlugin = createUnplugin(() => {
 			this.emitFile({
 				type: "asset",
 				fileName: "provider/index.d.ts",
-				source: genProviderAggregateModuleDts(),
+				source: generateAggregateIndexFile(PROVIDER_REGISTRY, ".qwik.mjs").dts,
 			});
 		},
 	};

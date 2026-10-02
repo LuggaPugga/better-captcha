@@ -68,7 +68,7 @@ export class ScriptLoader {
 		if (options.crossOrigin !== undefined) script.crossOrigin = options.crossOrigin;
 		if (options.referrerPolicy !== undefined) script.referrerPolicy = options.referrerPolicy;
 		if (options.fetchPriority !== undefined) {
-			(script as HTMLScriptElement & { fetchPriority?: string }).fetchPriority = options.fetchPriority;
+			script.fetchPriority = options.fetchPriority;
 		}
 		if (options.scriptAttributes) {
 			for (const [name, value] of Object.entries(options.scriptAttributes)) {

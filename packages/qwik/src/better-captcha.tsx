@@ -2,7 +2,6 @@ import type {
 	CaptchaHandle,
 	CaptchaResponse,
 	Provider,
-	ProviderConfig,
 	ProviderName,
 	ScriptOptions,
 } from "@better-captcha/core";
