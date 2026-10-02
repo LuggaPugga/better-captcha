@@ -46,9 +46,9 @@ jobs:
         id: changesets
         uses: changesets/action@v2.1.2
         with:
-          version: bun run ci:version
-          publish: bun run ci:publish
-          commit: "chore: version packages"
-          title: "chore: version packages"
+          version-script: bun run ci:version
+          publish-script: bun run ci:publish
+          commit-message: "chore: version packages"
+          pr-title: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
