@@ -17,7 +17,7 @@ This example demonstrates how to integrate [Better Auth](https://www.better-auth
 
 ### Prerequisites
 
-- Node.js 20+ or Bun
+- Node.js 22.18+, 24.11+, or 26+ and Bun 1.4.2
 - npm, yarn, pnpm, or bun
 
 ### Installation
@@ -25,7 +25,7 @@ This example demonstrates how to integrate [Better Auth](https://www.better-auth
 1. Clone the repository and navigate to this example:
 
 ```bash
-cd apps/better-auth-example
+cd apps/examples/better-auth
 ```
 
 2. Install dependencies:
@@ -36,7 +36,17 @@ bun install
 npm install
 ```
 
-3. Run the development server:
+3. Configure Better Auth in `.env.local`:
+
+```dotenv
+BETTER_AUTH_URL=http://localhost:3001
+BETTER_AUTH_SECRET=<your-generated-secret>
+```
+
+Generate a secret with `openssl rand -base64 32`. Set these variables in your
+deployment environment too; Better Auth requires a secret in production.
+
+4. Run the development server:
 
 ```bash
 bun dev
@@ -44,7 +54,7 @@ bun dev
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3001](http://localhost:3001) in your browser
 
 ## How It Works
 

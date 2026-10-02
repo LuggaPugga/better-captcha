@@ -63,7 +63,7 @@
 		}
 	},
 	"peerDependencies": {
-		"typescript": "^5.0.0",
+		"typescript": "^5.0.0 || ^6.0.0 || ^7.0.0",
 		"react": "^18 || ^19"
 	},
 	"dependencies": {
@@ -71,12 +71,12 @@
 	},
 	"devDependencies": {
 		"@better-captcha/tests": "workspace:*",
-		"@playwright/test": "^1.62.1",
-		"@types/bun": "1.4.0",
-		"@types/node": "26.2.0",
-		"@types/react": "^19.2.18",
-		"playwright": "^1.62.1",
-		"tsdown": "^0.22.14",
-		"unplugin": "^3.3.0"
+		"@playwright/test": "^1.63.0",
+		"@types/bun": "1.4.2",
+		"@types/node": "26.6.4",
+		"@types/react": "^19.3.0",
+		"playwright": "^1.63.0",
+		"tsdown": "^0.23.0",
+		"unplugin": "^3.4.0"
 	}
 }

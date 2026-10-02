@@ -70,14 +70,14 @@
 	},
 	"devDependencies": {
 		"@better-captcha/tests": "workspace:*",
-		"@playwright/test": "^1.62.1",
-		"@types/bun": "1.4.0",
-		"@types/node": "26.2.0",
-		"playwright": "^1.62.1",
-		"svelte": "^5.56.8",
-		"svelte-check": "^4.7.5",
-		"tsdown": "^0.22.14",
-		"unplugin": "^3.3.0",
-		"typescript": "^6.0.2"
+		"@playwright/test": "^1.63.0",
+		"@types/bun": "1.4.2",
+		"@types/node": "26.6.4",
+		"playwright": "^1.63.0",
+		"svelte": "^5.57.1",
+		"svelte-check": "^4.7.6",
+		"tsdown": "^0.23.0",
+		"unplugin": "^3.4.0",
+		"typescript": "~6.0.3"
 	}
 }
