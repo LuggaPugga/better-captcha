@@ -29,6 +29,6 @@
 		"typescript": "~6.0.3",
 		"typescript-plugin-css-modules": "5.2.0",
 		"undici": "^8.11.2",
-		"vite": "^7.3.6"
+		"vite": "^8.0.0"
 	}
 }
