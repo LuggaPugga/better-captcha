@@ -44,7 +44,7 @@
 	},
 	"devDependencies": {
 		"@better-captcha/tests": "workspace:*",
-		"@builder.io/qwik": "1.20.1",
+		"@builder.io/qwik": "1.20.2",
 		"@playwright/test": "^1.63.0",
 		"@types/node": "26.6.4",
 		"typescript": "~6.0.3",

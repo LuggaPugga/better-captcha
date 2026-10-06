@@ -236,7 +236,7 @@
       },
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
-        "@builder.io/qwik": "1.20.1",
+        "@builder.io/qwik": "1.20.2",
         "@playwright/test": "^1.63.0",
         "@types/node": "26.6.4",
         "typescript": "~6.0.3",
@@ -463,7 +463,7 @@
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.5.15", "", { "os": "win32", "cpu": "x64" }, "sha512-yAzh4UqEImV6Hcy0zjUqNfJAsUhoD64FBQCdTG8Md/Z2wQeVP/ZmJ3XRYAs1g8J9fjTFyl2fCtc5FB5til47+g=="],
 
-    "@builder.io/qwik": ["@builder.io/qwik@1.20.1", "", { "dependencies": { "csstype": "^3.1.3", "launch-editor": "^2.11.1", "rollup": "^4.61.0" }, "peerDependencies": { "vite": ">=5 <8" }, "bin": { "qwik": "qwik-cli.cjs" } }, "sha512-6iig3OVQEWm0w1icVv1XqpxxNCORqQ9dyxIQSxGoAgI3qjJcBN9C+yALwJdJEPQMF8rH/Rw/rmgKzBiFTUs3pQ=="],
+    "@builder.io/qwik": ["@builder.io/qwik@1.20.2", "", { "dependencies": { "csstype": "^3.1.3", "launch-editor": "^2.11.1", "rollup": "^4.61.0" }, "peerDependencies": { "vite": ">=5 <8" }, "bin": { "qwik": "qwik-cli.cjs" } }, "sha512-wAP6Wa/N0F6IlWirFm/SlrfukmsJaWa7ABIH0OACmZVC0llDySpy1TXZ1WYMAQG1HnKa9hT3H8l3hKckGmXQBA=="],
 
     "@builder.io/qwik-city": ["@builder.io/qwik-city@1.20.1", "", { "dependencies": { "@mdx-js/mdx": "^3.1.1", "@types/mdx": "^2.0.13", "source-map": "^0.7.6", "svgo": "^3.3.3", "undici": "*", "valibot": ">=0.36.0 <2", "vfile": "6.0.3", "vite": ">=5 <8", "vite-imagetools": "^9.0.0", "zod": "3.25.48" } }, "sha512-4lL2cvyV08ur64L8JNVpEX6LRJNOzpS8uuj2vbHKQYIP0vG+20zcRTIUQ51/owxp4Z1/nn0XN/eTUzqn4RvTxQ=="],
 
