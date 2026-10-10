@@ -38,7 +38,7 @@
       "devDependencies": {
         "@tailwindcss/postcss": "^4.3.3",
         "@types/mdx": "^2.0.14",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "@types/react": "19.3.0",
         "@types/react-dom": "19.3.0",
         "postcss": "^8.5.28",
@@ -118,7 +118,7 @@
         "@better-captcha/qwik": "workspace:*",
         "@builder.io/qwik": "^1.20.1",
         "@builder.io/qwik-city": "^1.20.1",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "globals": "17.13.0",
         "ignore": "^7.0.11",
         "typescript": "~6.0.3",
@@ -200,7 +200,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.63.0",
         "@types/bun": "1.4.2",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "playwright": "^1.63.0",
         "tsdown": "^0.23.0",
         "unplugin": "^3.4.0",
@@ -219,7 +219,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.63.0",
         "@types/bun": "1.4.2",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "playwright": "^1.63.0",
         "tsdown": "^0.23.0",
         "unplugin": "^3.4.0",
@@ -238,7 +238,7 @@
         "@better-captcha/tests": "workspace:*",
         "@builder.io/qwik": "1.20.1",
         "@playwright/test": "^1.63.0",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "typescript": "~6.0.3",
         "unplugin": "^3.4.0",
         "vite": "^7.3.6",
@@ -257,7 +257,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.63.0",
         "@types/bun": "1.4.2",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "@types/react": "^19.3.0",
         "playwright": "^1.63.0",
         "tsdown": "^0.23.0",
@@ -278,7 +278,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.63.0",
         "@types/bun": "1.4.2",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "playwright": "^1.63.0",
         "rolldown-plugin-solid": "^0.2.1",
         "solid-js": "^1.9.15",
@@ -299,7 +299,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.63.0",
         "@types/bun": "1.4.2",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "playwright": "^1.63.0",
         "svelte": "^5.57.1",
         "svelte-check": "^4.7.6",
@@ -331,7 +331,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.63.0",
         "@types/bun": "1.4.2",
-        "@types/node": "26.6.4",
+        "@types/node": "26.6.5",
         "playwright": "^1.63.0",
         "tsdown": "^0.23.0",
         "unplugin": "^3.4.0",
@@ -973,7 +973,7 @@
 
     "@types/ms": ["@types/ms@2.1.0", "", {}, "sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA=="],
 
-    "@types/node": ["@types/node@26.6.4", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg=="],
+    "@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
 
     "@types/postcss-modules-local-by-default": ["@types/postcss-modules-local-by-default@4.0.2", "", { "dependencies": { "postcss": "^8.0.0" } }, "sha512-CtYCcD+L+trB3reJPny+bKWKMzPfxEyQpKIwit7kErnOexf5/faaGpkFy4I5AwbV4hp1sk7/aTg0tt0B67VkLQ=="],
 
@@ -1962,6 +1962,8 @@
     "@vue/compiler-sfc/magic-string": ["magic-string@0.30.21", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ=="],
 
     "babel-plugin-jsx-dom-expressions/@babel/helper-module-imports": ["@babel/helper-module-imports@7.18.6", "", { "dependencies": { "@babel/types": "^7.18.6" } }, "sha512-0NFvs3VkuSYbFi1x2Vd6tKrywq+z/cLeYC/RJNFrIX/30Bf5aiGYbtvGXolEktzJH8o5E5KJ3tT+nkxuuZFVlA=="],
+
+    "better-auth-example/@types/node": ["@types/node@26.6.4", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg=="],
 
     "better-call/@better-auth/utils": ["@better-auth/utils@0.5.0", "", { "dependencies": { "@noble/hashes": "^2.0.1" } }, "sha512-BL8W4EfIZFwlu0r54m3v1ztjDhu6dDe/amLTm0xybmbZaNgYUqhD3SjpAsnq0q8YD6/ki4iwIgxJNLP/N3TxiA=="],
 
