@@ -72,7 +72,7 @@
 		"@better-captcha/tests": "workspace:*",
 		"@playwright/test": "^1.63.0",
 		"@types/bun": "1.4.2",
-		"@types/node": "26.6.4",
+		"@types/node": "26.6.5",
 		"playwright": "^1.63.0",
 		"svelte": "^5.57.1",
 		"svelte-check": "^4.7.6",
