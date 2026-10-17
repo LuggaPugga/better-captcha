@@ -19,8 +19,8 @@
 		"typecheck": "turbo run check-types",
 		"start": "turbo run start",
 		"changeset": "changeset",
-		"ci:version": "changeset version && bun update",
-		"ci:publish": "for dir in packages/core packages/react packages/vue packages/svelte packages/solidjs packages/qwik packages/lit packages/preact; do (cd \"$dir\" && bun publish --access public || true); done && changeset tag"
+		"ci:version": "changeset version && node scripts/prepare-publish.mjs && bun update",
+		"ci:publish": "changeset publish"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.15",
