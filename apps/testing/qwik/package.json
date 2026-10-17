@@ -23,12 +23,12 @@
 		"@better-captcha/qwik": "workspace:*",
 		"@builder.io/qwik": "^1.20.1",
 		"@builder.io/qwik-city": "^1.20.1",
-		"@types/node": "26.6.4",
+		"@types/node": "26.6.5",
 		"globals": "17.13.0",
-		"ignore": "^7.0.11",
+		"ignore": "^7.0.12",
 		"typescript": "~6.0.3",
 		"typescript-plugin-css-modules": "5.2.0",
-		"undici": "^8.11.2",
-		"vite": "^7.3.6"
+		"undici": "^8.12.2",
+		"vite": "^7.3.7"
 	}
 }

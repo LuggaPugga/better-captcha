@@ -72,11 +72,11 @@
 	},
 	"devDependencies": {
 		"@better-captcha/tests": "workspace:*",
-		"@playwright/test": "^1.63.0",
-		"@types/bun": "1.4.2",
-		"@types/node": "26.6.4",
-		"playwright": "^1.63.0",
-		"tsdown": "^0.23.0",
+		"@playwright/test": "^1.64.1",
+		"@types/bun": "1.4.3",
+		"@types/node": "26.6.5",
+		"playwright": "^1.64.1",
+		"tsdown": "^0.23.1",
 		"unplugin": "^3.4.0"
 	}
 }
