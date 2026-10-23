@@ -199,7 +199,7 @@
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
-        "@types/bun": "1.4.3",
+        "@types/bun": "1.4.4",
         "@types/node": "26.6.5",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.1",
@@ -218,7 +218,7 @@
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
-        "@types/bun": "1.4.3",
+        "@types/bun": "1.4.4",
         "@types/node": "26.6.5",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.1",
@@ -256,7 +256,7 @@
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
-        "@types/bun": "1.4.3",
+        "@types/bun": "1.4.4",
         "@types/node": "26.6.5",
         "@types/react": "^19.3.0",
         "playwright": "^1.64.1",
@@ -276,7 +276,7 @@
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
-        "@types/bun": "1.4.3",
+        "@types/bun": "1.4.4",
         "@types/node": "26.6.5",
         "playwright": "^1.64.1",
         "rolldown-plugin-solid": "^0.2.1",
@@ -297,7 +297,7 @@
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
-        "@types/bun": "1.4.3",
+        "@types/bun": "1.4.4",
         "@types/node": "26.6.5",
         "playwright": "^1.64.1",
         "svelte": "^5.57.1",
@@ -329,7 +329,7 @@
       "devDependencies": {
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
-        "@types/bun": "1.4.3",
+        "@types/bun": "1.4.4",
         "@types/node": "26.6.5",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.1",
@@ -956,7 +956,7 @@
 
     "@types/babel__traverse": ["@types/babel__traverse@7.28.0", "", { "dependencies": { "@babel/types": "^7.28.2" } }, "sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q=="],
 
-    "@types/bun": ["@types/bun@1.4.3", "", { "dependencies": { "bun-types": "1.4.3" } }, "sha512-N67Pqy8JXbAY/j0tNraS3V5mubGvc6rrrNDmDCtZLlFzccbUJPDb0tvgUBC5q4m8ybkP93Jcn1QB+RYQ6PvBhw=="],
+    "@types/bun": ["@types/bun@1.4.4", "", { "dependencies": { "bun-types": "1.4.4" } }, "sha512-9wkRDXUXK124pEnAutE6n/l18j+i9GC5IAHK8TmX/2nlySETmky0OU6yL5U8pW1AoKh++AN9auDCr647BfurjQ=="],
 
     "@types/debug": ["@types/debug@4.1.13", "", { "dependencies": { "@types/ms": "*" } }, "sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw=="],
 
@@ -1146,7 +1146,7 @@
 
     "browserslist": ["browserslist@4.29.3", "", { "dependencies": { "baseline-browser-mapping": "^2.11.26", "caniuse-lite": "^1.0.30001813", "electron-to-chromium": "^1.5.439", "node-releases": "^2.0.57", "update-browserslist-db": "^1.3.3" }, "bin": { "browserslist": "cli.js" } }, "sha512-1R4kiYKXGViqEN0CnoDrXc1StD9niAwu+j2dukWzrD4bJgsD4lDmEp0CRbc6E/vYJIfTHwPmwyaKtVSudICdPA=="],
 
-    "bun-types": ["bun-types@1.4.3", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-tinRJNGOmUN+tEAsn2y2e942n9JHRHR42iUYzDH75NmhJqVBokGSQkkfSFdNWwsANIdrK6ACH9t01M452YyTwg=="],
+    "bun-types": ["bun-types@1.4.4", "", { "dependencies": { "@types/node": "*", "undici-types": "*" } }, "sha512-yjrJh5oGX7mMPKGd19YXyIjmEuj4G4zNC30bs7PM9Az7NQ3ndF3j6hbeRdvJTRQEhJ/FYQwW0a2moweEi2hMxQ=="],
 
     "cac": ["cac@7.0.0", "", {}, "sha512-tixWYgm5ZoOD+3g6UTea91eow5z6AAHaho3g0V9CNSNb45gM8SmflpAc+GRd1InC4AqN/07Unrgp56Y94N9hJQ=="],
 
