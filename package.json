@@ -23,16 +23,16 @@
 		"ci:publish": "changeset publish"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.15",
+		"@biomejs/biome": "2.6.2",
 		"@changesets/changelog-github": "^1.0.1",
 		"@changesets/cli": "^3.0.3",
-		"turbo": "^2.11.9",
+		"turbo": "^2.11.10",
 		"typescript": "~6.0.3"
 	},
 	"engines": {
 		"node": "^22.18.0 || ^24.11.0 || >=26.0.0"
 	},
-	"packageManager": "bun@1.4.3",
+	"packageManager": "bun@1.4.4",
 	"workspaces": [
 		"apps/*",
 		"apps/testing/*",

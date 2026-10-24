@@ -31,4 +31,3 @@ Keep the component inside a client-only boundary, access the ref to call `execut
 - Unified hook-driven lifecycle that loads provider scripts on demand.
 - Shared handle API (`execute`, `reset`, `destroy`, `getResponse`) across providers.
 - Provider-specific bundles such as reCAPTCHA, hCaptcha, Turnstile, and Friendly Captcha.
-

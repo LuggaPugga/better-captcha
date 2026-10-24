@@ -20,7 +20,7 @@ npm install @better-captcha/lit
 import { ReCaptcha } from "@better-captcha/lit/provider/recaptcha";
 
 // The component is automatically registered as a custom element named "recaptcha-captcha"
-const captcha = document.querySelector('recaptcha-captcha');
+const captcha = document.querySelector("recaptcha-captcha");
 const handle = captcha.getHandle();
 ```
 
