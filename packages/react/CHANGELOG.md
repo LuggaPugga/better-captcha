@@ -1,5 +1,12 @@
 # @better-captcha/react
 
+## 0.8.1
+
+### Patch Changes
+
+- 2ec430a: Remove the unnecessary TypeScript peer dependency so consumers are no longer required to install TypeScript.
+- @better-captcha/core@0.8.1
+
 ## 0.8.0
 
 ### Minor Changes
