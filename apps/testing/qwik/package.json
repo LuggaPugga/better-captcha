@@ -23,7 +23,7 @@
 		"@better-captcha/qwik": "workspace:*",
 		"@builder.io/qwik": "^1.20.2",
 		"@builder.io/qwik-city": "^1.20.2",
-		"@types/node": "26.6.5",
+		"@types/node": "26.6.6",
 		"globals": "17.13.0",
 		"ignore": "^7.0.14",
 		"typescript": "~6.0.3",
