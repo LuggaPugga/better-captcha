@@ -38,7 +38,7 @@
       "devDependencies": {
         "@tailwindcss/postcss": "^4.3.3",
         "@types/mdx": "^2.0.14",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "@types/react": "19.3.0",
         "@types/react-dom": "19.3.0",
         "postcss": "^8.5.31",
@@ -118,7 +118,7 @@
         "@better-captcha/qwik": "workspace:*",
         "@builder.io/qwik": "^1.20.2",
         "@builder.io/qwik-city": "^1.20.2",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "globals": "17.13.0",
         "ignore": "^7.0.14",
         "typescript": "~6.0.3",
@@ -200,7 +200,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
         "unplugin": "^3.4.0",
@@ -219,7 +219,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
         "unplugin": "^3.4.0",
@@ -238,7 +238,7 @@
         "@better-captcha/tests": "workspace:*",
         "@builder.io/qwik": "1.20.2",
         "@playwright/test": "^1.64.1",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "typescript": "~6.0.3",
         "unplugin": "^3.4.0",
         "vite": "^7.3.7",
@@ -257,7 +257,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "@types/react": "^19.3.0",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
@@ -277,7 +277,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "rolldown-plugin-solid": "^0.2.1",
         "solid-js": "^1.9.17",
@@ -298,7 +298,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "svelte": "^5.57.2",
         "svelte-check": "^4.7.7",
@@ -330,7 +330,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
         "unplugin": "^3.4.0",
@@ -972,7 +972,7 @@
 
     "@types/ms": ["@types/ms@2.1.0", "", {}, "sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA=="],
 
-    "@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
+    "@types/node": ["@types/node@26.6.6", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog=="],
 
     "@types/postcss-modules-local-by-default": ["@types/postcss-modules-local-by-default@4.0.2", "", { "dependencies": { "postcss": "^8.0.0" } }, "sha512-CtYCcD+L+trB3reJPny+bKWKMzPfxEyQpKIwit7kErnOexf5/faaGpkFy4I5AwbV4hp1sk7/aTg0tt0B67VkLQ=="],
 
@@ -1907,6 +1907,8 @@
     "@vue/language-core/@vue/shared": ["@vue/shared@3.5.43", "", {}, "sha512-uksS7YGMR5NZyr4JNq0Rp+QyLns0ueaz20KwzIPW9R0LH1Vnt4E+XUM29PNseEbf1www2gOuhuDi5AKOIXag9Q=="],
 
     "babel-plugin-jsx-dom-expressions/@babel/helper-module-imports": ["@babel/helper-module-imports@7.18.6", "", { "dependencies": { "@babel/types": "^7.18.6" } }, "sha512-0NFvs3VkuSYbFi1x2Vd6tKrywq+z/cLeYC/RJNFrIX/30Bf5aiGYbtvGXolEktzJH8o5E5KJ3tT+nkxuuZFVlA=="],
+
+    "better-auth-example/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
 
     "csso/css-tree": ["css-tree@2.2.1", "", { "dependencies": { "mdn-data": "2.0.28", "source-map-js": "^1.0.1" } }, "sha512-OA0mILzGc1kCOCSJerOeqDxDQ4HOh+G8NbOJFOTgOCzpw7fCBubk0fEyxp8AgOL/jvLgYA/uV0cMbe43ElF1JA=="],
 
