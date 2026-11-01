@@ -24,7 +24,7 @@
 		"@builder.io/qwik": "^1.20.2",
 		"@builder.io/qwik-city": "^1.20.2",
 		"@types/node": "26.6.5",
-		"globals": "17.13.0",
+		"globals": "17.14.0",
 		"ignore": "^7.0.14",
 		"typescript": "~6.0.3",
 		"typescript-plugin-css-modules": "5.3.0",
