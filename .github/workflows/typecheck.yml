@@ -28,3 +28,6 @@ jobs:
 
       - name: Typecheck
         run: bun run typecheck
+
+      - name: Unit tests
+        run: bun run test:unit
