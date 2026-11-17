@@ -35,6 +35,7 @@ Each provider has its own element name:
 - Friendly Captcha: `<friendly-captcha>`
 - Private Captcha: `<private-captcha-widget>`
 - Captcha Fox: `<captcha-fox-captcha>`
+- FCaptcha: `<fcaptcha-captcha>`
 - Prosopo: `<prosopo-captcha>`
 
 Access the handle to call `execute`, and forward the response token to your backend alongside the form submission.
