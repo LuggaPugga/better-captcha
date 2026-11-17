@@ -9,7 +9,7 @@
 		"preview": "vite preview --port 9001"
 	},
 	"dependencies": {
-		"solid-js": "^1.9.17",
+		"solid-js": "^2.0.0",
 		"@better-captcha/solidjs": "workspace:*"
 	},
 	"devDependencies": {
