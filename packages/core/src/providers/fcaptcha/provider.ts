@@ -47,10 +47,20 @@ export class FCaptchaProvider extends Provider<RenderParameters, FCaptchaHandle>
 	render(element: HTMLElement, options?: RenderParameters, callbacks?: CaptchaCallbacks) {
 		if (!options?.serverUrl) throw new Error("FCaptcha requires options.serverUrl");
 		const url = new URL(options.serverUrl);
-		if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) {
+		if (
+			!["http:", "https:"].includes(url.protocol) ||
+			url.username ||
+			url.password ||
+			url.href.includes("?") ||
+			url.href.includes("#")
+		) {
 			throw new Error("FCaptcha serverUrl must be an HTTP(S) base URL without credentials, query or fragment");
 		}
-		const resolvedOptions = { ...options, serverUrl: url.href.replace(/\/+$/, "") };
+		const executionTimeout = options.executionTimeout ?? 30_000;
+		if (!Number.isFinite(executionTimeout) || executionTimeout <= 0 || executionTimeout > 300_000) {
+			throw new Error("FCaptcha executionTimeout must be between 1 and 300000 milliseconds");
+		}
+		const resolvedOptions = { ...options, executionTimeout, serverUrl: url.href.replace(/\/+$/, "") };
 		const session = this.createSession(resolvedOptions);
 		const id = session.id;
 		let field: HTMLInputElement | undefined;
@@ -88,9 +98,17 @@ export class FCaptchaProvider extends Provider<RenderParameters, FCaptchaHandle>
 		if (instance.field) instance.field.value = "";
 		const current = () => this.instances.get(widgetId) === instance && instance.generation === generation;
 		const run = async () => {
+			let timer: ReturnType<typeof setTimeout> | undefined;
+			let timedOut = false;
 			try {
 				if (!current()) throw new Error("FCaptcha execution was cancelled");
-				const result = await session.execute(instance.options.action, instance.options.cdata);
+				const deadline = new Promise<never>((_, reject) => {
+					timer = setTimeout(() => {
+						timedOut = true;
+						reject(new Error("FCaptcha execution timed out"));
+					}, instance.options.executionTimeout ?? 30_000);
+				});
+				const result = await Promise.race([session.execute(instance.options.action, instance.options.cdata), deadline]);
 				if (!current()) throw new Error("FCaptcha execution was cancelled");
 				if (result.success !== true || typeof result.token !== "string" || !result.token) {
 					throw new Error("FCaptcha verification did not return a successful token");
@@ -99,9 +117,19 @@ export class FCaptchaProvider extends Provider<RenderParameters, FCaptchaHandle>
 				if (instance.field) instance.field.value = result.token;
 				instance.callbacks?.onSolve?.(result.token);
 			} catch (error) {
-				if (current()) instance.callbacks?.onError?.(error instanceof Error ? error : String(error));
+				if (current()) {
+					if (timedOut) {
+						// Native executions queue per session: abandon the stalled queue before retry.
+						instance.generation++;
+						instance.pending = undefined;
+						session.destroy();
+						instance.session = this.createSession(instance.options);
+					}
+					instance.callbacks?.onError?.(error instanceof Error ? error : String(error));
+				}
 				throw error;
 			} finally {
+				clearTimeout(timer);
 				if (current()) instance.pending = undefined;
 			}
 		};

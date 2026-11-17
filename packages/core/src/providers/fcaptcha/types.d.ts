@@ -5,6 +5,8 @@ export interface RenderParameters {
 	cdata?: string;
 	/** Minimum observation time in milliseconds. Defaults to FCaptcha's 2000 ms. */
 	minCollectionTime?: number;
+	/** Execution deadline in milliseconds; defaults to 30000. Maximum 300000. */
+	executionTimeout?: number;
 	responseField?: boolean;
 	responseFieldName?: string;
 }

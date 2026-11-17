@@ -151,8 +151,47 @@ describe("FCaptcha invisible provider", () => {
 			"javascript:alert(1)",
 			"https://user:secret@example.test",
 			"https://example.test/?secret=x",
+			"https://example.test/?",
+			"https://example.test/#",
 		]) {
 			expect(() => provider.render(host, { serverUrl })).toThrow("HTTP(S)");
+		}
+		expect(calls).toHaveLength(0);
+	});
+	test("times out shared execution and retries with a new session, ignoring late results", async () => {
+		let finish!: (result: FCaptchaResult) => void;
+		const solved = mock(() => {});
+		const error = mock(() => {});
+		const id = provider.render(host, { ...options, executionTimeout: 20 }, { onSolve: solved, onError: error });
+		calls[0]?.execute.mockImplementationOnce(
+			() =>
+				new Promise<FCaptchaResult>((resolve) => {
+					finish = resolve;
+				}),
+		);
+		const results = await Promise.allSettled([provider.execute(id), provider.execute(id)]);
+		for (const result of results) {
+			expect(result.status).toBe("rejected");
+			if (result.status === "rejected") expect(result.reason.message).toBe("FCaptcha execution timed out");
+		}
+		expect(error).toHaveBeenCalledTimes(1);
+		expect(calls[0]?.execute).toHaveBeenCalledTimes(1);
+		expect(calls[0]?.destroy).toHaveBeenCalledTimes(1);
+		expect(calls).toHaveLength(2);
+		expect(provider.getResponse(id)).toBe("");
+		expect(children[0]?.value).toBe("");
+		await provider.execute(id);
+		finish({ success: true, token: "late-old-token" });
+		await Promise.resolve();
+		await Promise.resolve();
+		expect(calls[1]?.execute).toHaveBeenCalledTimes(1);
+		expect(provider.getResponse(id)).toBe("fixture-token");
+		expect(solved).toHaveBeenCalledTimes(1);
+		expect(error).toHaveBeenCalledTimes(1);
+	});
+	test("validates the execution deadline before creating a session", () => {
+		for (const executionTimeout of [0, -1, Infinity, NaN, 300001]) {
+			expect(() => provider.render(host, { ...options, executionTimeout })).toThrow("executionTimeout");
 		}
 		expect(calls).toHaveLength(0);
 	});
