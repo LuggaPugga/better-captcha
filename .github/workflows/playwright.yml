@@ -31,8 +31,10 @@ jobs:
       - name: Build package
         run: bun run --cwd packages/${{ matrix.project }} build
 
-      - name: Install Playwright Browsers
-        run: bun --cwd packages/${{ matrix.project }} playwright install --with-deps
+      - name: Setup Playwright
+        uses: ./.github/actions/setup-playwright
+        with:
+          working-directory: packages/${{ matrix.project }}
 
       - name: Run Playwright tests
         run: bun --cwd packages/${{ matrix.project }} playwright test
