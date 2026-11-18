@@ -201,7 +201,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
         "unplugin": "^3.4.0",
@@ -220,7 +220,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
         "unplugin": "^3.4.0",
@@ -239,7 +239,7 @@
         "@better-captcha/tests": "workspace:*",
         "@builder.io/qwik": "1.20.2",
         "@playwright/test": "^1.64.1",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "typescript": "~6.0.3",
         "unplugin": "^3.4.0",
         "vite": "^7.3.7",
@@ -258,7 +258,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "@types/react": "^19.3.0",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
@@ -280,7 +280,7 @@
         "@solidjs/compiler": "2.0.1",
         "@solidjs/web": "^2.0.0",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "solid-js": "^2.0.0",
         "tsdown": "^0.23.2",
@@ -301,7 +301,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "svelte": "^5.57.2",
         "svelte-check": "^4.7.7",
@@ -333,7 +333,7 @@
         "@better-captcha/tests": "workspace:*",
         "@playwright/test": "^1.64.1",
         "@types/bun": "1.4.4",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "playwright": "^1.64.1",
         "tsdown": "^0.23.2",
         "unplugin": "^3.4.0",
@@ -1872,20 +1872,6 @@
     "@babel/core/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
     "@babel/helper-compilation-targets/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
-
-    "@better-captcha/lit/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
-
-    "@better-captcha/preact/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
-
-    "@better-captcha/qwik/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
-
-    "@better-captcha/react/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
-
-    "@better-captcha/solidjs/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
-
-    "@better-captcha/svelte/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
-
-    "@better-captcha/vue/@types/node": ["@types/node@26.6.5", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg=="],
 
     "@builder.io/qwik-city/zod": ["zod@3.25.48", "", {}, "sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q=="],
 
