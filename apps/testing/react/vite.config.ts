@@ -8,7 +8,7 @@ export default defineConfig({
 		{
 			name: "watch-workspace-package",
 			configureServer(server) {
-				server.watcher.add(path.resolve(__dirname, "../../packages/react"));
+				server.watcher.add(path.resolve(import.meta.dirname, "../../packages/react"));
 			},
 		},
 	],
@@ -17,7 +17,7 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "./src"),
+			"@": path.resolve(import.meta.dirname, "./src"),
 		},
 	},
 });
