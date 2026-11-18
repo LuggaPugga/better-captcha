@@ -1,4 +1,11 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended", ":disableDependencyDashboard"]
+	"extends": ["config:recommended", ":disableDependencyDashboard"],
+	"packageRules": [
+		{
+			"description": "The Playwright Docker image in CI must match the installed Playwright version",
+			"groupName": "playwright",
+			"matchPackageNames": ["@playwright/test", "playwright", "playwright-core", "mcr.microsoft.com/playwright"]
+		}
+	]
 }
