@@ -29,6 +29,7 @@ const handle = captcha.getHandle();
 ```
 
 Each provider has its own element name:
+
 - Turnstile: `<turnstile-captcha>`
 - hCaptcha: `<hcaptcha-captcha>`
 - reCAPTCHA: `<recaptcha-captcha>`
