@@ -4,8 +4,8 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=@better-captcha/core --filter=@better-captcha/preact --filter=@better-captcha/react --filter=@better-captcha/vue --filter=@better-captcha/svelte --filter=@better-captcha/solidjs --filter=@better-captcha/qwik --filter=@better-captcha/lit --filter=packages/*",
-		"build:testing": "turbo run build --filter=apps/testing/*",
-		"build:examples": "turbo run build --filter=apps/examples/*",
+		"build:testing": "turbo run build --filter=./apps/testing/*",
+		"build:examples": "turbo run build --filter=./apps/examples/*",
 		"dev:react": "turbo run dev --filter=@better-captcha/react --filter=testing-react",
 		"dev:preact": "turbo run dev --filter=@better-captcha/preact --filter=preact-testing",
 		"dev:solid": "turbo run dev --filter=@better-captcha/solidjs --filter=testing-solid",
