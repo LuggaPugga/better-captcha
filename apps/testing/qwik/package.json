@@ -21,14 +21,14 @@
 	},
 	"devDependencies": {
 		"@better-captcha/qwik": "workspace:*",
-		"@builder.io/qwik": "^1.20.2",
-		"@builder.io/qwik-city": "^1.20.2",
-		"@types/node": "26.6.5",
-		"globals": "17.13.0",
-		"ignore": "^7.0.14",
+		"@builder.io/qwik": "^1.20.4",
+		"@builder.io/qwik-city": "^1.20.4",
+		"@types/node": "26.6.6",
+		"globals": "17.14.0",
+		"ignore": "^7.0.16",
 		"typescript": "~6.0.3",
 		"typescript-plugin-css-modules": "5.3.0",
-		"undici": "^8.12.3",
-		"vite": "^7.3.7"
+		"undici": "^8.12.4",
+		"vite": "^7.3.8"
 	}
 }
