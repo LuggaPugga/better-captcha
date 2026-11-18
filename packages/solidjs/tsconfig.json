@@ -19,7 +19,7 @@
 		"outDir": "./dist",
 		"declarationDir": "./dist",
 		"jsx": "preserve",
-		"jsxImportSource": "solid-js"
+		"jsxImportSource": "@solidjs/web"
 	},
 	"include": ["src", "scripts", "build-plugin.ts"],
 	"exclude": ["dist", "node_modules"]

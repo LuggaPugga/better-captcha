@@ -1,7 +1,7 @@
 import type { ProviderName } from "@better-captcha/core";
 import { BetterCaptcha } from "@better-captcha/solidjs";
-import { type Component, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { dynamic } from "@solidjs/web";
+import { type Component, omit } from "solid-js";
 
 export type CaptchaComponentMode = "dedicated" | "dynamic";
 
@@ -13,13 +13,9 @@ type RenderCaptchaProps = {
 };
 
 export function RenderCaptcha(props: RenderCaptchaProps) {
-	const [local, captchaProps] = splitProps(props, ["mode", "provider", "component"]);
-	const DedicatedComponent = local.component as Component<Record<string, unknown>>;
-	return (
-		<Dynamic
-			component={local.mode === "dynamic" ? BetterCaptcha : DedicatedComponent}
-			{...captchaProps}
-			{...(local.mode === "dynamic" ? { provider: local.provider } : {})}
-		/>
-	);
+	const captchaProps = omit(props, "mode", "provider", "component");
+	const Captcha = dynamic(() =>
+		props.mode === "dynamic" ? BetterCaptcha : (props.component as Component<Record<string, unknown>>),
+	) as Component<Record<string, unknown>>;
+	return <Captcha {...captchaProps} {...(props.mode === "dynamic" ? { provider: props.provider } : {})} />;
 }

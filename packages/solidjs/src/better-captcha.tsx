@@ -7,9 +7,9 @@ import type {
 	ScriptOptions,
 } from "@better-captcha/core";
 import { loadProviderClass } from "@better-captcha/core";
-import { createEffect, createMemo, createResource, type JSX, Show, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
-import { createCaptchaComponent } from "./base-captcha";
+import { dynamic, type JSX } from "@solidjs/web";
+import { Loading, omit, untrack } from "solid-js";
+import { CAPTCHA_PROP_KEYS, createCaptchaComponent } from "./base-captcha";
 import type { CaptchaProps } from "./index";
 
 export type BetterCaptchaProps = CaptchaProps<
@@ -26,54 +26,41 @@ type DynamicProviderClass = new (
 	scriptOptions?: ScriptOptions,
 ) => Provider<Record<string, unknown>, DynamicHandle, CaptchaResponse, CaptchaResponse>;
 
-export function BetterCaptcha(allProps: BetterCaptchaProps): JSX.Element {
-	const [props, divProps] = splitProps(allProps, ["provider", "onError", "class", "style"]);
-	const [loadedProvider] = createResource(
-		() => (typeof props.provider === "string" ? props.provider : undefined),
-		loadProviderClass,
+const toCaptchaComponent = (providerClass: RuntimeProviderClass) =>
+	createCaptchaComponent<Record<string, unknown>, CaptchaResponse, CaptchaResponse, DynamicHandle>(
+		providerClass as unknown as DynamicProviderClass,
 	);
-	const ProviderClass = createMemo(() => {
-		if (typeof props.provider !== "string") return props.provider;
-		if (loadedProvider.loading || loadedProvider.error) return undefined;
-		return loadedProvider();
-	});
-	const Component = createMemo(() => {
-		const activeProvider = ProviderClass();
-		return activeProvider
-			? createCaptchaComponent<Record<string, unknown>, CaptchaResponse, CaptchaResponse, DynamicHandle>(
-					activeProvider as unknown as DynamicProviderClass,
-				)
-			: null;
-	});
 
-	createEffect(() => {
-		const error = loadedProvider.error;
-		if (error) props.onError?.(error instanceof Error ? error : new Error(String(error)));
+export function BetterCaptcha(props: BetterCaptchaProps): JSX.Element {
+	const captchaProps = omit(props, "provider");
+	const placeholderProps = omit(props, "provider", ...CAPTCHA_PROP_KEYS);
+
+	const Placeholder = () => (
+		<div
+			{...placeholderProps}
+			id="better-captcha-loading"
+			class={props.class}
+			style={props.style}
+			aria-live="polite"
+			aria-busy="true"
+		/>
+	);
+
+	// Provider classes are lazy-loaded by name; a pending load renders the <Loading> fallback.
+	const Captcha = dynamic(() => {
+		const provider = props.provider;
+		if (typeof provider !== "string") return toCaptchaComponent(provider);
+		return Promise.resolve(provider)
+			.then(loadProviderClass)
+			.then(toCaptchaComponent, (error: unknown) => {
+				untrack(() => props.onError)?.(error instanceof Error ? error : new Error(String(error)));
+				return Placeholder;
+			});
 	});
 
 	return (
-		<Show
-			when={Component()}
-			fallback={
-				<div
-					{...divProps}
-					id="better-captcha-loading"
-					class={props.class}
-					style={props.style}
-					aria-live="polite"
-					aria-busy={true}
-				/>
-			}
-		>
-			{(ActiveComponent) => (
-				<Dynamic
-					component={ActiveComponent()}
-					{...divProps}
-					class={props.class}
-					style={props.style}
-					onError={props.onError}
-				/>
-			)}
-		</Show>
+		<Loading fallback={<Placeholder />} on={props.provider}>
+			<Captcha {...captchaProps} />
+		</Loading>
 	);
 }

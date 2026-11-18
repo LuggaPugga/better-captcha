@@ -1,9 +1,13 @@
-import type { CaptchaHandle, CaptchaState, Provider, ScriptOptions, WidgetId } from "@better-captcha/core";
+import type { CaptchaHandle, Provider, ScriptOptions } from "@better-captcha/core";
 import { CaptchaController } from "@better-captcha/core";
-import { batch, createEffect, createMemo, createSignal, type JSX, onCleanup, splitProps, untrack } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { createEffect, createMemo, createSignal, omit, onCleanup } from "solid-js";
 import type { CaptchaProps } from "./index";
 
-const BASE_KEYS = [
+/** Props consumed by the captcha component; everything else is forwarded to the host `<div>`. */
+export const CAPTCHA_PROP_KEYS = [
+	"sitekey",
+	"endpoint",
 	"options",
 	"scriptOptions",
 	"class",
@@ -23,89 +27,71 @@ export function createCaptchaComponent<
 	TProvider extends Provider<TOptions, THandle, TResponse, TSolve> = Provider<TOptions, THandle, TResponse, TSolve>,
 >(
 	ProviderClass: new (identifier: string, scriptOptions?: ScriptOptions) => TProvider,
-): (allProps: CaptchaProps<TOptions, THandle, TSolve>) => JSX.Element {
-	return function CaptchaComponent(allProps: CaptchaProps<TOptions, THandle, TSolve>): JSX.Element {
-		const [props, divProps] = splitProps(allProps, [...BASE_KEYS, "sitekey", "endpoint"] as const);
-
-		const identifier = createMemo(() => props.sitekey || props.endpoint || "");
-		const autoRender = createMemo(() => props.autoRender ?? true);
-
-		const [elementRef, setElementRef] = createSignal<HTMLDivElement>();
-		const [widgetId, setWidgetId] = createSignal<WidgetId | null>(null);
-		const [state, setState] = createSignal<CaptchaState>({
-			loading: false,
-			error: null,
-			ready: false,
-		});
-
-		const isLoading = createMemo(() => (autoRender() ? state().loading || !state().ready : state().loading));
+): (props: CaptchaProps<TOptions, THandle, TSolve>) => JSX.Element {
+	return function CaptchaComponent(props: CaptchaProps<TOptions, THandle, TSolve>): JSX.Element {
+		const divProps = omit(props, ...CAPTCHA_PROP_KEYS);
+		let host: HTMLDivElement | undefined;
 
 		const controller = new CaptchaController<TOptions, TResponse, TSolve, THandle>(
 			(id, script) => new ProviderClass(id, script),
 		);
-
-		const unsubscribe = controller.onStateChange((newState) => {
-			batch(() => {
-				setState(newState);
-				setWidgetId(controller.getWidgetId());
-			});
+		controller.setCallbacks({
+			onReady: () => props.onReady?.(controller.getHandle()),
+			onSolve: (token) => props.onSolve?.(token),
+			onError: (err) => props.onError?.(err instanceof Error ? err : new Error(String(err))),
 		});
 
-		const renderCaptcha = async () => {
-			await controller.render();
-			setWidgetId(controller.getWidgetId());
-		};
+		// The controller assigns the widget id before it publishes a new state, so one
+		// subscription keeps both in sync. It also replays the current state on subscribe,
+		// from the component body, which Solid 2 only allows with `ownedWrite`.
+		const snapshot = () => ({ state: controller.getState(), widgetId: controller.getWidgetId() });
+		const [current, setCurrent] = createSignal(snapshot(), { ownedWrite: true });
+		const unsubscribe = controller.onStateChange(() => setCurrent(snapshot()));
 
-		createEffect(() => {
-			const el = elementRef();
-			const id = identifier();
-			const opts = props.options;
-			const sOpts = props.scriptOptions;
-			const shouldAutoRender = autoRender();
-
-			controller.attachHost(el ?? null);
-			controller.setIdentifier(id);
-			controller.setScriptOptions(sOpts);
-			controller.setOptions(opts);
-
-			controller.setCallbacks({
-				onReady: () => props.onReady?.(controller.getHandle()),
-				onSolve: (token: TSolve) => props.onSolve?.(token),
-				onError: (err: Error | string) => {
-					const error = err instanceof Error ? err : new Error(String(err));
-					props.onError?.(error);
-				},
-			});
-
-			if (shouldAutoRender) {
-				void renderCaptcha();
-			}
+		const widgetId = createMemo(() => current().widgetId);
+		const isLoading = createMemo(() => {
+			const { loading, ready } = current().state;
+			return (props.autoRender ?? true) ? loading || !ready : loading;
 		});
 
-		createEffect(() => {
-			const h = controller.getHandle();
-			widgetId();
-			untrack(() => props.controller?.set(h));
-		});
+		createEffect(
+			() => ({
+				identifier: props.sitekey || props.endpoint || "",
+				options: props.options,
+				scriptOptions: props.scriptOptions,
+				autoRender: props.autoRender ?? true,
+			}),
+			({ identifier, options, scriptOptions, autoRender }) => {
+				controller.attachHost(host ?? null);
+				controller.setIdentifier(identifier);
+				controller.setScriptOptions(scriptOptions);
+				controller.setOptions(options);
+				if (autoRender) void controller.render();
+			},
+		);
 
-		const elementId = createMemo(() =>
-			widgetId() != null ? `better-captcha-${widgetId()}` : "better-captcha-loading",
+		createEffect(
+			() => {
+				widgetId();
+				return props.controller;
+			},
+			(captchaController) => captchaController?.set(controller.getHandle()),
 		);
 
 		onCleanup(() => {
-			controller.cleanup();
 			unsubscribe();
+			controller.cleanup();
 		});
 
 		return (
 			<div
 				{...divProps}
-				id={elementId()}
-				ref={setElementRef}
+				id={widgetId() != null ? `better-captcha-${widgetId()}` : "better-captcha-loading"}
+				ref={host}
 				class={props.class}
 				style={props.style}
 				aria-live="polite"
-				aria-busy={isLoading()}
+				aria-busy={isLoading() ? "true" : "false"}
 			/>
 		);
 	};

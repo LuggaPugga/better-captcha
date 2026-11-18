@@ -1,7 +1,6 @@
 import { PROVIDER_REGISTRY } from "@better-captcha/core";
-import solid from "rolldown-plugin-solid";
 import { defineConfig } from "tsdown";
-import unplugin, { dtsEmitterPlugin } from "./build-plugin.ts";
+import unplugin, { dtsEmitterPlugin, solidCompilerPlugin } from "./build-plugin.ts";
 
 export default defineConfig({
 	inputOptions: {
@@ -31,9 +30,7 @@ export default defineConfig({
 	},
 	plugins: [
 		unplugin.rolldown(),
-		solid({
-			solid: { hydratable: false, generate: "dom" },
-		}),
+		solidCompilerPlugin.rolldown({ generate: "dom", hydratable: false }),
 		dtsEmitterPlugin.rolldown(),
 	],
 });

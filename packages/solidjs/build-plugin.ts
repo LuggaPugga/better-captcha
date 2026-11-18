@@ -8,6 +8,7 @@ import {
 	generateProviderModuleDts,
 	type ProviderModuleConfig,
 } from "@better-captcha/core/utils/build-plugin-utils";
+import { type TransformOptions, transformAsync } from "@solidjs/compiler";
 import { createUnplugin } from "unplugin";
 
 const BASE_SPEC = "@better-captcha/solidjs/base";
@@ -64,6 +65,25 @@ export const unplugin = createUnplugin(() => {
 				};
 			}
 			return null;
+		},
+	};
+});
+
+export const solidCompilerPlugin = createUnplugin((options: Omit<TransformOptions, "filename" | "sourceMap"> = {}) => {
+	return {
+		name: "better-captcha-solid-compiler",
+		enforce: "pre",
+		transform: {
+			filter: { id: /\.[jt]sx$/ },
+			async handler(code, id) {
+				const result = await transformAsync(code, { ...options, filename: id, sourceMap: true });
+				return {
+					code: result.code,
+					map: result.map,
+					// The Solid compiler only lowers JSX; leave TypeScript stripping to rolldown.
+					moduleType: id.endsWith(".tsx") ? "ts" : "js",
+				};
+			},
 		},
 	};
 });

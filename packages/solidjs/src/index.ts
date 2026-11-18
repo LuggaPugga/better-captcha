@@ -1,5 +1,6 @@
 import type { CaptchaHandle, ScriptOptions } from "@better-captcha/core";
-import { createSignal, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { createSignal } from "solid-js";
 
 export type {
 	CaptchaHandle,
