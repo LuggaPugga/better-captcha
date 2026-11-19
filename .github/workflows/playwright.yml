@@ -6,13 +6,38 @@ on:
   pull_request:
 
 jobs:
+  # The container's browsers must match the installed Playwright version exactly,
+  # so derive the image tag from bun.lock instead of hardcoding it.
+  playwright-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: bun.lock
+          sparse-checkout-cone-mode: false
+
+      - name: Resolve Playwright version from bun.lock
+        id: resolve
+        run: |
+          versions=$(grep -oE '\["playwright@[0-9]+\.[0-9]+\.[0-9]+[^"]*"' bun.lock | sed -E 's/.*@([^"]+)"/\1/' | sort -u)
+          count=$(printf '%s\n' "$versions" | grep -c . || true)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::Expected exactly one resolved playwright version in bun.lock, found: ${versions:-none}"
+            exit 1
+          fi
+          echo "Resolved playwright@$versions"
+          echo "version=$versions" >> "$GITHUB_OUTPUT"
+
   test:
+    needs: playwright-version
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Browsers and their system dependencies come preinstalled in the image.
-    # Keep the tag in sync with the resolved @playwright/test version in bun.lock.
     container:
-      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      image: mcr.microsoft.com/playwright:v${{ needs.playwright-version.outputs.version }}-noble
       options: --ipc=host
     env:
       # Firefox refuses to start as root when HOME is owned by another user.

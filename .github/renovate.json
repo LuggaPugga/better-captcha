@@ -3,9 +3,9 @@
 	"extends": ["config:recommended", ":disableDependencyDashboard"],
 	"packageRules": [
 		{
-			"description": "The Playwright Docker image in CI must match the installed Playwright version",
+			"description": "Keep Playwright packages on the same version (the CI image tag is derived from bun.lock)",
 			"groupName": "playwright",
-			"matchPackageNames": ["@playwright/test", "playwright", "playwright-core", "mcr.microsoft.com/playwright"]
+			"matchPackageNames": ["@playwright/test", "playwright", "playwright-core"]
 		}
 	]
 }
