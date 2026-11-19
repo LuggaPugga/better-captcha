@@ -1,5 +1,11 @@
 # @better-captcha/qwik
 
+## 0.9.0
+
+### Patch Changes
+
+- @better-captcha/core@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
