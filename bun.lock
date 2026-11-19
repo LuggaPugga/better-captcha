@@ -29,7 +29,7 @@
         "fumadocs-ui": "^16.19.4",
         "lucide-react": "^1.61.0",
         "next": "^16.4.3",
-        "onedollarstats": "^0.0.25",
+        "onedollarstats": "^0.0.26",
         "react": "19.3.1",
         "react-dom": "19.3.1",
         "shiki": "^4.6.0",
@@ -1585,7 +1585,7 @@
 
     "once": ["once@1.4.0", "", { "dependencies": { "wrappy": "1" } }, "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w=="],
 
-    "onedollarstats": ["onedollarstats@0.0.25", "", { "peerDependencies": { "expo-router": ">=3.0.0", "react": ">=18.0.0", "react-native": ">=0.73.0" }, "optionalPeers": ["expo-router", "react", "react-native"] }, "sha512-Mv4GrDhCzEJ7LPIUAA5z2JTAEaRlNnIpzODMLsLToT7G5zK+4dSm4fxM7O9QswmQbqn9DwDBnUpjkKCjTL0+QQ=="],
+    "onedollarstats": ["onedollarstats@0.0.26", "", { "peerDependencies": { "expo-router": ">=3.0.0", "react": ">=18.0.0", "react-native": ">=0.73.0" }, "optionalPeers": ["expo-router", "react", "react-native"] }, "sha512-fnPvu+ppfUTVq9EoFtqf8iAmsiznA2MBVQZyPqakCi1JEm1MCusd00Yz8lRI6VKfDsjEP87PFGNc9hs5Rm52RQ=="],
 
     "oniguruma-parser": ["oniguruma-parser@0.12.2", "", {}, "sha512-6HVa5oIrgMC6aA6WF6XyyqbhRPJrKR02L20+2+zpDtO5QAzGHAUGw5TKQvwi5vctNnRHkJYmjAhRVQF2EKdTQw=="],
 
