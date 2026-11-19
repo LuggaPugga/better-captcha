@@ -1,5 +1,15 @@
 # @better-captcha/solidjs
 
+## 0.9.0
+
+### Minor Changes
+
+- 664f1b7: **Breaking:** Requires Solid 2. Install `solid-js@^2` and `@solidjs/web@^2`; Solid 1.x is no longer supported.
+
+### Patch Changes
+
+- @better-captcha/core@0.9.0
+
 ## 0.8.0
 
 ### Minor Changes
