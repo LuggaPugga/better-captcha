@@ -20,7 +20,8 @@
 		"start": "turbo run start",
 		"changeset": "changeset",
 		"ci:version": "changeset version && node scripts/prepare-publish.mjs && bun update",
-		"ci:publish": "changeset publish"
+		"ci:publish": "changeset publish",
+		"test:unit": "bun test packages/tests/tests/unit"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.6.8",

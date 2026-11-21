@@ -52,6 +52,16 @@ export const PROVIDER_REGISTRY = defineProviderRegistry(
 		loadProviderClass: async () => (await import("./providers/captcha-fox")).CaptchaFoxProvider,
 	},
 	{
+		name: "fcaptcha",
+		componentName: "FCaptcha",
+		providerClassName: "FCaptchaProvider",
+		handleType: "FCaptchaHandle",
+		renderParamsType: "RenderParameters",
+		renderParamsOmit: "never",
+		extraTypes: [],
+		loadProviderClass: async () => (await import("./providers/fcaptcha")).FCaptchaProvider,
+	},
+	{
 		name: "friendly-captcha",
 		componentName: "FriendlyCaptcha",
 		providerClassName: "FriendlyCaptchaProvider",
@@ -153,6 +163,7 @@ const PROVIDERS_BY_NAME: ReadonlyMap<string, ProviderMetadata> = new Map(
 export type { AltchaHandle } from "./providers/altcha";
 export type { CapWidgetHandle } from "./providers/cap-widget";
 export type { CaptchaFoxHandle } from "./providers/captcha-fox";
+export type { FCaptchaHandle } from "./providers/fcaptcha";
 export type { FriendlyCaptchaHandle } from "./providers/friendly-captcha";
 export type { GeetestHandle } from "./providers/geetest";
 export type { HCaptchaHandle } from "./providers/hcaptcha";

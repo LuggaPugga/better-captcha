@@ -1,0 +1,88 @@
+---
+title: FCaptcha
+description: Self-hosted, invisible CAPTCHA with explicit execution and server-side token verification
+---
+
+## About FCaptcha
+
+[FCaptcha](https://github.com/WebDecoy/FCaptcha) is an MIT-licensed CAPTCHA that combines proof of work with browser and interaction signals. This provider uses its **native invisible session API**. It does not render a checkbox, intercept form submissions, or require a hosted WebDecoy account.
+
+Deploy your verifier using the [FCaptcha setup instructions](https://github.com/WebDecoy/FCaptcha#try-it-in-60-seconds). Serve its browser script from your own deployment. No verification secret belongs in client code.
+
+## React example
+
+```tsx
+import { type FormEvent, useRef, useState } from "react";
+import type { FCaptchaHandle } from "@better-captcha/core/providers/fcaptcha";
+import { FCaptcha } from "@better-captcha/react/provider/fcaptcha";
+
+// Stable identities prevent error-state renders from replacing an active session.
+const captchaOptions = { serverUrl: "https://captcha.example.com", action: "contact" };
+const captchaScriptOptions = { overrideScriptUrl: "https://captcha.example.com/fcaptcha.js" };
+
+export function ContactForm() {
+  const captcha = useRef<FCaptchaHandle>(null);
+  const busy = useRef(false);
+  const [ready, setReady] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (busy.current || !captcha.current) return;
+    busy.current = true;
+    setError("");
+    const form = event.currentTarget;
+    try {
+      // Generate a fresh token for this submission. execute() rejects on failure.
+      await captcha.current.execute();
+      const body = new FormData(form);
+      body.set("fcaptcha_token", captcha.current.getResponse());
+      const response = await fetch("/api/contact", { method: "POST", body });
+      if (!response.ok) throw new Error("Submission failed");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Please try again");
+    } finally {
+      captcha.current?.reset();
+      busy.current = false;
+    }
+  }
+
+  return (
+    <form onSubmit={submit}>
+      <label>Email <input type="email" name="email" required /></label>
+      <FCaptcha
+        ref={captcha}
+        sitekey="your-public-site-key"
+        onReady={() => setReady(true)}
+        options={captchaOptions}
+        scriptOptions={captchaScriptOptions}
+      />
+      <p role="status">{error}</p>
+      <button type="submit" disabled={!ready}>Send</button>
+    </form>
+  );
+}
+```
+
+Use the generated `fcaptcha` provider entry for your framework, or select `provider="fcaptcha"` on the dynamic BetterCaptcha component. Run it in a client-only boundary when using SSR.
+
+## Server-side verification is required
+
+Your `/api/contact` handler must send the token to your FCaptcha server's `/siteverify` endpoint using the **server-only verification secret** and reject failed, expired, replayed, malformed or unavailable verification results before sending mail or performing the protected action. Check the expected hostname and action against server-controlled values. Consult the [FCaptcha integration documentation](https://github.com/WebDecoy/FCaptcha#quick-start) for the current response contract.
+
+The browser callback alone is not authorization. Configure HTTPS, allowed site keys/origins, CSP `script-src` and `connect-src`, rate limiting and replay protection for your deployment.
+
+## Lifecycle
+
+- `execute()` requests a fresh invisible-mode result and emits `onSolve(token)` only for a successful, nonempty token. Failed or malformed results reject and call `onError`.
+- Concurrent calls share one pending execution for the same instance.
+- Execution times out after 30 seconds by default (`options.executionTimeout`, maximum 300 seconds). A timeout rejects, emits `onError`, and replaces the session so retries do not inherit a stalled execution queue.
+- `reset()` clears the token and creates a fresh observation session.
+- `destroy()` removes the session and its hidden field. Late results after reset or destruction never emit `onSolve`.
+- `getResponse()` returns the latest successful token, or an empty string. Verify it immediately on your server; do not cache it for later actions.
+- The default hidden field is `fcaptcha_token`. Set `responseField: false` to manage the token yourself, or set `responseFieldName` to change its name.
+- Supply `options.serverUrl` explicitly. The script URL can be overridden or loaded manually with `scriptOptions.autoLoad: false`.
+
+## Provider options
+
+<AutoTypeTable path="../../packages/core/src/providers/fcaptcha/types.d.ts" name="RenderParameters" />
