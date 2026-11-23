@@ -122,7 +122,7 @@
         "globals": "17.14.0",
         "ignore": "^7.0.16",
         "typescript": "~6.0.3",
-        "typescript-plugin-css-modules": "5.3.0",
+        "typescript-plugin-css-modules": "5.3.1",
         "undici": "^8.12.4",
         "vite": "^7.3.8",
       },
@@ -1783,7 +1783,7 @@
 
     "typescript": ["typescript@6.0.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw=="],
 
-    "typescript-plugin-css-modules": ["typescript-plugin-css-modules@5.3.0", "", { "dependencies": { "@types/postcss-modules-local-by-default": "^4.0.2", "@types/postcss-modules-scope": "^3.0.4", "dotenv": "^16.6.1", "icss-utils": "^5.1.0", "less": "^4.9.1", "lodash.camelcase": "^4.3.0", "postcss": "^8.5.31", "postcss-load-config": "^3.1.4", "postcss-modules-extract-imports": "^3.1.0", "postcss-modules-local-by-default": "^4.2.0", "postcss-modules-scope": "^3.2.1", "reserved-words": "^0.1.2", "sass": "^1.106.1", "source-map-js": "^1.2.2", "tsconfig-paths": "^4.2.0" }, "optionalDependencies": { "stylus": "^0.62.0" }, "peerDependencies": { "typescript": ">=4.0.0" } }, "sha512-ZCSp+b7MmI2bqvSg55hHUk6XDnRPSsZQnoFacLBLTlNrHmiK/vKDMOfcGg+j5yT8nphah54UBg8EPzf8xCwdcA=="],
+    "typescript-plugin-css-modules": ["typescript-plugin-css-modules@5.3.1", "", { "dependencies": { "@types/postcss-modules-local-by-default": "^4.0.2", "@types/postcss-modules-scope": "^3.0.4", "dotenv": "^16.6.1", "icss-utils": "^5.1.0", "less": "^4.9.1", "lodash.camelcase": "^4.3.0", "postcss": "^8.5.31", "postcss-load-config": "^3.1.4", "postcss-modules-extract-imports": "^3.1.0", "postcss-modules-local-by-default": "^4.2.0", "postcss-modules-scope": "^3.2.1", "reserved-words": "^0.1.2", "sass": "^1.106.1", "source-map-js": "^1.2.2", "tsconfig-paths": "^4.2.0" }, "optionalDependencies": { "stylus": "^0.62.0" }, "peerDependencies": { "typescript": ">=4.0.0" } }, "sha512-H4b2uxM2fI1+NXcOA7MfbSqIrqxxGmfY8PyPa+xpM9dYMjFz/ImW4ra2yCF/UxmN8yFxJ95zNvxDtk0R5Be/4A=="],
 
     "unconfig-core": ["unconfig-core@7.5.0", "", { "dependencies": { "@quansync/fs": "^1.0.0", "quansync": "^1.0.0" } }, "sha512-Su3FauozOGP44ZmKdHy2oE6LPjk51M/TRRjHv2HNCWiDvfvCoxC2lno6jevMA91MYAdCdwP05QnWdWpSbncX/w=="],
 
